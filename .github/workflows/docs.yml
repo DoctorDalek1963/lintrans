@@ -11,7 +11,7 @@ jobs:
     - uses: dorny/paths-filter@v2
       id: filter
       with:
-        filters:
+        filters: |
           src:
             - 'src/**'
 
