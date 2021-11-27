@@ -1,6 +1,7 @@
 # Linear Transformations (A Level CS NEA)
 
 ![Tests](https://github.com/DoctorDalek1963/linear-transformations/actions/workflows/tests.yml/badge.svg)
+![Linting](https://github.com/DoctorDalek1963/linear-transformations/actions/workflows/linting.yml/badge.svg)
 ![Docs](https://github.com/DoctorDalek1963/linear-transformations/actions/workflows/docs.yml/badge.svg)
 
 ![GPLv3 License](https://img.shields.io/github/license/DoctorDalek1963/linear-transformations?style=flat-square)
