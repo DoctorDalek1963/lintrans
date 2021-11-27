@@ -1,4 +1,7 @@
 flake8>=4.0
 mypy>=0.9
+pydocstyle>=6.1
+pylint>=2.12
 pytest>=6.2
 toml>=0.10
+tox>=3.24

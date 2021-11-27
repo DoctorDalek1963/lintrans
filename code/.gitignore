@@ -4,6 +4,7 @@ __pycache__/
 .mypy_cache/
 .pytest_cache/
 *.egg-info/
+.tox/
 
 # This is a virtual environment
 venv/
