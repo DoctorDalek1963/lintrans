@@ -1,11 +1,10 @@
-# Linear Transformations (A Level CSNEA)
+# Linear Transformations (A Level CS NEA)
 
 ![Tests](https://github.com/DoctorDalek1963/linear-transformations/actions/workflows/tests.yml/badge.svg)
 ![Docs](https://github.com/DoctorDalek1963/linear-transformations/actions/workflows/docs.yml/badge.svg)
 
 ![GPLv3 License](https://img.shields.io/github/license/DoctorDalek1963/linear-transformations?style=flat-square)
 ![Latest commit](https://img.shields.io/github/last-commit/DoctorDalek1963/linear-transformations?style=flat-square)
-
 ![Code size](https://img.shields.io/github/languages/code-size/DoctorDalek1963/linear-transformations?style=flat-square)
 ![Repo size](https://img.shields.io/github/repo-size/DoctorDalek1963/linear-transformations?style=flat-square)
 
