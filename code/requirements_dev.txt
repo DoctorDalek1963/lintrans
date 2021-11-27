@@ -1,0 +1,4 @@
+flake8>=4.0
+mypy>=0.9
+pytest>=6.2
+toml>=0.10
