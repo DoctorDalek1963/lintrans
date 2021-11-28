@@ -18,8 +18,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install toml pylint flake8
 
-    - name: Run pylint
-      run: pylint -j 0 src/ tests/
+    - name: Run pylint on src/
+      run: pylint src/
+
+    - name: Run pylint on tests/
+      run: pylint --disable=unused-variable tests/
 
     - name: Run flake8
       run: flake8 src/ tests/
