@@ -1,1 +1,2 @@
 numpy>=1.21
+nptyping>=1.4
