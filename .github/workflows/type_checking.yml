@@ -1,9 +1,9 @@
-name: Linting
+name: Type Checking
 
 on: [push, pull_request]
 
 jobs:
-  linting:
+  type_checking:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -16,10 +16,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install toml pylint flake8
+        pip install mypy
 
-    - name: Run flake8
-      run: flake8 src/ tests/
-
-    - name: Run pycodestyle
-      run: pycodestyle src/ tests/
+    - name: Run mypy
+      run: mypy src/ tests/
