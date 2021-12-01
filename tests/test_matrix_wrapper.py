@@ -23,12 +23,13 @@ def test_get_matrix(wrapper) -> None:
 
 
 def test_get_name_error(wrapper) -> None:
-    """Test that MatrixWrapper.__getitem__() raises a KeyError if called with an invalid name."""
-    with pytest.raises(KeyError):
+    """Test that MatrixWrapper.__getitem__() raises a NameError if called with an invalid name."""
+    with pytest.raises(NameError):
         _ = wrapper['bad name']
         _ = wrapper['123456']
         _ = wrapper['Th15 Is an 1nV@l1D n@m3']
         _ = wrapper['abc']
+        _ = wrapper['a']
 
 
 def test_set_matrix(wrapper) -> None:
@@ -51,3 +52,4 @@ def test_set_name_error(wrapper) -> None:
         wrapper['123456'] = test_matrix
         wrapper['Th15 Is an 1nV@l1D n@m3'] = test_matrix
         wrapper['abc'] = test_matrix
+        wrapper['a'] = test_matrix
