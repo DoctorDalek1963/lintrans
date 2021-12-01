@@ -113,8 +113,11 @@ class MatrixWrapper:
         # Wrap all exponents and transposition powers with {}
         expression = re.sub(r'(?<=\^)(-?\d+|T)(?=[^}]|$)', r'{\g<0>}', expression)
 
-        # Replace all subtractions with additions, multiplied by -1
+        # Replace all simple subtractions with additions, multiplied by -1
         expression = re.sub(r'(?<=.)-(?=[A-Z])', '+-1', expression)
+
+        # Replace all subtractions with coefficients to the right with additions, multiplied by -1
+        expression = re.sub(r'(?<=.)-(?=\d+[A-Z])', '+-', expression)
 
         # Replace a possible leading minus sign with -1
         expression = re.sub(r'^-(?=[A-Z])', '-1', expression)
