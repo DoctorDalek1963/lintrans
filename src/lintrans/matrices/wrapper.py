@@ -63,11 +63,11 @@ class MatrixWrapper:
 
         return self._matrices[name]
 
-    def __setitem__(self, name: str, new_matrix: MatrixType) -> None:
+    def __setitem__(self, name: str, new_matrix: Optional[MatrixType]) -> None:
         """Set the value of matrix `name` with the new_matrix.
 
         :param str name: The name of the matrix to set the value of
-        :param MatrixType new_matrix: The value of the new matrix
+        :param Optional[MatrixType] new_matrix: The value of the new matrix
         :rtype: None
 
         :raises NameError: If the name isn't a valid matrix name or is 'I'
@@ -78,6 +78,10 @@ class MatrixWrapper:
 
         if name == 'I':
             raise NameError('Matrix name cannot be "I"')
+
+        if new_matrix is None:
+            self._matrices[name] = None
+            return
 
         # We can't just do 'if not isinstance(new_matrix, MatrixType):', because that doesn't work
         if not isinstance(new_matrix, np.ndarray) or not new_matrix.shape == (2, 2):
