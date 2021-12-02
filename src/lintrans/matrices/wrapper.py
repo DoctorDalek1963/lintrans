@@ -65,12 +65,17 @@ class MatrixWrapper:
         :rtype: None
 
         :raises NameError: If the name isn't a valid matrix name or is 'I'
+        :raises TypeError: If the matrix isn't a valid 2x2 NumPy array
         """
         if name not in self._matrices.keys():
             raise NameError('Matrix name must be a single capital letter')
 
         if name == 'I':
             raise NameError('Matrix name cannot be "I"')
+
+        # We can't just do 'if not isinstance(new_matrix, MatrixType):', because that doesn't work
+        if not isinstance(new_matrix, np.ndarray) or not new_matrix.shape == (2, 2):
+            raise TypeError('Matrix must be a 2x2 NumPy array')
 
         # All matrices must have float entries
         a = float(new_matrix[0][0])
