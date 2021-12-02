@@ -24,6 +24,12 @@ class MatrixWrapper:
             'Z': None
         }
 
+    def __repr__(self) -> str:
+        """Return a nice string repr of the MatrixWrapper for debugging."""
+        defined_matrices = ''.join([k for k, v in self._matrices.items() if v is not None])
+        return f'<{self.__class__.__module__}.{self.__class__.__name__} object with ' \
+               f"{len(defined_matrices)} defined matrices: '{defined_matrices}'>"
+
     def __getitem__(self, name: str) -> Optional[MatrixType]:
         """Get the matrix with the given name.
 
