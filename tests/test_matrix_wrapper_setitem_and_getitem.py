@@ -38,6 +38,9 @@ def test_set_matrix(wrapper) -> None:
         wrapper[name] = test_matrix
         assert (wrapper[name] == test_matrix).all()
 
+        wrapper[name] = None
+        assert wrapper[name] is None
+
 
 def test_set_identity_error(wrapper) -> None:
     """Test that MatrixWrapper().__setitem__() raises a NameError when trying to assign to I."""
