@@ -14,7 +14,7 @@ def wrapper() -> MatrixWrapper:
     return MatrixWrapper()
 
 
-def test_get_matrix(wrapper) -> None:
+def test_get_matrix(wrapper: MatrixWrapper) -> None:
     """Test MatrixWrapper().__getitem__()."""
     for name in valid_matrix_names:
         assert wrapper[name] is None
@@ -22,7 +22,7 @@ def test_get_matrix(wrapper) -> None:
     assert (wrapper['I'] == np.array([[1, 0], [0, 1]])).all()
 
 
-def test_get_name_error(wrapper) -> None:
+def test_get_name_error(wrapper: MatrixWrapper) -> None:
     """Test that MatrixWrapper().__getitem__() raises a NameError if called with an invalid name."""
     with pytest.raises(NameError):
         _ = wrapper['bad name']
@@ -32,7 +32,7 @@ def test_get_name_error(wrapper) -> None:
         _ = wrapper['a']
 
 
-def test_set_matrix(wrapper) -> None:
+def test_set_matrix(wrapper: MatrixWrapper) -> None:
     """Test MatrixWrapper().__setitem__()."""
     for name in valid_matrix_names:
         wrapper[name] = test_matrix
@@ -42,13 +42,13 @@ def test_set_matrix(wrapper) -> None:
         assert wrapper[name] is None
 
 
-def test_set_identity_error(wrapper) -> None:
+def test_set_identity_error(wrapper: MatrixWrapper) -> None:
     """Test that MatrixWrapper().__setitem__() raises a NameError when trying to assign to I."""
     with pytest.raises(NameError):
         wrapper['I'] = test_matrix
 
 
-def test_set_name_error(wrapper) -> None:
+def test_set_name_error(wrapper: MatrixWrapper) -> None:
     """Test that MatrixWrapper().__setitem__() raises a NameError when trying to assign to an invalid name."""
     with pytest.raises(NameError):
         wrapper['bad name'] = test_matrix
@@ -58,7 +58,7 @@ def test_set_name_error(wrapper) -> None:
         wrapper['a'] = test_matrix
 
 
-def test_set_type_error(wrapper) -> None:
+def test_set_type_error(wrapper: MatrixWrapper) -> None:
     """Test that MatrixWrapper().__setitem__() raises a TypeError when trying to set a non-matrix."""
     with pytest.raises(TypeError):
         wrapper['M'] = 'M'
