@@ -70,3 +70,5 @@ def test_set_type_error(wrapper: MatrixWrapper) -> None:
         wrapper['M'] = 'This is totally a matrix, I swear'
         wrapper['M'] = MatrixWrapper
         wrapper['M'] = MatrixWrapper()
+        wrapper['M'] = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+        wrapper['M'] = np.eye(100)
