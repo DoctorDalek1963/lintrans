@@ -32,7 +32,7 @@ def test_simple_matrix_addition(wrapper: MatrixWrapper) -> None:
 
     # NOTE: We assert that all of these values are not None just to stop mypy complaining
     # These values will never actually be None because they're set in the wrapper() fixture
-    # There's probably a better way  do this, because this method is a bit of a bdoge, but this works for now
+    # There's probably a better way  do this, because this method is a bit of a bodge, but this works for now
     assert wrapper['A'] is not None and wrapper['B'] is not None and wrapper['C'] is not None and \
         wrapper['D'] is not None and wrapper['E'] is not None and wrapper['F'] is not None and \
         wrapper['G'] is not None
