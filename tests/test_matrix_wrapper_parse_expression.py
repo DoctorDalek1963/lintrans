@@ -133,3 +133,26 @@ def test_matrix_powers(wrapper: MatrixWrapper) -> None:
     assert (wrapper.parse_expression('E^8') == la.matrix_power(wrapper['E'], 8)).all()
     assert (wrapper.parse_expression('F^{-6}') == la.matrix_power(wrapper['F'], -6)).all()
     assert (wrapper.parse_expression('G^-2') == la.matrix_power(wrapper['G'], -2)).all()
+
+
+def test_matrix_transpose(wrapper: MatrixWrapper) -> None:
+    """Test matrix transpositions."""
+    assert wrapper['A'] is not None and wrapper['B'] is not None and wrapper['C'] is not None and \
+           wrapper['D'] is not None and wrapper['E'] is not None and wrapper['F'] is not None and \
+           wrapper['G'] is not None
+
+    assert (wrapper.parse_expression('A^{T}') == wrapper['A'].T).all()
+    assert (wrapper.parse_expression('B^{T}') == wrapper['B'].T).all()
+    assert (wrapper.parse_expression('C^{T}') == wrapper['C'].T).all()
+    assert (wrapper.parse_expression('D^{T}') == wrapper['D'].T).all()
+    assert (wrapper.parse_expression('E^{T}') == wrapper['E'].T).all()
+    assert (wrapper.parse_expression('F^{T}') == wrapper['F'].T).all()
+    assert (wrapper.parse_expression('G^{T}') == wrapper['G'].T).all()
+
+    assert (wrapper.parse_expression('A^T') == wrapper['A'].T).all()
+    assert (wrapper.parse_expression('B^T') == wrapper['B'].T).all()
+    assert (wrapper.parse_expression('C^T') == wrapper['C'].T).all()
+    assert (wrapper.parse_expression('D^T') == wrapper['D'].T).all()
+    assert (wrapper.parse_expression('E^T') == wrapper['E'].T).all()
+    assert (wrapper.parse_expression('F^T') == wrapper['F'].T).all()
+    assert (wrapper.parse_expression('G^T') == wrapper['G'].T).all()
