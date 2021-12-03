@@ -44,7 +44,7 @@ class MatrixWrapper:
         :raises NameError: If there is no matrix with the given name
         """
         # Return a new rotation matrix
-        match = re.match(r'rot\((\d+)\)', name)
+        match = re.match(r'rot\((-?\d*\.?\d*)\)', name)
         if match is not None:
             return create_rotation_matrix(float(match.group(1)))
 
@@ -157,7 +157,7 @@ class MatrixWrapper:
             # The full exponent contains ^{}, so we ignore it
             # The multiplier and exponent might be '', so we have to set them to '1'
             string_matrices = [(t[0] if t[0] != '' else '1', t[1], t[3] if t[3] != '' else '1')
-                               for t in re.findall(r'(-?\d*\.?\d*)([A-Z]t?|rot\(\d+\))(\^{(-?\d+|T)})?', group)]
+                               for t in re.findall(r'(-?\d*\.?\d*)([A-Z]t?|rot\(-?\d*\.?\d*\))(\^{(-?\d+|T)})?', group)]
 
             # This list is a list of tuple, where each tuple is (a float multiplier,
             # the matrix (gotten from the wrapper's __getitem__()), the integer power)
@@ -173,13 +173,14 @@ class MatrixWrapper:
         return matrix_sum
 
 
-def create_rotation_matrix(angle: float) -> MatrixType:
+def create_rotation_matrix(angle: float, degrees: bool = True) -> MatrixType:
     """Create a matrix representing a rotation by the given number of degrees anticlockwise.
 
-    :param float angle: The number of degrees to rotate by
+    :param float angle: The angle to rotate anticlockwise by
+    :param bool degrees: Whether to interpret the angle as degrees (True) or radians (False)
     :returns MatrixType: The resultant rotation matrix
     """
-    rad = np.deg2rad(angle)
+    rad = np.deg2rad(angle) if degrees else angle
     return np.array([
         [np.cos(rad), -1 * np.sin(rad)],
         [np.sin(rad), np.cos(rad)]

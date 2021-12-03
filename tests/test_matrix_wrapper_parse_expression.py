@@ -3,7 +3,7 @@
 import numpy as np
 from numpy import linalg as la
 import pytest
-from lintrans.matrices import MatrixWrapper
+from lintrans.matrices import MatrixWrapper, create_rotation_matrix
 
 
 @pytest.fixture
@@ -156,3 +156,19 @@ def test_matrix_transpose(wrapper: MatrixWrapper) -> None:
     assert (wrapper.parse_expression('E^T') == wrapper['E'].T).all()
     assert (wrapper.parse_expression('F^T') == wrapper['F'].T).all()
     assert (wrapper.parse_expression('G^T') == wrapper['G'].T).all()
+
+
+def test_rotation_matrices(wrapper: MatrixWrapper) -> None:
+    """Test that 'rot(angle)' can be used in an expression."""
+    assert (wrapper.parse_expression('rot(90)') == create_rotation_matrix(90)).all()
+    assert (wrapper.parse_expression('rot(180)') == create_rotation_matrix(180)).all()
+    assert (wrapper.parse_expression('rot(270)') == create_rotation_matrix(270)).all()
+    assert (wrapper.parse_expression('rot(360)') == create_rotation_matrix(360)).all()
+    assert (wrapper.parse_expression('rot(45)') == create_rotation_matrix(45)).all()
+    assert (wrapper.parse_expression('rot(30)') == create_rotation_matrix(30)).all()
+
+    assert (wrapper.parse_expression('rot(13.43)') == create_rotation_matrix(13.43)).all()
+    assert (wrapper.parse_expression('rot(49.4)') == create_rotation_matrix(49.4)).all()
+    assert (wrapper.parse_expression('rot(-123.456)') == create_rotation_matrix(-123.456)).all()
+    assert (wrapper.parse_expression('rot(963.245)') == create_rotation_matrix(963.245)).all()
+    assert (wrapper.parse_expression('rot(-235.24)') == create_rotation_matrix(-235.24)).all()
