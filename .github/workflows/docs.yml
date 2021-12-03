@@ -19,4 +19,4 @@ jobs:
         pip install pydocstyle toml
 
     - name: Run pydocstyle
-      run: pydocstyle --match='(?!__init__).*\.py' src/ tests/
+      run: pydocstyle src/ tests/
