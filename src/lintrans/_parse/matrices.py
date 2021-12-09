@@ -17,7 +17,7 @@ def compile_valid_expression_pattern() -> Pattern[str]:
     index = f'(\\^\\{{{index_content}\\}}|\\^{index_content}|t)'
     matrix_identifier = f'([A-Z]|rot\\({real_number}\\))'
     matrix = '(' + real_number + '?' + matrix_identifier + index + '?)'
-    expression = f'{matrix}+((\\+|-){matrix}+)*'
+    expression = f'-?{matrix}+((\\+|-){matrix}+)*'
 
     return re.compile(expression)
 
@@ -35,7 +35,7 @@ def validate_matrix_expression(expression: str) -> bool:
 
     Here is the schema for a valid expression given in a version of BNF:
 
-        expression        ::=  matrices { ( "+" | "-" ) matrices };
+        expression        ::=  [ "-" ] matrices { ( "+" | "-" ) matrices };
         matrices          ::=  matrix { matrix };
         matrix            ::=  [ real_number ] matrix_identifier [ index ];
         matrix_identifier ::=  "A" .. "Z" | "rot(" real_number ")";
