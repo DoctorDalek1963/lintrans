@@ -1,4 +1,4 @@
-"""Test the MatrixWrapper parse_expression() method."""
+"""Test the MatrixWrapper evaluate_expression() method."""
 
 import numpy as np
 from numpy import linalg as la
@@ -175,7 +175,7 @@ def test_rotation_matrices(wrapper: MatrixWrapper) -> None:
 
 
 def test_value_errors(wrapper: MatrixWrapper) -> None:
-    """Test that parse_expression() raises a ValueError for any malformed input."""
+    """Test that evaluate_expression() raises a ValueError for any malformed input."""
     with pytest.raises(ValueError):
         wrapper.evaluate_expression('')
         wrapper.evaluate_expression('+')
