@@ -1,4 +1,4 @@
-"""The lintrans.typing module, used for type aliases."""
+"""The package that supplies type aliases for linear algebra and transformations."""
 
 from nptyping import NDArray, Float
 
