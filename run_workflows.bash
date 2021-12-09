@@ -3,8 +3,8 @@
 IFS=$'\n'
 
 for command in $(cat .github/workflows/*.yml | grep -Po '(?<=run: )[^|]+'); do
-	echo "RUNNING: '$command'"
-	eval "$command"
+	echo -e "\e[1;32mRUNNING:\e[0m '$command'"
+	eval "$command" || echo -e "\e[1;31mFAILED:\e[0m '$command'"
 	echo
 	echo
 	echo
