@@ -2,6 +2,7 @@
 
 from nptyping import NDArray, Float
 
-__all__ = ['MatrixType']
+__all__ = ['MatrixType', 'MatrixParseTuple']
 
 MatrixType = NDArray[(2, 2), Float]
+MatrixParseTuple = tuple[list[list[tuple[str, str, str]]], str]

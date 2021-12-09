@@ -96,13 +96,33 @@ class MatrixWrapper:
 
         self._matrices[name] = np.array([[a, b], [c, d]])
 
-    def parse_expression(self, expression: str) -> MatrixType:
+    def is_valid_expression(self, expression: str) -> bool:
+        """Check if the given expression is valid, using the context of the wrapper.
+
+        This method calls _parse.validate_matrix_expression(), but also ensures
+        that all the matrices in the expression are defined in the wrapper.
+
+        :param str expression: The expression to validate
+        :returns bool: Whether the expression is valid according the schema
+        """
+        # Get rid of the transposes to check all capital letters
+        expression = re.sub(r'\^T', 't', expression)
+        expression = re.sub(r'\^{T}', 't', expression)
+
+        # Make sure all the referenced matrices are defined
+        for matrix in {x for x in expression if re.match('[A-Z]', x)}:
+            if self[matrix] is None:
+                return False
+
+        return _parse.validate_matrix_expression(expression)
+
+    def evaluate_expression(self, expression: str) -> MatrixType:
         """Parse a given expression and return the matrix for that expression.
 
         Expressions are written with standard LaTeX notation for exponents. All whitespace is ignored.
 
         Here is documentation on syntax:
-            A single matrix is written as 'A'.
+            A single matrix is written as a capital letter like 'A', or as 'rot(x)', where x is some angle in degrees.
             Matrix A multiplied by matrix B is written as 'AB'
             Matrix A plus matrix B is written as 'A+B'
             Matrix A minus matrix B is written as 'A-B'
@@ -110,6 +130,7 @@ class MatrixWrapper:
             Matrix A to the power of 10 is written as 'A^10' or 'A^{10}'
             The inverse of matrix A is written as 'A^-1' or 'A^{-1}'
             The transpose of matrix A is written as 'A^T' or 'At'
+            Any matrix may be multiplied by a real constant, like '3A', or '1.2B'
 
         :param str expression: The expression to be parsed
         :returns MatrixType: The matrix result of the expression
@@ -119,9 +140,8 @@ class MatrixWrapper:
         if expression == '':
             raise ValueError('The expression cannot be an empty string')
 
-        match = re.search(r'[^-+A-Z^{}rot()\d.]', expression)
-        if match is not None:
-            raise ValueError(f'Invalid character "{match.group(0)}"')
+        if not self.is_valid_expression(expression):
+            raise ValueError('The expression is invalid')
 
         # Remove all whitespace in the expression
         expression = re.sub(r'\s', '', expression)
@@ -144,6 +164,9 @@ class MatrixWrapper:
         # Split the expression into groups to be multiplied, and then we add those groups at the end
         # We also have to filter out the empty strings to reduce errors
         multiplication_groups = [x for x in expression.split('+') if x != '']
+
+        if not multiplication_groups:
+            raise ValueError('No valid multiplication groups found')
 
         # Start with the 0 matrix and add each group on
         matrix_sum: MatrixType = np.array([[0., 0.], [0., 0.]])
