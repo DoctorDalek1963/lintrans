@@ -24,7 +24,7 @@ valid_inputs: list[str] = [
 invalid_inputs: list[str] = [
     '', 'rot()', 'A^', 'A^1.2', 'A^{3.4}', '1,2A', 'ro(12)', '5', '12^2',
     '^T', '^{12}', 'A^{13', 'A^3}', 'A^A', '^2', 'A--B', '--A'
-    
+
     'This is 100% a valid matrix expression, I swear'
 ]
 
