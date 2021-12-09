@@ -5,7 +5,8 @@ import re
 from functools import reduce
 from typing import Optional
 
-from lintrans.typing import MatrixType
+from .. import _parse
+from ..typing import MatrixType
 
 
 class MatrixWrapper:
