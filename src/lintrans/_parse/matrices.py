@@ -52,7 +52,12 @@ def validate_matrix_expression(expression: str) -> bool:
     :returns bool: Whether the expression is valid according to the schema
     """
     match = valid_expression_pattern.match(expression)
-    return expression == match.group(0) if match is not None else False
+
+    if match is None:
+        return False
+
+    # Check if the whole expression was matched against
+    return expression == match.group(0)
 
 
 def parse_matrix_expression(expression: str) -> MatrixParseList:
