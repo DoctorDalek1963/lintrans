@@ -1,4 +1,13 @@
-"""A module containing a simple MatrixWrapper class to wrap matrices and context."""
+"""A module primarily containing a simple MatrixWrapper class to wrap matrices and context.
+
+Classes:
+    MatrixWrapper:
+        A simple wrapper class to hold all possible matrices and allow access to them.
+
+Functions:
+    create_rotation_matrix(angle: float, degrees: bool = True) -> MatrixType:
+        Create a matrix representing a rotation by the given angle (anticlockwise).
+"""
 
 import numpy as np
 import re
@@ -10,7 +19,15 @@ from ..typing import MatrixType
 
 
 class MatrixWrapper:
-    """A simple wrapper class to hold all possible matrices and allow access to them."""
+    """A simple wrapper class to hold all possible matrices and allow access to them.
+
+    Methods:
+        is_valid_expression(expression: str) -> bool:
+            Check if the given expression is valid, using the context of the wrapper.
+
+        evaluate_expression(expression: str) -> MatrixType:
+            Evaluate a given expression and return the matrix for that expression.
+    """
 
     def __init__(self):
         """Initialise a MatrixWrapper object with a matrices dict."""
@@ -113,7 +130,7 @@ class MatrixWrapper:
         return _parse.validate_matrix_expression(expression)
 
     def evaluate_expression(self, expression: str) -> MatrixType:
-        """Parse a given expression and return the matrix for that expression.
+        """Evaluate a given expression and return the matrix for that expression.
 
         Expressions are written with standard LaTeX notation for exponents. All whitespace is ignored.
 
@@ -194,7 +211,7 @@ class MatrixWrapper:
 
 
 def create_rotation_matrix(angle: float, degrees: bool = True) -> MatrixType:
-    """Create a matrix representing a rotation by the given number of degrees anticlockwise.
+    """Create a matrix representing a rotation by the given angle (anticlockwise).
 
     :param float angle: The angle to rotate anticlockwise by
     :param bool degrees: Whether to interpret the angle as degrees (True) or radians (False)

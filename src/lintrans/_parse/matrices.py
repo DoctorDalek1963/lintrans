@@ -1,9 +1,32 @@
-"""A simple module to parse matrix expressions."""
+"""A simple module to parse matrix expressions.
+
+Constants:
+    valid_expression_pattern: str:
+        The pre-computed result of compile_valid_expression_pattern()
+
+Classes:
+    MatrixParseError(Exception):
+        A simple exception to be raised when parsing.
+
+Functions:
+    compile_valid_expression_pattern() -> Pattern[str]:
+        Compile the single regular expression that will match a valid matrix expression.
+
+    validate_matrix_expression(expression: str) -> bool:
+        Validate the given matrix expression.
+
+    parse_matrix_expression(expression: str) -> MatrixParseList:
+        Parse the matrix expression and return a list of results.
+"""
 
 import re
 from typing import Pattern
 
 from ..typing import MatrixParseList
+
+
+class MatrixParseError(Exception):
+    """A simple exception to be raised when parsing."""
 
 
 def compile_valid_expression_pattern() -> Pattern[str]:
