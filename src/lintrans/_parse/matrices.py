@@ -3,7 +3,7 @@
 import re
 from typing import Pattern
 
-from ..typing import MatrixParseTuple
+from ..typing import MatrixParseList
 
 
 def compile_valid_expression_pattern() -> Pattern[str]:
@@ -55,19 +55,18 @@ def validate_matrix_expression(expression: str) -> bool:
     return expression == match.group(0) if match is not None else False
 
 
-def parse_matrix_expression(expression: str) -> MatrixParseTuple:
-    """Parse the matrix expression and return a list of results, along with a string of unconsumed input.
+def parse_matrix_expression(expression: str) -> MatrixParseList:
+    """Parse the matrix expression and return a list of results.
 
     If any input is unconsumed, then the parsing failed and the input was invalid.
-    The return value is a tuple where the first element is a list of results, and
-    the second is a string of any unconsumed input. This results list contains lists
-    of tuples. The top list is the expressions that should be added together, and
-    each sublist is expressions that should be multiplied together. These expressions
-    to be multiplied are tuples, where each tuple is (multiplier, matrix identifier,
-    index). The multiplier can be any real number, the matrix identifier is either
-    a named matrix or a new rotation matrix declared with 'rot()', and the index is
-    an integer or 'T' for transpose.
+    The return value is a list of results. This results list contains lists of tuples.
+    The top list is the expressions that should be added together, and each sublist
+    is expressions that should be multiplied together. These expressions to be
+    multiplied are tuples, where each tuple is (multiplier, matrix identifier, index).
+    The multiplier can be any real number, the matrix identifier is either a named
+    matrix or a new rotation matrix declared with 'rot()', and the index is an
+    integer or 'T' for transpose.
 
     :param str expression: The expression to be parsed
-    :returns MatrixParseTuple: A tuple, where element 0 is a list of results, and element 1 is unconsumed input
+    :returns MatrixParseTuple: A list of results
     """
