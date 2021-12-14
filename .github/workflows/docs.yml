@@ -16,7 +16,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pydocstyle toml
+        pip install pydocstyle pytest toml
 
     - name: Run pydocstyle
       run: pydocstyle src/ tests/
+
+    - name: Run doctests
+      run: shopt -s globstar; pytest --doctest-modules src/lintrans/**.py

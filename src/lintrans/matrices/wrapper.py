@@ -21,6 +21,20 @@ from ..typing import MatrixType
 class MatrixWrapper:
     """A simple wrapper class to hold all possible matrices and allow access to them.
 
+    The contained matrices can be accessed with square bracket notation.
+
+    :Example:
+
+    >>> wrapper = MatrixWrapper()
+    >>> wrapper['I']
+    array([[1., 0.],
+           [0., 1.]])
+    >>> wrapper['M']  # Returns None
+    >>> wrapper['M'] = np.array([[1, 2], [3, 4]])
+    >>> wrapper['M']
+    array([[1., 2.],
+           [3., 4.]])
+
     Methods:
         is_valid_expression(expression: str) -> bool:
             Check if the given expression is valid, using the context of the wrapper.
