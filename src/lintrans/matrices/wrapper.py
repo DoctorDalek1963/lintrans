@@ -227,6 +227,18 @@ class MatrixWrapper:
 def create_rotation_matrix(angle: float, degrees: bool = True) -> MatrixType:
     """Create a matrix representing a rotation by the given angle (anticlockwise).
 
+    :Example:
+
+    >>> create_rotation_matrix(30)
+    array([[ 0.8660254, -0.5      ],
+           [ 0.5      ,  0.8660254]])
+    >>> create_rotation_matrix(45)
+    array([[ 0.70710678, -0.70710678],
+           [ 0.70710678,  0.70710678]])
+    >>> create_rotation_matrix(np.pi / 3, degrees=False)
+    array([[ 0.5      , -0.8660254],
+           [ 0.8660254,  0.5      ]])
+
     :param float angle: The angle to rotate anticlockwise by
     :param bool degrees: Whether to interpret the angle as degrees (True) or radians (False)
     :returns MatrixType: The resultant rotation matrix
