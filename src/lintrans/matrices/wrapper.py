@@ -45,16 +45,12 @@ class MatrixWrapper:
         :raises NameError: If there is no matrix with the given name
         """
         # Return a new rotation matrix
-        match = re.match(r'rot\((-?\d*\.?\d*)\)', name)
-        if match is not None:
+        if (match := re.match(r'rot\((-?\d*\.?\d*)\)', name)) is not None:
             return create_rotation_matrix(float(match.group(1)))
 
         # Return the transpose of this matrix
-        match = re.match(r'([A-Z])t', name)
-        if match is not None:
-            matrix = self[match.group(1)]
-
-            if matrix is not None:
+        if (match := re.match(r'([A-Z])t', name)) is not None:
+            if (matrix := self[match.group(1)]) is not None:
                 return matrix.T
             else:
                 return None
