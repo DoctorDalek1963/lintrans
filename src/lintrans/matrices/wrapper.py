@@ -12,6 +12,7 @@ Functions:
 import numpy as np
 import re
 from functools import reduce
+from operator import add, matmul
 from typing import Optional
 
 from .. import _parse
@@ -162,66 +163,32 @@ class MatrixWrapper:
         :param str expression: The expression to be parsed
         :returns MatrixType: The matrix result of the expression
 
-        :raises ValueError: If the expression is invalid, such as an empty string
+        :raises ValueError: If the expression is invalid
         """
-        if expression == '':
-            raise ValueError('The expression cannot be an empty string')
-
         if not self.is_valid_expression(expression):
             raise ValueError('The expression is invalid')
 
-        # Remove all whitespace in the expression
-        expression = re.sub(r'\s', '', expression)
+        parsed_result = _parse.parse_matrix_expression(expression)
+        final_groups: list[list[MatrixType]] = []
 
-        # Wrap all exponents and transposition powers with {}
-        expression = re.sub(r'(?<=\^)(-?\d+|T)(?=[^}]|$)', r'{\g<0>}', expression)
+        for group in parsed_result:
+            f_group: list[MatrixType] = []
 
-        # Replace all simple subtractions with additions, multiplied by -1
-        expression = re.sub(r'(?<=.)-(?=[A-Z])', '+-1', expression)
+            for matrix in group:
+                if matrix[2] == 'T':
+                    m = self[matrix[1]]
+                    assert m is not None
+                    matrix_value = m.T
+                else:
+                    matrix_value = np.linalg.matrix_power(self[matrix[1]],
+                                                          1 if (index := matrix[2]) == '' else int(index))
 
-        # Replace all subtractions with coefficients to the right with additions, multiplied by -1
-        expression = re.sub(r'(?<=.)-(?=\d+[A-Z])', '+-', expression)
+                matrix_value *= 1 if (multiplier := matrix[0]) == '' else float(multiplier)
+                f_group.append(matrix_value)
 
-        # Replace a possible leading minus sign with -1
-        expression = re.sub(r'^-(?=[A-Z])', '-1', expression)
+            final_groups.append(f_group)
 
-        # Change all transposition exponents into lowercase
-        expression = expression.replace('^{T}', 't')
-
-        # Split the expression into groups to be multiplied, and then we add those groups at the end
-        # We also have to filter out the empty strings to reduce errors
-        multiplication_groups = [x for x in expression.split('+') if x != '']
-
-        if not multiplication_groups:
-            raise ValueError('No valid multiplication groups found')
-
-        # Start with the 0 matrix and add each group on
-        matrix_sum: MatrixType = np.array([[0., 0.], [0., 0.]])
-
-        for group in multiplication_groups:
-            # Generate a list of tuples, each representing a matrix
-            # These tuples are (the multiplier, the matrix (with optional
-            # 't' at the end to indicate a transpose), the exponent)
-            string_matrices: list[tuple[str, str, str]]
-
-            # The generate tuple is (multiplier, matrix, full exponent, stripped exponent)
-            # The full exponent contains ^{}, so we ignore it
-            # The multiplier and exponent might be '', so we have to set them to '1'
-            string_matrices = [(t[0] if t[0] != '' else '1', t[1], t[3] if t[3] != '' else '1')
-                               for t in re.findall(r'(-?\d*\.?\d*)([A-Z]t?|rot\(-?\d*\.?\d*\))(\^{(-?\d+|T)})?', group)]
-
-            # This list is a list of tuple, where each tuple is (a float multiplier,
-            # the matrix (gotten from the wrapper's __getitem__()), the integer power)
-            matrices: list[tuple[float, MatrixType, int]]
-            matrices = [(float(t[0]), self[t[1]], int(t[2])) for t in string_matrices]
-
-            # Process the matrices and make actual MatrixType objects
-            processed_matrices: list[MatrixType] = [t[0] * np.linalg.matrix_power(t[1], t[2]) for t in matrices]
-
-            # Add this matrix product to the sum total
-            matrix_sum += reduce(lambda m, n: m @ n, processed_matrices)
-
-        return matrix_sum
+        return reduce(add, [reduce(matmul, group) for group in final_groups])
 
 
 def create_rotation_matrix(angle: float, degrees: bool = True) -> MatrixType:
