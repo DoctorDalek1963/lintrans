@@ -40,7 +40,7 @@ def compile_valid_expression_pattern() -> Pattern[str]:
     index = f'(\\^\\{{{index_content}\\}}|\\^{index_content}|t)'
     matrix_identifier = f'([A-Z]|rot\\(-?{real_number}\\))'
     matrix = '(' + real_number + '?' + matrix_identifier + index + '?)'
-    expression = f'-?{matrix}+((\\+|-){matrix}+)*'
+    expression = f'^-?{matrix}+((\\+|-){matrix}+)*$'
 
     return re.compile(expression)
 
