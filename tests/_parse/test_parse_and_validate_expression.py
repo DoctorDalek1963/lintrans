@@ -13,7 +13,7 @@ valid_inputs: list[str] = [
 
     'A+B', 'A+2B', '4.3A+9B', 'A^2+B^T', '3A^7+0.8B^{16}',
     'A-B', '3A-4B', '3.2A^3-16.79B^T', '4.752A^{17}-3.32B^{36}',
-    'A--1B', '-A', '--1A'
+    'A-1B', '-A', '-1A'
 
     '3A4B', 'A^TB', 'A^{T}B', '4A^6B^3',
     '2A^{3}4B^5', '4rot(90)^3', 'rot(45)rot(13)',
@@ -23,8 +23,8 @@ valid_inputs: list[str] = [
 ]
 
 invalid_inputs: list[str] = [
-    '', 'rot()', 'A^', 'A^1.2', 'A^{3.4}', '1,2A', 'ro(12)', '5', '12^2',
-    '^T', '^{12}', 'A^{13', 'A^3}', 'A^A', '^2', 'A--B', '--A', '+A',
+    '', 'rot()', 'A^', 'A^1.2', 'A^{3.4}', '1,2A', 'ro(12)', '5', '12^2', '^T', '^{12}',
+    'A^{13', 'A^3}', 'A^A', '^2', 'A--B', '--A', '+A', '--1A', 'A--B', 'A--1B',
 
     'This is 100% a valid matrix expression, I swear'
 ]
@@ -50,12 +50,13 @@ expressions_and_parsed_expressions: list[tuple[str, MatrixParseList]] = [
     ('4.2A^{T} 6.1B^-1', [[('4.2', 'A', 'T'), ('6.1', 'B', '-1')]]),
     ('-1.2A^2 rot(45)^2', [[('-1.2', 'A', '2'), ('', 'rot(45)', '2')]]),
     ('3.2A^T 4.5B^{5} 9.6rot(121.3)', [[('3.2', 'A', 'T'), ('4.5', 'B', '5'), ('9.6', 'rot(121.3)', '')]]),
-    ('-1.18A^{-2} 0.1B^{2} 9rot(34.6)^-1', [[('-1.18', 'A', '-2'), ('0.1', 'B', '2'), ('9', 'rot(34.6)', '-1')]]),
+    ('-1.18A^{-2} 0.1B^{2} 9rot(-34.6)^-1', [[('-1.18', 'A', '-2'), ('0.1', 'B', '2'), ('9', 'rot(-34.6)', '-1')]]),
 
     # Additions
     ('A + B', [[('', 'A', '')], [('', 'B', '')]]),
     ('A + B - C', [[('', 'A', '')], [('', 'B', '')], [('-1', 'C', '')]]),
     ('2A^3 + 8B^T - 3C^-1', [[('2', 'A', '3')], [('8', 'B', 'T')], [('-3', 'C', '-1')]]),
+    ('4.9A^2 - 3rot(134.2)^-1 + 7.6B^8', [[('4.9', 'A', '2')], [('-3', 'rot(134.2)', '-1')], [('7.6', 'B', '8')]]),
 
     # Additions with multiplication
     ('2.14A^{3} 4.5rot(14.5)^-1 + 8B^T - 3C^-1', [[('2.14', 'A', '3'), ('4.5', 'rot(14.5)', '-1')],
@@ -66,7 +67,6 @@ expressions_and_parsed_expressions: list[tuple[str, MatrixParseList]] = [
 ]
 
 
-@pytest.mark.skip(reason='parse_matrix_expression() not implemented')
 def test_parse_matrix_expression() -> None:
     """Test the parse_matrix_expression() function."""
     for expression, parsed_expression in expressions_and_parsed_expressions:
