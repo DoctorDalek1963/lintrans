@@ -11,6 +11,7 @@ Functions:
 
 import numpy as np
 import re
+from copy import copy
 from functools import reduce
 from operator import add, matmul
 from typing import Optional
@@ -176,11 +177,14 @@ class MatrixWrapper:
 
             for matrix in group:
                 if matrix[2] == 'T':
+                    # We have to copy this because otherwise it mutates the state of the matrix
+                    m = copy(self[matrix[1]])
+
                     # This assertion is just so mypy doesn't complain
                     # We know this won't be None, because we know that this matrix is defined in this wrapper
-                    m = self[matrix[1]]
                     assert m is not None
                     matrix_value = m.T
+
                 else:
                     matrix_value = np.linalg.matrix_power(self[matrix[1]],
                                                           1 if (index := matrix[2]) == '' else int(index))
