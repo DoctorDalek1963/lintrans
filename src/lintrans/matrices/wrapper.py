@@ -176,6 +176,8 @@ class MatrixWrapper:
 
             for matrix in group:
                 if matrix[2] == 'T':
+                    # This assertion is just so mypy doesn't complain
+                    # We know this won't be None, because we know that this matrix is defined in this wrapper
                     m = self[matrix[1]]
                     assert m is not None
                     matrix_value = m.T
