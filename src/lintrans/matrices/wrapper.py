@@ -9,12 +9,13 @@ Functions:
         Create a matrix representing a rotation by the given angle (anticlockwise).
 """
 
-import numpy as np
 import re
 from copy import copy
 from functools import reduce
 from operator import add, matmul
 from typing import Optional
+
+import numpy as np
 
 from .. import _parse
 from ..typing import MatrixType
