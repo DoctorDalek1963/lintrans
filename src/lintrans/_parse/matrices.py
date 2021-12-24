@@ -37,7 +37,7 @@ def compile_valid_expression_pattern() -> Pattern[str]:
     real_number = f'({integer_no_zero}(\\.{digits})?|0?\\.{digits})'
 
     index_content = f'(-?{integer_no_zero}|T)'
-    index = f'(\\^\\{{{index_content}\\}}|\\^{index_content})'
+    index = f'(\\^{{{index_content}}}|\\^{index_content})'
     matrix_identifier = f'([A-Z]|rot\\(-?{real_number}\\))'
     matrix = '(' + real_number + '?' + matrix_identifier + index + '?)'
     expression = f'^-?{matrix}+((\\+|-){matrix}+)*$'
