@@ -136,11 +136,11 @@ class MatrixWrapper:
         :returns bool: Whether the expression is valid according the schema
         """
         # Get rid of the transposes to check all capital letters
-        expression = re.sub(r'\^T', 't', expression)
-        expression = re.sub(r'\^{T}', 't', expression)
+        new_expression = re.sub(r'\^T', 't', expression)
+        new_expression = re.sub(r'\^{T}', 't', new_expression)
 
         # Make sure all the referenced matrices are defined
-        for matrix in {x for x in expression if re.match('[A-Z]', x)}:
+        for matrix in {x for x in new_expression if re.match('[A-Z]', x)}:
             if self[matrix] is None:
                 return False
 
