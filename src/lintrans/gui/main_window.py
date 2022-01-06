@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """The module to provide the main window as a QMainWindow object."""
 
 import sys
