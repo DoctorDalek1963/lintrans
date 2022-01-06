@@ -1,2 +1,3 @@
 numpy>=1.21
 nptyping>=1.4
+pyqt5>=5.15
