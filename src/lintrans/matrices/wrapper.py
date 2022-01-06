@@ -82,13 +82,6 @@ class MatrixWrapper:
         if (match := re.match(r'rot\((-?\d*\.?\d*)\)', name)) is not None:
             return create_rotation_matrix(float(match.group(1)))
 
-        # Return the transpose of this matrix
-        if (match := re.match(r'([A-Z])t', name)) is not None:
-            if (matrix := self[match.group(1)]) is not None:
-                return matrix.T
-            else:
-                return None
-
         if name not in self._matrices:
             raise NameError(f'Unrecognised matrix name "{name}"')
 

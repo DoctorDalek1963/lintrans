@@ -62,7 +62,7 @@ def validate_matrix_expression(expression: str) -> bool:
         matrices          ::=  matrix { matrix };
         matrix            ::=  [ real_number ] matrix_identifier [ index ];
         matrix_identifier ::=  "A" .. "Z" | "rot(" [ "-" ] real_number ")";
-        index             ::=  "^{" index_content "}" | "^" index_content | "t";
+        index             ::=  "^{" index_content "}" | "^" index_content;
         index_content     ::=  [ "-" ] integer_not_zero | "T";
 
         digit_no_zero     ::=  "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
