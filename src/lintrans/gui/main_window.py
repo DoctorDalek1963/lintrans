@@ -51,7 +51,7 @@ class LintransMainWindow(QMainWindow):
 
         self.label_define_new_matrix = QtWidgets.QLabel(self)
         self.label_define_new_matrix.setText('Define a\nnew matrix')
-        self.label_define_new_matrix.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_define_new_matrix.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignBottom)
 
         # TODO: Implement defining a new matrix visually, numerically, as a rotation, and as an expression
 
