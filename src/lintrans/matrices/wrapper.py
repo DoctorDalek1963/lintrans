@@ -97,7 +97,7 @@ class MatrixWrapper:
         :raises NameError: If the name isn't a valid matrix name or is 'I'
         :raises TypeError: If the matrix isn't a valid 2x2 NumPy array
         """
-        if name not in self._matrices.keys():
+        if name not in self._matrices:
             raise NameError('Matrix name must be a single capital letter')
 
         if name == 'I':
