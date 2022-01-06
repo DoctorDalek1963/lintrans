@@ -3,7 +3,7 @@
 import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QHBoxLayout, QMainWindow, QVBoxLayout
+from PyQt5.QtWidgets import QApplication, QHBoxLayout, QMainWindow, QSizePolicy, QSpacerItem, QVBoxLayout
 
 from lintrans.matrices import MatrixWrapper
 
@@ -120,7 +120,9 @@ class LintransMainWindow(QMainWindow):
         self.vlay_right = QVBoxLayout()
         self.vlay_right.setSpacing(50)
         self.vlay_right.addLayout(self.vlay_misc_buttons)
+        self.vlay_right.addItem(QSpacerItem(100, 2, hPolicy=QSizePolicy.Minimum, vPolicy=QSizePolicy.Expanding))
         self.vlay_right.addLayout(self.vlay_define_new_matrix)
+        self.vlay_right.addItem(QSpacerItem(100, 2, hPolicy=QSizePolicy.Minimum, vPolicy=QSizePolicy.Expanding))
         self.vlay_right.addLayout(self.vlay_render)
 
         self.hlay_all = QHBoxLayout()
