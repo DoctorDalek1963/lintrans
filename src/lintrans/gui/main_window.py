@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """The module to provide the main window as a QMainWindow object."""
 
 import sys
@@ -157,7 +155,3 @@ def main() -> None:
     window = LintransMainWindow()
     window.show()
     sys.exit(app.exec_())
-
-
-if __name__ == '__main__':
-    main()
