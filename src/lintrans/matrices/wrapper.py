@@ -17,7 +17,7 @@ from typing import Optional
 
 import numpy as np
 
-from .. import _parse
+from .parse import parse_matrix_expression, validate_matrix_expression
 from ..typing import MatrixType
 
 
@@ -129,7 +129,7 @@ class MatrixWrapper:
     def is_valid_expression(self, expression: str) -> bool:
         """Check if the given expression is valid, using the context of the wrapper.
 
-        This method calls _parse.validate_matrix_expression(), but also ensures
+        This method calls validate_matrix_expression(), but also ensures
         that all the matrices in the expression are defined in the wrapper.
 
         :param str expression: The expression to validate
@@ -144,7 +144,7 @@ class MatrixWrapper:
             if self[matrix] is None:
                 return False
 
-        return _parse.validate_matrix_expression(expression)
+        return validate_matrix_expression(expression)
 
     def evaluate_expression(self, expression: str) -> MatrixType:
         """Evaluate a given expression and return the matrix for that expression.
@@ -170,7 +170,7 @@ class MatrixWrapper:
         if not self.is_valid_expression(expression):
             raise ValueError('The expression is invalid')
 
-        parsed_result = _parse.parse_matrix_expression(expression)
+        parsed_result = parse_matrix_expression(expression)
         final_groups: list[list[MatrixType]] = []
 
         for group in parsed_result:

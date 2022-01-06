@@ -1,7 +1,7 @@
 """Test the _parse.matrices module validation and parsing."""
 
 import pytest
-from lintrans._parse import parse_matrix_expression, validate_matrix_expression
+from lintrans.matrices.parse import parse_matrix_expression, validate_matrix_expression
 from lintrans.typing import MatrixParseList
 
 valid_inputs: list[str] = [
