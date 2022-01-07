@@ -1,8 +1,9 @@
 """The module to provide dialogs for defining new matrices."""
 
 from numpy import array
-from PyQt5 import QtGui, QtWidgets
-from PyQt5.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QSizePolicy, QSpacerItem, QVBoxLayout
+from PyQt5 import QtWidgets
+from PyQt5.QtGui import QKeySequence
+from PyQt5.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
 from lintrans.matrices import MatrixWrapper
 
@@ -39,15 +40,13 @@ class DefineNumericallyDialog(QDialog):
         self.button_confirm.setEnabled(False)
         self.button_confirm.clicked.connect(self.confirm_matrix)
         self.button_confirm.setToolTip('Confirm this as the new matrix<br><b>(Ctrl + Enter)</b>')
-
-        QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+Return'), self).activated.connect(self.button_confirm.click)
+        QShortcut(QKeySequence('Ctrl+Return'), self).activated.connect(self.button_confirm.click)
 
         self.button_cancel = QtWidgets.QPushButton(self)
         self.button_cancel.setText('Cancel')
         self.button_cancel.clicked.connect(self.close)
         self.button_cancel.setToolTip('Cancel this definition<br><b>(Ctrl + Q)</b>')
-
-        QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+Q'), self).activated.connect(self.button_cancel.click)
+        QShortcut(QKeySequence('Ctrl+Q'), self).activated.connect(self.button_cancel.click)
 
         self.label_equals = QtWidgets.QLabel()
         self.label_equals.setText('=')

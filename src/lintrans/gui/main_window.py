@@ -2,8 +2,9 @@
 
 import sys
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QHBoxLayout, QMainWindow, QSizePolicy, QSpacerItem, QVBoxLayout
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtGui import QKeySequence
+from PyQt5.QtWidgets import QApplication, QHBoxLayout, QMainWindow, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
 from lintrans.matrices import MatrixWrapper
 from .dialogs import DefineNumericallyDialog
@@ -59,7 +60,7 @@ class LintransMainWindow(QMainWindow):
         self.button_define_visually = QtWidgets.QPushButton(self)
         self.button_define_visually.setText('Visually')
         self.button_define_visually.setToolTip('Drag the basis vectors<br><b>(Alt + 1)</b>')
-        QtWidgets.QShortcut(QtGui.QKeySequence('Alt+1'), self).activated.connect(self.button_define_visually.click)
+        QShortcut(QKeySequence('Alt+1'), self).activated.connect(self.button_define_visually.click)
 
         self.button_define_numerically = QtWidgets.QPushButton(self)
         self.button_define_numerically.setText('Numerically')
@@ -67,17 +68,17 @@ class LintransMainWindow(QMainWindow):
         self.button_define_numerically.clicked.connect(
             lambda: DefineNumericallyDialog(self.matrix_wrapper, self).exec()
         )
-        QtWidgets.QShortcut(QtGui.QKeySequence('Alt+2'), self).activated.connect(self.button_define_numerically.click)
+        QShortcut(QKeySequence('Alt+2'), self).activated.connect(self.button_define_numerically.click)
 
         self.button_define_as_rotation = QtWidgets.QPushButton(self)
         self.button_define_as_rotation.setText('As a rotation')
         self.button_define_as_rotation.setToolTip('Define an angle to rotate by<br><b>(Alt + 3)</b>')
-        QtWidgets.QShortcut(QtGui.QKeySequence('Alt+3'), self).activated.connect(self.button_define_as_rotation.click)
+        QShortcut(QKeySequence('Alt+3'), self).activated.connect(self.button_define_as_rotation.click)
 
         self.button_define_as_expression = QtWidgets.QPushButton(self)
         self.button_define_as_expression.setText('As an expression')
         self.button_define_as_expression.setToolTip('Define a matrix in terms of other matrices<br><b>(Alt + 4)</b>')
-        QtWidgets.QShortcut(QtGui.QKeySequence('Alt+4'), self).activated.connect(self.button_define_as_expression.click)
+        QShortcut(QKeySequence('Alt+4'), self).activated.connect(self.button_define_as_expression.click)
 
         # Render buttons
 
@@ -86,18 +87,14 @@ class LintransMainWindow(QMainWindow):
         self.button_render.setEnabled(False)
         self.button_render.clicked.connect(self.render_expression)
         self.button_render.setToolTip('Render the expression<br><b>(Ctrl + Enter)</b>')
-
-        self.button_render_shortcut = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+Return'), self)
-        self.button_render_shortcut.activated.connect(self.button_render.click)
+        QShortcut(QKeySequence('Ctrl+Return'), self).activated.connect(self.button_render.click)
 
         self.button_animate = QtWidgets.QPushButton(self)
         self.button_animate.setText('Animate')
         self.button_animate.setEnabled(False)
         self.button_animate.clicked.connect(self.animate_expression)
         self.button_animate.setToolTip('Animate the expression<br><b>(Ctrl + Shift + Enter)</b>')
-
-        self.button_animate_shortcut = QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+Shift+Return'), self)
-        self.button_animate_shortcut.activated.connect(self.button_animate.click)
+        QShortcut(QKeySequence('Ctrl+Shift+Return'), self).activated.connect(self.button_animate.click)
 
         # === Arrange widgets
 
