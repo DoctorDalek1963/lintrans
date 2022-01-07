@@ -58,22 +58,26 @@ class LintransMainWindow(QMainWindow):
 
         self.button_define_visually = QtWidgets.QPushButton(self)
         self.button_define_visually.setText('Visually')
-        self.button_define_visually.setToolTip('Drag the basis vectors')
+        self.button_define_visually.setToolTip('Drag the basis vectors<br><b>(Alt + 1)</b>')
+        QtWidgets.QShortcut(QtGui.QKeySequence('Alt+1'), self).activated.connect(self.button_define_visually.click)
 
         self.button_define_numerically = QtWidgets.QPushButton(self)
         self.button_define_numerically.setText('Numerically')
-        self.button_define_numerically.setToolTip('Define a matrix just with numbers')
+        self.button_define_numerically.setToolTip('Define a matrix just with numbers<br><b>(Alt + 2)</b>')
         self.button_define_numerically.clicked.connect(
             lambda: DefineNumericallyDialog(self.matrix_wrapper, self).exec()
         )
+        QtWidgets.QShortcut(QtGui.QKeySequence('Alt+2'), self).activated.connect(self.button_define_numerically.click)
 
         self.button_define_as_rotation = QtWidgets.QPushButton(self)
         self.button_define_as_rotation.setText('As a rotation')
-        self.button_define_as_rotation.setToolTip('Define an angle to rotate by')
+        self.button_define_as_rotation.setToolTip('Define an angle to rotate by<br><b>(Alt + 3)</b>')
+        QtWidgets.QShortcut(QtGui.QKeySequence('Alt+3'), self).activated.connect(self.button_define_as_rotation.click)
 
         self.button_define_as_expression = QtWidgets.QPushButton(self)
         self.button_define_as_expression.setText('As an expression')
-        self.button_define_as_expression.setToolTip('Define a matrix in terms of other matrices')
+        self.button_define_as_expression.setToolTip('Define a matrix in terms of other matrices<br><b>(Alt + 4)</b>')
+        QtWidgets.QShortcut(QtGui.QKeySequence('Alt+4'), self).activated.connect(self.button_define_as_expression.click)
 
         # Render buttons
 
