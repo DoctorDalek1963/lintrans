@@ -41,13 +41,11 @@ class LintransMainWindow(QMainWindow):
 
         self.button_create_polygon = QtWidgets.QPushButton(self)
         self.button_create_polygon.setText('Create polygon')
-        # TODO: Implement create_polygon()
         # self.button_create_polygon.clicked.connect(self.create_polygon)
         self.button_create_polygon.setToolTip('Define a new polygon to view the transformation of')
 
         self.button_change_display_settings = QtWidgets.QPushButton(self)
         self.button_change_display_settings.setText('Change\ndisplay settings')
-        # TODO: Implement change_display_settings()
         # self.button_change_display_settings.clicked.connect(self.change_display_settings)
         self.button_change_display_settings.setToolTip('Change which things are rendered on the plot')
 
@@ -56,8 +54,6 @@ class LintransMainWindow(QMainWindow):
         self.label_define_new_matrix = QtWidgets.QLabel(self)
         self.label_define_new_matrix.setText('Define a\nnew matrix')
         self.label_define_new_matrix.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignBottom)
-
-        # TODO: Implement defining a new matrix visually, numerically, as a rotation, and as an expression
 
         self.button_define_visually = QtWidgets.QPushButton(self)
         self.button_define_visually.setText('Visually')
@@ -80,6 +76,13 @@ class LintransMainWindow(QMainWindow):
         self.button_define_as_expression.setText('As an expression')
         self.button_define_as_expression.setToolTip('Define a matrix in terms of other matrices<br><b>(Alt + 4)</b>')
         QShortcut(QKeySequence('Alt+4'), self).activated.connect(self.button_define_as_expression.click)
+
+        # Disable buttons that aren't implemented yet
+        # TODO: Implement these and enable buttons
+        self.button_create_polygon.setEnabled(False)
+        self.button_change_display_settings.setEnabled(False)
+        self.button_define_visually.setEnabled(False)
+        self.button_define_as_expression.setEnabled(False)
 
         # Render buttons
 
