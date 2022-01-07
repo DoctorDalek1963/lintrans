@@ -11,7 +11,7 @@ ALPHABET_NO_I = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
 
 def is_float(string: str) -> bool:
-    """Check if a string is a float."""
+    """Check if a string is a float. '' is not a float and will return False."""
     try:
         float(string)
         return True
@@ -117,7 +117,7 @@ class DefineNumericallyDialog(DefineDialog):
     def update_confirm_button(self) -> None:
         """Enable the confirm button if there are numbers in every box."""
         for elem in self.matrix_elements:
-            if elem.text() == '' or not is_float(elem.text()):
+            if not is_float(elem.text()):
                 # If they're not all numbers, then we can't confirm it
                 self.button_confirm.setEnabled(False)
                 return
