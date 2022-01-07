@@ -73,12 +73,11 @@ class DefineDialog(QDialog):
     @property
     def selected_letter(self) -> str:
         """The letter currently selected in the combo box."""
-        return self.letter_combo_box.currentText()
+        return str(self.letter_combo_box.currentText())
 
     @abc.abstractmethod
     def update_confirm_button(self) -> None:
         """Enable the confirm button if it should be enabled."""
-        ...
 
     @abc.abstractmethod
     def confirm_matrix(self) -> None:
@@ -86,7 +85,6 @@ class DefineDialog(QDialog):
 
         This should mutate self.matrix_wrapper and then call self.accept().
         """
-        ...
 
 
 class DefineNumericallyDialog(DefineDialog):
