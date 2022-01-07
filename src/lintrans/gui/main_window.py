@@ -1,13 +1,15 @@
 """The module to provide the main window as a QMainWindow object."""
 
 import sys
+from copy import deepcopy
+from typing import Type
 
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QApplication, QHBoxLayout, QMainWindow, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
 from lintrans.matrices import MatrixWrapper
-from .dialogs import DefineNumericallyDialog
+from .dialogs import DefineAsARotationDialog, DefineDialog, DefineNumericallyDialog
 
 
 class LintransMainWindow(QMainWindow):
@@ -65,14 +67,13 @@ class LintransMainWindow(QMainWindow):
         self.button_define_numerically = QtWidgets.QPushButton(self)
         self.button_define_numerically.setText('Numerically')
         self.button_define_numerically.setToolTip('Define a matrix just with numbers<br><b>(Alt + 2)</b>')
-        self.button_define_numerically.clicked.connect(
-            lambda: DefineNumericallyDialog(self.matrix_wrapper, self).exec()
-        )
+        self.button_define_numerically.clicked.connect(lambda: self.dialog_define_matrix(DefineNumericallyDialog))
         QShortcut(QKeySequence('Alt+2'), self).activated.connect(self.button_define_numerically.click)
 
         self.button_define_as_rotation = QtWidgets.QPushButton(self)
         self.button_define_as_rotation.setText('As a rotation')
         self.button_define_as_rotation.setToolTip('Define an angle to rotate by<br><b>(Alt + 3)</b>')
+        self.button_define_as_rotation.clicked.connect(lambda: self.dialog_define_matrix(DefineAsARotationDialog))
         QShortcut(QKeySequence('Alt+3'), self).activated.connect(self.button_define_as_rotation.click)
 
         self.button_define_as_expression = QtWidgets.QPushButton(self)
@@ -154,6 +155,22 @@ class LintransMainWindow(QMainWindow):
         """Animate the expression in the input box, and then clear the box."""
         # TODO: Animate the expression
         self.text_input_expression.setText('')
+
+    def dialog_define_matrix(self, dialog_class: Type[DefineDialog]) -> None:
+        """Open the DefineAsARotationDialog."""
+        # We create a dialog with a deepcopy of the current matrix_wrapper
+        # This avoids the dialog mutating this one
+        dialog = dialog_class(deepcopy(self.matrix_wrapper), self)
+        # .open() is asynchronous and doesn't spawn a new event loop, but the dialog is still modal (blocking)
+        dialog.open()
+        # So we have to use the finished slot to call a method when the user accepts the dialog
+        # If the user rejects the dialog, this matrix_wrapper will be the same as the current one, because we copied it
+        # So we don't care, we just assign the wrapper anyway
+        dialog.finished.connect(lambda: self.assign_matrix_wrapper(dialog.matrix_wrapper))
+
+    def assign_matrix_wrapper(self, matrix_wrapper: MatrixWrapper) -> None:
+        """Assign a new value to self.matrix_wrapper."""
+        self.matrix_wrapper = matrix_wrapper
 
 
 def main() -> None:
