@@ -70,6 +70,11 @@ class DefineDialog(QDialog):
         self.hlay_buttons.addWidget(self.button_cancel)
         self.hlay_buttons.addWidget(self.button_confirm)
 
+        self.hlay_definition = QHBoxLayout()
+        self.hlay_definition.setSpacing(20)
+        self.hlay_definition.addWidget(self.letter_combo_box)
+        self.hlay_definition.addWidget(self.label_equals)
+
     @property
     def selected_letter(self) -> str:
         """Return the letter currently selected in the combo box."""
@@ -123,10 +128,6 @@ class DefineNumericallyDialog(DefineDialog):
         self.grid_matrix.addWidget(self.element_bl, 1, 0)
         self.grid_matrix.addWidget(self.element_br, 1, 1)
 
-        self.hlay_definition = QHBoxLayout()
-        self.hlay_definition.setSpacing(20)
-        self.hlay_definition.addWidget(self.letter_combo_box)
-        self.hlay_definition.addWidget(self.label_equals)
         self.hlay_definition.addLayout(self.grid_matrix)
 
         self.vlay_all = QVBoxLayout()
@@ -207,19 +208,19 @@ class DefineAsARotationDialog(DefineDialog):
         self.hlay_checkbox_and_buttons.addItem(self.horizontal_spacer)
         self.hlay_checkbox_and_buttons.addLayout(self.hlay_buttons)
 
-        self.hlay_definition = QHBoxLayout()
-        self.hlay_definition.setSpacing(0)
-        self.hlay_definition.addWidget(self.letter_combo_box)
-        self.hlay_definition.addSpacing(20)
-        self.hlay_definition.addWidget(self.label_equals)
-        self.hlay_definition.addSpacing(20)
-        self.hlay_definition.addWidget(self.label_rot)
-        self.hlay_definition.addWidget(self.text_angle)
-        self.hlay_definition.addWidget(self.label_close_paren)
+        self.hlay_rotation_definition = QHBoxLayout()
+        self.hlay_rotation_definition.setSpacing(0)
+        self.hlay_rotation_definition.addWidget(self.letter_combo_box)
+        self.hlay_rotation_definition.addSpacing(20)
+        self.hlay_rotation_definition.addWidget(self.label_equals)
+        self.hlay_rotation_definition.addSpacing(20)
+        self.hlay_rotation_definition.addWidget(self.label_rot)
+        self.hlay_rotation_definition.addWidget(self.text_angle)
+        self.hlay_rotation_definition.addWidget(self.label_close_paren)
 
         self.vlay_all = QVBoxLayout()
         self.vlay_all.setSpacing(20)
-        self.vlay_all.addLayout(self.hlay_definition)
+        self.vlay_all.addLayout(self.hlay_rotation_definition)
         self.vlay_all.addLayout(self.hlay_checkbox_and_buttons)
 
         self.setLayout(self.vlay_all)
@@ -234,4 +235,43 @@ class DefineAsARotationDialog(DefineDialog):
             float(self.text_angle.text()),
             degrees=not self.checkbox_radians.isChecked()
         )
+        self.accept()
+
+
+class DefineAsAnExpressionDialog(DefineDialog):
+    """The dialog that allows the user to define a matrix as an expression."""
+
+    def __init__(self, matrix_wrapper: MatrixWrapper, *args, **kwargs):
+        """Create the dialog, but don't run it yet."""
+        super().__init__(matrix_wrapper, *args, **kwargs)
+
+        self.setMinimumWidth(450)
+
+        # === Create the widgets
+
+        self.text_box_expression = QtWidgets.QLineEdit(self)
+        self.text_box_expression.setPlaceholderText('Enter matrix expression...')
+        self.text_box_expression.textChanged.connect(self.update_confirm_button)
+
+        # === Arrange the widgets
+
+        self.hlay_definition.addWidget(self.text_box_expression)
+
+        self.vlay_all = QVBoxLayout()
+        self.vlay_all.setSpacing(20)
+        self.vlay_all.addLayout(self.hlay_definition)
+        self.vlay_all.addLayout(self.hlay_buttons)
+
+        self.setLayout(self.vlay_all)
+
+    def update_confirm_button(self) -> None:
+        """Enable the confirm button if the expression is valid."""
+        self.button_confirm.setEnabled(
+            self.matrix_wrapper.is_valid_expression(self.text_box_expression.text())
+        )
+
+    def confirm_matrix(self) -> None:
+        """Evaluate the matrix expression and assign its value to the chosen matrix."""
+        self.matrix_wrapper[self.selected_letter] = \
+            self.matrix_wrapper.evaluate_expression(self.text_box_expression.text())
         self.accept()

@@ -9,7 +9,7 @@ from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QApplication, QHBoxLayout, QMainWindow, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
 from lintrans.matrices import MatrixWrapper
-from .dialogs import DefineAsARotationDialog, DefineDialog, DefineNumericallyDialog
+from .dialogs import DefineAsAnExpressionDialog, DefineAsARotationDialog, DefineDialog, DefineNumericallyDialog
 
 
 class LintransMainWindow(QMainWindow):
@@ -32,7 +32,7 @@ class LintransMainWindow(QMainWindow):
         self.plot = QtWidgets.QGraphicsView(self)
 
         self.text_input_expression = QtWidgets.QLineEdit(self)
-        self.text_input_expression.setPlaceholderText('Input matrix expression...')
+        self.text_input_expression.setPlaceholderText('Enter matrix expression...')
         self.text_input_expression.textChanged.connect(self.update_render_buttons)
 
         # Right layout: all the buttons
@@ -75,6 +75,7 @@ class LintransMainWindow(QMainWindow):
         self.button_define_as_expression = QtWidgets.QPushButton(self)
         self.button_define_as_expression.setText('As an expression')
         self.button_define_as_expression.setToolTip('Define a matrix in terms of other matrices<br><b>(Alt + 4)</b>')
+        self.button_define_as_expression.clicked.connect(lambda: self.dialog_define_matrix(DefineAsAnExpressionDialog))
         QShortcut(QKeySequence('Alt+4'), self).activated.connect(self.button_define_as_expression.click)
 
         # Disable buttons that aren't implemented yet
@@ -82,7 +83,6 @@ class LintransMainWindow(QMainWindow):
         self.button_create_polygon.setEnabled(False)
         self.button_change_display_settings.setEnabled(False)
         self.button_define_visually.setEnabled(False)
-        self.button_define_as_expression.setEnabled(False)
 
         # Render buttons
 
