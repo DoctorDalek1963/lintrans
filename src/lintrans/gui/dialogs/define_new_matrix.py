@@ -72,7 +72,7 @@ class DefineDialog(QDialog):
 
     @property
     def selected_letter(self) -> str:
-        """The letter currently selected in the combo box."""
+        """Return the letter currently selected in the combo box."""
         return str(self.letter_combo_box.currentText())
 
     @abc.abstractmethod
