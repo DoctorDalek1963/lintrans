@@ -2,7 +2,7 @@
 
 from numpy import array
 from PyQt5 import QtGui, QtWidgets
-from PyQt5.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QVBoxLayout
+from PyQt5.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QSizePolicy, QSpacerItem, QVBoxLayout
 
 from lintrans.matrices import MatrixWrapper
 
@@ -49,6 +49,9 @@ class DefineNumericallyDialog(QDialog):
 
         QtWidgets.QShortcut(QtGui.QKeySequence('Ctrl+Q'), self).activated.connect(self.button_cancel.click)
 
+        self.label_equals = QtWidgets.QLabel()
+        self.label_equals.setText('=')
+
         self.element_tl = QtWidgets.QLineEdit(self)
         self.element_tl.textChanged.connect(self.update_confirm_button)
 
@@ -84,20 +87,22 @@ class DefineNumericallyDialog(QDialog):
 
         self.hlay_buttons = QHBoxLayout()
         self.hlay_buttons.setSpacing(20)
+        self.hlay_buttons.addItem(QSpacerItem(50, 5, hPolicy=QSizePolicy.Expanding, vPolicy=QSizePolicy.Minimum))
         self.hlay_buttons.addWidget(self.button_cancel)
         self.hlay_buttons.addWidget(self.button_confirm)
 
-        self.vlay_right = QVBoxLayout()
-        self.vlay_right.setSpacing(20)
-        self.vlay_right.addLayout(self.grid_matrix)
-        self.vlay_right.addLayout(self.hlay_buttons)
+        self.hlay_definition = QHBoxLayout()
+        self.hlay_definition.setSpacing(20)
+        self.hlay_definition.addWidget(self.letter_combo_box)
+        self.hlay_definition.addWidget(self.label_equals)
+        self.hlay_definition.addLayout(self.grid_matrix)
 
-        self.hlay_all = QHBoxLayout()
-        self.hlay_all.setSpacing(20)
-        self.hlay_all.addWidget(self.letter_combo_box)
-        self.hlay_all.addLayout(self.vlay_right)
+        self.vlay_all = QVBoxLayout()
+        self.vlay_all.setSpacing(20)
+        self.vlay_all.addLayout(self.hlay_definition)
+        self.vlay_all.addLayout(self.hlay_buttons)
 
-        self.setLayout(self.hlay_all)
+        self.setLayout(self.vlay_all)
 
         # Finally, we load the default matrix A into the boxes
         self.load_matrix(0)
