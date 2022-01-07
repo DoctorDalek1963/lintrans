@@ -19,8 +19,8 @@ def is_float(string: str) -> bool:
         return False
 
 
-class DefineNumericallyDialog(QDialog):
-    """The dialog class that allows the user to define a new matrix numerically."""
+class DefineDialog(QDialog):
+    """A superclass for definitions dialogs."""
 
     def __init__(self, matrix_wrapper: MatrixWrapper, *args, **kwargs):
         """Create the dialog, but don't run it yet.
@@ -51,6 +51,22 @@ class DefineNumericallyDialog(QDialog):
         self.label_equals = QtWidgets.QLabel()
         self.label_equals.setText('=')
 
+        self.letter_combo_box = QtWidgets.QComboBox(self)
+
+        # Everything except I, because that's the identity
+        for letter in ALPHABET_NO_I:
+            self.letter_combo_box.addItem(letter)
+
+        self.letter_combo_box.activated.connect(self.load_matrix)
+
+
+class DefineNumericallyDialog(DefineDialog):
+    """The dialog class that allows the user to define a new matrix numerically."""
+
+    def __init__(self, matrix_wrapper: MatrixWrapper, *args, **kwargs):
+        """Create the dialog, but don't run it yet."""
+        super().__init__(matrix_wrapper, *args, **kwargs)
+
         self.element_tl = QtWidgets.QLineEdit(self)
         self.element_tl.textChanged.connect(self.update_confirm_button)
 
@@ -64,14 +80,6 @@ class DefineNumericallyDialog(QDialog):
         self.element_br.textChanged.connect(self.update_confirm_button)
 
         self.matrix_elements = (self.element_tl, self.element_tr, self.element_bl, self.element_br)
-
-        self.letter_combo_box = QtWidgets.QComboBox(self)
-
-        # Everything except I, because that's the identity
-        for letter in ALPHABET_NO_I:
-            self.letter_combo_box.addItem(letter)
-
-        self.letter_combo_box.activated.connect(self.load_matrix)
 
         # === Arrange the widgets
 
