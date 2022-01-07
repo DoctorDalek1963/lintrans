@@ -6,6 +6,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QHBoxLayout, QMainWindow, QSizePolicy, QSpacerItem, QVBoxLayout
 
 from lintrans.matrices import MatrixWrapper
+from .dialogs import DefineNumericallyDialog
 
 
 class LintransMainWindow(QMainWindow):
@@ -62,6 +63,9 @@ class LintransMainWindow(QMainWindow):
         self.button_define_numerically = QtWidgets.QPushButton(self)
         self.button_define_numerically.setText('Numerically')
         self.button_define_numerically.setToolTip('Define a matrix just with numbers')
+        self.button_define_numerically.clicked.connect(
+            lambda: DefineNumericallyDialog(self.matrix_wrapper, self).exec()
+        )
 
         self.button_define_as_rotation = QtWidgets.QPushButton(self)
         self.button_define_as_rotation.setText('As a rotation')
