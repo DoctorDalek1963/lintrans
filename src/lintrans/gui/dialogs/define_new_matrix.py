@@ -186,7 +186,8 @@ class DefineAsARotationDialog(DefineDialog):
 
         # === Create the widgets
 
-        self.label_equals.setText('= rot(')
+        self.label_rot = QtWidgets.QLabel(self)
+        self.label_rot.setText('rot(')
 
         self.text_angle = QtWidgets.QLineEdit(self)
         self.text_angle.setPlaceholderText('angle')
@@ -207,8 +208,12 @@ class DefineAsARotationDialog(DefineDialog):
         self.hlay_checkbox_and_buttons.addLayout(self.hlay_buttons)
 
         self.hlay_definition = QHBoxLayout()
+        self.hlay_definition.setSpacing(0)
         self.hlay_definition.addWidget(self.letter_combo_box)
+        self.hlay_definition.addSpacing(20)
         self.hlay_definition.addWidget(self.label_equals)
+        self.hlay_definition.addSpacing(20)
+        self.hlay_definition.addWidget(self.label_rot)
         self.hlay_definition.addWidget(self.text_angle)
         self.hlay_definition.addWidget(self.label_close_paren)
 
