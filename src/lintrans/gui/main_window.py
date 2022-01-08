@@ -176,9 +176,9 @@ class LintransMainWindow(QMainWindow):
         self.matrix_wrapper = matrix_wrapper
 
 
-def main() -> None:
+def main(args: list[str]) -> None:
     """Run the GUI."""
-    app = QApplication(sys.argv)
+    app = QApplication(args)
     window = LintransMainWindow()
     window.show()
     sys.exit(app.exec_())
