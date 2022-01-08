@@ -53,10 +53,10 @@ class DefineDialog(QDialog):
         self.label_equals = QtWidgets.QLabel()
         self.label_equals.setText('=')
 
-        self.letter_combo_box = QtWidgets.QComboBox(self)
+        self.combobox_letter = QtWidgets.QComboBox(self)
 
         for letter in ALPHABET_NO_I:
-            self.letter_combo_box.addItem(letter)
+            self.combobox_letter.addItem(letter)
 
         # === Arrange the widgets
 
@@ -72,13 +72,13 @@ class DefineDialog(QDialog):
 
         self.hlay_definition = QHBoxLayout()
         self.hlay_definition.setSpacing(20)
-        self.hlay_definition.addWidget(self.letter_combo_box)
+        self.hlay_definition.addWidget(self.combobox_letter)
         self.hlay_definition.addWidget(self.label_equals)
 
     @property
     def selected_letter(self) -> str:
         """Return the letter currently selected in the combo box."""
-        return str(self.letter_combo_box.currentText())
+        return str(self.combobox_letter.currentText())
 
     @abc.abstractmethod
     def update_confirm_button(self) -> None:
@@ -103,8 +103,9 @@ class DefineNumericallyDialog(DefineDialog):
 
         # === Create the widgets
 
-        self.letter_combo_box.activated.connect(self.load_matrix)
+        self.combobox_letter.activated.connect(self.load_matrix)
 
+        # tl = top left, br = bottom right, etc.
         self.element_tl = QtWidgets.QLineEdit(self)
         self.element_tl.textChanged.connect(self.update_confirm_button)
 
@@ -190,9 +191,9 @@ class DefineAsARotationDialog(DefineDialog):
         self.label_rot = QtWidgets.QLabel(self)
         self.label_rot.setText('rot(')
 
-        self.text_angle = QtWidgets.QLineEdit(self)
-        self.text_angle.setPlaceholderText('angle')
-        self.text_angle.textChanged.connect(self.update_confirm_button)
+        self.lineedit_angle = QtWidgets.QLineEdit(self)
+        self.lineedit_angle.setPlaceholderText('angle')
+        self.lineedit_angle.textChanged.connect(self.update_confirm_button)
 
         self.label_close_paren = QtWidgets.QLabel(self)
         self.label_close_paren.setText(')')
@@ -210,12 +211,12 @@ class DefineAsARotationDialog(DefineDialog):
 
         self.hlay_rotation_definition = QHBoxLayout()
         self.hlay_rotation_definition.setSpacing(0)
-        self.hlay_rotation_definition.addWidget(self.letter_combo_box)
+        self.hlay_rotation_definition.addWidget(self.combobox_letter)
         self.hlay_rotation_definition.addSpacing(20)
         self.hlay_rotation_definition.addWidget(self.label_equals)
         self.hlay_rotation_definition.addSpacing(20)
         self.hlay_rotation_definition.addWidget(self.label_rot)
-        self.hlay_rotation_definition.addWidget(self.text_angle)
+        self.hlay_rotation_definition.addWidget(self.lineedit_angle)
         self.hlay_rotation_definition.addWidget(self.label_close_paren)
 
         self.vlay_all = QVBoxLayout()
@@ -227,12 +228,12 @@ class DefineAsARotationDialog(DefineDialog):
 
     def update_confirm_button(self) -> None:
         """Enable the confirm button if there is a valid float in the angle box."""
-        self.button_confirm.setEnabled(is_float(self.text_angle.text()))
+        self.button_confirm.setEnabled(is_float(self.lineedit_angle.text()))
 
     def confirm_matrix(self) -> None:
         """Confirm the inputted matrix and assign it."""
         self.matrix_wrapper[self.selected_letter] = create_rotation_matrix(
-            float(self.text_angle.text()),
+            float(self.lineedit_angle.text()),
             degrees=not self.checkbox_radians.isChecked()
         )
         self.accept()
@@ -249,13 +250,13 @@ class DefineAsAnExpressionDialog(DefineDialog):
 
         # === Create the widgets
 
-        self.text_box_expression = QtWidgets.QLineEdit(self)
-        self.text_box_expression.setPlaceholderText('Enter matrix expression...')
-        self.text_box_expression.textChanged.connect(self.update_confirm_button)
+        self.lineedit_expression_box = QtWidgets.QLineEdit(self)
+        self.lineedit_expression_box.setPlaceholderText('Enter matrix expression...')
+        self.lineedit_expression_box.textChanged.connect(self.update_confirm_button)
 
         # === Arrange the widgets
 
-        self.hlay_definition.addWidget(self.text_box_expression)
+        self.hlay_definition.addWidget(self.lineedit_expression_box)
 
         self.vlay_all = QVBoxLayout()
         self.vlay_all.setSpacing(20)
@@ -267,11 +268,11 @@ class DefineAsAnExpressionDialog(DefineDialog):
     def update_confirm_button(self) -> None:
         """Enable the confirm button if the expression is valid."""
         self.button_confirm.setEnabled(
-            self.matrix_wrapper.is_valid_expression(self.text_box_expression.text())
+            self.matrix_wrapper.is_valid_expression(self.lineedit_expression_box.text())
         )
 
     def confirm_matrix(self) -> None:
         """Evaluate the matrix expression and assign its value to the chosen matrix."""
         self.matrix_wrapper[self.selected_letter] = \
-            self.matrix_wrapper.evaluate_expression(self.text_box_expression.text())
+            self.matrix_wrapper.evaluate_expression(self.lineedit_expression_box.text())
         self.accept()

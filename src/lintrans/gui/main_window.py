@@ -31,9 +31,9 @@ class LintransMainWindow(QMainWindow):
         # NOTE: This QGraphicsView is only temporary
         self.plot = QtWidgets.QGraphicsView(self)
 
-        self.text_input_expression = QtWidgets.QLineEdit(self)
-        self.text_input_expression.setPlaceholderText('Enter matrix expression...')
-        self.text_input_expression.textChanged.connect(self.update_render_buttons)
+        self.lineedit_expression_box = QtWidgets.QLineEdit(self)
+        self.lineedit_expression_box.setPlaceholderText('Enter matrix expression...')
+        self.lineedit_expression_box.textChanged.connect(self.update_render_buttons)
 
         # Right layout: all the buttons
 
@@ -106,7 +106,7 @@ class LintransMainWindow(QMainWindow):
 
         self.vlay_left = QVBoxLayout()
         self.vlay_left.addWidget(self.plot)
-        self.vlay_left.addWidget(self.text_input_expression)
+        self.vlay_left.addWidget(self.lineedit_expression_box)
 
         self.vlay_misc_buttons = QVBoxLayout()
         self.vlay_misc_buttons.setSpacing(20)
@@ -145,19 +145,19 @@ class LintransMainWindow(QMainWindow):
 
     def update_render_buttons(self) -> None:
         """Enable or disable the render and animate buttons according to the validity of the matrix expression."""
-        valid = self.matrix_wrapper.is_valid_expression(self.text_input_expression.text())
+        valid = self.matrix_wrapper.is_valid_expression(self.lineedit_expression_box.text())
         self.button_render.setEnabled(valid)
         self.button_animate.setEnabled(valid)
 
     def render_expression(self) -> None:
         """Render the expression in the input box, and then clear the box."""
         # TODO: Render the expression
-        self.text_input_expression.setText('')
+        self.lineedit_expression_box.setText('')
 
     def animate_expression(self) -> None:
         """Animate the expression in the input box, and then clear the box."""
         # TODO: Animate the expression
-        self.text_input_expression.setText('')
+        self.lineedit_expression_box.setText('')
 
     def dialog_define_matrix(self, dialog_class: Type[DefineDialog]) -> None:
         """Open the DefineAsARotationDialog."""
