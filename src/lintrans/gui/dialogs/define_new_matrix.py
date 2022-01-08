@@ -84,11 +84,9 @@ class DefineDialog(QDialog):
 
         self.setContentsMargins(10, 10, 10, 10)
 
-        self.horizontal_spacer = QSpacerItem(50, 5, hPolicy=QSizePolicy.Expanding, vPolicy=QSizePolicy.Minimum)
-
         self.hlay_buttons = QHBoxLayout()
         self.hlay_buttons.setSpacing(20)
-        self.hlay_buttons.addItem(self.horizontal_spacer)
+        self.hlay_buttons.addItem(QSpacerItem(50, 5, hPolicy=QSizePolicy.Expanding, vPolicy=QSizePolicy.Minimum))
         self.hlay_buttons.addWidget(self.button_cancel)
         self.hlay_buttons.addWidget(self.button_confirm)
 
@@ -226,7 +224,6 @@ class DefineAsARotationDialog(DefineDialog):
         self.hlay_checkbox_and_buttons = QHBoxLayout()
         self.hlay_checkbox_and_buttons.setSpacing(20)
         self.hlay_checkbox_and_buttons.addWidget(self.checkbox_radians)
-        self.hlay_checkbox_and_buttons.addItem(self.horizontal_spacer)
         self.hlay_checkbox_and_buttons.addLayout(self.hlay_buttons)
 
         self.hlay_rotation_definition = QHBoxLayout()
