@@ -3,5 +3,6 @@ mypy>=0.9
 pycodestyle>=2.8
 pydocstyle>=6.1
 pytest>=6.2
+pyqt5-stubs>=5.15
 toml>=0.10
 tox>=3.24
