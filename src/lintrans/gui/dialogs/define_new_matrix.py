@@ -21,6 +21,28 @@ def is_valid_float(string: str) -> bool:
         return False
 
 
+def round_float(num: float, precision: int = 5) -> str:
+    """Round a floating point number to a given number of decimal places.
+
+    :param float num: The number to round
+    :param int precision: The number of decimal places to round to
+    """
+    # Round to `precision` number of decimal places
+    string = str(round(num, precision))
+
+    # Cut off the potential final zero
+    if string.endswith('.0'):
+        return string[:-2]
+
+    elif 'e' in string:  # Scientific notation
+        split = string.split('e')
+        # The leading 0 only happens when the exponent is negative, so we know there'll be a minus sign
+        return split[0] + 'e-' + split[1][1:].lstrip('0')
+
+    else:
+        return string
+
+
 class DefineDialog(QDialog):
     """A semi-abstract superclass for definitions dialogs."""
 
@@ -99,8 +121,6 @@ class DefineNumericallyDialog(DefineDialog):
         """Create the dialog, but don't run it yet."""
         super().__init__(matrix_wrapper, *args, **kwargs)
 
-        self.setMinimumWidth(500)
-
         # === Create the widgets
 
         self.combobox_letter.activated.connect(self.load_matrix)
@@ -161,10 +181,10 @@ class DefineNumericallyDialog(DefineDialog):
                 elem.setText('')
 
         else:
-            self.element_tl.setText(str(matrix[0][0]))
-            self.element_tr.setText(str(matrix[0][1]))
-            self.element_bl.setText(str(matrix[1][0]))
-            self.element_br.setText(str(matrix[1][1]))
+            self.element_tl.setText(round_float(matrix[0][0]))
+            self.element_tr.setText(round_float(matrix[0][1]))
+            self.element_bl.setText(round_float(matrix[1][0]))
+            self.element_br.setText(round_float(matrix[1][1]))
 
         self.update_confirm_button()
 
