@@ -4,9 +4,10 @@ import numpy as np
 import pytest
 
 from lintrans.matrices import MatrixWrapper
+from lintrans.typing import MatrixType
 
 valid_matrix_names = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
-test_matrix = np.array([[1, 2], [4, 3]])
+test_matrix: MatrixType = np.array([[1, 2], [4, 3]])
 
 
 @pytest.fixture

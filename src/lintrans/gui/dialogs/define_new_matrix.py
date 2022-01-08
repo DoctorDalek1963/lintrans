@@ -8,6 +8,7 @@ from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
 from lintrans.matrices import create_rotation_matrix, MatrixWrapper
+from lintrans.typing import MatrixType
 
 ALPHABET_NO_I = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
@@ -188,7 +189,7 @@ class DefineNumericallyDialog(DefineDialog):
 
     def confirm_matrix(self) -> None:
         """Confirm the inputted matrix and assign it to the name."""
-        matrix = array([
+        matrix: MatrixType = array([
             [float(self.element_tl.text()), float(self.element_tr.text())],
             [float(self.element_bl.text()), float(self.element_br.text())]
         ])
