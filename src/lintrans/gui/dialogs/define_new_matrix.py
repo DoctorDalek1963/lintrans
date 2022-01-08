@@ -12,7 +12,7 @@ from lintrans.matrices import create_rotation_matrix, MatrixWrapper
 ALPHABET_NO_I = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
 
-def is_float(string: str) -> bool:
+def is_valid_float(string: str) -> bool:
     """Check if a string is a float. '' is not a float and will return False."""
     try:
         float(string)
@@ -144,7 +144,7 @@ class DefineNumericallyDialog(DefineDialog):
     def update_confirm_button(self) -> None:
         """Enable the confirm button if there are numbers in every box."""
         for elem in self.matrix_elements:
-            if not is_float(elem.text()):
+            if not is_valid_float(elem.text()):
                 # If they're not all numbers, then we can't confirm it
                 self.button_confirm.setEnabled(False)
                 return
@@ -228,7 +228,7 @@ class DefineAsARotationDialog(DefineDialog):
 
     def update_confirm_button(self) -> None:
         """Enable the confirm button if there is a valid float in the angle box."""
-        self.button_confirm.setEnabled(is_float(self.lineedit_angle.text()))
+        self.button_confirm.setEnabled(is_valid_float(self.lineedit_angle.text()))
 
     def confirm_matrix(self) -> None:
         """Confirm the inputted matrix and assign it."""
