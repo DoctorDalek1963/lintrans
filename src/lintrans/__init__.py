@@ -1,5 +1,5 @@
 """The lintrans package, used for linear algebra and visualising linear transformations."""
 
-from . import matrices, typing
+from . import gui, matrices, typing
 
-__all__ = ['matrices', 'typing']
+__all__ = ['gui', 'matrices', 'typing']
