@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from lintrans.matrices import create_rotation_matrix
 from lintrans.typing import MatrixType
 

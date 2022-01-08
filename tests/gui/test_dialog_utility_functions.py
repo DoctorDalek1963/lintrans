@@ -1,6 +1,7 @@
 """Test the utility functions for GUI dialog boxes."""
 
 import pytest
+
 from lintrans.gui.dialogs.define_new_matrix import is_valid_float
 
 valid_floats: list[str] = [

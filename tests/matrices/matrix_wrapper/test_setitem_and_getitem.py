@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from lintrans.matrices import MatrixWrapper
 
 valid_matrix_names = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'

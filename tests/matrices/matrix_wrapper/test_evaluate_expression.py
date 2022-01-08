@@ -3,6 +3,7 @@
 import numpy as np
 from numpy import linalg as la
 import pytest
+
 from lintrans.matrices import MatrixWrapper, create_rotation_matrix
 
 
