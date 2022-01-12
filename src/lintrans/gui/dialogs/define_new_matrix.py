@@ -20,9 +20,7 @@ def is_valid_float(string: str) -> bool:
 
     This function simply checks that ``float(string)`` doesn't raise an error.
 
-    .. note::
-
-       An empty string is not a valid float, so will return False.
+    .. note:: An empty string is not a valid float, so will return False.
 
     :param str string: The string to check
     :returns bool: Whether the string is a valid float
@@ -60,12 +58,9 @@ def round_float(num: float, precision: int = 5) -> str:
 class DefineDialog(QDialog):
     """An abstract superclass for definitions dialogs.
 
-    .. warning::
-
-       This class should never be directly instantiated, only subclassed.
+    .. warning:: This class should never be directly instantiated, only subclassed.
 
     .. note::
-
        I would make this class have ``metaclass=abc.ABCMeta``, but I can't because it subclasses ``QDialog``,
        and a every superclass of a class must have the same metaclass, and ``QDialog`` is not an abstract class.
     """
@@ -73,9 +68,7 @@ class DefineDialog(QDialog):
     def __init__(self, matrix_wrapper: MatrixWrapper, *args, **kwargs):
         """Create the widgets and layout of the dialog.
 
-        .. note::
-
-           ``*args`` and ``**kwargs`` are passed to the super constructor (``QDialog``).
+        .. note:: ``*args`` and ``**kwargs`` are passed to the super constructor (``QDialog``).
 
         :param MatrixWrapper matrix_wrapper: The MatrixWrapper that this dialog will mutate
         """
@@ -135,9 +128,7 @@ class DefineDialog(QDialog):
     def confirm_matrix(self) -> None:
         """Confirm the inputted matrix and assign it.
 
-        .. note::
-
-           When subclassing, this method should mutate ``self.matrix_wrapper`` and then call ``self.accept()``.
+        .. note:: When subclassing, this method should mutate ``self.matrix_wrapper`` and then call ``self.accept()``.
         """
 
 

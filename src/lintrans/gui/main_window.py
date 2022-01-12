@@ -175,8 +175,7 @@ class LintransMainWindow(QMainWindow):
         (meaning it blocks interaction with the main window) with the proper method
         connected to the ``dialog.finished`` slot.
 
-        .. note::
-           ``dialog_class`` must subclass :class:`lintrans.gui.dialogs.define_new_matrix.DefineDialog`.
+        .. note:: ``dialog_class`` must subclass :class:`lintrans.gui.dialogs.define_new_matrix.DefineDialog`.
 
         :param dialog_class: The dialog class to instantiate
         :type dialog_class: Type[lintrans.gui.dialogs.define_new_matrix.DefineDialog]
