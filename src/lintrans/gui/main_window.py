@@ -1,4 +1,6 @@
-"""The module to provide the main window as a QMainWindow object."""
+"""This module provides the :class:`LintransMainWindow` class, which provides the main window for the GUI."""
+
+from __future__ import annotations
 
 import sys
 from copy import deepcopy
@@ -13,10 +15,16 @@ from .dialogs import DefineAsAnExpressionDialog, DefineAsARotationDialog, Define
 
 
 class LintransMainWindow(QMainWindow):
-    """The class for the main window in the lintrans GUI."""
+    """This class provides a main window for the GUI using the Qt framework.
+
+    This class should not be used directly, instead call :func:`lintrans.gui.main_window.main` to create the GUI.
+    """
 
     def __init__(self):
-        """Create the main window object, creating every widget in it."""
+        """Create the main window object, and create and arrange every widget in it.
+
+        This doesn't show the window, it just constructs it. Use :func:`lintrans.gui.main_window.main` to show the GUI.
+        """
         super().__init__()
 
         self.matrix_wrapper = MatrixWrapper()
@@ -144,7 +152,7 @@ class LintransMainWindow(QMainWindow):
         self.setCentralWidget(self.central_widget)
 
     def update_render_buttons(self) -> None:
-        """Enable or disable the render and animate buttons according to the validity of the matrix expression."""
+        """Enable or disable the render and animate buttons according to whether the matrix expression is valid."""
         valid = self.matrix_wrapper.is_valid_expression(self.lineedit_expression_box.text())
         self.button_render.setEnabled(valid)
         self.button_animate.setEnabled(valid)
@@ -160,24 +168,48 @@ class LintransMainWindow(QMainWindow):
         self.lineedit_expression_box.setText('')
 
     def dialog_define_matrix(self, dialog_class: Type[DefineDialog]) -> None:
-        """Open the DefineAsARotationDialog."""
+        """Open a generic definition dialog to define a new matrix.
+
+        The class for the desired dialog is passed as an argument. We create an
+        instance of this class and the dialog is opened asynchronously and modally
+        (meaning it blocks interaction with the main window) with the proper method
+        connected to the ``dialog.finished`` slot.
+
+        .. note::
+           ``dialog_class`` must subclass :class:`lintrans.gui.dialogs.define_new_matrix.DefineDialog`.
+
+        :param dialog_class: The dialog class to instantiate
+        :type dialog_class: Type[lintrans.gui.dialogs.define_new_matrix.DefineDialog]
+        """
         # We create a dialog with a deepcopy of the current matrix_wrapper
         # This avoids the dialog mutating this one
         dialog = dialog_class(deepcopy(self.matrix_wrapper), self)
+
         # .open() is asynchronous and doesn't spawn a new event loop, but the dialog is still modal (blocking)
         dialog.open()
+
         # So we have to use the finished slot to call a method when the user accepts the dialog
         # If the user rejects the dialog, this matrix_wrapper will be the same as the current one, because we copied it
         # So we don't care, we just assign the wrapper anyway
-        dialog.finished.connect(lambda: self.assign_matrix_wrapper(dialog.matrix_wrapper))
+        dialog.finished.connect(lambda: self._assign_matrix_wrapper(dialog.matrix_wrapper))
 
-    def assign_matrix_wrapper(self, matrix_wrapper: MatrixWrapper) -> None:
-        """Assign a new value to self.matrix_wrapper."""
+    def _assign_matrix_wrapper(self, matrix_wrapper: MatrixWrapper) -> None:
+        """Assign a new value to self.matrix_wrapper.
+
+        This is a little utility function that only exists because a lambda
+        callback can't directly assign a value to a class attribute.
+
+        :param matrix_wrapper: The new value of the matrix wrapper to assign
+        :type matrix_wrapper: MatrixWrapper
+        """
         self.matrix_wrapper = matrix_wrapper
 
 
 def main(args: list[str]) -> None:
-    """Run the GUI."""
+    """Run the GUI by creating and showing an instance of :class:`LintransMainWindow`.
+
+    :param list[str] args: The args to pass to ``QApplication()`` (normally ``sys.argv``)
+    """
     app = QApplication(args)
     window = LintransMainWindow()
     window.show()

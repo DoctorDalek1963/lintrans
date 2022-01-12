@@ -1,13 +1,6 @@
-"""A module primarily containing a simple MatrixWrapper class to wrap matrices and context.
+"""This module contains the main :class:`MatrixWrapper` class and a function to create a matrix from an angle."""
 
-Classes:
-    MatrixWrapper:
-        A simple wrapper class to hold all possible matrices and allow access to them.
-
-Functions:
-    create_rotation_matrix(angle: float, degrees: bool = True) -> MatrixType:
-        Create a matrix representing a rotation by the given angle (anticlockwise).
-"""
+from __future__ import annotations
 
 import re
 from copy import copy
@@ -18,13 +11,13 @@ from typing import Optional
 import numpy as np
 
 from .parse import parse_matrix_expression, validate_matrix_expression
-from ..typing import MatrixType
+from lintrans.typing import MatrixType
 
 
 class MatrixWrapper:
-    """A simple wrapper class to hold all possible matrices and allow access to them.
+    """A wrapper class to hold all possible matrices and allow access to them.
 
-    The contained matrices can be accessed with square bracket notation.
+    The contained matrices can be accessed and assigned to using square bracket notation.
 
     :Example:
 
@@ -37,17 +30,10 @@ class MatrixWrapper:
     >>> wrapper['M']
     array([[1., 2.],
            [3., 4.]])
-
-    Methods:
-        is_valid_expression(expression: str) -> bool:
-            Check if the given expression is valid, using the context of the wrapper.
-
-        evaluate_expression(expression: str) -> MatrixType:
-            Evaluate a given expression and return the matrix for that expression.
     """
 
     def __init__(self):
-        """Initialise a MatrixWrapper object with a matrices dict."""
+        """Initialise a :class:`MatrixWrapper` object with a dictionary of matrices which can be accessed."""
         self._matrices: dict[str, Optional[MatrixType]] = {
             'A': None, 'B': None, 'C': None, 'D': None,
             'E': None, 'F': None, 'G': None, 'H': None,
@@ -60,7 +46,7 @@ class MatrixWrapper:
         }
 
     def __repr__(self) -> str:
-        """Return a nice string repr of the MatrixWrapper for debugging."""
+        """Return a nice string repr of the :class:`MatrixWrapper` for debugging."""
         defined_matrices = ''.join([k for k, v in self._matrices.items() if v is not None])
         return f'<{self.__class__.__module__}.{self.__class__.__name__} object with ' \
                f"{len(defined_matrices)} defined matrices: '{defined_matrices}'>"
@@ -68,12 +54,11 @@ class MatrixWrapper:
     def __getitem__(self, name: str) -> Optional[MatrixType]:
         """Get the matrix with the given name.
 
-        If it is a simple name, it will just be fetched from the dictionary.
-        If the name is followed with a 't', then we will return the transpose of the named matrix.
-        If the name is 'rot()', with a given angle in degrees, then we return a new rotation matrix with that angle.
+        If it is a simple name, it will just be fetched from the dictionary. If the name is ``rot(x)``, with
+        a given angle in degrees, then we return a new matrix representing a rotation by that angle.
 
         :param str name: The name of the matrix to get
-        :returns: The value of the matrix (may be none)
+        :returns: The value of the matrix (may be None)
         :rtype: Optional[MatrixType]
 
         :raises NameError: If there is no matrix with the given name
@@ -88,11 +73,10 @@ class MatrixWrapper:
         return self._matrices[name]
 
     def __setitem__(self, name: str, new_matrix: Optional[MatrixType]) -> None:
-        """Set the value of matrix `name` with the new_matrix.
+        """Set the value of matrix ``name`` with the new_matrix.
 
         :param str name: The name of the matrix to set the value of
-        :param Optional[MatrixType] new_matrix: The value of the new matrix
-        :rtype: None
+        :param Optional[MatrixType] new_matrix: The value of the new matrix (may be None)
 
         :raises NameError: If the name isn't a valid matrix name or is 'I'
         :raises TypeError: If the matrix isn't a valid 2x2 NumPy array
@@ -122,15 +106,15 @@ class MatrixWrapper:
     def is_valid_expression(self, expression: str) -> bool:
         """Check if the given expression is valid, using the context of the wrapper.
 
-        This method calls validate_matrix_expression(), but also ensures
-        that all the matrices in the expression are defined in the wrapper.
+        This method calls :func:`lintrans.matrices.parse.validate_matrix_expression`, but also
+        ensures that all the matrices in the expression are defined in the wrapper.
 
         :param str expression: The expression to validate
-        :returns bool: Whether the expression is valid according the schema
+        :returns: Whether the expression is valid in this wrapper
+        :rtype: bool
         """
         # Get rid of the transposes to check all capital letters
-        new_expression = re.sub(r'\^T', 't', expression)
-        new_expression = re.sub(r'\^{T}', 't', new_expression)
+        new_expression = expression.replace('^T', '').replace('^{T}', '')
 
         # Make sure all the referenced matrices are defined
         for matrix in {x for x in new_expression if re.match('[A-Z]', x)}:
@@ -140,23 +124,11 @@ class MatrixWrapper:
         return validate_matrix_expression(expression)
 
     def evaluate_expression(self, expression: str) -> MatrixType:
-        """Evaluate a given expression and return the matrix for that expression.
-
-        Expressions are written with standard LaTeX notation for exponents. All whitespace is ignored.
-
-        Here is documentation on syntax:
-            A single matrix is written as a capital letter like 'A', or as 'rot(x)', where x is some angle in degrees.
-            Matrix A multiplied by matrix B is written as 'AB'
-            Matrix A plus matrix B is written as 'A+B'
-            Matrix A minus matrix B is written as 'A-B'
-            Matrix A squared is written as 'A^2'
-            Matrix A to the power of 10 is written as 'A^10' or 'A^{10}'
-            The inverse of matrix A is written as 'A^-1' or 'A^{-1}'
-            The transpose of matrix A is written as 'A^T' or 'At'
-            Any matrix may be multiplied by a real constant, like '3A', or '1.2B'
+        """Evaluate a given expression and return the matrix evaluation.
 
         :param str expression: The expression to be parsed
-        :returns MatrixType: The matrix result of the expression
+        :returns: The matrix result of the expression
+        :rtype: MatrixType
 
         :raises ValueError: If the expression is invalid
         """
@@ -191,8 +163,8 @@ class MatrixWrapper:
         return reduce(add, [reduce(matmul, group) for group in final_groups])
 
 
-def create_rotation_matrix(angle: float, degrees: bool = True) -> MatrixType:
-    """Create a matrix representing a rotation by the given angle (anticlockwise).
+def create_rotation_matrix(angle: float, *, degrees: bool = True) -> MatrixType:
+    """Create a matrix representing a rotation (anticlockwise) by the given angle.
 
     :Example:
 
@@ -208,7 +180,8 @@ def create_rotation_matrix(angle: float, degrees: bool = True) -> MatrixType:
 
     :param float angle: The angle to rotate anticlockwise by
     :param bool degrees: Whether to interpret the angle as degrees (True) or radians (False)
-    :returns MatrixType: The resultant rotation matrix
+    :returns: The resultant matrix
+    :rtype: MatrixType
     """
     rad = np.deg2rad(angle) if degrees else angle
     return np.array([

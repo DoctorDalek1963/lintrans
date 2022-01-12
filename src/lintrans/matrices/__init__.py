@@ -1,4 +1,4 @@
-"""The package that supplies classes and functions to deal with matrices."""
+"""This package supplies classes and functions to parse, evaluate, and wrap matrices."""
 
 from . import parse
 from .wrapper import MatrixWrapper, create_rotation_matrix
