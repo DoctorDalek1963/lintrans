@@ -8,3 +8,5 @@
 !*.css
 
 !_static/
+!_static/*
+!_static/**/*
