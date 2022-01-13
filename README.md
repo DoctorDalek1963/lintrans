@@ -26,7 +26,7 @@ This program is aimed at teachers teaching linear transformations, as well as st
 first time. The 3blue1brown series [Essence of Linear Algebra](https://www.youtube.com/watch?v=fNk_zzaMoSs&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)
 is a fantastic learning resource for this topic and I aim to provide an interactive supplement to that series.
 
-The Python source code is found in `src/`.
+The Python source code can be found in `src/` and the full documentation can be found on [my GitHub pages site](https://doctordalek1963.github.io/lintrans/).
 
 This project is also my A Level Computer Science NEA (Non-Exam Assessment), which means I need to provide a
 write-up of the development process. This write-up is written in LaTeX and can be found in `write-up/`.
