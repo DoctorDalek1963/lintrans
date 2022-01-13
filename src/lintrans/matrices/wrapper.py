@@ -100,7 +100,8 @@ class MatrixWrapper:
         if name not in self._matrices:
             raise NameError(f'Unrecognised matrix name "{name}"')
 
-        return self._matrices[name]
+        # We copy the matrix before we return it so the user can't accidentally mutate the matrix
+        return copy(self._matrices[name])
 
     def __setitem__(self, name: str, new_matrix: Optional[MatrixType]) -> None:
         """Set the value of matrix ``name`` with the new_matrix.
@@ -172,8 +173,7 @@ class MatrixWrapper:
 
             for matrix in group:
                 if matrix[2] == 'T':
-                    # We have to copy this because otherwise it mutates the state of the matrix
-                    m = copy(self[matrix[1]])
+                    m = self[matrix[1]]
 
                     # This assertion is just so mypy doesn't complain
                     # We know this won't be None, because we know that this matrix is defined in this wrapper
