@@ -7,8 +7,7 @@ import pytest
 from lintrans.matrices import MatrixWrapper, create_rotation_matrix
 
 
-@pytest.fixture
-def wrapper() -> MatrixWrapper:
+def preset_wrapper() -> MatrixWrapper:
     """Return a new MatrixWrapper object with some preset values."""
     wrapper = MatrixWrapper()
 
@@ -28,6 +27,12 @@ def wrapper() -> MatrixWrapper:
     return wrapper
 
 
+@pytest.fixture
+def wrapper() -> MatrixWrapper:
+    """Return a new MatrixWrapper object with some preset values."""
+    return preset_wrapper()
+
+
 def test_simple_matrix_addition(wrapper: MatrixWrapper) -> None:
     """Test simple addition and subtraction of two matrices."""
 
@@ -35,8 +40,8 @@ def test_simple_matrix_addition(wrapper: MatrixWrapper) -> None:
     # These values will never actually be None because they're set in the wrapper() fixture
     # There's probably a better way  do this, because this method is a bit of a bodge, but this works for now
     assert wrapper['A'] is not None and wrapper['B'] is not None and wrapper['C'] is not None and \
-        wrapper['D'] is not None and wrapper['E'] is not None and wrapper['F'] is not None and \
-        wrapper['G'] is not None
+           wrapper['D'] is not None and wrapper['E'] is not None and wrapper['F'] is not None and \
+           wrapper['G'] is not None
 
     assert (wrapper.evaluate_expression('A+B') == wrapper['A'] + wrapper['B']).all()
     assert (wrapper.evaluate_expression('E+F') == wrapper['E'] + wrapper['F']).all()
@@ -44,6 +49,8 @@ def test_simple_matrix_addition(wrapper: MatrixWrapper) -> None:
     assert (wrapper.evaluate_expression('C+C') == wrapper['C'] + wrapper['C']).all()
     assert (wrapper.evaluate_expression('D+A') == wrapper['D'] + wrapper['A']).all()
     assert (wrapper.evaluate_expression('B+C') == wrapper['B'] + wrapper['C']).all()
+
+    assert wrapper == preset_wrapper()
 
 
 def test_simple_two_matrix_multiplication(wrapper: MatrixWrapper) -> None:
@@ -61,6 +68,8 @@ def test_simple_two_matrix_multiplication(wrapper: MatrixWrapper) -> None:
     assert (wrapper.evaluate_expression('GA') == wrapper['G'] @ wrapper['A']).all()
     assert (wrapper.evaluate_expression('CF') == wrapper['C'] @ wrapper['F']).all()
     assert (wrapper.evaluate_expression('AG') == wrapper['A'] @ wrapper['G']).all()
+
+    assert wrapper == preset_wrapper()
 
 
 def test_identity_multiplication(wrapper: MatrixWrapper) -> None:
@@ -81,6 +90,8 @@ def test_identity_multiplication(wrapper: MatrixWrapper) -> None:
     assert (wrapper.evaluate_expression('IEIDI') == wrapper['E'] @ wrapper['D']).all()
     assert (wrapper.evaluate_expression('EI^3D') == wrapper['E'] @ wrapper['D']).all()
 
+    assert wrapper == preset_wrapper()
+
 
 def test_simple_three_matrix_multiplication(wrapper: MatrixWrapper) -> None:
     """Test simple multiplication of two matrices."""
@@ -96,6 +107,8 @@ def test_simple_three_matrix_multiplication(wrapper: MatrixWrapper) -> None:
     assert (wrapper.evaluate_expression('GAE') == wrapper['G'] @ wrapper['A'] @ wrapper['E']).all()
     assert (wrapper.evaluate_expression('FAG') == wrapper['F'] @ wrapper['A'] @ wrapper['G']).all()
     assert (wrapper.evaluate_expression('GAF') == wrapper['G'] @ wrapper['A'] @ wrapper['F']).all()
+
+    assert wrapper == preset_wrapper()
 
 
 def test_matrix_inverses(wrapper: MatrixWrapper) -> None:
@@ -120,6 +133,8 @@ def test_matrix_inverses(wrapper: MatrixWrapper) -> None:
     assert (wrapper.evaluate_expression('F^-1') == la.inv(wrapper['F'])).all()
     assert (wrapper.evaluate_expression('G^-1') == la.inv(wrapper['G'])).all()
 
+    assert wrapper == preset_wrapper()
+
 
 def test_matrix_powers(wrapper: MatrixWrapper) -> None:
     """Test that matrices can be raised to integer powers."""
@@ -134,6 +149,8 @@ def test_matrix_powers(wrapper: MatrixWrapper) -> None:
     assert (wrapper.evaluate_expression('E^8') == la.matrix_power(wrapper['E'], 8)).all()
     assert (wrapper.evaluate_expression('F^{-6}') == la.matrix_power(wrapper['F'], -6)).all()
     assert (wrapper.evaluate_expression('G^-2') == la.matrix_power(wrapper['G'], -2)).all()
+
+    assert wrapper == preset_wrapper()
 
 
 def test_matrix_transpose(wrapper: MatrixWrapper) -> None:
@@ -157,6 +174,8 @@ def test_matrix_transpose(wrapper: MatrixWrapper) -> None:
     assert (wrapper.evaluate_expression('E^T') == wrapper['E'].T).all()
     assert (wrapper.evaluate_expression('F^T') == wrapper['F'].T).all()
     assert (wrapper.evaluate_expression('G^T') == wrapper['G'].T).all()
+
+    assert wrapper == preset_wrapper()
 
 
 def test_rotation_matrices(wrapper: MatrixWrapper) -> None:
