@@ -10,3 +10,5 @@
 !_static/
 !_static/*
 !_static/**/*
+
+!README.md
