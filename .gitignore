@@ -1,0 +1,8 @@
+*
+.*
+
+!.nojekyll
+
+!*.html
+!*.js
+!*.css
