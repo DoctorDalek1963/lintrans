@@ -94,6 +94,16 @@
 <dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]]</p>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="lintrans.typing.is_matrix_type">
+<span class="sig-prename descclassname"><span class="pre">lintrans.typing.</span></span><span class="sig-name descname"><span class="pre">is_matrix_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TypeGuard</span><span class="p"><span class="pre">[</span></span><span class="pre">nptyping.types._ndarray.NDArray</span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">2</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">nptyping.types._number.Float</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.floating</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#lintrans.typing.is_matrix_type" title="Permalink to this definition"></a></dt>
+<dd><p>Check if the given value is a valid matrix type.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This function is a TypeGuard, meaning if it returns True, then the passed value must be a MatrixType</p>
+</div>
+</dd></dl>
+
 </section>
 </section>
 

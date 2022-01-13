@@ -81,6 +81,10 @@ class MatrixWrapper:
 
         return True
 
+    def __hash__(self) -> int:
+        """Return the hash of the matrices dictionary."""
+        return hash(self._matrices)
+
     def __getitem__(self, name: str) -> Optional[MatrixType]:
         """Get the matrix with the given name.
 
