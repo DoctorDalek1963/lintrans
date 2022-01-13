@@ -193,10 +193,58 @@ def test_rotation_matrices(wrapper: MatrixWrapper) -> None:
     assert (wrapper.evaluate_expression('rot(963.245)') == create_rotation_matrix(963.245)).all()
     assert (wrapper.evaluate_expression('rot(-235.24)') == create_rotation_matrix(-235.24)).all()
 
+    assert wrapper == preset_wrapper()
+
+
+def test_multiplication_and_addition(wrapper: MatrixWrapper) -> None:
+    """Test multiplication and addition of matrices together."""
+    assert wrapper['A'] is not None and wrapper['B'] is not None and wrapper['C'] is not None and \
+           wrapper['D'] is not None and wrapper['E'] is not None and wrapper['F'] is not None and \
+           wrapper['G'] is not None
+
+    assert (wrapper.evaluate_expression('AB+C') == wrapper['A'] @ wrapper['B'] + wrapper['C']).all()
+    assert (wrapper.evaluate_expression('DE-D') == wrapper['D'] @ wrapper['E'] - wrapper['D']).all()
+    assert (wrapper.evaluate_expression('FD+AB') == wrapper['F'] @ wrapper['D'] + wrapper['A'] @ wrapper['B']).all()
+    assert (wrapper.evaluate_expression('BA-DE') == wrapper['B'] @ wrapper['A'] - wrapper['D'] @ wrapper['E']).all()
+
+    assert (wrapper.evaluate_expression('2AB+3C') ==
+            (2 * wrapper['A']) @ wrapper['B'] + (3 * wrapper['C'])).all()
+    assert (wrapper.evaluate_expression('4D7.9E-1.2A') ==
+            (4 * wrapper['D']) @ (7.9 * wrapper['E']) - (1.2 * wrapper['A'])).all()
+
+    assert wrapper == preset_wrapper()
+
+
+def test_complicated_expressions(wrapper: MatrixWrapper) -> None:
+    """Test evaluation of complicated expressions."""
+    assert wrapper['A'] is not None and wrapper['B'] is not None and wrapper['C'] is not None and \
+           wrapper['D'] is not None and wrapper['E'] is not None and wrapper['F'] is not None and \
+           wrapper['G'] is not None
+
+    assert (wrapper.evaluate_expression('-3.2A^T 4B^{-1} 6C^{-1} + 8.1D^{2} 3.2E^4') ==
+            (-3.2 * wrapper['A'].T) @ (4 * la.inv(wrapper['B'])) @ (6 * la.inv(wrapper['C']))
+            + (8.1 * la.matrix_power(wrapper['D'], 2)) @ (3.2 * la.matrix_power(wrapper['E'], 4))).all()
+
+    assert (wrapper.evaluate_expression('53.6D^{2} 3B^T - 4.9F^{2} 2D + A^3 B^-1') ==
+            (53.6 * la.matrix_power(wrapper['D'], 2)) @ (3 * wrapper['B'].T)
+            - (4.9 * la.matrix_power(wrapper['F'], 2)) @ (2 * wrapper['D'])
+            + la.matrix_power(wrapper['A'], 3) @ la.inv(wrapper['B'])).all()
+
+    assert wrapper == preset_wrapper()
+
 
 def test_value_errors(wrapper: MatrixWrapper) -> None:
     """Test that evaluate_expression() raises a ValueError for any malformed input."""
     with pytest.raises(ValueError):
         wrapper.evaluate_expression('')
         wrapper.evaluate_expression('+')
+        wrapper.evaluate_expression('-')
         wrapper.evaluate_expression('This is not a valid expression')
+        wrapper.evaluate_expression('3+4')
+        wrapper.evaluate_expression('A+2')
+        wrapper.evaluate_expression('A^')
+        wrapper.evaluate_expression('^2')
+        wrapper.evaluate_expression('A^-')
+        wrapper.evaluate_expression('At')
+        wrapper.evaluate_expression('A^t')
+        wrapper.evaluate_expression('3^2')
