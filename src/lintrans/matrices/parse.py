@@ -44,6 +44,9 @@ def validate_matrix_expression(expression: str) -> bool:
     :returns: Whether the expression is valid according to the schema
     :rtype: bool
     """
+    # Remove all whitespace
+    expression = re.sub(r'\s', '', expression)
+
     match = valid_expression_pattern.match(expression)
 
     if match is None:
