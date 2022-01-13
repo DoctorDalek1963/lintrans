@@ -6,3 +6,5 @@
 !*.html
 !*.js
 !*.css
+
+!_static/
