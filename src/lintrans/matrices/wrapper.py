@@ -6,12 +6,12 @@ import re
 from copy import copy
 from functools import reduce
 from operator import add, matmul
-from typing import Optional
+from typing import Any, Optional
 
 import numpy as np
 
 from .parse import parse_matrix_expression, validate_matrix_expression
-from lintrans.typing import MatrixType
+from lintrans.typing import is_matrix_type, MatrixType
 
 
 class MatrixWrapper:
@@ -50,6 +50,36 @@ class MatrixWrapper:
         defined_matrices = ''.join([k for k, v in self._matrices.items() if v is not None])
         return f'<{self.__class__.__module__}.{self.__class__.__name__} object with ' \
                f"{len(defined_matrices)} defined matrices: '{defined_matrices}'>"
+
+    def __eq__(self, other: Any) -> bool:
+        """Check for equality in wrappers by comparing dictionaries."""
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        # We loop over every matrix and check if every value is equal in each
+        for name in self._matrices:
+            s_matrix = self[name]
+            o_matrix = other[name]
+
+            if s_matrix is None and o_matrix is None:
+                continue
+
+            elif (s_matrix is None and o_matrix is not None) or \
+                 (s_matrix is not None and o_matrix is None):
+                return False
+
+            # This is mainly to satisfy mypy, because we know these must be matrices
+            elif not is_matrix_type(s_matrix) or not is_matrix_type(o_matrix):
+                return False
+
+            # Now we know they're both NumPy arrays
+            elif np.array_equal(s_matrix, o_matrix):
+                continue
+
+            else:
+                return False
+
+        return True
 
     def __getitem__(self, name: str) -> Optional[MatrixType]:
         """Get the matrix with the given name.
@@ -91,8 +121,7 @@ class MatrixWrapper:
             self._matrices[name] = None
             return
 
-        # We can't just do 'if not isinstance(new_matrix, MatrixType):', because that doesn't work
-        if not isinstance(new_matrix, np.ndarray) or not new_matrix.shape == (2, 2):
+        if not is_matrix_type(new_matrix):
             raise TypeError('Matrix must be a 2x2 NumPy array')
 
         # All matrices must have float entries
