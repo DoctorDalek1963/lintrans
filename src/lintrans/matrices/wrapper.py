@@ -52,7 +52,10 @@ class MatrixWrapper:
                f"{len(defined_matrices)} defined matrices: '{defined_matrices}'>"
 
     def __eq__(self, other: Any) -> bool:
-        """Check for equality in wrappers by comparing dictionaries."""
+        """Check for equality in wrappers by comparing dictionaries.
+
+        :param Any other: The object to compare this wrapper to
+        """
         if not isinstance(other, self.__class__):
             return NotImplemented
 
