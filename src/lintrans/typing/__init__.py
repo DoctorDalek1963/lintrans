@@ -19,6 +19,6 @@ MatrixParseList = list[list[tuple[str, str, str]]]
 def is_matrix_type(matrix: Any) -> TypeGuard[NDArray[(2, 2), Float]]:
     """Check if the given value is a valid matrix type.
 
-    .. note:: This function is a TypeGuard, meaning if it returns True, then the passed value must be a MatrixType
+    .. note:: This function is a TypeGuard, meaning if it returns True, then the passed value must be a MatrixType.
     """
     return isinstance(matrix, ndarray) and matrix.shape == (2, 2)
