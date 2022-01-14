@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+import webbrowser
 from copy import deepcopy
 from typing import Type
 
@@ -31,6 +32,74 @@ class LintransMainWindow(QMainWindow):
 
         self.setWindowTitle('Linear Transformations')
         self.setMinimumWidth(750)
+
+        # === Create menubar
+
+        self.menubar = QtWidgets.QMenuBar(self)
+
+        self.menu_file = QtWidgets.QMenu(self.menubar)
+        self.menu_file.setTitle('&File')
+
+        self.menu_help = QtWidgets.QMenu(self.menubar)
+        self.menu_help.setTitle('&Help')
+
+        self.action_new = QtWidgets.QAction(self)
+        self.action_new.setText('&New')
+        self.action_new.setShortcut('Ctrl+N')
+        self.action_new.triggered.connect(lambda: print('new'))
+
+        self.action_open = QtWidgets.QAction(self)
+        self.action_open.setText('&Open')
+        self.action_open.setShortcut('Ctrl+O')
+        self.action_open.triggered.connect(lambda: print('open'))
+
+        self.action_save = QtWidgets.QAction(self)
+        self.action_save.setText('&Save')
+        self.action_save.setShortcut('Ctrl+S')
+        self.action_save.triggered.connect(lambda: print('save'))
+
+        self.action_save_as = QtWidgets.QAction(self)
+        self.action_save_as.setText('Save as...')
+        self.action_save_as.triggered.connect(lambda: print('save as'))
+
+        self.action_tutorial = QtWidgets.QAction(self)
+        self.action_tutorial.setText('&Tutorial')
+        self.action_tutorial.setShortcut('F1')
+        self.action_tutorial.triggered.connect(lambda: print('tutorial'))
+
+        self.action_docs = QtWidgets.QAction(self)
+        self.action_docs.setText('&Docs')
+        self.action_docs.triggered.connect(
+            lambda: webbrowser.open_new_tab('https://doctordalek1963.github.io/lintrans')
+        )
+
+        self.action_about = QtWidgets.QAction(self)
+        self.action_about.setText('&About')
+        self.action_about.triggered.connect(lambda: print('about'))
+
+        # TODO: Implement these actions and enable them
+        self.action_new.setEnabled(False)
+        self.action_open.setEnabled(False)
+        self.action_save.setEnabled(False)
+        self.action_save_as.setEnabled(False)
+        self.action_tutorial.setEnabled(False)
+        self.action_about.setEnabled(False)
+
+        self.menu_file.addAction(self.action_new)
+        self.menu_file.addAction(self.action_open)
+        self.menu_file.addSeparator()
+        self.menu_file.addAction(self.action_save)
+        self.menu_file.addAction(self.action_save_as)
+        self.menu_file.addSeparator()
+        self.menu_file.addAction(self.action_about)
+
+        self.menu_help.addAction(self.action_tutorial)
+        self.menu_help.addAction(self.action_docs)
+
+        self.menubar.addAction(self.menu_file.menuAction())
+        self.menubar.addAction(self.menu_help.menuAction())
+
+        self.setMenuBar(self.menubar)
 
         # === Create widgets
 
@@ -110,8 +179,6 @@ class LintransMainWindow(QMainWindow):
 
         # === Arrange widgets
 
-        self.setContentsMargins(10, 10, 10, 10)
-
         self.vlay_left = QVBoxLayout()
         self.vlay_left.addWidget(self.plot)
         self.vlay_left.addWidget(self.lineedit_expression_box)
@@ -149,6 +216,8 @@ class LintransMainWindow(QMainWindow):
 
         self.central_widget = QtWidgets.QWidget()
         self.central_widget.setLayout(self.hlay_all)
+        self.central_widget.setContentsMargins(10, 10, 10, 10)
+
         self.setCentralWidget(self.central_widget)
 
     def update_render_buttons(self) -> None:
