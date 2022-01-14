@@ -12,6 +12,5 @@ venv/
 # This is a symlink to venv/bin/activate
 ...
 
-# This directory is used by Sphinx in the build process
-docs/build/doctrees/
-docs/build/html/.buildinfo
+# This allows me to build the docs locally
+docs/build/
