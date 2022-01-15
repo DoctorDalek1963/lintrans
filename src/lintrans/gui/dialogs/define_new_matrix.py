@@ -89,8 +89,7 @@ class DefineDialog(QDialog):
         self.button_cancel = QtWidgets.QPushButton(self)
         self.button_cancel.setText('Cancel')
         self.button_cancel.clicked.connect(self.reject)
-        self.button_cancel.setToolTip('Cancel this definition<br><b>(Ctrl + Q)</b>')
-        QShortcut(QKeySequence('Ctrl+Q'), self).activated.connect(self.button_cancel.click)
+        self.button_cancel.setToolTip('Cancel this definition<br><b>(Escape)</b>')
 
         self.label_equals = QtWidgets.QLabel()
         self.label_equals.setText('=')
