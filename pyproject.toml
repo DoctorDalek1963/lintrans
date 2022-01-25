@@ -6,6 +6,8 @@ build-backend = 'setuptools.build_meta'
 testpaths = ['tests']
 
 [tool.mypy]
+mypy_path = "$MYPY_CONFIG_FILE_DIR/dev/*-stubs"
+files = "$MYPY_CONFIG_FILE_DIR/src/**/*.py,$MYPY_CONFIG_FILE_DIR/tests/**/*.py"
 disallow_any_generics = true
 ignore_missing_imports = true
 no_implicit_optional = true
