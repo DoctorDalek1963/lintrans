@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from abc import abstractmethod
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QPainter, QPaintEvent, QPen
 from PyQt5.QtWidgets import QWidget
@@ -40,45 +42,32 @@ class TransformationPlotWidget(QWidget):
         self.grid_spacing: int = 50
         self.line_width: float = 0.4
 
-    @property
-    def w(self) -> int:
-        """Return the width of the widget."""
-        return int(self.size().width())
+    @abstractmethod
+    def paintEvent(self, event: QPaintEvent) -> None:
+        """Handle a ``QPaintEvent``."""
 
-    @property
-    def h(self) -> int:
-        """Return the height of the widget."""
-        return int(self.size().height())
-
-    def paintEvent(self, e: QPaintEvent):
-        """Handle a ``QPaintEvent`` by drawing the widget."""
-        qp = QPainter()
-        qp.begin(self)
-        self.draw_widget(qp)
-        qp.end()
-
-    def draw_widget(self, qp: QPainter):
+    def draw_background(self, painter: QPainter) -> None:
         """Draw the grid and axes in the widget."""
-        qp.setRenderHint(QPainter.Antialiasing)
-        qp.setBrush(Qt.NoBrush)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setBrush(Qt.NoBrush)
 
         # Draw the grid
-        qp.setPen(QPen(self.grid_colour, self.line_width))
+        painter.setPen(QPen(self.grid_colour, self.line_width))
 
         # We draw the background grid, centered in the middle
         # We deliberately exclude the axes - these are drawn separately
-        for x in range(self.w // 2 + self.grid_spacing, self.w, self.grid_spacing):
-            qp.drawLine(x, 0, x, self.h)
-            qp.drawLine(self.w - x, 0, self.w - x, self.h)
+        for x in range(self.width() // 2 + self.grid_spacing, self.width(), self.grid_spacing):
+            painter.drawLine(x, 0, x, self.height())
+            painter.drawLine(self.width() - x, 0, self.width() - x, self.height())
 
-        for y in range(self.h // 2 + self.grid_spacing, self.h, self.grid_spacing):
-            qp.drawLine(0, y, self.w, y)
-            qp.drawLine(0, self.h - y, self.w, self.h - y)
+        for y in range(self.height() // 2 + self.grid_spacing, self.height(), self.grid_spacing):
+            painter.drawLine(0, y, self.width(), y)
+            painter.drawLine(0, self.height() - y, self.width(), self.height() - y)
 
         # Now draw the axes
-        qp.setPen(QPen(self.axes_colour, self.line_width))
-        qp.drawLine(self.w // 2, 0, self.w // 2, self.h)
-        qp.drawLine(0, self.h // 2, self.w, self.h // 2)
+        painter.setPen(QPen(self.axes_colour, self.line_width))
+        painter.drawLine(self.width() // 2, 0, self.width() // 2, self.height())
+        painter.drawLine(0, self.height() // 2, self.width(), self.height() // 2)
 
 
 class ViewTransformationWidget(TransformationPlotWidget):
@@ -87,3 +76,10 @@ class ViewTransformationWidget(TransformationPlotWidget):
     def __init__(self, *args, **kwargs):
         """Create the widget, passing ``*args`` and ``**kwargs`` to the superclass constructor."""
         super().__init__(*args, **kwargs)
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        """Handle a ``QPaintEvent`` by drawing the background."""
+        painter = QPainter()
+        painter.begin(self)
+        self.draw_background(painter)
+        painter.end()
