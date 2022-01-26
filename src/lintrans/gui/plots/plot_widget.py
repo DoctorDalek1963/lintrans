@@ -43,12 +43,12 @@ class TransformationPlotWidget(QWidget):
     @property
     def w(self) -> int:
         """Return the width of the widget."""
-        return self.size().width()
+        return int(self.size().width())
 
     @property
     def h(self) -> int:
         """Return the height of the widget."""
-        return self.size().height()
+        return int(self.size().height())
 
     def paintEvent(self, e: QPaintEvent):
         """Handle a ``QPaintEvent`` by drawing the widget."""
