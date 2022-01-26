@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="lintrans.typing package" href="lintrans.typing.html" />
-    <link rel="prev" title="lintrans.gui.dialogs package" href="lintrans.gui.dialogs.html" /> 
+    <link rel="prev" title="lintrans.gui.plots package" href="lintrans.gui.plots.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -169,7 +169,7 @@ in a wrapper. For an aware version of this function, use the
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lintrans.matrices.parse.parse_matrix_expression">
-<span class="sig-prename descclassname"><span class="pre">lintrans.matrices.parse.</span></span><span class="sig-name descname"><span class="pre">parse_matrix_expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="lintrans.typing.html#lintrans.typing.MatrixParseList" title="lintrans.typing.MatrixParseList"><span class="pre">lintrans.typing.MatrixParseList</span></a></span></span><a class="headerlink" href="#lintrans.matrices.parse.parse_matrix_expression" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">lintrans.matrices.parse.</span></span><span class="sig-name descname"><span class="pre">parse_matrix_expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">lintrans.typing.MatrixParseList</span></span></span><a class="headerlink" href="#lintrans.matrices.parse.parse_matrix_expression" title="Permalink to this definition"></a></dt>
 <dd><p>Parse the matrix expression.</p>
 <p>The return value is a list containing lists of tuples. The structure of each tuple is
 (multiplier, matrix identifier, index) where all of them are strings. These tuples are
@@ -328,7 +328,7 @@ ensures that all the matrices in the expression are defined in the wrapper.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.matrices.wrapper.MatrixWrapper.evaluate_expression">
-<span class="sig-name descname"><span class="pre">evaluate_expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="lintrans.typing.html#lintrans.typing.MatrixType" title="lintrans.typing.MatrixType"><span class="pre">lintrans.typing.MatrixType</span></a></span></span><a class="headerlink" href="#lintrans.matrices.wrapper.MatrixWrapper.evaluate_expression" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">evaluate_expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expression</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">lintrans.typing.MatrixType</span></span></span><a class="headerlink" href="#lintrans.matrices.wrapper.MatrixWrapper.evaluate_expression" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluate a given expression and return the matrix evaluation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -350,7 +350,7 @@ ensures that all the matrices in the expression are defined in the wrapper.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lintrans.matrices.wrapper.create_rotation_matrix">
-<span class="sig-prename descclassname"><span class="pre">lintrans.matrices.wrapper.</span></span><span class="sig-name descname"><span class="pre">create_rotation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="lintrans.typing.html#lintrans.typing.MatrixType" title="lintrans.typing.MatrixType"><span class="pre">lintrans.typing.MatrixType</span></a></span></span><a class="headerlink" href="#lintrans.matrices.wrapper.create_rotation_matrix" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">lintrans.matrices.wrapper.</span></span><span class="sig-name descname"><span class="pre">create_rotation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">lintrans.typing.MatrixType</span></span></span><a class="headerlink" href="#lintrans.matrices.wrapper.create_rotation_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>Create a matrix representing a rotation (anticlockwise) by the given angle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Example</dt>
@@ -390,7 +390,7 @@ ensures that all the matrices in the expression are defined in the wrapper.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="lintrans.gui.dialogs.html" class="btn btn-neutral float-left" title="lintrans.gui.dialogs package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lintrans.gui.plots.html" class="btn btn-neutral float-left" title="lintrans.gui.plots package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="lintrans.typing.html" class="btn btn-neutral float-right" title="lintrans.typing package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
