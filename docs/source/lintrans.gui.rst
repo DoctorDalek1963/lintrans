@@ -13,6 +13,7 @@ Subpackages
    :maxdepth: 4
 
    lintrans.gui.dialogs
+   lintrans.gui.plots
 
 Submodules
 ----------
