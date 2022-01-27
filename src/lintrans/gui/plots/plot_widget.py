@@ -56,7 +56,7 @@ class TransformationPlotWidget(QWidget):
         return int(self.origin[1] - y * self.grid_spacing)
 
     def trans_coords(self, x: float, y: float) -> tuple[int, int]:
-        """Transform a coordinate in grid coords to canvas coords."""
+        """Transform a coordinate from grid coords to canvas coords."""
         return self.trans_x(x), self.trans_y(y)
 
     @abstractmethod
