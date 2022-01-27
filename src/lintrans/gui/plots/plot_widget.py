@@ -61,6 +61,10 @@ class TransformationPlotWidget(QWidget):
         """Transform a coordinate from grid coords to canvas coords."""
         return self.trans_x(x), self.trans_y(y)
 
+    def grid_corner(self) -> tuple[float, float]:
+        """Return the grid coords of the top right corner."""
+        return self.width() / (2 * self.grid_spacing), self.height() / (2 * self.grid_spacing)
+
     @abstractmethod
     def paintEvent(self, event: QPaintEvent) -> None:
         """Handle a ``QPaintEvent``."""
@@ -119,6 +123,46 @@ class ViewTransformationWidget(TransformationPlotWidget):
         self.draw_transformed_grid(painter)
         painter.end()
 
+    def draw_parallel_lines(self, painter: QPainter, vector: tuple[float, float], point: tuple[float, float]) -> None:
+        """Draw a set of grid lines parallel to ``vector`` intersecting ``point``."""
+        max_x, max_y = self.grid_corner()
+        vector_x, vector_y = vector
+        point_x, point_y = point
+
+        if vector_x == 0:
+            painter.drawLine(self.trans_x(0), 0, self.trans_x(0), self.height())
+
+            for i in range(int(max_x / point_x)):
+                painter.drawLine(
+                    self.trans_x((i + 1) * point_x),
+                    0,
+                    self.trans_x((i + 1) * point_x),
+                    self.height()
+                )
+                painter.drawLine(
+                    self.trans_x(-1 * (i + 1) * point_x),
+                    0,
+                    self.trans_x(-1 * (i + 1) * point_x),
+                    self.height()
+                )
+
+        elif vector_y == 0:
+            painter.drawLine(0, self.trans_y(0), self.width(), self.trans_y(0))
+
+            for i in range(int(max_y / point_y)):
+                painter.drawLine(
+                    0,
+                    self.trans_y((i + 1) * point_y),
+                    self.width(),
+                    self.trans_y((i + 1) * point_y)
+                )
+                painter.drawLine(
+                    0,
+                    self.trans_y(-1 * (i + 1) * point_y),
+                    self.width(),
+                    self.trans_y(-1 * (i + 1) * point_y)
+                )
+
     def draw_transformed_grid(self, painter: QPainter) -> None:
         """Draw the transformed version of the grid, given by the unit vectors."""
         # Draw the unit vectors
@@ -126,3 +170,9 @@ class ViewTransformationWidget(TransformationPlotWidget):
         painter.drawLine(*self.origin, *self.trans_coords(*self.point_i))
         painter.setPen(QPen(self.colour_j, self.width_vector_line))
         painter.drawLine(*self.origin, *self.trans_coords(*self.point_j))
+
+        # Draw all the parallel lines
+        painter.setPen(QPen(self.colour_i, self.width_transformed_grid))
+        self.draw_parallel_lines(painter, self.point_i, self.point_j)
+        painter.setPen(QPen(self.colour_j, self.width_transformed_grid))
+        self.draw_parallel_lines(painter, self.point_j, self.point_i)
