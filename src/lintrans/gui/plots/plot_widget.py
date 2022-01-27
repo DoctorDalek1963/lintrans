@@ -106,7 +106,7 @@ class ViewTransformationWidget(TransformationPlotWidget):
         self.colour_i = QColor(37, 244, 15)
         self.colour_j = QColor(8, 8, 216)
 
-        self.width_vector_line = 1
+        self.width_vector_line = 1.8
         self.width_transformed_grid = 0.6
 
     def transform_by_matrix(self, matrix: MatrixType) -> None:
@@ -129,10 +129,18 @@ class ViewTransformationWidget(TransformationPlotWidget):
         vector_x, vector_y = vector
         point_x, point_y = point
 
-        if vector_x == 0:
+        print(max_x, max_y, vector_x, vector_y, point_x, point_y)
+
+        # We want to use y = mx + c but m = y / x and if either of those are 0, then this
+        # equation is harder to work with, so we deal with these edge cases first
+        if abs(vector_x) < 1e-12 and abs(vector_y) < 1e-12:
+            # If both components of the vector are practically 0, then we can't render any grid lines
+            return
+
+        elif abs(vector_x) < 1e-12:
             painter.drawLine(self.trans_x(0), 0, self.trans_x(0), self.height())
 
-            for i in range(int(max_x / point_x)):
+            for i in range(abs(int(max_x / point_x))):
                 painter.drawLine(
                     self.trans_x((i + 1) * point_x),
                     0,
@@ -146,10 +154,10 @@ class ViewTransformationWidget(TransformationPlotWidget):
                     self.height()
                 )
 
-        elif vector_y == 0:
+        elif abs(vector_y) < 1e-12:
             painter.drawLine(0, self.trans_y(0), self.width(), self.trans_y(0))
 
-            for i in range(int(max_y / point_y)):
+            for i in range(abs(int(max_y / point_y))):
                 painter.drawLine(
                     0,
                     self.trans_y((i + 1) * point_y),
@@ -161,6 +169,59 @@ class ViewTransformationWidget(TransformationPlotWidget):
                     self.trans_y(-1 * (i + 1) * point_y),
                     self.width(),
                     self.trans_y(-1 * (i + 1) * point_y)
+                )
+
+        else:  # If the line is not horizontal or vertical, then we can use y = mx + c
+            m = vector_y / vector_x
+            c = point_y - m * point_x
+
+            # For c = 0
+            painter.drawLine(
+                *self.trans_coords(
+                    -1 * max_x,
+                    m * -1 * max_x
+                ),
+                *self.trans_coords(
+                    max_x,
+                    m * max_x
+                )
+            )
+
+            # Count up how many multiples of c we can have without wasting time rendering lines off screen
+            multiples_of_c: int = 0
+            ii: int = 1
+            while True:
+                y1 = m * max_x + ii * c
+                y2 = -1 * m * max_x + ii * c
+
+                if y1 < max_y or y2 < max_y:
+                    multiples_of_c += 1
+                    ii += 1
+
+                else:
+                    break
+
+            # Once we know how many lines we can draw, we just draw them all
+            for i in range(1, multiples_of_c + 1):
+                painter.drawLine(
+                    *self.trans_coords(
+                        -1 * max_x,
+                        m * -1 * max_x + i * c
+                    ),
+                    *self.trans_coords(
+                        max_x,
+                        m * max_x + i * c
+                    )
+                )
+                painter.drawLine(
+                    *self.trans_coords(
+                        -1 * max_x,
+                        m * -1 * max_x - i * c
+                    ),
+                    *self.trans_coords(
+                        max_x,
+                        m * max_x - i * c
+                    )
                 )
 
     def draw_transformed_grid(self, painter: QPainter) -> None:
