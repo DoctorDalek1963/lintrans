@@ -46,19 +46,32 @@ class TransformationPlotWidget(QWidget):
 
     @property
     def origin(self) -> tuple[int, int]:
-        """Return the canvas coords of the origin."""
+        """Return the canvas coords of the origin.
+
+        :returns: The canvas coordinates of the grid origin. Can be fed to a ``drawLine`` call when unpacked
+        :rtype: tuple[int, int]
+        """
         return self.width() // 2, self.height() // 2
 
     def trans_x(self, x: float) -> int:
-        """Transform an x coordinate from grid coords to canvas coords."""
+        """Transform an x coordinate from grid coords to canvas coords, ready to feed to a ``drawLine`` call."""
         return int(self.origin[0] + x * self.grid_spacing)
 
     def trans_y(self, y: float) -> int:
-        """Transform a y coordinate from grid coords to canvas coords."""
+        """Transform a y coordinate from grid coords to canvas coords, ready to feed to a ``drawLine`` call."""
         return int(self.origin[1] - y * self.grid_spacing)
 
     def trans_coords(self, x: float, y: float) -> tuple[int, int]:
-        """Transform a coordinate from grid coords to canvas coords."""
+        """Transform a coordinate from grid coords to canvas coords.
+
+        This method is intended to be used like
+        ``painter.drawLine(*self.trans_coords(x1, y1), *self.trans_coords(x2, y2))``.
+
+        :param float x: The x component of the grid coordinate
+        :param float y: The y component of the grid coordinate
+        :returns: The resultant canvas coordinates
+        :rtype: tuple[int, int]
+        """
         return self.trans_x(x), self.trans_y(y)
 
     def grid_corner(self) -> tuple[float, float]:
@@ -67,10 +80,18 @@ class TransformationPlotWidget(QWidget):
 
     @abstractmethod
     def paintEvent(self, event: QPaintEvent) -> None:
-        """Handle a ``QPaintEvent``."""
+        """Handle a ``QPaintEvent``.
+
+        .. note:: This method is abstract and must be overridden by all subclasses.
+        """
 
     def draw_background(self, painter: QPainter) -> None:
-        """Draw the grid and axes in the widget."""
+        """Draw the background grid.
+
+        .. note:: This method is just a utility method for subclasses to use to render the background grid.
+
+        :param QPainter painter: The ``QPainter`` object to use for drawing the background
+        """
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setBrush(Qt.NoBrush)
 
@@ -94,7 +115,12 @@ class TransformationPlotWidget(QWidget):
 
 
 class ViewTransformationWidget(TransformationPlotWidget):
-    """This class is used to visualise matrices as transformations."""
+    """This class is used to visualise matrices as transformations.
+
+    It handles all the rendering itself, and the only method that the user needs to
+    worry about is :meth:`transform_by_matrix`, which allows you to visualise the
+    given matrix transformation.
+    """
 
     def __init__(self, *args, **kwargs):
         """Create the widget, passing ``*args`` and ``**kwargs`` to the superclass constructor."""
@@ -110,13 +136,25 @@ class ViewTransformationWidget(TransformationPlotWidget):
         self.width_transformed_grid = 0.6
 
     def transform_by_matrix(self, matrix: MatrixType) -> None:
-        """Transform the plane by the given matrix."""
+        """Transform the grid by the given matrix and visualise the transformation.
+
+        .. note::
+           This method transforms the background grid, not the basis vectors. This
+           means that it cannot be used to compose transformations. Compositions
+           should be done by the user.
+
+        :param MatrixType matrix: The matrix to transform by
+        """
         self.point_i = (matrix[0][0], matrix[1][0])
         self.point_j = (matrix[0][1], matrix[1][1])
         self.update()
 
     def paintEvent(self, event: QPaintEvent) -> None:
-        """Handle a ``QPaintEvent`` by drawing the background."""
+        """Handle a ``QPaintEvent`` by drawing the background grid and the transformed grid.
+
+        The transformed grid is defined by the basis vectors i and j, which can
+        be controlled with the :meth:`transform_by_matrix` method.
+        """
         painter = QPainter()
         painter.begin(self)
         self.draw_background(painter)
@@ -124,7 +162,14 @@ class ViewTransformationWidget(TransformationPlotWidget):
         painter.end()
 
     def draw_parallel_lines(self, painter: QPainter, vector: tuple[float, float], point: tuple[float, float]) -> None:
-        """Draw a set of grid lines parallel to ``vector`` intersecting ``point``."""
+        """Draw a set of evenly spaced grid lines parallel to ``vector`` intersecting ``point``.
+
+        :param QPainter painter: The ``QPainter`` object to use to draw the lines with
+        :param vector: The vector to draw the grid lines parallel to
+        :type vector: tuple[float, float]
+        :param point: The point for the lines to intersect with
+        :type point: tuple[float, float]
+        """
         max_x, max_y = self.grid_corner()
         vector_x, vector_y = vector
         point_x, point_y = point
@@ -225,7 +270,12 @@ class ViewTransformationWidget(TransformationPlotWidget):
                 )
 
     def draw_transformed_grid(self, painter: QPainter) -> None:
-        """Draw the transformed version of the grid, given by the unit vectors."""
+        """Draw the transformed version of the grid, given by the unit vectors.
+
+        This method simply draws the unit vectors and their parallel grid lines.
+
+        :param QPainter painter: The ``QPainter`` object to use for drawing the vectors and grid lines
+        """
         # Draw the unit vectors
         painter.setPen(QPen(self.colour_i, self.width_vector_line))
         painter.drawLine(*self.origin, *self.trans_coords(*self.point_i))
