@@ -8,6 +8,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QPainter, QPaintEvent, QPen
 from PyQt5.QtWidgets import QWidget
 
+from lintrans.typing import MatrixType
+
 
 class TransformationPlotWidget(QWidget):
     """An abstract superclass for plot widgets.
@@ -36,11 +38,11 @@ class TransformationPlotWidget(QWidget):
         self.setPalette(palette)
 
         # Set the gird colour to grey and the axes colour to black
-        self.grid_colour = QColor(128, 128, 128)
-        self.axes_colour = QColor(0, 0, 0)
+        self.colour_background_grid = QColor(128, 128, 128)
+        self.colour_background_axes = QColor(0, 0, 0)
 
         self.grid_spacing: int = 50
-        self.line_width: float = 0.4
+        self.width_background_grid: float = 0.3
 
     @property
     def origin(self) -> tuple[int, int]:
@@ -69,7 +71,7 @@ class TransformationPlotWidget(QWidget):
         painter.setBrush(Qt.NoBrush)
 
         # Draw the grid
-        painter.setPen(QPen(self.grid_colour, self.line_width))
+        painter.setPen(QPen(self.colour_background_grid, self.width_background_grid))
 
         # We draw the background grid, centered in the middle
         # We deliberately exclude the axes - these are drawn separately
@@ -82,7 +84,7 @@ class TransformationPlotWidget(QWidget):
             painter.drawLine(0, self.height() - y, self.width(), self.height() - y)
 
         # Now draw the axes
-        painter.setPen(QPen(self.axes_colour, self.line_width))
+        painter.setPen(QPen(self.colour_background_axes, self.width_background_grid))
         painter.drawLine(self.width() // 2, 0, self.width() // 2, self.height())
         painter.drawLine(0, self.height() // 2, self.width(), self.height() // 2)
 
@@ -94,9 +96,33 @@ class ViewTransformationWidget(TransformationPlotWidget):
         """Create the widget, passing ``*args`` and ``**kwargs`` to the superclass constructor."""
         super().__init__(*args, **kwargs)
 
+        self.point_i: tuple[float, float] = (1., 0.)
+        self.point_j: tuple[float, float] = (0., 1.)
+
+        self.colour_i = QColor(37, 244, 15)
+        self.colour_j = QColor(8, 8, 216)
+
+        self.width_vector_line = 1
+        self.width_transformed_grid = 0.6
+
+    def transform_by_matrix(self, matrix: MatrixType) -> None:
+        """Transform the plane by the given matrix."""
+        self.point_i = (matrix[0][0], matrix[1][0])
+        self.point_j = (matrix[0][1], matrix[1][1])
+        self.update()
+
     def paintEvent(self, event: QPaintEvent) -> None:
         """Handle a ``QPaintEvent`` by drawing the background."""
         painter = QPainter()
         painter.begin(self)
         self.draw_background(painter)
+        self.draw_transformed_grid(painter)
         painter.end()
+
+    def draw_transformed_grid(self, painter: QPainter) -> None:
+        """Draw the transformed version of the grid, given by the unit vectors."""
+        # Draw the unit vectors
+        painter.setPen(QPen(self.colour_i, self.width_vector_line))
+        painter.drawLine(*self.origin, *self.trans_coords(*self.point_i))
+        painter.setPen(QPen(self.colour_j, self.width_vector_line))
+        painter.drawLine(*self.origin, *self.trans_coords(*self.point_j))

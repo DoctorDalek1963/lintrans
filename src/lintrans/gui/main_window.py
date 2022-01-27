@@ -228,8 +228,11 @@ class LintransMainWindow(QMainWindow):
 
     def render_expression(self) -> None:
         """Render the expression in the input box, and then clear the box."""
-        # TODO: Render the expression
-        self.lineedit_expression_box.setText('')
+        self.plot.transform_by_matrix(
+            self.matrix_wrapper.evaluate_expression(
+                self.lineedit_expression_box.text()
+            )
+        )
 
     def animate_expression(self) -> None:
         """Animate the expression in the input box, and then clear the box."""
