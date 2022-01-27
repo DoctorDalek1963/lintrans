@@ -42,6 +42,23 @@ class TransformationPlotWidget(QWidget):
         self.grid_spacing: int = 50
         self.line_width: float = 0.4
 
+    @property
+    def origin(self) -> tuple[int, int]:
+        """Return the canvas coords of the origin."""
+        return self.width() // 2, self.height() // 2
+
+    def trans_x(self, x: float) -> int:
+        """Transform an x coordinate from grid coords to canvas coords."""
+        return int(self.origin[0] + x * self.grid_spacing)
+
+    def trans_y(self, y: float) -> int:
+        """Transform a y coordinate from grid coords to canvas coords."""
+        return int(self.origin[1] - y * self.grid_spacing)
+
+    def trans_coords(self, x: float, y: float) -> tuple[int, int]:
+        """Transform a coordinate in grid coords to canvas coords."""
+        return self.trans_x(x), self.trans_y(y)
+
     @abstractmethod
     def paintEvent(self, event: QPaintEvent) -> None:
         """Handle a ``QPaintEvent``."""
