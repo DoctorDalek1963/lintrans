@@ -1,4 +1,4 @@
-"""This module provides the basic classes for plotting transformations."""
+"""This module provides superclasses for plotting transformations."""
 
 from __future__ import annotations
 
@@ -8,11 +8,9 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QPainter, QPaintEvent, QPen
 from PyQt5.QtWidgets import QWidget
 
-from lintrans.typing import MatrixType
 
-
-class TransformationPlotWidget(QWidget):
-    """An abstract superclass for plot widgets.
+class BackgroundPlot(QWidget):
+    """This class provides a background for plotting, as well as setup for a Qt widget.
 
     This class provides a background (untransformed) plane, and all the backend
     details for a Qt application, but does not provide useful functionality. To
@@ -114,16 +112,20 @@ class TransformationPlotWidget(QWidget):
         painter.drawLine(0, self.height() // 2, self.width(), self.height() // 2)
 
 
-class ViewTransformationWidget(TransformationPlotWidget):
-    """This class is used to visualise matrices as transformations.
+class VectorGridPlot(BackgroundPlot):
+    """This class represents a background plot, with vectors and their grid drawn on top.
 
-    It handles all the rendering itself, and the only method that the user needs to
-    worry about is :meth:`transform_by_matrix`, which allows you to visualise the
-    given matrix transformation.
+    This class should be subclassed to be used for visualization and matrix definition widgets.
+    All useful behaviour should be implemented by any subclass.
+
+    .. warning:: This class should never be directly instantiated, only subclassed.
     """
 
     def __init__(self, *args, **kwargs):
-        """Create the widget, passing ``*args`` and ``**kwargs`` to the superclass constructor."""
+        """Create the widget, passing ``*args`` and ``**kwargs`` to the superclass constructor.
+
+        .. warning:: This class should not be instantiated directly, only subclassed.
+        """
         super().__init__(*args, **kwargs)
 
         self.point_i: tuple[float, float] = (1., 0.)
@@ -135,31 +137,12 @@ class ViewTransformationWidget(TransformationPlotWidget):
         self.width_vector_line = 1.8
         self.width_transformed_grid = 0.6
 
-    def transform_by_matrix(self, matrix: MatrixType) -> None:
-        """Transform the grid by the given matrix and visualise the transformation.
-
-        .. note::
-           This method transforms the background grid, not the basis vectors. This
-           means that it cannot be used to compose transformations. Compositions
-           should be done by the user.
-
-        :param MatrixType matrix: The matrix to transform by
-        """
-        self.point_i = (matrix[0][0], matrix[1][0])
-        self.point_j = (matrix[0][1], matrix[1][1])
-        self.update()
-
+    @abstractmethod
     def paintEvent(self, event: QPaintEvent) -> None:
-        """Handle a ``QPaintEvent`` by drawing the background grid and the transformed grid.
+        """Handle a ``QPaintEvent``.
 
-        The transformed grid is defined by the basis vectors i and j, which can
-        be controlled with the :meth:`transform_by_matrix` method.
+        .. note:: This method is abstract and must be overridden by all subclasses.
         """
-        painter = QPainter()
-        painter.begin(self)
-        self.draw_background(painter)
-        self.draw_transformed_grid(painter)
-        painter.end()
 
     def draw_parallel_lines(self, painter: QPainter, vector: tuple[float, float], point: tuple[float, float]) -> None:
         """Draw a set of evenly spaced grid lines parallel to ``vector`` intersecting ``point``.

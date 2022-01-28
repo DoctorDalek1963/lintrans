@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import QApplication, QHBoxLayout, QMainWindow, QShortcut, Q
 
 from lintrans.matrices import MatrixWrapper
 from .dialogs import DefineAsAnExpressionDialog, DefineAsARotationDialog, DefineDialog, DefineNumericallyDialog
-from .plots import ViewTransformationWidget
+from .plots import VisualizeTransformationWidget
 
 
 class LintransMainWindow(QMainWindow):
@@ -106,7 +106,7 @@ class LintransMainWindow(QMainWindow):
 
         # Left layout: the plot and input box
 
-        self.plot = ViewTransformationWidget(self)
+        self.plot = VisualizeTransformationWidget(self)
 
         self.lineedit_expression_box = QtWidgets.QLineEdit(self)
         self.lineedit_expression_box.setPlaceholderText('Enter matrix expression...')
@@ -228,7 +228,7 @@ class LintransMainWindow(QMainWindow):
 
     def render_expression(self) -> None:
         """Render the expression in the input box, and then clear the box."""
-        self.plot.transform_by_matrix(
+        self.plot.visualize_matrix_transformation(
             self.matrix_wrapper.evaluate_expression(
                 self.lineedit_expression_box.text()
             )
