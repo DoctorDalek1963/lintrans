@@ -115,7 +115,11 @@ and a every superclass of a class must have the same metaclass, and <code class=
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.plots.classes.BackgroundPlot.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lintrans.gui.plots.classes.BackgroundPlot.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>Create the widget, passing <code class="docutils literal notranslate"><span class="pre">*args</span></code> and <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> to the superclass constructor (<code class="docutils literal notranslate"><span class="pre">QWidget</span></code>).</p>
+<dd><p>Create the widget and setup backend stuff for rendering.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">*args</span></code> and <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> are passed the superclass constructor (<code class="docutils literal notranslate"><span class="pre">QWidget</span></code>).</p>
+</div>
 </dd></dl>
 
 <dl class="py property">
@@ -213,10 +217,10 @@ All useful behaviour should be implemented by any subclass.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>Create the widget, passing <code class="docutils literal notranslate"><span class="pre">*args</span></code> and <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> to the superclass constructor.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This class should not be instantiated directly, only subclassed.</p>
+<dd><p>Create the widget with <code class="docutils literal notranslate"><span class="pre">point_i</span></code> and <code class="docutils literal notranslate"><span class="pre">point_j</span></code> attributes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">*args</span></code> and <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> are passed to the superclass constructor (<a class="reference internal" href="#lintrans.gui.plots.classes.BackgroundPlot" title="lintrans.gui.plots.classes.BackgroundPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">BackgroundPlot</span></code></a>).</p>
 </div>
 </dd></dl>
 
@@ -280,7 +284,11 @@ the given matrix transformation.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.plots.widgets.VisualizeTransformationWidget.visualize_matrix_transformation">
 <span class="sig-name descname"><span class="pre">visualize_matrix_transformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lintrans.typing.MatrixType</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.widgets.VisualizeTransformationWidget.visualize_matrix_transformation" title="Permalink to this definition"></a></dt>
-<dd><p>Transform the grid by the given matrix and update to visualize the transformation.</p>
+<dd><p>Transform the grid by the given matrix.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This method does not call <code class="docutils literal notranslate"><span class="pre">update()</span></code>. This must be done by the caller.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method transforms the background grid, not the basis vectors. This
