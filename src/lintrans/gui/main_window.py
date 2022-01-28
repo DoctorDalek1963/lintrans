@@ -253,8 +253,8 @@ class LintransMainWindow(QMainWindow):
 
             time.sleep(0.01)
 
-        self.button_render.setEnabled(False)
-        self.button_animate.setEnabled(False)
+        self.button_render.setEnabled(True)
+        self.button_animate.setEnabled(True)
 
     def dialog_define_matrix(self, dialog_class: Type[DefineDialog]) -> None:
         """Open a generic definition dialog to define a new matrix.
