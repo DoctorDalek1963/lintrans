@@ -25,7 +25,10 @@ class BackgroundPlot(QWidget):
     """
 
     def __init__(self, *args, **kwargs):
-        """Create the widget, passing ``*args`` and ``**kwargs`` to the superclass constructor (``QWidget``)."""
+        """Create the widget and setup backend stuff for rendering.
+
+        .. note:: ``*args`` and ``**kwargs`` are passed the superclass constructor (``QWidget``).
+        """
         super().__init__(*args, **kwargs)
 
         self.setAutoFillBackground(True)
@@ -122,9 +125,9 @@ class VectorGridPlot(BackgroundPlot):
     """
 
     def __init__(self, *args, **kwargs):
-        """Create the widget, passing ``*args`` and ``**kwargs`` to the superclass constructor.
+        """Create the widget with ``point_i`` and ``point_j`` attributes.
 
-        .. warning:: This class should not be instantiated directly, only subclassed.
+        .. note:: ``*args`` and ``**kwargs`` are passed to the superclass constructor (:class:`BackgroundPlot`).
         """
         super().__init__(*args, **kwargs)
 
