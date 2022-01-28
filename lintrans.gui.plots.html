@@ -91,14 +91,14 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
 </section>
-<section id="module-lintrans.gui.plots.plot_widget">
-<span id="lintrans-gui-plots-plot-widget-module"></span><h2>lintrans.gui.plots.plot_widget module<a class="headerlink" href="#module-lintrans.gui.plots.plot_widget" title="Permalink to this headline"></a></h2>
-<p>This module provides the basic classes for plotting transformations.</p>
+<section id="module-lintrans.gui.plots.classes">
+<span id="lintrans-gui-plots-classes-module"></span><h2>lintrans.gui.plots.classes module<a class="headerlink" href="#module-lintrans.gui.plots.classes" title="Permalink to this headline"></a></h2>
+<p>This module provides superclasses for plotting transformations.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="lintrans.gui.plots.plot_widget.TransformationPlotWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lintrans.gui.plots.plot_widget.</span></span><span class="sig-name descname"><span class="pre">TransformationPlotWidget</span></span><a class="headerlink" href="#lintrans.gui.plots.plot_widget.TransformationPlotWidget" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.BackgroundPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lintrans.gui.plots.classes.</span></span><span class="sig-name descname"><span class="pre">BackgroundPlot</span></span><a class="headerlink" href="#lintrans.gui.plots.classes.BackgroundPlot" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
-<p>An abstract superclass for plot widgets.</p>
+<p>This class provides a background for plotting, as well as setup for a Qt widget.</p>
 <p>This class provides a background (untransformed) plane, and all the backend
 details for a Qt application, but does not provide useful functionality. To
 be useful, this class must be subclassed and behaviour must be implemented
@@ -113,14 +113,14 @@ by the subclass.</p>
 and a every superclass of a class must have the same metaclass, and <code class="docutils literal notranslate"><span class="pre">QWidget</span></code> is not an abstract class.</p>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.plots.plot_widget.TransformationPlotWidget.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lintrans.gui.plots.plot_widget.TransformationPlotWidget.__init__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.BackgroundPlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lintrans.gui.plots.classes.BackgroundPlot.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Create the widget, passing <code class="docutils literal notranslate"><span class="pre">*args</span></code> and <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> to the superclass constructor (<code class="docutils literal notranslate"><span class="pre">QWidget</span></code>).</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="lintrans.gui.plots.plot_widget.TransformationPlotWidget.origin">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#lintrans.gui.plots.plot_widget.TransformationPlotWidget.origin" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.BackgroundPlot.origin">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#lintrans.gui.plots.classes.BackgroundPlot.origin" title="Permalink to this definition"></a></dt>
 <dd><p>Return the canvas coords of the origin.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -133,20 +133,20 @@ and a every superclass of a class must have the same metaclass, and <code class=
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.plots.plot_widget.TransformationPlotWidget.trans_x">
-<span class="sig-name descname"><span class="pre">trans_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#lintrans.gui.plots.plot_widget.TransformationPlotWidget.trans_x" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.BackgroundPlot.trans_x">
+<span class="sig-name descname"><span class="pre">trans_x</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.BackgroundPlot.trans_x" title="Permalink to this definition"></a></dt>
 <dd><p>Transform an x coordinate from grid coords to canvas coords, ready to feed to a <code class="docutils literal notranslate"><span class="pre">drawLine</span></code> call.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.plots.plot_widget.TransformationPlotWidget.trans_y">
-<span class="sig-name descname"><span class="pre">trans_y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#lintrans.gui.plots.plot_widget.TransformationPlotWidget.trans_y" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.BackgroundPlot.trans_y">
+<span class="sig-name descname"><span class="pre">trans_y</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.BackgroundPlot.trans_y" title="Permalink to this definition"></a></dt>
 <dd><p>Transform a y coordinate from grid coords to canvas coords, ready to feed to a <code class="docutils literal notranslate"><span class="pre">drawLine</span></code> call.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.plots.plot_widget.TransformationPlotWidget.trans_coords">
-<span class="sig-name descname"><span class="pre">trans_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#lintrans.gui.plots.plot_widget.TransformationPlotWidget.trans_coords" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.BackgroundPlot.trans_coords">
+<span class="sig-name descname"><span class="pre">trans_coords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.BackgroundPlot.trans_coords" title="Permalink to this definition"></a></dt>
 <dd><p>Transform a coordinate from grid coords to canvas coords.</p>
 <p>This method is intended to be used like
 <code class="docutils literal notranslate"><span class="pre">painter.drawLine(*self.trans_coords(x1,</span> <span class="pre">y1),</span> <span class="pre">*self.trans_coords(x2,</span> <span class="pre">y2))</span></code>.</p>
@@ -167,14 +167,14 @@ and a every superclass of a class must have the same metaclass, and <code class=
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.plots.plot_widget.TransformationPlotWidget.grid_corner">
-<span class="sig-name descname"><span class="pre">grid_corner</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#lintrans.gui.plots.plot_widget.TransformationPlotWidget.grid_corner" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.BackgroundPlot.grid_corner">
+<span class="sig-name descname"><span class="pre">grid_corner</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.BackgroundPlot.grid_corner" title="Permalink to this definition"></a></dt>
 <dd><p>Return the grid coords of the top right corner.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.plots.plot_widget.TransformationPlotWidget.paintEvent">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPaintEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.plot_widget.TransformationPlotWidget.paintEvent" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.BackgroundPlot.paintEvent">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPaintEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.BackgroundPlot.paintEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Handle a <code class="docutils literal notranslate"><span class="pre">QPaintEvent</span></code>.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -183,8 +183,8 @@ and a every superclass of a class must have the same metaclass, and <code class=
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.plots.plot_widget.TransformationPlotWidget.draw_background">
-<span class="sig-name descname"><span class="pre">draw_background</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.plot_widget.TransformationPlotWidget.draw_background" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.BackgroundPlot.draw_background">
+<span class="sig-name descname"><span class="pre">draw_background</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.BackgroundPlot.draw_background" title="Permalink to this definition"></a></dt>
 <dd><p>Draw the background grid.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -200,23 +200,87 @@ and a every superclass of a class must have the same metaclass, and <code class=
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="lintrans.gui.plots.plot_widget.ViewTransformationWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lintrans.gui.plots.plot_widget.</span></span><span class="sig-name descname"><span class="pre">ViewTransformationWidget</span></span><a class="headerlink" href="#lintrans.gui.plots.plot_widget.ViewTransformationWidget" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lintrans.gui.plots.plot_widget.TransformationPlotWidget" title="lintrans.gui.plots.plot_widget.TransformationPlotWidget"><code class="xref py py-class docutils literal notranslate"><span class="pre">lintrans.gui.plots.plot_widget.TransformationPlotWidget</span></code></a></p>
-<p>This class is used to visualise matrices as transformations.</p>
-<p>It handles all the rendering itself, and the only method that the user needs to
-worry about is <a class="reference internal" href="#lintrans.gui.plots.plot_widget.ViewTransformationWidget.transform_by_matrix" title="lintrans.gui.plots.plot_widget.ViewTransformationWidget.transform_by_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">transform_by_matrix()</span></code></a>, which allows you to visualise the
-given matrix transformation.</p>
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lintrans.gui.plots.classes.</span></span><span class="sig-name descname"><span class="pre">VectorGridPlot</span></span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lintrans.gui.plots.classes.BackgroundPlot" title="lintrans.gui.plots.classes.BackgroundPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">lintrans.gui.plots.classes.BackgroundPlot</span></code></a></p>
+<p>This class represents a background plot, with vectors and their grid drawn on top.</p>
+<p>This class should be subclassed to be used for visualization and matrix definition widgets.
+All useful behaviour should be implemented by any subclass.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This class should never be directly instantiated, only subclassed.</p>
+</div>
 <dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.plots.plot_widget.ViewTransformationWidget.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lintrans.gui.plots.plot_widget.ViewTransformationWidget.__init__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Create the widget, passing <code class="docutils literal notranslate"><span class="pre">*args</span></code> and <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> to the superclass constructor.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This class should not be instantiated directly, only subclassed.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.paintEvent">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPaintEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.paintEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Handle a <code class="docutils literal notranslate"><span class="pre">QPaintEvent</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is abstract and must be overridden by all subclasses.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.draw_parallel_lines">
+<span class="sig-name descname"><span class="pre">draw_parallel_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.draw_parallel_lines" title="Permalink to this definition"></a></dt>
+<dd><p>Draw a set of evenly spaced grid lines parallel to <code class="docutils literal notranslate"><span class="pre">vector</span></code> intersecting <code class="docutils literal notranslate"><span class="pre">point</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>painter</strong> (<em>QPainter</em>) – The <code class="docutils literal notranslate"><span class="pre">QPainter</span></code> object to use to draw the lines with</p></li>
+<li><p><strong>vector</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – The vector to draw the grid lines parallel to</p></li>
+<li><p><strong>point</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – The point for the lines to intersect with</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.draw_transformed_grid">
+<span class="sig-name descname"><span class="pre">draw_transformed_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.draw_transformed_grid" title="Permalink to this definition"></a></dt>
+<dd><p>Draw the transformed version of the grid, given by the unit vectors.</p>
+<p>This method simply draws the unit vectors and their parallel grid lines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>painter</strong> (<em>QPainter</em>) – The <code class="docutils literal notranslate"><span class="pre">QPainter</span></code> object to use for drawing the vectors and grid lines</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-lintrans.gui.plots.widgets">
+<span id="lintrans-gui-plots-widgets-module"></span><h2>lintrans.gui.plots.widgets module<a class="headerlink" href="#module-lintrans.gui.plots.widgets" title="Permalink to this headline"></a></h2>
+<p>This module provides the actual widgets that can be used to visualize transformations in the GUI.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="lintrans.gui.plots.widgets.VisualizeTransformationWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lintrans.gui.plots.widgets.</span></span><span class="sig-name descname"><span class="pre">VisualizeTransformationWidget</span></span><a class="headerlink" href="#lintrans.gui.plots.widgets.VisualizeTransformationWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lintrans.gui.plots.classes.VectorGridPlot" title="lintrans.gui.plots.classes.VectorGridPlot"><code class="xref py py-class docutils literal notranslate"><span class="pre">lintrans.gui.plots.classes.VectorGridPlot</span></code></a></p>
+<p>This class is the widget that is used in the main window to visualize transformations.</p>
+<p>It handles all the rendering itself, and the only method that the user needs to
+worry about is <a class="reference internal" href="#lintrans.gui.plots.widgets.VisualizeTransformationWidget.visualize_matrix_transformation" title="lintrans.gui.plots.widgets.VisualizeTransformationWidget.visualize_matrix_transformation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">visualize_matrix_transformation()</span></code></a>, which allows you to visualise
+the given matrix transformation.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.plots.widgets.VisualizeTransformationWidget.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lintrans.gui.plots.widgets.VisualizeTransformationWidget.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Create the widget, passing <code class="docutils literal notranslate"><span class="pre">*args</span></code> and <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> to the superclass constructor.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.plots.plot_widget.ViewTransformationWidget.transform_by_matrix">
-<span class="sig-name descname"><span class="pre">transform_by_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lintrans.typing.MatrixType</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.plot_widget.ViewTransformationWidget.transform_by_matrix" title="Permalink to this definition"></a></dt>
-<dd><p>Transform the grid by the given matrix and visualise the transformation.</p>
+<dt class="sig sig-object py" id="lintrans.gui.plots.widgets.VisualizeTransformationWidget.visualize_matrix_transformation">
+<span class="sig-name descname"><span class="pre">visualize_matrix_transformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lintrans.typing.MatrixType</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.widgets.VisualizeTransformationWidget.visualize_matrix_transformation" title="Permalink to this definition"></a></dt>
+<dd><p>Transform the grid by the given matrix and update to visualize the transformation.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This method transforms the background grid, not the basis vectors. This
@@ -231,38 +295,11 @@ should be done by the user.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.plots.plot_widget.ViewTransformationWidget.paintEvent">
-<span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPaintEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.plot_widget.ViewTransformationWidget.paintEvent" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="lintrans.gui.plots.widgets.VisualizeTransformationWidget.paintEvent">
+<span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPaintEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.widgets.VisualizeTransformationWidget.paintEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Handle a <code class="docutils literal notranslate"><span class="pre">QPaintEvent</span></code> by drawing the background grid and the transformed grid.</p>
 <p>The transformed grid is defined by the basis vectors i and j, which can
-be controlled with the <a class="reference internal" href="#lintrans.gui.plots.plot_widget.ViewTransformationWidget.transform_by_matrix" title="lintrans.gui.plots.plot_widget.ViewTransformationWidget.transform_by_matrix"><code class="xref py py-meth docutils literal notranslate"><span class="pre">transform_by_matrix()</span></code></a> method.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.plots.plot_widget.ViewTransformationWidget.draw_parallel_lines">
-<span class="sig-name descname"><span class="pre">draw_parallel_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.plot_widget.ViewTransformationWidget.draw_parallel_lines" title="Permalink to this definition"></a></dt>
-<dd><p>Draw a set of evenly spaced grid lines parallel to <code class="docutils literal notranslate"><span class="pre">vector</span></code> intersecting <code class="docutils literal notranslate"><span class="pre">point</span></code>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>painter</strong> (<em>QPainter</em>) – The <code class="docutils literal notranslate"><span class="pre">QPainter</span></code> object to use to draw the lines with</p></li>
-<li><p><strong>vector</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – The vector to draw the grid lines parallel to</p></li>
-<li><p><strong>point</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – The point for the lines to intersect with</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.plots.plot_widget.ViewTransformationWidget.draw_transformed_grid">
-<span class="sig-name descname"><span class="pre">draw_transformed_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.plot_widget.ViewTransformationWidget.draw_transformed_grid" title="Permalink to this definition"></a></dt>
-<dd><p>Draw the transformed version of the grid, given by the unit vectors.</p>
-<p>This method simply draws the unit vectors and their parallel grid lines.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>painter</strong> (<em>QPainter</em>) – The <code class="docutils literal notranslate"><span class="pre">QPainter</span></code> object to use for drawing the vectors and grid lines</p>
-</dd>
-</dl>
+be controlled with the <a class="reference internal" href="#lintrans.gui.plots.widgets.VisualizeTransformationWidget.visualize_matrix_transformation" title="lintrans.gui.plots.widgets.VisualizeTransformationWidget.visualize_matrix_transformation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">visualize_matrix_transformation()</span></code></a> method.</p>
 </dd></dl>
 
 </dd></dl>

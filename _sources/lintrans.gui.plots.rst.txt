@@ -9,7 +9,12 @@ Module contents
 Submodules
 ----------
 
-lintrans.gui.plots.plot\_widget module
---------------------------------------
+lintrans.gui.plots.classes module
+---------------------------------
 
-.. automodule:: lintrans.gui.plots.plot_widget
+.. automodule:: lintrans.gui.plots.classes
+
+lintrans.gui.plots.widgets module
+---------------------------------
+
+.. automodule:: lintrans.gui.plots.widgets
