@@ -249,7 +249,6 @@ class LintransMainWindow(QMainWindow):
                 self.matrix_wrapper['I'] + (i / steps) * matrix_move
             )
 
-            self.update()
             self.repaint()
 
             time.sleep(0.01)
