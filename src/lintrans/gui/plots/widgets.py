@@ -1,5 +1,7 @@
 """This module provides the actual widgets that can be used to visualize transformations in the GUI."""
 
+from __future__ import annotations
+
 from PyQt5.QtGui import QPainter, QPaintEvent
 
 from .classes import VectorGridPlot
@@ -43,4 +45,3 @@ class VisualizeTransformationWidget(VectorGridPlot):
         self.draw_background(painter)
         self.draw_transformed_grid(painter)
         painter.end()
-
