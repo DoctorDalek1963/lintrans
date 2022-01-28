@@ -21,7 +21,9 @@ class VisualizeTransformationWidget(VectorGridPlot):
         super().__init__(*args, **kwargs)
 
     def visualize_matrix_transformation(self, matrix: MatrixType) -> None:
-        """Transform the grid by the given matrix and update to visualize the transformation.
+        """Transform the grid by the given matrix.
+
+        .. warning:: This method does not call ``update()``. This must be done by the caller.
 
         .. note::
            This method transforms the background grid, not the basis vectors. This
@@ -32,7 +34,6 @@ class VisualizeTransformationWidget(VectorGridPlot):
         """
         self.point_i = (matrix[0][0], matrix[1][0])
         self.point_j = (matrix[0][1], matrix[1][1])
-        self.update()
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """Handle a ``QPaintEvent`` by drawing the background grid and the transformed grid.

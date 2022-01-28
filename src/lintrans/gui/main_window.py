@@ -231,11 +231,9 @@ class LintransMainWindow(QMainWindow):
 
     def render_expression(self) -> None:
         """Render the transformation given by the expression in the input box."""
-        self.plot.visualize_matrix_transformation(
-            self.matrix_wrapper.evaluate_expression(
-                self.lineedit_expression_box.text()
-            )
-        )
+        matrix = self.matrix_wrapper.evaluate_expression(self.lineedit_expression_box.text())
+        self.plot.visualize_matrix_transformation(matrix)
+        self.update()
 
     def animate_expression(self) -> None:
         """Animate from the identity to the transformation given by the expression in the input box."""
