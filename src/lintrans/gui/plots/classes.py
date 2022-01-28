@@ -157,8 +157,6 @@ class VectorGridPlot(BackgroundPlot):
         vector_x, vector_y = vector
         point_x, point_y = point
 
-        print(max_x, max_y, vector_x, vector_y, point_x, point_y)
-
         # We want to use y = mx + c but m = y / x and if either of those are 0, then this
         # equation is harder to work with, so we deal with these edge cases first
         if abs(vector_x) < 1e-12 and abs(vector_y) < 1e-12:
