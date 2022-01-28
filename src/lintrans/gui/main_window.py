@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+import time
 import webbrowser
 from copy import deepcopy
 from typing import Type
@@ -236,8 +237,25 @@ class LintransMainWindow(QMainWindow):
 
     def animate_expression(self) -> None:
         """Animate the expression in the input box, and then clear the box."""
-        # TODO: Animate the expression
-        self.lineedit_expression_box.setText('')
+        self.button_render.setEnabled(False)
+        self.button_animate.setEnabled(False)
+
+        matrix = self.matrix_wrapper.evaluate_expression(self.lineedit_expression_box.text())
+        matrix_move = matrix - self.matrix_wrapper['I']
+        steps: int = 100
+
+        for i in range(0, steps + 1):
+            self.plot.visualize_matrix_transformation(
+                self.matrix_wrapper['I'] + (i / steps) * matrix_move
+            )
+
+            self.update()
+            self.repaint()
+
+            time.sleep(0.01)
+
+        self.button_render.setEnabled(False)
+        self.button_animate.setEnabled(False)
 
     def dialog_define_matrix(self, dialog_class: Type[DefineDialog]) -> None:
         """Open a generic definition dialog to define a new matrix.
