@@ -8,6 +8,8 @@ import webbrowser
 from copy import deepcopy
 from typing import Type
 
+import numpy as np
+from numpy import linalg
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QApplication, QHBoxLayout, QMainWindow, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
@@ -228,7 +230,7 @@ class LintransMainWindow(QMainWindow):
         self.button_animate.setEnabled(valid)
 
     def render_expression(self) -> None:
-        """Render the expression in the input box, and then clear the box."""
+        """Render the transformation given by the expression in the input box."""
         self.plot.visualize_matrix_transformation(
             self.matrix_wrapper.evaluate_expression(
                 self.lineedit_expression_box.text()
@@ -236,21 +238,55 @@ class LintransMainWindow(QMainWindow):
         )
 
     def animate_expression(self) -> None:
-        """Animate the expression in the input box, and then clear the box."""
+        """Animate from the identity to the transformation given by the expression in the input box."""
         self.button_render.setEnabled(False)
         self.button_animate.setEnabled(False)
 
-        matrix = self.matrix_wrapper.evaluate_expression(self.lineedit_expression_box.text())
-        matrix_move = matrix - self.matrix_wrapper['I']
+        # Get the target matrix and it's determinant
+        matrix_target = self.matrix_wrapper.evaluate_expression(self.lineedit_expression_box.text())
+        det_target = linalg.det(matrix_target)
+
+        identity = self.matrix_wrapper['I']
         steps: int = 100
 
         for i in range(0, steps + 1):
-            self.plot.visualize_matrix_transformation(
-                self.matrix_wrapper['I'] + (i / steps) * matrix_move
-            )
+            # This proportion is how far we are through the loop
+            proportion = i / steps
+
+            # matrix_a is the identity plus some part of the target, scaled by the proportion
+            # If we just used matrix_a, then things would animate, but the determinants would be weird
+            matrix_a = identity + proportion * (matrix_target - identity)
+
+            # So to fix the determinant problem, we get the determinant of matrix_a and use it to normalise
+            det_a = linalg.det(matrix_a)
+
+            # For a 2x2 matrix A and a scalar c, we know that det(cA) = c^2 det(A)
+            # We want B = cA such that det(B) = 1, so then we can scale it with the animation
+            # So we get c^2 det(A) = 1 => c = sqrt(1 / abs(det(A)))
+            # Then we scale A down to get a determinant of 1, and call that matrix_b
+            if det_a == 0:
+                c = 0
+            else:
+                c = np.sqrt(1 / abs(det_a))
+
+            matrix_b = c * matrix_a
+
+            # matrix_c is the final matrix that we transform by
+            # It's B, but we scale it up over time to have the target determinant
+
+            # We want some C = dB such that det(C) is some target determinant T
+            # det(dB) = d^2 det(B) = T => d = sqrt(abs(T / det(B))
+            # But we defined B to have det 1, so we can ignore it there
+
+            # We're also subtracting 1 and multiplying by the proportion and then adding one
+            # This just scales the determinant along with the animation
+            scalar = 1 + proportion * (np.sqrt(abs(det_target)) - 1)
+
+            matrix_c = scalar * matrix_b
+
+            self.plot.visualize_matrix_transformation(matrix_c)
 
             self.repaint()
-
             time.sleep(0.01)
 
         self.button_render.setEnabled(True)
