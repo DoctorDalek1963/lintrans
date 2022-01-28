@@ -166,6 +166,12 @@ class LintransMainWindow(QMainWindow):
 
         # Render buttons
 
+        self.button_reset = QtWidgets.QPushButton(self)
+        self.button_reset.setText('Reset')
+        self.button_reset.clicked.connect(self.reset_transformation)
+        self.button_reset.setToolTip('Reset the visualized transformation back to the identity<br><b>(Ctrl + R)</b>')
+        QShortcut(QKeySequence('Ctrl+R'), self).activated.connect(self.button_reset.click)
+
         self.button_render = QtWidgets.QPushButton(self)
         self.button_render.setText('Render')
         self.button_render.setEnabled(False)
@@ -201,6 +207,7 @@ class LintransMainWindow(QMainWindow):
 
         self.vlay_render = QVBoxLayout()
         self.vlay_render.setSpacing(20)
+        self.vlay_render.addWidget(self.button_reset)
         self.vlay_render.addWidget(self.button_animate)
         self.vlay_render.addWidget(self.button_render)
 
@@ -229,11 +236,16 @@ class LintransMainWindow(QMainWindow):
         self.button_render.setEnabled(valid)
         self.button_animate.setEnabled(valid)
 
+    def reset_transformation(self) -> None:
+        """Reset the visualized transformation back to the identity."""
+        self.plot.visualize_matrix_transformation(self.matrix_wrapper['I'])
+        self.plot.update()
+
     def render_expression(self) -> None:
         """Render the transformation given by the expression in the input box."""
         matrix = self.matrix_wrapper.evaluate_expression(self.lineedit_expression_box.text())
         self.plot.visualize_matrix_transformation(matrix)
-        self.update()
+        self.plot.update()
 
     def animate_expression(self) -> None:
         """Animate from the identity to the transformation given by the expression in the input box."""
@@ -284,7 +296,7 @@ class LintransMainWindow(QMainWindow):
 
             self.plot.visualize_matrix_transformation(matrix_c)
 
-            self.repaint()
+            self.plot.repaint()
             time.sleep(0.01)
 
         self.button_render.setEnabled(True)
