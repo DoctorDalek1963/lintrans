@@ -179,6 +179,7 @@ class VectorGridPlot(BackgroundPlot):
             # If both components of the vector are practically 0, then we can't render any grid lines
             return
 
+        # Draw vertical lines
         elif abs(vector_x) < 1e-12:
             painter.drawLine(self.trans_x(0), 0, self.trans_x(0), self.height())
 
@@ -196,6 +197,7 @@ class VectorGridPlot(BackgroundPlot):
                     self.height()
                 )
 
+        # Draw horizontal lines
         elif abs(vector_y) < 1e-12:
             painter.drawLine(0, self.trans_y(0), self.width(), self.trans_y(0))
 
@@ -217,17 +219,7 @@ class VectorGridPlot(BackgroundPlot):
             m = vector_y / vector_x
             c = point_y - m * point_x
 
-            # For c = 0
-            painter.drawLine(
-                *self.trans_coords(
-                    -1 * max_x,
-                    m * -1 * max_x
-                ),
-                *self.trans_coords(
-                    max_x,
-                    m * max_x
-                )
-            )
+            self.draw_oblique_line(painter, m, 0)
 
             # We keep looping and increasing the multiple of c until we stop drawing lines on the canvas
             multiple_of_c = 1
