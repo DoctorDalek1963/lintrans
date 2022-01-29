@@ -66,7 +66,7 @@ class VisualizeTransformationWidget(VectorGridPlot):
         nx = x / np.sqrt(x * x + y * y)
         ny = y / np.sqrt(x * x + y * y)
 
-        # We choose a length and do some magic to find the steps in the x and y directions
+        # We choose a length and find the steps in the x and y directions
         length = 0.15
         dx = length * (-nx - ny)
         dy = length * (nx - ny)
