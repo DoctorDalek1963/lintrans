@@ -350,6 +350,31 @@ should be done by the user.</p>
 be controlled with the <a class="reference internal" href="#lintrans.gui.plots.widgets.VisualizeTransformationWidget.visualize_matrix_transformation" title="lintrans.gui.plots.widgets.VisualizeTransformationWidget.visualize_matrix_transformation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">visualize_matrix_transformation()</span></code></a> method.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.plots.widgets.VisualizeTransformationWidget.draw_arrowhead_away_from_origin">
+<span class="sig-name descname"><span class="pre">draw_arrowhead_away_from_origin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.widgets.VisualizeTransformationWidget.draw_arrowhead_away_from_origin" title="Permalink to this definition"></a></dt>
+<dd><p>Draw an arrowhead at <code class="docutils literal notranslate"><span class="pre">point</span></code>, pointing away from the origin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>painter</strong> (<em>QPainter</em>) – The <code class="docutils literal notranslate"><span class="pre">QPainter</span></code> object to use to draw the arrowheads with</p></li>
+<li><p><strong>point</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – The point to draw the arrowhead at, given in grid coords</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.plots.widgets.VisualizeTransformationWidget.draw_vector_arrowheads">
+<span class="sig-name descname"><span class="pre">draw_vector_arrowheads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.widgets.VisualizeTransformationWidget.draw_vector_arrowheads" title="Permalink to this definition"></a></dt>
+<dd><p>Draw arrowheads at the tips of the basis vectors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>painter</strong> (<em>QPainter</em>) – The <code class="docutils literal notranslate"><span class="pre">QPainter</span></code> object to use to draw the arrowheads with</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 </section>
