@@ -21,6 +21,8 @@ class VisualizeTransformationWidget(VectorGridPlot):
         """Create the widget, passing ``*args`` and ``**kwargs`` to the superclass constructor."""
         super().__init__(*args, **kwargs)
 
+        self.arrowhead_length = 0.15
+
     def visualize_matrix_transformation(self, matrix: MatrixType) -> None:
         """Transform the grid by the given matrix.
 
@@ -63,11 +65,15 @@ class VisualizeTransformationWidget(VectorGridPlot):
         # We have to normalize them, or else the size of the arrowhead will
         # scale with the distance of the point from the origin
         x, y = point
-        nx = x / np.sqrt(x * x + y * y)
-        ny = y / np.sqrt(x * x + y * y)
+        vector_length = np.sqrt(x * x + y * y)
+        nx = x / vector_length
+        ny = y / vector_length
 
         # We choose a length and find the steps in the x and y directions
-        length = 0.15
+        length = min(
+            self.arrowhead_length * self.default_grid_spacing / self.grid_spacing,
+            vector_length
+        )
         dx = length * (-nx - ny)
         dy = length * (nx - ny)
 
