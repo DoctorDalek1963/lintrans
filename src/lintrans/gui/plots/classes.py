@@ -216,42 +216,71 @@ class VectorGridPlot(BackgroundPlot):
                 )
             )
 
-            # Count up how many multiples of c we can have without wasting time rendering lines off screen
-            multiples_of_c: int = 0
-            ii: int = 1
-            while True:
-                y1 = m * max_x + ii * c
-                y2 = -1 * m * max_x + ii * c
+            # We keep looping and increasing the multiple of c until we stop drawing lines on the canvas
+            multiple_of_c = 1
+            while self.draw_pair_of_oblique_lines(painter, m, multiple_of_c * c):
+                multiple_of_c += 1
 
-                if y1 < max_y or y2 < max_y:
-                    multiples_of_c += 1
-                    ii += 1
+    def draw_pair_of_oblique_lines(self, painter: QPainter, m: float, c: float) -> bool:
+        """Draw a pair of oblique lines, using the equation y = mx + c.
 
-                else:
-                    break
+        This method just calls :meth:`draw_oblique_line` with ``c`` and ``-c``,
+        and returns True if either call returned True.
 
-            # Once we know how many lines we can draw, we just draw them all
-            for i in range(1, multiples_of_c + 1):
-                painter.drawLine(
-                    *self.trans_coords(
-                        -1 * max_x,
-                        m * -1 * max_x + i * c
-                    ),
-                    *self.trans_coords(
-                        max_x,
-                        m * max_x + i * c
-                    )
-                )
-                painter.drawLine(
-                    *self.trans_coords(
-                        -1 * max_x,
-                        m * -1 * max_x - i * c
-                    ),
-                    *self.trans_coords(
-                        max_x,
-                        m * max_x - i * c
-                    )
-                )
+        :param QPainter painter: The ``QPainter`` object to use for drawing the vectors and grid lines
+        :param float m: The gradient of the lines to draw
+        :param float c: The y-intercept of the lines to draw. We use the positive and negative versions
+        :returns bool: Whether we were able to draw any lines on the canvas
+        """
+        return any([
+            self.draw_oblique_line(painter, m, c),
+            self.draw_oblique_line(painter, m, -c)
+        ])
+
+    def draw_oblique_line(self, painter: QPainter, m: float, c: float) -> bool:
+        """Draw an oblique line, using the equation y = mx + c.
+
+        We only draw the part of the line that fits within the canvas, returning True if
+        we were able to draw a line within the boundaries, and False if we couldn't draw a line
+
+        :param QPainter painter: The ``QPainter`` object to use for drawing the vectors and grid lines
+        :param float m: The gradient of the line to draw
+        :param float c: The y-intercept of the line to draw
+        :returns bool: Whether we were able to draw a line on the canvas
+        """
+        max_x, max_y = self.grid_corner()
+
+        # These variable names are shortened for convenience
+        # myi is max_y_intersection, mmyi is minus_max_y_intersection, etc.
+        myi = (max_y - c) / m
+        mmyi = (-max_y - c) / m
+        mxi = max_x * m + c
+        mmxi = -max_x * m + c
+
+        # The inner list here is a list of coords, or None
+        # If an intersection fits within the bounds, then we keep its coord,
+        # else it is None, and then gets discarded from the points list
+        # By the end, points is a list of two coords, or an empty list
+        points: list[tuple[float, float]] = [
+            x for x in [
+                (myi, max_y) if -max_x < myi < max_x else None,
+                (mmyi, -max_y) if -max_x < mmyi < max_x else None,
+                (max_x, mxi) if -max_y < mxi < max_y else None,
+                (-max_x, mmxi) if -max_y < mmxi < max_y else None
+            ] if x is not None
+        ]
+
+        # If no intersections fit on the canvas
+        if len(points) < 2:
+            return False
+
+        # If we can, then draw the line
+        else:
+            painter.drawLine(
+                *self.trans_coords(*points[0]),
+                *self.trans_coords(*points[1])
+            )
+            return True
 
     def draw_transformed_grid(self, painter: QPainter) -> None:
         """Draw the transformed version of the grid, given by the unit vectors.
