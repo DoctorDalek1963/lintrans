@@ -112,6 +112,11 @@ by the subclass.</p>
 <p>I would make this class have <code class="docutils literal notranslate"><span class="pre">metaclass=abc.ABCMeta</span></code>, but I can’t because it subclasses <code class="docutils literal notranslate"><span class="pre">QWidget</span></code>,
 and a every superclass of a class must have the same metaclass, and <code class="docutils literal notranslate"><span class="pre">QWidget</span></code> is not an abstract class.</p>
 </div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.BackgroundPlot.default_grid_spacing">
+<span class="sig-name descname"><span class="pre">default_grid_spacing</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">50</span></em><a class="headerlink" href="#lintrans.gui.plots.classes.BackgroundPlot.default_grid_spacing" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.plots.classes.BackgroundPlot.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lintrans.gui.plots.classes.BackgroundPlot.__init__" title="Permalink to this definition"></a></dt>
@@ -199,6 +204,12 @@ and a every superclass of a class must have the same metaclass, and <code class=
 <dd class="field-odd"><p><strong>painter</strong> (<em>QPainter</em>) – The <code class="docutils literal notranslate"><span class="pre">QPainter</span></code> object to use for drawing the background</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.BackgroundPlot.wheelEvent">
+<span class="sig-name descname"><span class="pre">wheelEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QWheelEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.BackgroundPlot.wheelEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Handle a <code class="docutils literal notranslate"><span class="pre">QWheelEvent</span></code> by zooming in or our of the grid.</p>
 </dd></dl>
 
 </dd></dl>
