@@ -250,6 +250,46 @@ All useful behaviour should be implemented by any subclass.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.draw_pair_of_oblique_lines">
+<span class="sig-name descname"><span class="pre">draw_pair_of_oblique_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.draw_pair_of_oblique_lines" title="Permalink to this definition"></a></dt>
+<dd><p>Draw a pair of oblique lines, using the equation y = mx + c.</p>
+<p>This method just calls <a class="reference internal" href="#lintrans.gui.plots.classes.VectorGridPlot.draw_oblique_line" title="lintrans.gui.plots.classes.VectorGridPlot.draw_oblique_line"><code class="xref py py-meth docutils literal notranslate"><span class="pre">draw_oblique_line()</span></code></a> with <code class="docutils literal notranslate"><span class="pre">c</span></code> and <code class="docutils literal notranslate"><span class="pre">-c</span></code>,
+and returns True if either call returned True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>painter</strong> (<em>QPainter</em>) – The <code class="docutils literal notranslate"><span class="pre">QPainter</span></code> object to use for drawing the vectors and grid lines</p></li>
+<li><p><strong>m</strong> (<em>float</em>) – The gradient of the lines to draw</p></li>
+<li><p><strong>c</strong> (<em>float</em>) – The y-intercept of the lines to draw. We use the positive and negative versions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns bool</dt>
+<dd class="field-even"><p>Whether we were able to draw any lines on the canvas</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.draw_oblique_line">
+<span class="sig-name descname"><span class="pre">draw_oblique_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.draw_oblique_line" title="Permalink to this definition"></a></dt>
+<dd><p>Draw an oblique line, using the equation y = mx + c.</p>
+<p>We only draw the part of the line that fits within the canvas, returning True if
+we were able to draw a line within the boundaries, and False if we couldn’t draw a line</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>painter</strong> (<em>QPainter</em>) – The <code class="docutils literal notranslate"><span class="pre">QPainter</span></code> object to use for drawing the vectors and grid lines</p></li>
+<li><p><strong>m</strong> (<em>float</em>) – The gradient of the line to draw</p></li>
+<li><p><strong>c</strong> (<em>float</em>) – The y-intercept of the line to draw</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns bool</dt>
+<dd class="field-even"><p>Whether we were able to draw a line on the canvas</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.draw_transformed_grid">
 <span class="sig-name descname"><span class="pre">draw_transformed_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.draw_transformed_grid" title="Permalink to this definition"></a></dt>
 <dd><p>Draw the transformed version of the grid, given by the unit vectors.</p>
