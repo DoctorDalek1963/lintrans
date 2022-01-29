@@ -129,6 +129,12 @@ class LintransMainWindow(QMainWindow):
         # self.button_change_display_settings.clicked.connect(self.change_display_settings)
         self.button_change_display_settings.setToolTip('Change which things are rendered on the plot')
 
+        self.button_reset_zoom = QtWidgets.QPushButton(self)
+        self.button_reset_zoom.setText('Reset zoom')
+        self.button_reset_zoom.clicked.connect(self.reset_zoom)
+        self.button_reset_zoom.setToolTip('Reset the zoom level back to normal<br><b>(Ctrl + Shift + R)</b>')
+        QShortcut(QKeySequence('Ctrl+Shift+R'), self).activated.connect(self.button_reset_zoom.click)
+
         # Define new matrix buttons
 
         self.label_define_new_matrix = QtWidgets.QLabel(self)
@@ -196,6 +202,7 @@ class LintransMainWindow(QMainWindow):
         self.vlay_misc_buttons.setSpacing(20)
         self.vlay_misc_buttons.addWidget(self.button_create_polygon)
         self.vlay_misc_buttons.addWidget(self.button_change_display_settings)
+        self.vlay_misc_buttons.addWidget(self.button_reset_zoom)
 
         self.vlay_define_new_matrix = QVBoxLayout()
         self.vlay_define_new_matrix.setSpacing(20)
@@ -235,6 +242,11 @@ class LintransMainWindow(QMainWindow):
         valid = self.matrix_wrapper.is_valid_expression(self.lineedit_expression_box.text())
         self.button_render.setEnabled(valid)
         self.button_animate.setEnabled(valid)
+
+    def reset_zoom(self) -> None:
+        """Reset the zoom level back to normal."""
+        self.plot.grid_spacing = self.plot.__class__.default_grid_spacing
+        self.plot.update()
 
     def reset_transformation(self) -> None:
         """Reset the visualized transformation back to the identity."""

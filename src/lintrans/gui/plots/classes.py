@@ -5,7 +5,7 @@ from __future__ import annotations
 from abc import abstractmethod
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor, QPainter, QPaintEvent, QPen
+from PyQt5.QtGui import QColor, QPainter, QPaintEvent, QPen, QWheelEvent
 from PyQt5.QtWidgets import QWidget
 
 
@@ -23,6 +23,8 @@ class BackgroundPlot(QWidget):
        I would make this class have ``metaclass=abc.ABCMeta``, but I can't because it subclasses ``QWidget``,
        and a every superclass of a class must have the same metaclass, and ``QWidget`` is not an abstract class.
     """
+
+    default_grid_spacing: int = 50
 
     def __init__(self, *args, **kwargs):
         """Create the widget and setup backend stuff for rendering.
@@ -42,7 +44,7 @@ class BackgroundPlot(QWidget):
         self.colour_background_grid = QColor(128, 128, 128)
         self.colour_background_axes = QColor(0, 0, 0)
 
-        self.grid_spacing: int = 50
+        self.grid_spacing = BackgroundPlot.default_grid_spacing
         self.width_background_grid: float = 0.3
 
     @property
@@ -113,6 +115,17 @@ class BackgroundPlot(QWidget):
         painter.setPen(QPen(self.colour_background_axes, self.width_background_grid))
         painter.drawLine(self.width() // 2, 0, self.width() // 2, self.height())
         painter.drawLine(0, self.height() // 2, self.width(), self.height() // 2)
+
+    def wheelEvent(self, event: QWheelEvent) -> None:
+        """Handle a ``QWheelEvent`` by zooming in or our of the grid."""
+        # angleDelta() returns a number of units equal to 8 times the number of degrees rotated
+        degrees = event.angleDelta() / 8
+
+        if degrees is not None:
+            self.grid_spacing = max(1, self.grid_spacing + degrees.y())
+
+        event.accept()
+        self.update()
 
 
 class VectorGridPlot(BackgroundPlot):
