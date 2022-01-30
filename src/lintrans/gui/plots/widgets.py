@@ -46,10 +46,13 @@ class VisualizeTransformationWidget(VectorGridPlot):
         """
         painter = QPainter()
         painter.begin(self)
+
         self.draw_background(painter)
         self.draw_transformed_grid(painter)
         self.draw_vector_arrowheads(painter)
+
         painter.end()
+        event.accept()
 
     def draw_arrowhead_away_from_origin(self, painter: QPainter, point: tuple[float, float]) -> None:
         """Draw an arrowhead at ``point``, pointing away from the origin.
