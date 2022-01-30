@@ -11,6 +11,7 @@ from typing import Type
 import numpy as np
 from numpy import linalg
 from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QApplication, QHBoxLayout, QMainWindow, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
@@ -308,8 +309,12 @@ class LintransMainWindow(QMainWindow):
 
             self.plot.visualize_matrix_transformation(matrix_c)
 
-            self.plot.repaint()
-            time.sleep(0.01)
+            # We schedule the plot to be updated, tell the event loop to process events,
+            # and asynchronously sleep for 10ms
+            # This allows for other events to be processed while animating, like zooming in and out
+            self.plot.update()
+            QApplication.processEvents()
+            QThread.msleep(10)
 
         self.button_render.setEnabled(True)
         self.button_animate.setEnabled(True)
