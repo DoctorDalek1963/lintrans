@@ -246,7 +246,7 @@ class LintransMainWindow(QMainWindow):
 
     def reset_zoom(self) -> None:
         """Reset the zoom level back to normal."""
-        self.plot.grid_spacing = self.plot.__class__.default_grid_spacing
+        self.plot.grid_spacing = self.plot.default_grid_spacing
         self.plot.update()
 
     def reset_transformation(self) -> None:
