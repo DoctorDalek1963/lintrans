@@ -69,6 +69,10 @@ class VisualizeTransformationWidget(VectorGridPlot):
         # scale with the distance of the point from the origin
         x, y = point
         vector_length = np.sqrt(x * x + y * y)
+
+        if vector_length < 1e-12:
+            return
+
         nx = x / vector_length
         ny = y / vector_length
 
