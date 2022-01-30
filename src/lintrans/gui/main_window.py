@@ -304,7 +304,15 @@ class LintransMainWindow(QMainWindow):
             # This just scales the determinant along with the animation
             scalar = 1 + proportion * (np.sqrt(abs(det_target)) - 1)
 
-            matrix_c = scalar * matrix_b
+            # If we're animating towards a det 0 matrix, then we don't want to scale the
+            # determinant with the animation, because this makes the process not work
+            # I'm doing this here rather than wrapping the whole animation logic in an
+            # if block mainly because this looks nicer than an extra level of indentation
+            # The extra processing cost is negligible thanks to NumPy's optimizations
+            if det_target == 0:
+                matrix_c = matrix_a
+            else:
+                matrix_c = scalar * matrix_b
 
             self.plot.visualize_matrix_transformation(matrix_c)
 
