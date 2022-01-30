@@ -12,7 +12,8 @@ from numpy import linalg
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QApplication, QHBoxLayout, QMainWindow, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
+from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox,
+                             QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout)
 
 from lintrans.matrices import MatrixWrapper
 from .dialogs import DefineAsAnExpressionDialog, DefineAsARotationDialog, DefineDialog, DefineNumericallyDialog
@@ -255,7 +256,13 @@ class LintransMainWindow(QMainWindow):
 
     def render_expression(self) -> None:
         """Render the transformation given by the expression in the input box."""
-        matrix = self.matrix_wrapper.evaluate_expression(self.lineedit_expression_box.text())
+        try:
+            matrix = self.matrix_wrapper.evaluate_expression(self.lineedit_expression_box.text())
+
+        except np.linalg.LinAlgError:
+            self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
+            return
+
         self.plot.visualize_matrix_transformation(matrix)
         self.plot.update()
 
@@ -265,7 +272,13 @@ class LintransMainWindow(QMainWindow):
         self.button_animate.setEnabled(False)
 
         # Get the target matrix and it's determinant
-        matrix_target = self.matrix_wrapper.evaluate_expression(self.lineedit_expression_box.text())
+        try:
+            matrix_target = self.matrix_wrapper.evaluate_expression(self.lineedit_expression_box.text())
+
+        except np.linalg.LinAlgError:
+            self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
+            return
+
         det_target = linalg.det(matrix_target)
 
         identity = self.matrix_wrapper['I']
@@ -361,6 +374,26 @@ class LintransMainWindow(QMainWindow):
         :type matrix_wrapper: MatrixWrapper
         """
         self.matrix_wrapper = matrix_wrapper
+
+    def show_error_message(self, title: str, text: str, info: str | None = None) -> None:
+        """Show an error message in a dialog box.
+
+        :param str title: The window title of the dialog box
+        :param str text: The simple error message
+        :param info: The more informative error message
+        :type info: Optional[str]
+        """
+        dialog = QMessageBox(self)
+        dialog.setIcon(QMessageBox.Critical)
+        dialog.setWindowTitle(title)
+        dialog.setText(text)
+
+        if info is not None:
+            dialog.setInformativeText(info)
+
+        dialog.open()
+
+        dialog.finished.connect(self.update_render_buttons)
 
 
 def main(args: list[str]) -> None:
