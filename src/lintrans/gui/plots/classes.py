@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from abc import abstractmethod
 
+import numpy as np
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QPainter, QPaintEvent, QPen, QWheelEvent
 from PyQt5.QtWidgets import QWidget
@@ -173,9 +174,24 @@ class VectorGridPlot(BackgroundPlot):
         vector_x, vector_y = vector
         point_x, point_y = point
 
-        # We want to use y = mx + c but m = y / x and if either of those are 0, then this
-        # equation is harder to work with, so we deal with these edge cases first
-        if abs(vector_x) < 1e-12 and abs(vector_y) < 1e-12:
+        # If the determinant is 0
+        if vector_x * point_y - vector_y * point_x < 1e-12:
+            rank = np.linalg.matrix_rank(
+                np.array([
+                    [vector_x, point_x],
+                    [vector_y, point_x]
+                ])
+            )
+
+            # If the matrix is rank 1, then we can draw the column space line
+            if rank == 1:
+                self.draw_oblique_line(painter, vector_y / vector_x, 0)
+
+            # If the rank is 0, then we don't draw any lines
+            else:
+                return
+
+        elif abs(vector_x) < 1e-12 and abs(vector_y) < 1e-12:
             # If both components of the vector are practically 0, then we can't render any grid lines
             return
 
@@ -215,7 +231,8 @@ class VectorGridPlot(BackgroundPlot):
                     self.trans_y(-1 * (i + 1) * point_y)
                 )
 
-        else:  # If the line is not horizontal or vertical, then we can use y = mx + c
+        # If the line is oblique, then we can use y = mx + c
+        else:
             m = vector_y / vector_x
             c = point_y - m * point_x
 
