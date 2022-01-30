@@ -175,11 +175,11 @@ class VectorGridPlot(BackgroundPlot):
         point_x, point_y = point
 
         # If the determinant is 0
-        if vector_x * point_y - vector_y * point_x < 1e-12:
+        if abs(vector_x * point_y - vector_y * point_x) < 1e-12:
             rank = np.linalg.matrix_rank(
                 np.array([
                     [vector_x, point_x],
-                    [vector_y, point_x]
+                    [vector_y, point_y]
                 ])
             )
 
