@@ -18,6 +18,7 @@ from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox
 from lintrans.matrices import MatrixWrapper
 from .dialogs import DefineAsAnExpressionDialog, DefineAsARotationDialog, DefineDialog, DefineNumericallyDialog
 from .plots import VisualizeTransformationWidget
+from lintrans.typing import MatrixType
 
 
 class LintransMainWindow(QMainWindow):
@@ -263,6 +264,10 @@ class LintransMainWindow(QMainWindow):
             self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
             return
 
+        if self.is_matrix_too_big(matrix):
+            self.show_error_message('Matrix too big', "This matrix doesn't fit on the canvas")
+            return
+
         self.plot.visualize_matrix_transformation(matrix)
         self.plot.update()
 
@@ -326,6 +331,10 @@ class LintransMainWindow(QMainWindow):
                 matrix_c = matrix_a
             else:
                 matrix_c = scalar * matrix_b
+
+            if self.is_matrix_too_big(matrix_c):
+                self.show_error_message('Matrix too big', "This matrix doesn\'t fit on the canvas")
+                return
 
             self.plot.visualize_matrix_transformation(matrix_c)
 
@@ -394,6 +403,22 @@ class LintransMainWindow(QMainWindow):
         dialog.open()
 
         dialog.finished.connect(self.update_render_buttons)
+
+    def is_matrix_too_big(self, matrix: MatrixType) -> bool:
+        """Check if the given matrix will actually fit onto the canvas.
+
+        Convert the elements of the matrix to canvas coords and make sure they fit within Qt's 32-bit integer limit.
+
+        :param MatrixType matrix: The matrix to check
+        :returns bool: Whether the matrix fits on the canvas
+        """
+        coords: list[tuple[int, int]] = [self.plot.trans_coords(*vector) for vector in matrix.T]
+
+        for x, y in coords:
+            if not (-2147483648 <= x <= 2147483647 and -2147483648 <= y <= 2147483647):
+                return True
+
+        return False
 
 
 def main(args: list[str]) -> None:
