@@ -190,6 +190,21 @@ connected to the <code class="docutils literal notranslate"><span class="pre">di
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.main_window.LintransMainWindow.is_matrix_too_big">
+<span class="sig-name descname"><span class="pre">is_matrix_too_big</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lintrans.typing.MatrixType</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#lintrans.gui.main_window.LintransMainWindow.is_matrix_too_big" title="Permalink to this definition"></a></dt>
+<dd><p>Check if the given matrix will actually fit onto the canvas.</p>
+<p>Convert the elements of the matrix to canvas coords and make sure they fit within Qt’s 32-bit integer limit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>matrix</strong> (<em>MatrixType</em>) – The matrix to check</p>
+</dd>
+<dt class="field-even">Returns bool</dt>
+<dd class="field-even"><p>Whether the matrix fits on the canvas</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
