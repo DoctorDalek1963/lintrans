@@ -5,6 +5,7 @@ from numpy import linalg as la
 import pytest
 
 from lintrans.matrices import MatrixWrapper, create_rotation_matrix
+from lintrans.typing import MatrixType
 
 
 def preset_wrapper() -> MatrixWrapper:
@@ -248,3 +249,30 @@ def test_value_errors(wrapper: MatrixWrapper) -> None:
         wrapper.evaluate_expression('At')
         wrapper.evaluate_expression('A^t')
         wrapper.evaluate_expression('3^2')
+
+
+def test_linalgerror() -> None:
+    """Test that certain expressions raise np.linalg.LinAlgError."""
+    matrix_a: MatrixType = np.array([
+        [0, 0],
+        [0, 0]
+    ])
+
+    matrix_b: MatrixType = np.array([
+        [1, 2],
+        [1, 2]
+    ])
+
+    wrapper = MatrixWrapper()
+    wrapper['A'] = matrix_a
+    wrapper['B'] = matrix_b
+
+    assert (wrapper.evaluate_expression('A') == matrix_a).all()
+    assert (wrapper.evaluate_expression('B') == matrix_b).all()
+
+    with pytest.raises(np.linalg.LinAlgError):
+        wrapper.evaluate_expression('A^-1')
+        wrapper.evaluate_expression('B^-1')
+
+    assert (wrapper['A'] == matrix_a).all()
+    assert (wrapper['B'] == matrix_b).all()
