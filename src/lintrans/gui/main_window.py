@@ -333,7 +333,7 @@ class LintransMainWindow(QMainWindow):
                 matrix_c = scalar * matrix_b
 
             if self.is_matrix_too_big(matrix_c):
-                self.show_error_message('Matrix too big', "This matrix doesn\'t fit on the canvas")
+                self.show_error_message('Matrix too big', "This matrix doesn't fit on the canvas")
                 return
 
             self.plot.visualize_matrix_transformation(matrix_c)
