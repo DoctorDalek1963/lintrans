@@ -261,7 +261,7 @@ class LintransMainWindow(QMainWindow):
         try:
             matrix = self.matrix_wrapper.evaluate_expression(self.lineedit_expression_box.text())
 
-        except np.linalg.LinAlgError:
+        except linalg.LinAlgError:
             self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
             return
 
@@ -273,7 +273,7 @@ class LintransMainWindow(QMainWindow):
         self.plot.update()
 
     def animate_expression(self) -> None:
-        """Animate from the identity to the transformation given by the expression in the input box."""
+        """Animate from the current matrix to the matrix in the expression box."""
         self.button_render.setEnabled(False)
         self.button_animate.setEnabled(False)
 
@@ -281,39 +281,48 @@ class LintransMainWindow(QMainWindow):
         try:
             matrix_target = self.matrix_wrapper.evaluate_expression(self.lineedit_expression_box.text())
 
-        except np.linalg.LinAlgError:
+        except linalg.LinAlgError:
             self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
             return
 
-        det_target = linalg.det(matrix_target)
+        matrix_start: MatrixType = np.array([
+            [self.plot.point_i[0], self.plot.point_j[0]],
+            [self.plot.point_i[1], self.plot.point_j[1]]
+        ])
 
-        identity = self.matrix_wrapper['I']
-        steps: int = 100
+        self.animate_between_matrices(matrix_start, matrix_target)
+
+        self.button_render.setEnabled(True)
+        self.button_animate.setEnabled(True)
+
+    def animate_between_matrices(self, matrix_start: MatrixType, matrix_target: MatrixType, steps: int = 100) -> None:
+        """Animate from the start matrix to the transformation given by the expression in the input box."""
+        det_target = linalg.det(matrix_target)
 
         for i in range(0, steps + 1):
             # This proportion is how far we are through the loop
             proportion = i / steps
 
-            # matrix_a is the identity plus some part of the target, scaled by the proportion
+            # matrix_a is the start matrix plus some part of the target, scaled by the proportion
             # If we just used matrix_a, then things would animate, but the determinants would be weird
-            matrix_a = identity + proportion * (matrix_target - identity)
+            matrix_a = matrix_start + proportion * (matrix_target - matrix_start)
 
             # So to fix the determinant problem, we get the determinant of matrix_a and use it to normalise
             det_a = linalg.det(matrix_a)
 
             # For a 2x2 matrix A and a scalar c, we know that det(cA) = c^2 det(A)
-            # We want B = cA such that det(B) = 1, so then we can scale it with the animation
-            # So we get c^2 det(A) = 1 => c = sqrt(1 / abs(det(A)))
-            # Then we scale A down to get a determinant of 1, and call that matrix_b
+            # We want B = cA such that det(B) = det(start_matrix), so then we can
+            # scale it with the animation, so we get c^2 det(A) = 1 => c = sqrt(1 / abs(det(A)))
+            # Then we scale A to get the determinant we want, and call that matrix_b
             if det_a == 0:
                 c = 0
             else:
-                c = np.sqrt(1 / abs(det_a))
+                c = np.sqrt(linalg.det(matrix_start) / abs(det_a))
 
             matrix_b = c * matrix_a
 
             # matrix_c is the final matrix that we transform by
-            # It's B, but we scale it up over time to have the target determinant
+            # It's B, but we scale it over time to have the target determinant
 
             # We want some C = dB such that det(C) is some target determinant T
             # det(dB) = d^2 det(B) = T => d = sqrt(abs(T / det(B))
@@ -345,9 +354,6 @@ class LintransMainWindow(QMainWindow):
             self.plot.update()
             QApplication.processEvents()
             QThread.msleep(10)
-
-        self.button_render.setEnabled(True)
-        self.button_animate.setEnabled(True)
 
     def dialog_define_matrix(self, dialog_class: Type[DefineDialog]) -> None:
         """Open a generic definition dialog to define a new matrix.
