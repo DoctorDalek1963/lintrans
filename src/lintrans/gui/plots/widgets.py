@@ -112,9 +112,6 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
 
             self.update()
 
-            print(self.dragged_point)
-            print(self.point_i, self.point_j)
-
             event.accept()
 
         event.ignore()
