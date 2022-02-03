@@ -9,7 +9,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
-from lintrans.gui.plots.widgets import DefineVisuallyWidget
+from lintrans.gui.plots import DefineVisuallyWidget
 from lintrans.matrices import create_rotation_matrix, MatrixWrapper
 from lintrans.typing import MatrixType
 
