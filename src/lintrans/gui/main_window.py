@@ -16,10 +16,11 @@ from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox
                              QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout)
 
 from lintrans.matrices import MatrixWrapper
+from lintrans.typing import MatrixType
 from .dialogs import DefineAsAnExpressionDialog, DefineAsARotationDialog, DefineDialog, DefineNumericallyDialog, \
     DefineVisuallyDialog
 from .plots import VisualizeTransformationWidget
-from lintrans.typing import MatrixType
+from .settings import DisplaySettings
 
 
 class LintransMainWindow(QMainWindow):
@@ -36,6 +37,7 @@ class LintransMainWindow(QMainWindow):
         super().__init__()
 
         self.matrix_wrapper = MatrixWrapper()
+        self.display_settings = DisplaySettings()
 
         self.setWindowTitle('Linear Transformations')
         self.setMinimumWidth(750)
@@ -308,7 +310,7 @@ class LintransMainWindow(QMainWindow):
                 # Here we just redraw and allow for other events to be handled while we pause
                 self.plot.update()
                 QApplication.processEvents()
-                QThread.msleep(500)
+                QThread.msleep(self.display_settings.animation_pause_length)
 
         # If there's no commas, then just animate directly from the start to the target
         else:
@@ -319,6 +321,10 @@ class LintransMainWindow(QMainWindow):
             except linalg.LinAlgError:
                 self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
                 return
+
+            # The concept of applicative animation is explained in /gui/settings.py
+            if self.display_settings.applicative_animation:
+                matrix_target = matrix_target @ matrix_start
 
             self.animate_between_matrices(matrix_start, matrix_target)
 
@@ -337,47 +343,51 @@ class LintransMainWindow(QMainWindow):
             # If we just used matrix_a, then things would animate, but the determinants would be weird
             matrix_a = matrix_start + proportion * (matrix_target - matrix_start)
 
-            # So to fix the determinant problem, we get the determinant of matrix_a and use it to normalise
-            det_a = linalg.det(matrix_a)
+            if self.display_settings.animate_determinant:
+                # To fix the determinant problem, we get the determinant of matrix_a and use it to normalise
+                det_a = linalg.det(matrix_a)
 
-            # For a 2x2 matrix A and a scalar c, we know that det(cA) = c^2 det(A)
-            # We want B = cA such that det(B) = det(S), where S is the start matrix,
-            # so then we can scale it with the animation, so we get
-            # det(cA) = c^2 det(A) = det(S) => c = sqrt(abs(det(S) / det(A)))
-            # Then we scale A to get the determinant we want, and call that matrix_b
-            if det_a == 0:
-                c = 0
+                # For a 2x2 matrix A and a scalar c, we know that det(cA) = c^2 det(A)
+                # We want B = cA such that det(B) = det(S), where S is the start matrix,
+                # so then we can scale it with the animation, so we get
+                # det(cA) = c^2 det(A) = det(S) => c = sqrt(abs(det(S) / det(A)))
+                # Then we scale A to get the determinant we want, and call that matrix_b
+                if det_a == 0:
+                    c = 0
+                else:
+                    c = np.sqrt(abs(det_start / det_a))
+
+                matrix_b = c * matrix_a
+                det_b = linalg.det(matrix_b)
+
+                # matrix_to_render is the final matrix that we then render for this frame
+                # It's B, but we scale it over time to have the target determinant
+
+                # We want some C = dB such that det(C) is some target determinant T
+                # det(dB) = d^2 det(B) = T => d = sqrt(abs(T / det(B))
+
+                # We're also subtracting 1 and multiplying by the proportion and then adding one
+                # This just scales the determinant along with the animation
+                scalar = 1 + proportion * (np.sqrt(abs(det_target / det_b)) - 1)
+
+                # If we're animating towards a det 0 matrix, then we don't want to scale the
+                # determinant with the animation, because this makes the process not work
+                # I'm doing this here rather than wrapping the whole animation logic in an
+                # if block mainly because this looks nicer than an extra level of indentation
+                # The extra processing cost is negligible thanks to NumPy's optimizations
+                if det_target == 0:
+                    matrix_to_render = matrix_a
+                else:
+                    matrix_to_render = scalar * matrix_b
+
             else:
-                c = np.sqrt(abs(det_start / det_a))
+                matrix_to_render = matrix_a
 
-            matrix_b = c * matrix_a
-            det_b = linalg.det(matrix_b)
-
-            # matrix_c is the final matrix that we then render for this frame
-            # It's B, but we scale it over time to have the target determinant
-
-            # We want some C = dB such that det(C) is some target determinant T
-            # det(dB) = d^2 det(B) = T => d = sqrt(abs(T / det(B))
-
-            # We're also subtracting 1 and multiplying by the proportion and then adding one
-            # This just scales the determinant along with the animation
-            scalar = 1 + proportion * (np.sqrt(abs(det_target / det_b)) - 1)
-
-            # If we're animating towards a det 0 matrix, then we don't want to scale the
-            # determinant with the animation, because this makes the process not work
-            # I'm doing this here rather than wrapping the whole animation logic in an
-            # if block mainly because this looks nicer than an extra level of indentation
-            # The extra processing cost is negligible thanks to NumPy's optimizations
-            if det_target == 0:
-                matrix_c = matrix_a
-            else:
-                matrix_c = scalar * matrix_b
-
-            if self.is_matrix_too_big(matrix_c):
+            if self.is_matrix_too_big(matrix_to_render):
                 self.show_error_message('Matrix too big', "This matrix doesn't fit on the canvas")
                 return
 
-            self.plot.visualize_matrix_transformation(matrix_c)
+            self.plot.visualize_matrix_transformation(matrix_to_render)
 
             # We schedule the plot to be updated, tell the event loop to
             # process events, and asynchronously sleep for 10ms
