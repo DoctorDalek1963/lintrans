@@ -195,7 +195,12 @@ class VectorGridPlot(BackgroundPlot):
 
             # If the matrix is rank 1, then we can draw the column space line
             if rank == 1:
-                self.draw_oblique_line(painter, vector_y / vector_x, 0)
+                if abs(vector_x) < 1e-12:
+                    painter.drawLine(self.width() // 2, 0, self.width() // 2, self.height())
+                elif abs(vector_y) < 1e-12:
+                    painter.drawLine(0, self.height() // 2, self.width(), self.height() // 2)
+                else:
+                    self.draw_oblique_line(painter, vector_y / vector_x, 0)
 
             # If the rank is 0, then we don't draw any lines
             else:
