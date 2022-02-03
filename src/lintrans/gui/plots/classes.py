@@ -154,6 +154,8 @@ class VectorGridPlot(BackgroundPlot):
         self.width_vector_line = 1.8
         self.width_transformed_grid = 0.6
 
+        self.arrowhead_length = 0.15
+
     @abstractmethod
     def paintEvent(self, event: QPaintEvent) -> None:
         """Handle a ``QPaintEvent``.

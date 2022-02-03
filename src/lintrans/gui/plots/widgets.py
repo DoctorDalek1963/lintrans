@@ -17,12 +17,6 @@ class VisualizeTransformationWidget(VectorGridPlot):
     the given matrix transformation.
     """
 
-    def __init__(self, *args, **kwargs):
-        """Create the widget, passing ``*args`` and ``**kwargs`` to the superclass constructor."""
-        super().__init__(*args, **kwargs)
-
-        self.arrowhead_length = 0.15
-
     def visualize_matrix_transformation(self, matrix: MatrixType) -> None:
         """Transform the grid by the given matrix.
 
