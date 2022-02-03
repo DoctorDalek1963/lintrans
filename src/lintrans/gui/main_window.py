@@ -413,7 +413,7 @@ class LintransMainWindow(QMainWindow):
         :param MatrixType matrix: The matrix to check
         :returns bool: Whether the matrix fits on the canvas
         """
-        coords: list[tuple[int, int]] = [self.plot.trans_coords(*vector) for vector in matrix.T]
+        coords: list[tuple[int, int]] = [self.plot.canvas_coords(*vector) for vector in matrix.T]
 
         for x, y in coords:
             if not (-2147483648 <= x <= 2147483647 and -2147483648 <= y <= 2147483647):

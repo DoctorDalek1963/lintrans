@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import numpy as np
-from PyQt5.QtGui import QPainter, QPaintEvent, QPen
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QMouseEvent, QPainter, QPaintEvent, QPen
 
 from .classes import VectorGridPlot
 from lintrans.typing import MatrixType
@@ -41,6 +42,9 @@ class VisualizeTransformationWidget(VectorGridPlot):
         painter = QPainter()
         painter.begin(self)
 
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setBrush(Qt.NoBrush)
+
         self.draw_background(painter)
         self.draw_transformed_grid(painter)
         self.draw_vector_arrowheads(painter)
@@ -55,3 +59,63 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
     This is just the widget itself. If you want the dialog, use
     :class:`lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog`.
     """
+
+    def __init__(self, *args, **kwargs):
+        """Create the widget and enable mouse tracking. ``*args`` and ``**kwargs`` are passed to ``super()``."""
+        super().__init__(*args, **kwargs)
+
+        # self.setMouseTracking(True)
+        self.dragged_point: tuple[float, float] | None = None
+
+        # This is the distance that the cursor needs to be from the point to drag it
+        self.epsilon: int = 5
+
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        """Handle a QMouseEvent when the user pressed a button."""
+        mx = event.x()
+        my = event.y()
+        button = event.button()
+
+        if button != Qt.LeftButton:
+            event.ignore()
+            return
+
+        for point in (self.point_i, self.point_j):
+            px, py = self.canvas_coords(*point)
+            if abs(px - mx) <= self.epsilon and abs(py - my) <= self.epsilon:
+                self.dragged_point = point[0], point[1]
+
+        event.accept()
+
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
+        """Handle a QMouseEvent when the user release a button."""
+        if event.button() == Qt.LeftButton:
+            self.dragged_point = None
+            event.accept()
+        else:
+            event.ignore()
+
+    def mouseMoveEvent(self, event: QMouseEvent) -> None:
+        """Handle the mouse moving on the canvas."""
+        mx = event.x()
+        my = event.y()
+
+        if self.dragged_point is not None:
+            x, y = self.grid_coords(mx, my)
+
+            if self.dragged_point == self.point_i:
+                self.point_i = x, y
+
+            elif self.dragged_point == self.point_j:
+                self.point_j = x, y
+
+            self.dragged_point = x, y
+
+            self.update()
+
+            print(self.dragged_point)
+            print(self.point_i, self.point_j)
+
+            event.accept()
+
+        event.ignore()
