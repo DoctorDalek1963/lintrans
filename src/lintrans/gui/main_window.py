@@ -19,6 +19,7 @@ from lintrans.matrices import MatrixWrapper
 from lintrans.typing import MatrixType
 from .dialogs import DefineAsAnExpressionDialog, DefineAsARotationDialog, DefineDialog, DefineNumericallyDialog, \
     DefineVisuallyDialog
+from .dialogs.settings import DisplaySettingsDialog
 from .plots import VisualizeTransformationWidget
 from .settings import DisplaySettings
 
@@ -131,7 +132,7 @@ class LintransMainWindow(QMainWindow):
 
         self.button_change_display_settings = QtWidgets.QPushButton(self)
         self.button_change_display_settings.setText('Change\ndisplay settings')
-        # self.button_change_display_settings.clicked.connect(self.change_display_settings)
+        self.button_change_display_settings.clicked.connect(self.dialog_change_display_settings)
         self.button_change_display_settings.setToolTip('Change which things are rendered on the plot')
 
         self.button_reset_zoom = QtWidgets.QPushButton(self)
@@ -170,10 +171,8 @@ class LintransMainWindow(QMainWindow):
         self.button_define_as_expression.clicked.connect(lambda: self.dialog_define_matrix(DefineAsAnExpressionDialog))
         QShortcut(QKeySequence('Alt+4'), self).activated.connect(self.button_define_as_expression.click)
 
-        # Disable buttons that aren't implemented yet
-        # TODO: Implement these and enable buttons
+        # TODO: Implement this and enable button
         self.button_create_polygon.setEnabled(False)
-        self.button_change_display_settings.setEnabled(False)
 
         # Render buttons
 
@@ -413,7 +412,7 @@ class LintransMainWindow(QMainWindow):
         dialog.finished.connect(lambda: self._assign_matrix_wrapper(dialog.matrix_wrapper))
 
     def _assign_matrix_wrapper(self, matrix_wrapper: MatrixWrapper) -> None:
-        """Assign a new value to self.matrix_wrapper.
+        """Assign a new value to ``self.matrix_wrapper``.
 
         This is a little utility function that only exists because a lambda
         callback can't directly assign a value to a class attribute.
@@ -422,6 +421,16 @@ class LintransMainWindow(QMainWindow):
         :type matrix_wrapper: MatrixWrapper
         """
         self.matrix_wrapper = matrix_wrapper
+
+    def dialog_change_display_settings(self) -> None:
+        """Open the dialog to change the display settings."""
+        dialog = DisplaySettingsDialog(self.display_settings, self)
+        dialog.open()
+        dialog.finished.connect(lambda: self._assign_display_settings(dialog.display_settings))
+
+    def _assign_display_settings(self, display_settings: DisplaySettings) -> None:
+        """Assign a new value to ``self.display_settings``."""
+        self.display_settings = display_settings
 
     def show_error_message(self, title: str, text: str, info: str | None = None) -> None:
         """Show an error message in a dialog box.

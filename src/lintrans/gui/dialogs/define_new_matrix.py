@@ -115,6 +115,11 @@ class DefineDialog(QDialog):
         self.hlay_definition.addWidget(self.combobox_letter)
         self.hlay_definition.addWidget(self.label_equals)
 
+        self.vlay_all = QVBoxLayout()
+        self.vlay_all.setSpacing(20)
+
+        self.setLayout(self.vlay_all)
+
     @property
     def selected_letter(self) -> str:
         """Return the letter currently selected in the combo box."""
@@ -155,12 +160,8 @@ class DefineVisuallyDialog(DefineDialog):
         self.hlay_definition.addWidget(self.plot)
         self.hlay_definition.setStretchFactor(self.plot, 1)
 
-        self.vlay_all = QVBoxLayout()
-        self.vlay_all.setSpacing(20)
         self.vlay_all.addLayout(self.hlay_definition)
         self.vlay_all.addLayout(self.hlay_buttons)
-
-        self.setLayout(self.vlay_all)
 
         # We load the default matrix A into the plot
         self.show_matrix(0)
@@ -237,12 +238,8 @@ class DefineNumericallyDialog(DefineDialog):
 
         self.hlay_definition.addLayout(self.grid_matrix)
 
-        self.vlay_all = QVBoxLayout()
-        self.vlay_all.setSpacing(20)
         self.vlay_all.addLayout(self.hlay_definition)
         self.vlay_all.addLayout(self.hlay_buttons)
-
-        self.setLayout(self.vlay_all)
 
         # Finally, we load the default matrix A into the boxes
         self.load_matrix(0)
@@ -327,12 +324,8 @@ class DefineAsARotationDialog(DefineDialog):
         self.hlay_rotation_definition.addWidget(self.lineedit_angle)
         self.hlay_rotation_definition.addWidget(self.label_close_paren)
 
-        self.vlay_all = QVBoxLayout()
-        self.vlay_all.setSpacing(20)
         self.vlay_all.addLayout(self.hlay_rotation_definition)
         self.vlay_all.addLayout(self.hlay_checkbox_and_buttons)
-
-        self.setLayout(self.vlay_all)
 
     def update_confirm_button(self) -> None:
         """Enable the confirm button if there is a valid float in the angle box."""
@@ -369,12 +362,8 @@ class DefineAsAnExpressionDialog(DefineDialog):
 
         self.hlay_definition.addWidget(self.lineedit_expression_box)
 
-        self.vlay_all = QVBoxLayout()
-        self.vlay_all.setSpacing(20)
         self.vlay_all.addLayout(self.hlay_definition)
         self.vlay_all.addLayout(self.hlay_buttons)
-
-        self.setLayout(self.vlay_all)
 
     def update_confirm_button(self) -> None:
         """Enable the confirm button if the matrix expression is valid in the wrapper."""
