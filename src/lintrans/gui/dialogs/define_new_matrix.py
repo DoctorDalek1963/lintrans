@@ -142,6 +142,8 @@ class DefineVisuallyDialog(DefineDialog):
         """
         super().__init__(matrix_wrapper, *args, **kwargs)
 
+        self.setMinimumSize(500, 450)
+
         # === Create the widgets
 
         self.combobox_letter.activated.connect(self.show_matrix)
@@ -151,6 +153,7 @@ class DefineVisuallyDialog(DefineDialog):
         # === Arrange the widgets
 
         self.hlay_definition.addWidget(self.plot)
+        self.hlay_definition.setStretchFactor(self.plot, 1)
 
         self.vlay_all = QVBoxLayout()
         self.vlay_all.setSpacing(20)
