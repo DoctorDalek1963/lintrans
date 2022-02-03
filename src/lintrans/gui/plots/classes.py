@@ -322,3 +322,47 @@ class VectorGridPlot(BackgroundPlot):
         self.draw_parallel_lines(painter, self.point_i, self.point_j)
         painter.setPen(QPen(self.colour_j, self.width_transformed_grid))
         self.draw_parallel_lines(painter, self.point_j, self.point_i)
+
+    def draw_arrowhead_away_from_origin(self, painter: QPainter, point: tuple[float, float]) -> None:
+        """Draw an arrowhead at ``point``, pointing away from the origin.
+
+        :param QPainter painter: The ``QPainter`` object to use to draw the arrowheads with
+        :param point: The point to draw the arrowhead at, given in grid coords
+        :type point: tuple[float, float]
+        """
+        # This algorithm was adapted from a C# algorithm found at
+        # http://csharphelper.com/blog/2014/12/draw-lines-with-arrowheads-in-c/
+
+        # Get the x and y coords of the point, and then normalize them
+        # We have to normalize them, or else the size of the arrowhead will
+        # scale with the distance of the point from the origin
+        x, y = point
+        vector_length = np.sqrt(x * x + y * y)
+
+        if vector_length < 1e-12:
+            return
+
+        nx = x / vector_length
+        ny = y / vector_length
+
+        # We choose a length and find the steps in the x and y directions
+        length = min(
+            self.arrowhead_length * self.default_grid_spacing / self.grid_spacing,
+            vector_length
+        )
+        dx = length * (-nx - ny)
+        dy = length * (nx - ny)
+
+        # Then we just plot those lines
+        painter.drawLine(*self.trans_coords(x, y), *self.trans_coords(x + dx, y + dy))
+        painter.drawLine(*self.trans_coords(x, y), *self.trans_coords(x - dy, y + dx))
+
+    def draw_vector_arrowheads(self, painter: QPainter) -> None:
+        """Draw arrowheads at the tips of the basis vectors.
+
+        :param QPainter painter: The ``QPainter`` object to use to draw the arrowheads with
+        """
+        painter.setPen(QPen(self.colour_i, self.width_vector_line))
+        self.draw_arrowhead_away_from_origin(painter, self.point_i)
+        painter.setPen(QPen(self.colour_j, self.width_vector_line))
+        self.draw_arrowhead_away_from_origin(painter, self.point_j)
