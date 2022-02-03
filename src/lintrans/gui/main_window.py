@@ -325,6 +325,17 @@ class LintransMainWindow(QMainWindow):
             if self.display_settings.applicative_animation:
                 matrix_target = matrix_target @ matrix_start
 
+            # If we want a transitional animation and we're animating the same matrix, then restart the animation
+            # We use this check rather than equality because of small floating point errors
+            elif (matrix_start - matrix_target < 1e-12).all():
+                matrix_start = self.matrix_wrapper['I']
+
+                # We pause here for 200 ms to make the animation look a bit nicer
+                self.plot.visualize_matrix_transformation(matrix_start)
+                self.plot.update()
+                QApplication.processEvents()
+                QThread.msleep(200)
+
             self.animate_between_matrices(matrix_start, matrix_target)
 
         self.update_render_buttons()
