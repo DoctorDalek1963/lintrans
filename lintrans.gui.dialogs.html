@@ -185,6 +185,47 @@ and a every superclass of a class must have the same metaclass, and <code class=
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lintrans.gui.dialogs.define_new_matrix.</span></span><span class="sig-name descname"><span class="pre">DefineVisuallyDialog</span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lintrans.gui.dialogs.define_new_matrix.DefineDialog" title="lintrans.gui.dialogs.define_new_matrix.DefineDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">lintrans.gui.dialogs.define_new_matrix.DefineDialog</span></code></a></p>
+<p>The dialog class that allows the user to define a matrix visually.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix_wrapper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="lintrans.matrices.html#lintrans.matrices.wrapper.MatrixWrapper" title="lintrans.matrices.wrapper.MatrixWrapper"><span class="pre">lintrans.matrices.wrapper.MatrixWrapper</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Create the widgets and layout of the dialog.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>matrix_wrapper</strong> (<a class="reference internal" href="lintrans.matrices.html#lintrans.matrices.wrapper.MatrixWrapper" title="lintrans.matrices.wrapper.MatrixWrapper"><em>MatrixWrapper</em></a>) – The MatrixWrapper that this dialog will mutate</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.update_confirm_button">
+<span class="sig-name descname"><span class="pre">update_confirm_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.update_confirm_button" title="Permalink to this definition"></a></dt>
+<dd><p>Enable the confirm button.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The confirm button is always enabled in this dialog and this method is never actually used,
+so it’s got an empty body. It’s only here because we need to implement the abstract method.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.show_matrix">
+<span class="sig-name descname"><span class="pre">show_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.show_matrix" title="Permalink to this definition"></a></dt>
+<dd><p>Show the selected matrix on the plot. If the matrix is None, show the identity.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.confirm_matrix">
+<span class="sig-name descname"><span class="pre">confirm_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.confirm_matrix" title="Permalink to this definition"></a></dt>
+<dd><p>Confirm the matrix that’s been defined visually.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineNumericallyDialog">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lintrans.gui.dialogs.define_new_matrix.</span></span><span class="sig-name descname"><span class="pre">DefineNumericallyDialog</span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineNumericallyDialog" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lintrans.gui.dialogs.define_new_matrix.DefineDialog" title="lintrans.gui.dialogs.define_new_matrix.DefineDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">lintrans.gui.dialogs.define_new_matrix.DefineDialog</span></code></a></p>
