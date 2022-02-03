@@ -296,8 +296,9 @@ class LintransMainWindow(QMainWindow):
         self.button_animate.setEnabled(True)
 
     def animate_between_matrices(self, matrix_start: MatrixType, matrix_target: MatrixType, steps: int = 100) -> None:
-        """Animate from the start matrix to the transformation given by the expression in the input box."""
+        """Animate from the start matrix to the target matrix."""
         det_target = linalg.det(matrix_target)
+        det_start = linalg.det(matrix_start)
 
         for i in range(0, steps + 1):
             # This proportion is how far we are through the loop
@@ -311,26 +312,27 @@ class LintransMainWindow(QMainWindow):
             det_a = linalg.det(matrix_a)
 
             # For a 2x2 matrix A and a scalar c, we know that det(cA) = c^2 det(A)
-            # We want B = cA such that det(B) = det(start_matrix), so then we can
-            # scale it with the animation, so we get c^2 det(A) = 1 => c = sqrt(1 / abs(det(A)))
+            # We want B = cA such that det(B) = det(S), where S is the start matrix,
+            # so then we can scale it with the animation, so we get
+            # det(cA) = c^2 det(A) = det(S) => c = sqrt(abs(det(S) / det(A)))
             # Then we scale A to get the determinant we want, and call that matrix_b
             if det_a == 0:
                 c = 0
             else:
-                c = np.sqrt(linalg.det(matrix_start) / abs(det_a))
+                c = np.sqrt(abs(det_start / det_a))
 
             matrix_b = c * matrix_a
+            det_b = linalg.det(matrix_b)
 
-            # matrix_c is the final matrix that we transform by
+            # matrix_c is the final matrix that we then render for this frame
             # It's B, but we scale it over time to have the target determinant
 
             # We want some C = dB such that det(C) is some target determinant T
             # det(dB) = d^2 det(B) = T => d = sqrt(abs(T / det(B))
-            # But we defined B to have det 1, so we can ignore it there
 
             # We're also subtracting 1 and multiplying by the proportion and then adding one
             # This just scales the determinant along with the animation
-            scalar = 1 + proportion * (np.sqrt(abs(det_target)) - 1)
+            scalar = 1 + proportion * (np.sqrt(abs(det_target / det_b)) - 1)
 
             # If we're animating towards a det 0 matrix, then we don't want to scale the
             # determinant with the animation, because this makes the process not work
@@ -348,12 +350,12 @@ class LintransMainWindow(QMainWindow):
 
             self.plot.visualize_matrix_transformation(matrix_c)
 
-            # We schedule the plot to be updated, tell the event loop to process events,
-            # and asynchronously sleep for 10ms
+            # We schedule the plot to be updated, tell the event loop to
+            # process events, and asynchronously sleep for 10ms
             # This allows for other events to be processed while animating, like zooming in and out
             self.plot.update()
             QApplication.processEvents()
-            QThread.msleep(10)
+            QThread.msleep(1000 // steps)
 
     def dialog_define_matrix(self, dialog_class: Type[DefineDialog]) -> None:
         """Open a generic definition dialog to define a new matrix.
