@@ -242,9 +242,18 @@ class LintransMainWindow(QMainWindow):
 
     def update_render_buttons(self) -> None:
         """Enable or disable the render and animate buttons according to whether the matrix expression is valid."""
-        valid = self.matrix_wrapper.is_valid_expression(self.lineedit_expression_box.text())
-        self.button_render.setEnabled(valid)
-        self.button_animate.setEnabled(valid)
+        text = self.lineedit_expression_box.text()
+
+        if ',' in text:
+            self.button_render.setEnabled(False)
+
+            valid = all(self.matrix_wrapper.is_valid_expression(x) for x in text.split(','))
+            self.button_animate.setEnabled(valid)
+
+        else:
+            valid = self.matrix_wrapper.is_valid_expression(text)
+            self.button_render.setEnabled(valid)
+            self.button_animate.setEnabled(valid)
 
     def reset_zoom(self) -> None:
         """Reset the zoom level back to normal."""
@@ -277,23 +286,43 @@ class LintransMainWindow(QMainWindow):
         self.button_render.setEnabled(False)
         self.button_animate.setEnabled(False)
 
-        # Get the target matrix and it's determinant
-        try:
-            matrix_target = self.matrix_wrapper.evaluate_expression(self.lineedit_expression_box.text())
-
-        except linalg.LinAlgError:
-            self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
-            return
-
         matrix_start: MatrixType = np.array([
             [self.plot.point_i[0], self.plot.point_j[0]],
             [self.plot.point_i[1], self.plot.point_j[1]]
         ])
 
-        self.animate_between_matrices(matrix_start, matrix_target)
+        text = self.lineedit_expression_box.text()
 
-        self.button_render.setEnabled(True)
-        self.button_animate.setEnabled(True)
+        # If there's commas in the expression, then we want to animate each part at a time
+        if ',' in text:
+            current_matrix = matrix_start
+
+            # For each expression in the list, right multiply it by the current matrix,
+            # and animate from the current matrix to that new matrix
+            for expr in text.split(',')[::-1]:
+                new_matrix = self.matrix_wrapper.evaluate_expression(expr) @ current_matrix
+
+                self.animate_between_matrices(current_matrix, new_matrix)
+                current_matrix = new_matrix
+
+                # Here we just redraw and allow for other events to be handled while we pause
+                self.plot.update()
+                QApplication.processEvents()
+                QThread.msleep(500)
+
+        # If there's no commas, then just animate directly from the start to the target
+        else:
+            # Get the target matrix and it's determinant
+            try:
+                matrix_target = self.matrix_wrapper.evaluate_expression(text)
+
+            except linalg.LinAlgError:
+                self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
+                return
+
+            self.animate_between_matrices(matrix_start, matrix_target)
+
+        self.update_render_buttons()
 
     def animate_between_matrices(self, matrix_start: MatrixType, matrix_target: MatrixType, steps: int = 100) -> None:
         """Animate from the start matrix to the target matrix."""
