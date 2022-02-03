@@ -343,7 +343,7 @@ class LintransMainWindow(QMainWindow):
             # If we just used matrix_a, then things would animate, but the determinants would be weird
             matrix_a = matrix_start + proportion * (matrix_target - matrix_start)
 
-            if self.display_settings.animate_determinant:
+            if self.display_settings.animate_determinant and det_target != 0:
                 # To fix the determinant problem, we get the determinant of matrix_a and use it to normalise
                 det_a = linalg.det(matrix_a)
 
@@ -369,16 +369,7 @@ class LintransMainWindow(QMainWindow):
                 # We're also subtracting 1 and multiplying by the proportion and then adding one
                 # This just scales the determinant along with the animation
                 scalar = 1 + proportion * (np.sqrt(abs(det_target / det_b)) - 1)
-
-                # If we're animating towards a det 0 matrix, then we don't want to scale the
-                # determinant with the animation, because this makes the process not work
-                # I'm doing this here rather than wrapping the whole animation logic in an
-                # if block mainly because this looks nicer than an extra level of indentation
-                # The extra processing cost is negligible thanks to NumPy's optimizations
-                if det_target == 0:
-                    matrix_to_render = matrix_a
-                else:
-                    matrix_to_render = scalar * matrix_b
+                matrix_to_render = scalar * matrix_b
 
             else:
                 matrix_to_render = matrix_a
