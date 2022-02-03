@@ -4,6 +4,7 @@ These dialogs are mainly for defining new matrices in different ways.
 """
 
 from .define_new_matrix import DefineAsAnExpressionDialog, DefineAsARotationDialog, DefineDialog, \
-    DefineNumericallyDialog
+    DefineNumericallyDialog, DefineVisuallyDialog
 
-__all__ = ['DefineAsAnExpressionDialog', 'DefineAsARotationDialog', 'DefineDialog', 'DefineNumericallyDialog']
+__all__ = ['DefineAsAnExpressionDialog', 'DefineAsARotationDialog', 'DefineDialog', 'DefineNumericallyDialog',
+           'DefineVisuallyDialog']

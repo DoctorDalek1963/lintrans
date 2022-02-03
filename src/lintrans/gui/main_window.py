@@ -16,7 +16,8 @@ from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox
                              QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout)
 
 from lintrans.matrices import MatrixWrapper
-from .dialogs import DefineAsAnExpressionDialog, DefineAsARotationDialog, DefineDialog, DefineNumericallyDialog
+from .dialogs import DefineAsAnExpressionDialog, DefineAsARotationDialog, DefineDialog, DefineNumericallyDialog, \
+    DefineVisuallyDialog
 from .plots import VisualizeTransformationWidget
 from lintrans.typing import MatrixType
 
@@ -146,6 +147,7 @@ class LintransMainWindow(QMainWindow):
         self.button_define_visually = QtWidgets.QPushButton(self)
         self.button_define_visually.setText('Visually')
         self.button_define_visually.setToolTip('Drag the basis vectors<br><b>(Alt + 1)</b>')
+        self.button_define_visually.clicked.connect(lambda: self.dialog_define_matrix(DefineVisuallyDialog))
         QShortcut(QKeySequence('Alt+1'), self).activated.connect(self.button_define_visually.click)
 
         self.button_define_numerically = QtWidgets.QPushButton(self)
@@ -170,7 +172,6 @@ class LintransMainWindow(QMainWindow):
         # TODO: Implement these and enable buttons
         self.button_create_polygon.setEnabled(False)
         self.button_change_display_settings.setEnabled(False)
-        self.button_define_visually.setEnabled(False)
 
         # Render buttons
 

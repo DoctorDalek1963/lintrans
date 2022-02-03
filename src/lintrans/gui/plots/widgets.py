@@ -47,3 +47,11 @@ class VisualizeTransformationWidget(VectorGridPlot):
 
         painter.end()
         event.accept()
+
+
+class DefineVisuallyWidget(VisualizeTransformationWidget):
+    """This class is the widget that allows the user to visually define a matrix.
+
+    This is just the widget itself. If you want the dialog, use
+    :class:`lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog`.
+    """

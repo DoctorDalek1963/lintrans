@@ -9,6 +9,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
+from lintrans.gui.plots.widgets import DefineVisuallyWidget
 from lintrans.matrices import create_rotation_matrix, MatrixWrapper
 from lintrans.typing import MatrixType
 
@@ -129,6 +130,63 @@ class DefineDialog(QDialog):
 
         .. note:: When subclassing, this method should mutate ``self.matrix_wrapper`` and then call ``self.accept()``.
         """
+
+
+class DefineVisuallyDialog(DefineDialog):
+    """The dialog class that allows the user to define a matrix visually."""
+
+    def __init__(self, matrix_wrapper: MatrixWrapper, *args, **kwargs):
+        """Create the widgets and layout of the dialog.
+
+        :param MatrixWrapper matrix_wrapper: The MatrixWrapper that this dialog will mutate
+        """
+        super().__init__(matrix_wrapper, *args, **kwargs)
+
+        # === Create the widgets
+
+        self.combobox_letter.activated.connect(self.show_matrix)
+
+        self.plot = DefineVisuallyWidget(self)
+
+        # === Arrange the widgets
+
+        self.hlay_definition.addWidget(self.plot)
+
+        self.vlay_all = QVBoxLayout()
+        self.vlay_all.setSpacing(20)
+        self.vlay_all.addLayout(self.hlay_definition)
+        self.vlay_all.addLayout(self.hlay_buttons)
+
+        self.setLayout(self.vlay_all)
+
+        # We load the default matrix A into the plot
+        self.show_matrix(0)
+
+        # We also enable the confirm button, because any visually defined matrix is valid
+        self.button_confirm.setEnabled(True)
+
+    def update_confirm_button(self) -> None:
+        """This method is implemented with no body, because the confirm button is always enabled."""
+
+    def show_matrix(self, index: int) -> None:
+        """Show the selected matrix on the plot. If the matrix is None, show the identity."""
+        matrix = self.matrix_wrapper[ALPHABET_NO_I[index]]
+
+        if matrix is None:
+            matrix = self.matrix_wrapper['I']
+
+        self.plot.visualize_matrix_transformation(matrix)
+        self.plot.update()
+
+    def confirm_matrix(self) -> None:
+        """Confirm the matrix that's been defined visually."""
+        matrix: MatrixType = array([
+            [self.plot.point_i[0], self.plot.point_j[0]],
+            [self.plot.point_i[1], self.plot.point_j[1]]
+        ])
+
+        self.matrix_wrapper[self.selected_letter] = matrix
+        self.accept()
 
 
 class DefineNumericallyDialog(DefineDialog):
