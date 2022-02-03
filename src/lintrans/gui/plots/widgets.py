@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-import numpy as np
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QMouseEvent, QPainter, QPaintEvent, QPen
+from PyQt5.QtGui import QMouseEvent, QPainter, QPaintEvent
 
 from .classes import VectorGridPlot
 from lintrans.typing import MatrixType

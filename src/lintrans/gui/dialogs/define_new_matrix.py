@@ -169,7 +169,12 @@ class DefineVisuallyDialog(DefineDialog):
         self.button_confirm.setEnabled(True)
 
     def update_confirm_button(self) -> None:
-        """This method is implemented with no body, because the confirm button is always enabled."""
+        """Enable the confirm button.
+
+        .. note::
+           The confirm button is always enabled in this dialog and this method is never actually used,
+           so it's got an empty body. It's only here because we need to implement the abstract method.
+        """
 
     def show_matrix(self, index: int) -> None:
         """Show the selected matrix on the plot. If the matrix is None, show the identity."""
