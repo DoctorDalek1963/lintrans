@@ -147,7 +147,7 @@ class DefineVisuallyDialog(DefineDialog):
         """
         super().__init__(matrix_wrapper, *args, **kwargs)
 
-        self.setMinimumSize(500, 450)
+        self.setMinimumSize(700, 550)
 
         # === Create the widgets
 

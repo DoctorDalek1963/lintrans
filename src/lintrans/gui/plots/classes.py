@@ -27,7 +27,7 @@ class BackgroundPlot(QWidget):
        and a every superclass of a class must have the same metaclass, and ``QWidget`` is not an abstract class.
     """
 
-    default_grid_spacing: int = 50
+    default_grid_spacing: int = 75
 
     def __init__(self, *args, **kwargs):
         """Create the widget and setup backend stuff for rendering.

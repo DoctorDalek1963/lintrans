@@ -40,7 +40,7 @@ class LintransMainWindow(QMainWindow):
         self.matrix_wrapper = MatrixWrapper()
 
         self.setWindowTitle('Linear Transformations')
-        self.setMinimumWidth(750)
+        self.setMinimumSize(1000, 750)
 
         # === Create menubar
 
