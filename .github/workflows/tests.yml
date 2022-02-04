@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 jobs:
   pytest:
+    name: Test with pytest
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -29,6 +30,7 @@ jobs:
       run: pytest
 
   doctests:
+    name: Test the doctests
     runs-on: ubuntu-latest
 
     steps:
