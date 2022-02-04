@@ -245,6 +245,12 @@ connected to the <code class="docutils literal notranslate"><span class="pre">di
 <dt class="sig sig-object py" id="lintrans.gui.settings.DisplaySettings.animate_determinant">
 <span class="sig-name descname"><span class="pre">animate_determinant</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#lintrans.gui.settings.DisplaySettings.animate_determinant" title="Permalink to this definition"></a></dt>
 <dd><p>This controls whether we want the determinant to change smoothly during the animation.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Even if this is True, it will be ignored if we’re animating from a positive det matrix to
+a negative det matrix, or vice versa, because if we try to smoothly animate that determinant,
+things blow up and the app often crashes.</p>
+</div>
 </dd></dl>
 
 <dl class="py attribute">
