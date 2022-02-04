@@ -8,7 +8,7 @@ import copy
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIntValidator, QKeySequence
-from PyQt5.QtWidgets import QCheckBox, QDialog, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
+from PyQt5.QtWidgets import QCheckBox, QDialog, QGroupBox, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
 from lintrans.gui.settings import DisplaySettings
 
@@ -77,15 +77,6 @@ class DisplaySettingsDialog(SettingsDialog):
 
         # === Create the widgets
 
-        font_label = self.font()
-        font_label.setUnderline(True)
-        font_label.setPointSize(int(font_label.pointSize() * 1.2))
-
-        self.label_animations = QtWidgets.QLabel(self)
-        self.label_animations.setText('Animations')
-        self.label_animations.setAlignment(Qt.AlignCenter)
-        self.label_animations.setFont(font_label)
-
         self.checkbox_animate_determinant = QCheckBox(self)
         self.checkbox_animate_determinant.setText('Animate determinant')
         self.checkbox_animate_determinant.setToolTip('Smoothly animate the determinant during animation')
@@ -106,16 +97,22 @@ class DisplaySettingsDialog(SettingsDialog):
         self.lineedit_animation_pause_length = QtWidgets.QLineEdit(self)
         self.lineedit_animation_pause_length.setValidator(QIntValidator(1, 999, self))
 
-        # === Arrange the widgets
+        # === Arrange the widgets in QGroupBoxes
 
         self.hlay_animation_pause_length = QHBoxLayout()
         self.hlay_animation_pause_length.addWidget(self.label_animation_pause_length)
         self.hlay_animation_pause_length.addWidget(self.lineedit_animation_pause_length)
 
-        self.vlay_options.addWidget(self.label_animations)
-        self.vlay_options.addWidget(self.checkbox_animate_determinant)
-        self.vlay_options.addWidget(self.checkbox_applicative_animation)
-        self.vlay_options.addLayout(self.hlay_animation_pause_length)
+        self.vlay_groupbox_animations = QVBoxLayout()
+        self.vlay_groupbox_animations.setSpacing(20)
+        self.vlay_groupbox_animations.addWidget(self.checkbox_animate_determinant)
+        self.vlay_groupbox_animations.addWidget(self.checkbox_applicative_animation)
+        self.vlay_groupbox_animations.addLayout(self.hlay_animation_pause_length)
+
+        self.groupbox_animations = QGroupBox('Animations', self)
+        self.groupbox_animations.setLayout(self.vlay_groupbox_animations)
+
+        self.vlay_options.addWidget(self.groupbox_animations)
 
         # Finally, we load the current settings
         self.load_settings()
