@@ -10,7 +10,13 @@ class DisplaySettings:
     """This class simply holds some attributes to configure display."""
 
     animate_determinant: bool = True
-    """This controls whether we want the determinant to change smoothly during the animation."""
+    """This controls whether we want the determinant to change smoothly during the animation.
+
+    .. note::
+       Even if this is True, it will be ignored if we're animating from a positive det matrix to
+       a negative det matrix, or vice versa, because if we try to smoothly animate that determinant,
+       things blow up and the app often crashes.
+    """
 
     applicative_animation: bool = True
     """There are two types of simple animation, transitional and applicative.

@@ -355,7 +355,7 @@ class LintransMainWindow(QMainWindow):
             # If we just used matrix_a, then things would animate, but the determinants would be weird
             matrix_a = matrix_start + proportion * (matrix_target - matrix_start)
 
-            if self.plot.display_settings.animate_determinant and det_target != 0:
+            if self.plot.display_settings.animate_determinant and det_start * det_target > 0:
                 # To fix the determinant problem, we get the determinant of matrix_a and use it to normalise
                 det_a = linalg.det(matrix_a)
 
