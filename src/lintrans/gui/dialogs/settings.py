@@ -31,7 +31,7 @@ class SettingsDialog(QDialog):
         self.button_cancel = QtWidgets.QPushButton(self)
         self.button_cancel.setText('Cancel')
         self.button_cancel.clicked.connect(self.reject)
-        self.button_cancel.setToolTip('Cancel this definition<br><b>(Escape)</b>')
+        self.button_cancel.setToolTip('Revert these settings<br><b>(Escape)</b>')
 
         # === Arrange the widgets
 
