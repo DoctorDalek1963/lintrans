@@ -177,7 +177,7 @@ class VectorGridPlot(BackgroundPlot):
     @property
     def det(self) -> float:
         """Return the determinant of the assembled matrix."""
-        return np.linalg.det(self.matrix)
+        return float(np.linalg.det(self.matrix))
 
     @abstractmethod
     def paintEvent(self, event: QPaintEvent) -> None:
