@@ -76,7 +76,6 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
         """Create the widget and enable mouse tracking. ``*args`` and ``**kwargs`` are passed to ``super()``."""
         super().__init__(*args, **kwargs)
 
-        # self.setMouseTracking(True)
         self.dragged_point: tuple[float, float] | None = None
 
         # This is the distance that the cursor needs to be from the point to drag it
