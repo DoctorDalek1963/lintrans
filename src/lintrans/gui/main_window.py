@@ -380,8 +380,15 @@ class LintransMainWindow(QMainWindow):
 
                 # We're also subtracting 1 and multiplying by the proportion and then adding one
                 # This just scales the determinant along with the animation
-                scalar = 1 + proportion * (np.sqrt(abs(det_target / det_b)) - 1)
-                matrix_to_render = scalar * matrix_b
+
+                # That is all of course, if we can do that
+                # We'll crash if we try to do this with det(B) == 0
+                if det_b != 0:
+                    scalar = 1 + proportion * (np.sqrt(abs(det_target / det_b)) - 1)
+                    matrix_to_render = scalar * matrix_b
+
+                else:
+                    matrix_to_render = matrix_a
 
             else:
                 matrix_to_render = matrix_a
