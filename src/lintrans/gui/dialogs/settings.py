@@ -7,7 +7,7 @@ import copy
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QKeySequence
+from PyQt5.QtGui import QIntValidator, QKeySequence
 from PyQt5.QtWidgets import QCheckBox, QDialog, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
 from lintrans.gui.settings import DisplaySettings
@@ -97,11 +97,25 @@ class DisplaySettingsDialog(SettingsDialog):
             'rather than just that transformation on its own'
         )
 
+        self.label_animation_pause_length = QtWidgets.QLabel(self)
+        self.label_animation_pause_length.setText('Animation pause length (ms)')
+        self.label_animation_pause_length.setToolTip(
+            'How many milliseconds to pause for in comma-separated animations'
+        )
+
+        self.lineedit_animation_pause_length = QtWidgets.QLineEdit(self)
+        self.lineedit_animation_pause_length.setValidator(QIntValidator(1, 999, self))
+
         # === Arrange the widgets
+
+        self.hlay_animation_pause_length = QHBoxLayout()
+        self.hlay_animation_pause_length.addWidget(self.label_animation_pause_length)
+        self.hlay_animation_pause_length.addWidget(self.lineedit_animation_pause_length)
 
         self.vlay_options.addWidget(self.label_animations)
         self.vlay_options.addWidget(self.checkbox_animate_determinant)
         self.vlay_options.addWidget(self.checkbox_applicative_animation)
+        self.vlay_options.addLayout(self.hlay_animation_pause_length)
 
         # Finally, we load the current settings
         self.load_settings()
@@ -110,10 +124,12 @@ class DisplaySettingsDialog(SettingsDialog):
         """Load the current display settings into the widgets."""
         self.checkbox_animate_determinant.setChecked(self.display_settings.animate_determinant)
         self.checkbox_applicative_animation.setChecked(self.display_settings.applicative_animation)
+        self.lineedit_animation_pause_length.setText(str(self.display_settings.animation_pause_length))
 
     def confirm_settings(self) -> None:
         """Build a :class:`lintrans.gui.settings.DisplaySettings` object and assign it."""
         self.display_settings.animate_determinant = self.checkbox_animate_determinant.isChecked()
         self.display_settings.applicative_animation = self.checkbox_applicative_animation.isChecked()
+        self.display_settings.animation_pause_length = int(self.lineedit_animation_pause_length.text())
 
         self.accept()
