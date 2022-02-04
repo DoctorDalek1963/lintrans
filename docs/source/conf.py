@@ -22,8 +22,8 @@ import lintrans
 # -- Project information -----------------------------------------------------
 
 project = 'lintrans'
-copyright = '2022, Dyson'
-author = 'Dyson'
+author = 'Dyson (DoctorDalek1963)'
+copyright = f'2021 - 2022, {author}'
 
 # The full version, including alpha/beta/rc tags
 release = lintrans.__version__
