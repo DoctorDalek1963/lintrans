@@ -77,9 +77,11 @@ class DisplaySettingsDialog(SettingsDialog):
 
         # Animations
 
-        self.checkbox_animate_determinant = QCheckBox(self)
-        self.checkbox_animate_determinant.setText('Animate determinant')
-        self.checkbox_animate_determinant.setToolTip('Smoothly animate the determinant during animation')
+        self.checkbox_smoothen_determinant = QCheckBox(self)
+        self.checkbox_smoothen_determinant.setText('Smoothen determinant')
+        self.checkbox_smoothen_determinant.setToolTip(
+            'Smoothly animate the determinant transition during animation (if possible)'
+        )
 
         self.checkbox_applicative_animation = QCheckBox(self)
         self.checkbox_applicative_animation.setText('Applicative animation')
@@ -122,7 +124,7 @@ class DisplaySettingsDialog(SettingsDialog):
 
         self.vlay_groupbox_animations = QVBoxLayout()
         self.vlay_groupbox_animations.setSpacing(20)
-        self.vlay_groupbox_animations.addWidget(self.checkbox_animate_determinant)
+        self.vlay_groupbox_animations.addWidget(self.checkbox_smoothen_determinant)
         self.vlay_groupbox_animations.addWidget(self.checkbox_applicative_animation)
         self.vlay_groupbox_animations.addLayout(self.hlay_animation_pause_length)
 
@@ -149,7 +151,7 @@ class DisplaySettingsDialog(SettingsDialog):
     def load_settings(self) -> None:
         """Load the current display settings into the widgets."""
         # Animations
-        self.checkbox_animate_determinant.setChecked(self.display_settings.animate_determinant)
+        self.checkbox_smoothen_determinant.setChecked(self.display_settings.smoothen_determinant)
         self.checkbox_applicative_animation.setChecked(self.display_settings.applicative_animation)
         self.lineedit_animation_pause_length.setText(str(self.display_settings.animation_pause_length))
 
@@ -160,7 +162,7 @@ class DisplaySettingsDialog(SettingsDialog):
     def confirm_settings(self) -> None:
         """Build a :class:`lintrans.gui.settings.DisplaySettings` object and assign it."""
         # Animations
-        self.display_settings.animate_determinant = self.checkbox_animate_determinant.isChecked()
+        self.display_settings.smoothen_determinant = self.checkbox_smoothen_determinant.isChecked()
         self.display_settings.applicative_animation = self.checkbox_applicative_animation.isChecked()
         self.display_settings.animation_pause_length = int(self.lineedit_animation_pause_length.text())
 

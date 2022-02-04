@@ -9,7 +9,7 @@ from dataclasses import dataclass
 class DisplaySettings:
     """This class simply holds some attributes to configure display."""
 
-    animate_determinant: bool = True
+    smoothen_determinant: bool = True
     """This controls whether we want the determinant to change smoothly during the animation.
 
     .. note::
