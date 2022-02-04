@@ -113,7 +113,7 @@ def parse_matrix_expression(expression: str) -> MatrixParseList:
             # The tuple returned by re.findall is (multiplier, matrix identifier, full index, stripped index),
             # so we have to remove the full index, which contains the {}
             (t[0], t[1], t[3])
-            for t in re.findall(r'(-?\d+\.?\d*)?([A-Z]|rot\(-?\d+\.?\d*\))(\^{(-?\d+|T)})?', group)
+            for t in re.findall(r'(-?\d*\.?\d*)?([A-Z]|rot\(-?\d+\.?\d*\))(\^{(-?\d+|T)})?', group)
         ]
         # We just split the expression by '+' to have separate groups
         for group in expression.split('+')
