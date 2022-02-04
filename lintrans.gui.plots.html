@@ -358,6 +358,12 @@ we were able to draw a line within the boundaries, and False if we couldn’t dr
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.draw_determinant_parallelogram">
+<span class="sig-name descname"><span class="pre">draw_determinant_parallelogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.draw_determinant_parallelogram" title="Permalink to this definition"></a></dt>
+<dd><p>Draw the parallelogram of the determinant of the matrix.</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -372,6 +378,12 @@ we were able to draw a line within the boundaries, and False if we couldn’t dr
 <p>It handles all the rendering itself, and the only method that the user needs to
 worry about is <a class="reference internal" href="#lintrans.gui.plots.widgets.VisualizeTransformationWidget.visualize_matrix_transformation" title="lintrans.gui.plots.widgets.VisualizeTransformationWidget.visualize_matrix_transformation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">visualize_matrix_transformation()</span></code></a>, which allows you to visualise
 the given matrix transformation.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.plots.widgets.VisualizeTransformationWidget.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">display_settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="lintrans.gui.html#lintrans.gui.settings.DisplaySettings" title="lintrans.gui.settings.DisplaySettings"><span class="pre">lintrans.gui.settings.DisplaySettings</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lintrans.gui.plots.widgets.VisualizeTransformationWidget.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Create the widget and assign its display settings, passing <code class="docutils literal notranslate"><span class="pre">*args</span></code> and <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> to super.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.plots.widgets.VisualizeTransformationWidget.visualize_matrix_transformation">
 <span class="sig-name descname"><span class="pre">visualize_matrix_transformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lintrans.typing.MatrixType</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.widgets.VisualizeTransformationWidget.visualize_matrix_transformation" title="Permalink to this definition"></a></dt>
@@ -414,6 +426,14 @@ be controlled with the <a class="reference internal" href="#lintrans.gui.plots.w
 <dt class="sig sig-object py" id="lintrans.gui.plots.widgets.DefineVisuallyWidget.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lintrans.gui.plots.widgets.DefineVisuallyWidget.__init__" title="Permalink to this definition"></a></dt>
 <dd><p>Create the widget and enable mouse tracking. <code class="docutils literal notranslate"><span class="pre">*args</span></code> and <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> are passed to <code class="docutils literal notranslate"><span class="pre">super()</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.plots.widgets.DefineVisuallyWidget.paintEvent">
+<span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPaintEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.widgets.DefineVisuallyWidget.paintEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Handle a <code class="docutils literal notranslate"><span class="pre">QPaintEvent</span></code> by drawing the background grid and the transformed grid.</p>
+<p>The transformed grid is defined by the basis vectors i and j,
+which can be dragged around in the widget.</p>
 </dd></dl>
 
 <dl class="py method">
