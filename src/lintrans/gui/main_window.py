@@ -133,7 +133,10 @@ class LintransMainWindow(QMainWindow):
         self.button_change_display_settings = QtWidgets.QPushButton(self)
         self.button_change_display_settings.setText('Change\ndisplay settings')
         self.button_change_display_settings.clicked.connect(self.dialog_change_display_settings)
-        self.button_change_display_settings.setToolTip('Change which things are rendered on the plot')
+        self.button_change_display_settings.setToolTip(
+            "Change which things are rendered and how they're rendered<br><b>(Ctrl + D)</b>"
+        )
+        QShortcut(QKeySequence('Ctrl+D'), self).activated.connect(self.button_change_display_settings.click)
 
         self.button_reset_zoom = QtWidgets.QPushButton(self)
         self.button_reset_zoom.setText('Reset zoom')
