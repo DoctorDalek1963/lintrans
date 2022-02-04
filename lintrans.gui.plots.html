@@ -256,6 +256,18 @@ All useful behaviour should be implemented by any subclass.</p>
 </div>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.matrix">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">matrix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">lintrans.typing.MatrixType</span></em><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.matrix" title="Permalink to this definition"></a></dt>
+<dd><p>Return a the assembled matrix of the basis vectors.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.det">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">det</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.det" title="Permalink to this definition"></a></dt>
+<dd><p>Return the determinant of the assembled matrix.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.paintEvent">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPaintEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.paintEvent" title="Permalink to this definition"></a></dt>
@@ -362,6 +374,12 @@ we were able to draw a line within the boundaries, and False if we couldn’t dr
 <dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.draw_determinant_parallelogram">
 <span class="sig-name descname"><span class="pre">draw_determinant_parallelogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.draw_determinant_parallelogram" title="Permalink to this definition"></a></dt>
 <dd><p>Draw the parallelogram of the determinant of the matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.draw_determinant_text">
+<span class="sig-name descname"><span class="pre">draw_determinant_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.draw_determinant_text" title="Permalink to this definition"></a></dt>
+<dd><p>Write the string value of the determinant in the middle of the parallelogram.</p>
 </dd></dl>
 
 </dd></dl>
