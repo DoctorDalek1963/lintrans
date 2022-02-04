@@ -104,6 +104,7 @@ class DisplaySettingsDialog(SettingsDialog):
         self.checkbox_draw_determinant_parallelogram.setToolTip(
             'Shade the parallelogram representing the determinant of the matrix'
         )
+        self.checkbox_draw_determinant_parallelogram.clicked.connect(self.update_gui)
 
         self.checkbox_draw_determinant_text = QCheckBox(self)
         self.checkbox_draw_determinant_text.setText('Draw determinant text')
@@ -141,8 +142,9 @@ class DisplaySettingsDialog(SettingsDialog):
         self.vlay_options.addWidget(self.groupbox_animations)
         self.vlay_options.addWidget(self.groupbox_matrix_info)
 
-        # Finally, we load the current settings
+        # Finally, we load the current settings and update the GUI
         self.load_settings()
+        self.update_gui()
 
     def load_settings(self) -> None:
         """Load the current display settings into the widgets."""
@@ -167,3 +169,10 @@ class DisplaySettingsDialog(SettingsDialog):
         self.display_settings.draw_determinant_text = self.checkbox_draw_determinant_text.isChecked()
 
         self.accept()
+
+    def update_gui(self) -> None:
+        """Update the GUI according to other widgets in the GUI.
+
+        For example, this method updates which checkboxes are enabled based on the values of other checkboxes.
+        """
+        self.checkbox_draw_determinant_text.setEnabled(self.checkbox_draw_determinant_parallelogram.isChecked())
