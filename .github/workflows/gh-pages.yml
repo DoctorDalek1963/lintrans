@@ -27,7 +27,7 @@ jobs:
         pip install -e .
 
     - name: Build docs
-      run: cd docs/ && make html && touch .nojekyll && cd ..
+      run: cd docs/ && make html && cd ..
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3.8.0
@@ -35,4 +35,5 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./docs/build/html/
+        keep_files: true
         destination_dir: docs

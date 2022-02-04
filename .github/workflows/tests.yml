@@ -27,23 +27,3 @@ jobs:
 
       - name: Run pytest
         run: pytest
-
-  doctests:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt -r dev_requirements.txt
-          pip install -e .
-
-    - name: Run doctests
-      run: shopt -s globstar; pytest --doctest-modules src/lintrans/**.py

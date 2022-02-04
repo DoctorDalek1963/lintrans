@@ -16,7 +16,10 @@ jobs:
     - name: Install dependencies
       run: |
         pip install --upgrade pip
-        pip install pydocstyle -r requirements.txt
+        pip install pydocstyle pytest -r requirements.txt
 
     - name: Run pydocstyle
       run: pydocstyle src/ tests/
+
+    - name: Run doctests
+      run: shopt -s globstar; pytest --doctest-modules src/lintrans/**.py
