@@ -384,11 +384,21 @@ class VectorGridPlot(BackgroundPlot):
 
     def draw_determinant_parallelogram(self, painter: QPainter) -> None:
         """Draw the parallelogram of the determinant of the matrix."""
+        det = np.linalg.det(np.array([
+            [self.point_i[0], self.point_j[0]],
+            [self.point_i[1], self.point_j[1]]
+        ]))
+
+        if det == 0:
+            return
+
         path = QPainterPath()
         path.moveTo(*self.canvas_origin)
         path.lineTo(*self.canvas_coords(*self.point_i))
         path.lineTo(*self.canvas_coords(self.point_i[0] + self.point_j[0], self.point_i[1] + self.point_j[1]))
         path.lineTo(*self.canvas_coords(*self.point_j))
 
-        brush = QBrush(QColor(16, 235, 253, alpha=128), Qt.SolidPattern)
+        color = (16, 235, 253) if det > 0 else (253, 34, 16)
+        brush = QBrush(QColor(*color, alpha=128), Qt.SolidPattern)
+
         painter.fillPath(path, brush)
