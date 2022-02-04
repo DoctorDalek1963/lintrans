@@ -6,7 +6,7 @@ from abc import abstractmethod
 
 import numpy as np
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor, QPainter, QPaintEvent, QPen, QWheelEvent
+from PyQt5.QtGui import QBrush, QColor, QPainter, QPainterPath, QPaintEvent, QPen, QWheelEvent
 from PyQt5.QtWidgets import QWidget
 
 
@@ -381,3 +381,14 @@ class VectorGridPlot(BackgroundPlot):
         self.draw_arrowhead_away_from_origin(painter, self.point_i)
         painter.setPen(QPen(self.colour_j, self.width_vector_line))
         self.draw_arrowhead_away_from_origin(painter, self.point_j)
+
+    def draw_determinant_parallelogram(self, painter: QPainter) -> None:
+        """Draw the parallelogram of the determinant of the matrix."""
+        path = QPainterPath()
+        path.moveTo(*self.canvas_origin)
+        path.lineTo(*self.canvas_coords(*self.point_i))
+        path.lineTo(*self.canvas_coords(self.point_i[0] + self.point_j[0], self.point_i[1] + self.point_j[1]))
+        path.lineTo(*self.canvas_coords(*self.point_j))
+
+        brush = QBrush(QColor(16, 235, 253, alpha=128), Qt.SolidPattern)
+        painter.fillPath(path, brush)

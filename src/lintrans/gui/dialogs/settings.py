@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 import abc
-import copy
 
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIntValidator, QKeySequence
 from PyQt5.QtWidgets import QCheckBox, QDialog, QGroupBox, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
@@ -77,6 +75,8 @@ class DisplaySettingsDialog(SettingsDialog):
 
         # === Create the widgets
 
+        # Animations
+
         self.checkbox_animate_determinant = QCheckBox(self)
         self.checkbox_animate_determinant.setText('Animate determinant')
         self.checkbox_animate_determinant.setToolTip('Smoothly animate the determinant during animation')
@@ -97,7 +97,17 @@ class DisplaySettingsDialog(SettingsDialog):
         self.lineedit_animation_pause_length = QtWidgets.QLineEdit(self)
         self.lineedit_animation_pause_length.setValidator(QIntValidator(1, 999, self))
 
+        # Matrix info
+
+        self.checkbox_draw_determinant_parallelogram = QCheckBox(self)
+        self.checkbox_draw_determinant_parallelogram.setText('Draw determinant parallelogram')
+        self.checkbox_draw_determinant_parallelogram.setToolTip(
+            'Shade the parallelogram representing the determinant of the matrix'
+        )
+
         # === Arrange the widgets in QGroupBoxes
+
+        # Animations
 
         self.hlay_animation_pause_length = QHBoxLayout()
         self.hlay_animation_pause_length.addWidget(self.label_animation_pause_length)
@@ -112,21 +122,39 @@ class DisplaySettingsDialog(SettingsDialog):
         self.groupbox_animations = QGroupBox('Animations', self)
         self.groupbox_animations.setLayout(self.vlay_groupbox_animations)
 
+        # Matrix info
+
+        self.vlay_groupbox_matrix_info = QVBoxLayout()
+        self.vlay_groupbox_matrix_info.setSpacing(20)
+        self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_determinant_parallelogram)
+
+        self.groupbox_matrix_info = QGroupBox('Matrix info', self)
+        self.groupbox_matrix_info.setLayout(self.vlay_groupbox_matrix_info)
+
         self.vlay_options.addWidget(self.groupbox_animations)
+        self.vlay_options.addWidget(self.groupbox_matrix_info)
 
         # Finally, we load the current settings
         self.load_settings()
 
     def load_settings(self) -> None:
         """Load the current display settings into the widgets."""
+        # Animations
         self.checkbox_animate_determinant.setChecked(self.display_settings.animate_determinant)
         self.checkbox_applicative_animation.setChecked(self.display_settings.applicative_animation)
         self.lineedit_animation_pause_length.setText(str(self.display_settings.animation_pause_length))
 
+        # Matrix info
+        self.checkbox_draw_determinant_parallelogram.setChecked(self.display_settings.draw_determinant_parallelogram)
+
     def confirm_settings(self) -> None:
         """Build a :class:`lintrans.gui.settings.DisplaySettings` object and assign it."""
+        # Animations
         self.display_settings.animate_determinant = self.checkbox_animate_determinant.isChecked()
         self.display_settings.applicative_animation = self.checkbox_applicative_animation.isChecked()
         self.display_settings.animation_pause_length = int(self.lineedit_animation_pause_length.text())
+
+        # Matrix info
+        self.display_settings.draw_determinant_parallelogram = self.checkbox_draw_determinant_parallelogram.isChecked()
 
         self.accept()

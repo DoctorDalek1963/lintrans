@@ -38,7 +38,6 @@ class LintransMainWindow(QMainWindow):
         super().__init__()
 
         self.matrix_wrapper = MatrixWrapper()
-        self.display_settings = DisplaySettings()
 
         self.setWindowTitle('Linear Transformations')
         self.setMinimumWidth(750)
@@ -115,7 +114,7 @@ class LintransMainWindow(QMainWindow):
 
         # Left layout: the plot and input box
 
-        self.plot = VisualizeTransformationWidget(self)
+        self.plot = VisualizeTransformationWidget(DisplaySettings(), self)
 
         self.lineedit_expression_box = QtWidgets.QLineEdit(self)
         self.lineedit_expression_box.setPlaceholderText('Enter matrix expression...')
@@ -312,7 +311,7 @@ class LintransMainWindow(QMainWindow):
                 # Here we just redraw and allow for other events to be handled while we pause
                 self.plot.update()
                 QApplication.processEvents()
-                QThread.msleep(self.display_settings.animation_pause_length)
+                QThread.msleep(self.plot.display_settings.animation_pause_length)
 
         # If there's no commas, then just animate directly from the start to the target
         else:
@@ -325,7 +324,7 @@ class LintransMainWindow(QMainWindow):
                 return
 
             # The concept of applicative animation is explained in /gui/settings.py
-            if self.display_settings.applicative_animation:
+            if self.plot.display_settings.applicative_animation:
                 matrix_target = matrix_target @ matrix_start
 
             # If we want a transitional animation and we're animating the same matrix, then restart the animation
@@ -356,7 +355,7 @@ class LintransMainWindow(QMainWindow):
             # If we just used matrix_a, then things would animate, but the determinants would be weird
             matrix_a = matrix_start + proportion * (matrix_target - matrix_start)
 
-            if self.display_settings.animate_determinant and det_target != 0:
+            if self.plot.display_settings.animate_determinant and det_target != 0:
                 # To fix the determinant problem, we get the determinant of matrix_a and use it to normalise
                 det_a = linalg.det(matrix_a)
 
@@ -438,13 +437,14 @@ class LintransMainWindow(QMainWindow):
 
     def dialog_change_display_settings(self) -> None:
         """Open the dialog to change the display settings."""
-        dialog = DisplaySettingsDialog(self.display_settings, self)
+        dialog = DisplaySettingsDialog(self.plot.display_settings, self)
         dialog.open()
         dialog.finished.connect(lambda: self._assign_display_settings(dialog.display_settings))
 
     def _assign_display_settings(self, display_settings: DisplaySettings) -> None:
-        """Assign a new value to ``self.display_settings``."""
-        self.display_settings = display_settings
+        """Assign a new value to ``self.plot.display_settings``."""
+        self.plot.display_settings = display_settings
+        self.plot.update()
 
     def show_error_message(self, title: str, text: str, info: str | None = None) -> None:
         """Show an error message in a dialog box.

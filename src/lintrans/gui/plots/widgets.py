@@ -7,6 +7,7 @@ from PyQt5.QtGui import QMouseEvent, QPainter, QPaintEvent
 
 from .classes import VectorGridPlot
 from lintrans.typing import MatrixType
+from lintrans.gui.settings import DisplaySettings
 
 
 class VisualizeTransformationWidget(VectorGridPlot):
@@ -16,6 +17,12 @@ class VisualizeTransformationWidget(VectorGridPlot):
     worry about is :meth:`visualize_matrix_transformation`, which allows you to visualise
     the given matrix transformation.
     """
+
+    def __init__(self, display_settings: DisplaySettings, *args, **kwargs):
+        """Create the widget and assign its display settings, passing ``*args`` and ``**kwargs`` to super."""
+        super().__init__(*args, **kwargs)
+
+        self.display_settings = display_settings
 
     def visualize_matrix_transformation(self, matrix: MatrixType) -> None:
         """Transform the grid by the given matrix.
@@ -48,6 +55,9 @@ class VisualizeTransformationWidget(VectorGridPlot):
         self.draw_transformed_grid(painter)
         self.draw_vector_arrowheads(painter)
 
+        if self.display_settings.draw_determinant_parallelogram:
+            self.draw_determinant_parallelogram(painter)
+
         painter.end()
         event.accept()
 
@@ -68,6 +78,25 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
 
         # This is the distance that the cursor needs to be from the point to drag it
         self.epsilon: int = 5
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        """Handle a ``QPaintEvent`` by drawing the background grid and the transformed grid.
+
+        The transformed grid is defined by the basis vectors i and j,
+        which can be dragged around in the widget.
+        """
+        painter = QPainter()
+        painter.begin(self)
+
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setBrush(Qt.NoBrush)
+
+        self.draw_background(painter)
+        self.draw_transformed_grid(painter)
+        self.draw_vector_arrowheads(painter)
+
+        painter.end()
+        event.accept()
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         """Handle a QMouseEvent when the user pressed a button."""

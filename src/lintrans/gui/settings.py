@@ -22,3 +22,6 @@ class DisplaySettings:
 
     animation_pause_length: int = 400
     """This is the number of milliseconds that we wait between animations when using comma syntax."""
+
+    draw_determinant_parallelogram: bool = False
+    """This controls whether or not we should shade the parallelogram representing the determinant of the matrix."""
