@@ -58,6 +58,9 @@ class VisualizeTransformationWidget(VectorGridPlot):
         if self.display_settings.draw_determinant_parallelogram:
             self.draw_determinant_parallelogram(painter)
 
+            if self.display_settings.draw_determinant_text:
+                self.draw_determinant_text(painter)
+
         painter.end()
         event.accept()
 

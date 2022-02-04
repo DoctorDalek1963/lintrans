@@ -9,6 +9,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QBrush, QColor, QPainter, QPainterPath, QPaintEvent, QPen, QWheelEvent
 from PyQt5.QtWidgets import QWidget
 
+from lintrans.typing import MatrixType
+
 
 class BackgroundPlot(QWidget):
     """This class provides a background for plotting, as well as setup for a Qt widget.
@@ -163,6 +165,19 @@ class VectorGridPlot(BackgroundPlot):
         self.width_transformed_grid = 0.6
 
         self.arrowhead_length = 0.15
+
+    @property
+    def matrix(self) -> MatrixType:
+        """Return a the assembled matrix of the basis vectors."""
+        return np.array([
+            [self.point_i[0], self.point_j[0]],
+            [self.point_i[1], self.point_j[1]]
+        ])
+
+    @property
+    def det(self) -> float:
+        """Return the determinant of the assembled matrix."""
+        return np.linalg.det(self.matrix)
 
     @abstractmethod
     def paintEvent(self, event: QPaintEvent) -> None:
@@ -384,12 +399,7 @@ class VectorGridPlot(BackgroundPlot):
 
     def draw_determinant_parallelogram(self, painter: QPainter) -> None:
         """Draw the parallelogram of the determinant of the matrix."""
-        det = np.linalg.det(np.array([
-            [self.point_i[0], self.point_j[0]],
-            [self.point_i[1], self.point_j[1]]
-        ]))
-
-        if det == 0:
+        if self.det == 0:
             return
 
         path = QPainterPath()
@@ -398,7 +408,18 @@ class VectorGridPlot(BackgroundPlot):
         path.lineTo(*self.canvas_coords(self.point_i[0] + self.point_j[0], self.point_i[1] + self.point_j[1]))
         path.lineTo(*self.canvas_coords(*self.point_j))
 
-        color = (16, 235, 253) if det > 0 else (253, 34, 16)
+        color = (16, 235, 253) if self.det > 0 else (253, 34, 16)
         brush = QBrush(QColor(*color, alpha=128), Qt.SolidPattern)
 
         painter.fillPath(path, brush)
+
+    def draw_determinant_text(self, painter: QPainter) -> None:
+        """Write the string value of the determinant in the middle of the parallelogram."""
+        painter.setPen(QPen(QColor(0, 0, 0), self.width_vector_line))
+        painter.drawText(
+            *self.canvas_coords(
+                (self.point_i[0] + self.point_j[0]) / 2,
+                (self.point_i[1] + self.point_j[1]) / 2
+            ),
+            f'{self.det:.2f}'
+        )

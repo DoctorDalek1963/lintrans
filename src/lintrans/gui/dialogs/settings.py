@@ -105,6 +105,12 @@ class DisplaySettingsDialog(SettingsDialog):
             'Shade the parallelogram representing the determinant of the matrix'
         )
 
+        self.checkbox_draw_determinant_text = QCheckBox(self)
+        self.checkbox_draw_determinant_text.setText('Draw determinant text')
+        self.checkbox_draw_determinant_text.setToolTip(
+            'Write the text value of the determinant inside the parallelogram'
+        )
+
         # === Arrange the widgets in QGroupBoxes
 
         # Animations
@@ -127,6 +133,7 @@ class DisplaySettingsDialog(SettingsDialog):
         self.vlay_groupbox_matrix_info = QVBoxLayout()
         self.vlay_groupbox_matrix_info.setSpacing(20)
         self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_determinant_parallelogram)
+        self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_determinant_text)
 
         self.groupbox_matrix_info = QGroupBox('Matrix info', self)
         self.groupbox_matrix_info.setLayout(self.vlay_groupbox_matrix_info)
@@ -146,6 +153,7 @@ class DisplaySettingsDialog(SettingsDialog):
 
         # Matrix info
         self.checkbox_draw_determinant_parallelogram.setChecked(self.display_settings.draw_determinant_parallelogram)
+        self.checkbox_draw_determinant_text.setChecked(self.display_settings.draw_determinant_text)
 
     def confirm_settings(self) -> None:
         """Build a :class:`lintrans.gui.settings.DisplaySettings` object and assign it."""
@@ -156,5 +164,6 @@ class DisplaySettingsDialog(SettingsDialog):
 
         # Matrix info
         self.display_settings.draw_determinant_parallelogram = self.checkbox_draw_determinant_parallelogram.isChecked()
+        self.display_settings.draw_determinant_text = self.checkbox_draw_determinant_text.isChecked()
 
         self.accept()
