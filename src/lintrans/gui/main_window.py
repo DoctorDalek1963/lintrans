@@ -22,6 +22,7 @@ from .dialogs import DefineAsAnExpressionDialog, DefineAsARotationDialog, Define
 from .dialogs.settings import DisplaySettingsDialog
 from .plots import VisualizeTransformationWidget
 from .settings import DisplaySettings
+from lintrans.gui.validate import MatrixExpressionValidator
 
 
 class LintransMainWindow(QMainWindow):
@@ -121,6 +122,7 @@ class LintransMainWindow(QMainWindow):
 
         self.lineedit_expression_box = QtWidgets.QLineEdit(self)
         self.lineedit_expression_box.setPlaceholderText('Enter matrix expression...')
+        self.lineedit_expression_box.setValidator(MatrixExpressionValidator(self))
         self.lineedit_expression_box.textChanged.connect(self.update_render_buttons)
 
         # Right layout: all the buttons
