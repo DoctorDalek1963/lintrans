@@ -48,6 +48,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-lintrans.gui.main_window">lintrans.gui.main_window module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-lintrans.gui.settings">lintrans.gui.settings module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-lintrans.gui.validate">lintrans.gui.validate module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="lintrans.matrices.html">lintrans.matrices package</a></li>
@@ -296,6 +297,23 @@ and applicative animation means that we animate from <code class="docutils liter
 <span class="sig-name descname"><span class="pre">draw_determinant_text</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#lintrans.gui.settings.DisplaySettings.draw_determinant_text" title="Permalink to this definition"></a></dt>
 <dd><p>This controls whether we should write the text value of the determinant inside the parallelogram.</p>
 <p>The text only gets draw if <a class="reference internal" href="#lintrans.gui.settings.DisplaySettings.draw_determinant_parallelogram" title="lintrans.gui.settings.DisplaySettings.draw_determinant_parallelogram"><code class="xref py py-attr docutils literal notranslate"><span class="pre">draw_determinant_parallelogram</span></code></a> is also True.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-lintrans.gui.validate">
+<span id="lintrans-gui-validate-module"></span><h2>lintrans.gui.validate module<a class="headerlink" href="#module-lintrans.gui.validate" title="Permalink to this headline"></a></h2>
+<p>This simple module provides a <a class="reference internal" href="#lintrans.gui.validate.MatrixExpressionValidator" title="lintrans.gui.validate.MatrixExpressionValidator"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatrixExpressionValidator</span></code></a> class to validate matrix expression input.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="lintrans.gui.validate.MatrixExpressionValidator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lintrans.gui.validate.</span></span><span class="sig-name descname"><span class="pre">MatrixExpressionValidator</span></span><a class="headerlink" href="#lintrans.gui.validate.MatrixExpressionValidator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtGui.QValidator</span></code></p>
+<p>This class validates matrix expressions in an Qt input box.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.validate.MatrixExpressionValidator.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">PyQt5.QtGui.QValidator.State</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#lintrans.gui.validate.MatrixExpressionValidator.validate" title="Permalink to this definition"></a></dt>
+<dd><p>Validate the given text according to the rules defined in the <a class="reference internal" href="lintrans.matrices.html#module-lintrans.matrices" title="lintrans.matrices"><code class="xref py py-mod docutils literal notranslate"><span class="pre">lintrans.matrices</span></code></a> module.</p>
 </dd></dl>
 
 </dd></dl>
