@@ -23,4 +23,3 @@ class MatrixExpressionValidator(QValidator):
                 return QValidator.Intermediate, text, pos
 
         return QValidator.Invalid, text, pos
-
