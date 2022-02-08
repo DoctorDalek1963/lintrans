@@ -34,6 +34,10 @@ Here is the technical BNF schema used by :func:`lintrans.matrices.parse.parse_ma
 
 .. literalinclude:: bnf.txt
 
+.. note::
+   In the GUI, commas are also acceptable in an input expression, as long as everything between commas is
+   valid on its own. These commas are used exclusively in the animation to animate an expression in steps.
+
 Submodules
 ----------
 

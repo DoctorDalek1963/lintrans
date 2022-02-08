@@ -57,18 +57,7 @@ def validate_matrix_expression(expression: str) -> bool:
 
 
 def parse_matrix_expression(expression: str) -> MatrixParseList:
-    """Parse the matrix expression.
-
-    The return value is a list containing lists of tuples. The structure of each tuple is
-    (multiplier, matrix identifier, index) where all of them are strings. These tuples are
-    contained in lists which represent multplication groups. Each tuple represents a matrix
-    and the list holds the matrices that should be multiplied together, in order. These lists
-    are contained by a top level list, which we return. These multiplication group lists
-    contained in the top level list should be added together once evaluated.
-
-    In the tuples, the multiplier is a string representing a real number, the matrix identifier
-    is a capital letter or ``rot(x)`` where x is a real number angle, and the index is a string
-    representing an integer, or it's the letter ``T`` for transpose.
+    """Parse the matrix expression and return a :data:`lintrans.typing.MatrixParseList`.
 
     :Example:
 
@@ -87,7 +76,7 @@ def parse_matrix_expression(expression: str) -> MatrixParseList:
 
     :param str expression: The expression to be parsed
     :returns: A list of parsed components
-    :rtype: MatrixParseList
+    :rtype: :data:`lintrans.typing.MatrixParseList`
     """
     # Remove all whitespace
     expression = re.sub(r'\s', '', expression)
