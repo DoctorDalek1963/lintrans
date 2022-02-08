@@ -5,7 +5,7 @@ from __future__ import annotations
 import abc
 
 from PyQt5 import QtWidgets
-from PyQt5.QtGui import QIntValidator, QKeySequence
+from PyQt5.QtGui import QIntValidator, QKeyEvent, QKeySequence
 from PyQt5.QtWidgets import QCheckBox, QDialog, QGroupBox, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
 from lintrans.gui.settings import DisplaySettings
@@ -73,22 +73,26 @@ class DisplaySettingsDialog(SettingsDialog):
         self.display_settings = display_settings
         self.setWindowTitle('Change display settings')
 
+        self.dict_checkboxes: dict[str, QCheckBox] = dict()
+
         # === Create the widgets
 
         # Animations
 
         self.checkbox_smoothen_determinant = QCheckBox(self)
-        self.checkbox_smoothen_determinant.setText('Smoothen determinant')
+        self.checkbox_smoothen_determinant.setText('&Smoothen determinant')
         self.checkbox_smoothen_determinant.setToolTip(
             'Smoothly animate the determinant transition during animation (if possible)'
         )
+        self.dict_checkboxes['s'] = self.checkbox_smoothen_determinant
 
         self.checkbox_applicative_animation = QCheckBox(self)
-        self.checkbox_applicative_animation.setText('Applicative animation')
+        self.checkbox_applicative_animation.setText('&Applicative animation')
         self.checkbox_applicative_animation.setToolTip(
             'Animate the new transformation applied to the current one,\n'
             'rather than just that transformation on its own'
         )
+        self.dict_checkboxes['a'] = self.checkbox_applicative_animation
 
         self.label_animation_pause_length = QtWidgets.QLabel(self)
         self.label_animation_pause_length.setText('Animation pause length (ms)')
@@ -102,17 +106,19 @@ class DisplaySettingsDialog(SettingsDialog):
         # Matrix info
 
         self.checkbox_draw_determinant_parallelogram = QCheckBox(self)
-        self.checkbox_draw_determinant_parallelogram.setText('Draw determinant parallelogram')
+        self.checkbox_draw_determinant_parallelogram.setText('Draw &determinant parallelogram')
         self.checkbox_draw_determinant_parallelogram.setToolTip(
             'Shade the parallelogram representing the determinant of the matrix'
         )
         self.checkbox_draw_determinant_parallelogram.clicked.connect(self.update_gui)
+        self.dict_checkboxes['d'] = self.checkbox_draw_determinant_parallelogram
 
         self.checkbox_draw_determinant_text = QCheckBox(self)
-        self.checkbox_draw_determinant_text.setText('Draw determinant text')
+        self.checkbox_draw_determinant_text.setText('Draw determinant &text')
         self.checkbox_draw_determinant_text.setToolTip(
             'Write the text value of the determinant inside the parallelogram'
         )
+        self.dict_checkboxes['t'] = self.checkbox_draw_determinant_text
 
         # === Arrange the widgets in QGroupBoxes
 
@@ -178,3 +184,27 @@ class DisplaySettingsDialog(SettingsDialog):
         For example, this method updates which checkboxes are enabled based on the values of other checkboxes.
         """
         self.checkbox_draw_determinant_text.setEnabled(self.checkbox_draw_determinant_parallelogram.isChecked())
+
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        """Handle a ``QKeyEvent`` by manually activating toggling checkboxes.
+
+        Qt handles these shortcuts automatically and allows the user to do ``Alt + Key``
+        to activate a simple shortcut defined with ``&``. However, I like to be able to
+        just hit ``Key`` and have the shortcut activate.
+        """
+        letter = event.text().lower()
+        key = event.key()
+
+        if letter in self.dict_checkboxes:
+            self.dict_checkboxes[letter].animateClick()
+
+        # Return or keypad enter
+        elif key == 0x01000004 or key == 0x01000005:
+            self.button_confirm.click()
+
+        # Escape
+        elif key == 0x01000000:
+            self.button_cancel.click()
+
+        else:
+            event.ignore()
