@@ -303,7 +303,11 @@ class LintransMainWindow(QMainWindow):
             # For each expression in the list, right multiply it by the current matrix,
             # and animate from the current matrix to that new matrix
             for expr in text.split(',')[::-1]:
-                new_matrix = self.matrix_wrapper.evaluate_expression(expr) @ current_matrix
+                try:
+                    new_matrix = self.matrix_wrapper.evaluate_expression(expr) @ current_matrix
+                except linalg.LinAlgError:
+                    self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
+                    return
 
                 self.animate_between_matrices(current_matrix, new_matrix)
                 current_matrix = new_matrix
