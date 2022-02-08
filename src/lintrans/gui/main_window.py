@@ -429,29 +429,28 @@ class LintransMainWindow(QMainWindow):
         # So we have to use the finished slot to call a method when the user accepts the dialog
         # If the user rejects the dialog, this matrix_wrapper will be the same as the current one, because we copied it
         # So we don't care, we just assign the wrapper anyway
-        dialog.finished.connect(lambda: self._assign_matrix_wrapper(dialog.matrix_wrapper))
+        dialog.finished.connect(lambda: self.assign_matrix_wrapper(dialog.matrix_wrapper))
 
-    def _assign_matrix_wrapper(self, matrix_wrapper: MatrixWrapper) -> None:
-        """Assign a new value to ``self.matrix_wrapper``.
-
-        This is a little utility function that only exists because a lambda
-        callback can't directly assign a value to a class attribute.
+    def assign_matrix_wrapper(self, matrix_wrapper: MatrixWrapper) -> None:
+        """Assign a new value to ``self.matrix_wrapper`` and give the expression box focus.
 
         :param matrix_wrapper: The new value of the matrix wrapper to assign
         :type matrix_wrapper: MatrixWrapper
         """
         self.matrix_wrapper = matrix_wrapper
+        self.lineedit_expression_box.setFocus()
 
     def dialog_change_display_settings(self) -> None:
         """Open the dialog to change the display settings."""
         dialog = DisplaySettingsDialog(self.plot.display_settings, self)
         dialog.open()
-        dialog.finished.connect(lambda: self._assign_display_settings(dialog.display_settings))
+        dialog.finished.connect(lambda: self.assign_display_settings(dialog.display_settings))
 
-    def _assign_display_settings(self, display_settings: DisplaySettings) -> None:
-        """Assign a new value to ``self.plot.display_settings``."""
+    def assign_display_settings(self, display_settings: DisplaySettings) -> None:
+        """Assign a new value to ``self.plot.display_settings`` and give the expression box focus."""
         self.plot.display_settings = display_settings
         self.plot.update()
+        self.lineedit_expression_box.setFocus()
 
     def show_error_message(self, title: str, text: str, info: str | None = None) -> None:
         """Show an error message in a dialog box.
