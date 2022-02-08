@@ -166,6 +166,8 @@ class VectorGridPlot(BackgroundPlot):
 
         self.arrowhead_length = 0.15
 
+        self.max_parallel_lines = 150
+
     @property
     def matrix(self) -> MatrixType:
         """Return a the assembled matrix of the basis vectors."""
@@ -229,7 +231,7 @@ class VectorGridPlot(BackgroundPlot):
         elif abs(vector_x) < 1e-12:
             painter.drawLine(self.canvas_x(0), 0, self.canvas_x(0), self.height())
 
-            for i in range(abs(int(max_x / point_x))):
+            for i in range(max(abs(int(max_x / point_x)), self.max_parallel_lines)):
                 painter.drawLine(
                     self.canvas_x((i + 1) * point_x),
                     0,
@@ -247,7 +249,7 @@ class VectorGridPlot(BackgroundPlot):
         elif abs(vector_y) < 1e-12:
             painter.drawLine(0, self.canvas_y(0), self.width(), self.canvas_y(0))
 
-            for i in range(abs(int(max_y / point_y))):
+            for i in range(max(abs(int(max_y / point_y)), self.max_parallel_lines)):
                 painter.drawLine(
                     0,
                     self.canvas_y((i + 1) * point_y),
@@ -268,10 +270,11 @@ class VectorGridPlot(BackgroundPlot):
 
             self.draw_oblique_line(painter, m, 0)
 
-            # We keep looping and increasing the multiple of c until we stop drawing lines on the canvas
-            multiple_of_c = 1
-            while self.draw_pair_of_oblique_lines(painter, m, multiple_of_c * c):
-                multiple_of_c += 1
+            # We don't want to overshoot the max number of parallel lines,
+            # but we should also stop looping as soon as we can't draw any more lines
+            for i in range(1, self.max_parallel_lines + 1):
+                if not self.draw_pair_of_oblique_lines(painter, m, i * c):
+                    break
 
     def draw_pair_of_oblique_lines(self, painter: QPainter, m: float, c: float) -> bool:
         """Draw a pair of oblique lines, using the equation y = mx + c.
