@@ -387,6 +387,15 @@ so it’s got an empty body. It’s only here because we need to implement the a
 <p>For example, this method updates which checkboxes are enabled based on the values of other checkboxes.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.dialogs.settings.DisplaySettingsDialog.keyPressEvent">
+<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QKeyEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.settings.DisplaySettingsDialog.keyPressEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Handle a <code class="docutils literal notranslate"><span class="pre">QKeyEvent</span></code> by manually activating toggling checkboxes.</p>
+<p>Qt handles these shortcuts automatically and allows the user to do <code class="docutils literal notranslate"><span class="pre">Alt</span> <span class="pre">+</span> <span class="pre">Key</span></code>
+to activate a simple shortcut defined with <code class="docutils literal notranslate"><span class="pre">&amp;</span></code>. However, I like to be able to
+just hit <code class="docutils literal notranslate"><span class="pre">Key</span></code> and have the shortcut activate.</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
