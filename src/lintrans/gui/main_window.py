@@ -443,6 +443,7 @@ class LintransMainWindow(QMainWindow):
         """
         self.matrix_wrapper = matrix_wrapper
         self.lineedit_expression_box.setFocus()
+        self.update_render_buttons()
 
     def dialog_change_display_settings(self) -> None:
         """Open the dialog to change the display settings."""
@@ -455,6 +456,7 @@ class LintransMainWindow(QMainWindow):
         self.plot.display_settings = display_settings
         self.plot.update()
         self.lineedit_expression_box.setFocus()
+        self.update_render_buttons()
 
     def show_error_message(self, title: str, text: str, info: str | None = None) -> None:
         """Show an error message in a dialog box.
