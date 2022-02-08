@@ -17,8 +17,8 @@ from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox
 
 from lintrans.matrices import MatrixWrapper
 from lintrans.typing import MatrixType
-from .dialogs import DefineAsAnExpressionDialog, DefineAsARotationDialog, DefineDialog, DefineNumericallyDialog, \
-    DefineVisuallyDialog
+from .dialogs import (DefineAsAnExpressionDialog, DefineAsARotationDialog, DefineDialog,
+                      DefineNumericallyDialog, DefineVisuallyDialog)
 from .dialogs.settings import DisplaySettingsDialog
 from .plots import VisualizeTransformationWidget
 from .settings import DisplaySettings
