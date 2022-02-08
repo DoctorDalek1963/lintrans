@@ -42,6 +42,9 @@ class LintransMainWindow(QMainWindow):
         self.setWindowTitle('Linear Transformations')
         self.setMinimumSize(1000, 750)
 
+        self.animating: bool = False
+        self.animating_sequence: bool = False
+
         # === Create menubar
 
         self.menubar = QtWidgets.QMenuBar(self)
@@ -266,6 +269,8 @@ class LintransMainWindow(QMainWindow):
     def reset_transformation(self) -> None:
         """Reset the visualized transformation back to the identity."""
         self.plot.visualize_matrix_transformation(self.matrix_wrapper['I'])
+        self.animating = False
+        self.animating_sequence = False
         self.plot.update()
 
     def render_expression(self) -> None:
@@ -299,6 +304,7 @@ class LintransMainWindow(QMainWindow):
         # If there's commas in the expression, then we want to animate each part at a time
         if ',' in text:
             current_matrix = matrix_start
+            self.animating_sequence = True
 
             # For each expression in the list, right multiply it by the current matrix,
             # and animate from the current matrix to that new matrix
@@ -309,6 +315,9 @@ class LintransMainWindow(QMainWindow):
                     self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
                     return
 
+                if not self.animating_sequence:
+                    break
+
                 self.animate_between_matrices(current_matrix, new_matrix)
                 current_matrix = new_matrix
 
@@ -316,6 +325,8 @@ class LintransMainWindow(QMainWindow):
                 self.plot.update()
                 QApplication.processEvents()
                 QThread.msleep(self.plot.display_settings.animation_pause_length)
+
+            self.animating_sequence = False
 
         # If there's no commas, then just animate directly from the start to the target
         else:
@@ -351,7 +362,12 @@ class LintransMainWindow(QMainWindow):
         det_target = linalg.det(matrix_target)
         det_start = linalg.det(matrix_start)
 
+        self.animating = True
+
         for i in range(0, steps + 1):
+            if not self.animating:
+                break
+
             # This proportion is how far we are through the loop
             proportion = i / steps
 
@@ -409,6 +425,8 @@ class LintransMainWindow(QMainWindow):
             self.plot.update()
             QApplication.processEvents()
             QThread.msleep(1000 // steps)
+
+        self.animating = False
 
     def dialog_define_matrix(self, dialog_class: Type[DefineDialog]) -> None:
         """Open a generic definition dialog to define a new matrix.
