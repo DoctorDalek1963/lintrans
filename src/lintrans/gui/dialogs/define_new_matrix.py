@@ -354,6 +354,8 @@ class DefineAsAnExpressionDialog(DefineDialog):
 
         # === Create the widgets
 
+        self.combobox_letter.activated.connect(self.load_matrix)
+
         self.lineedit_expression_box = QtWidgets.QLineEdit(self)
         self.lineedit_expression_box.setPlaceholderText('Enter matrix expression...')
         self.lineedit_expression_box.textChanged.connect(self.update_confirm_button)
@@ -365,14 +367,25 @@ class DefineAsAnExpressionDialog(DefineDialog):
         self.vlay_all.addLayout(self.hlay_definition)
         self.vlay_all.addLayout(self.hlay_buttons)
 
+        # Load the matrix if its defined as an expression
+        self.load_matrix(0)
+
     def update_confirm_button(self) -> None:
         """Enable the confirm button if the matrix expression is valid in the wrapper."""
         self.button_confirm.setEnabled(
             self.matrix_wrapper.is_valid_expression(self.lineedit_expression_box.text())
         )
 
+    def load_matrix(self, index: int) -> None:
+        """If the selected matrix is defined an expression, load that expression into the box."""
+        name = ALPHABET_NO_I[index]
+
+        if (expr := self.matrix_wrapper.get_expression(name)) is not None:
+            self.lineedit_expression_box.setText(expr)
+        else:
+            self.lineedit_expression_box.setText('')
+
     def confirm_matrix(self) -> None:
         """Evaluate the matrix expression and assign its value to the name in the combo box."""
-        self.matrix_wrapper[self.selected_letter] = \
-            self.matrix_wrapper.evaluate_expression(self.lineedit_expression_box.text())
+        self.matrix_wrapper[self.selected_letter] = self.lineedit_expression_box.text()
         self.accept()
