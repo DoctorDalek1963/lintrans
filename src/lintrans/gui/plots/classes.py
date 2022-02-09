@@ -5,7 +5,7 @@ from __future__ import annotations
 from abc import abstractmethod
 
 import numpy as np
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import QPoint, QRectF, Qt
 from PyQt5.QtGui import QBrush, QColor, QPainter, QPainterPath, QPaintEvent, QPen, QWheelEvent
 from PyQt5.QtWidgets import QWidget
 
@@ -419,10 +419,29 @@ class VectorGridPlot(BackgroundPlot):
     def draw_determinant_text(self, painter: QPainter) -> None:
         """Write the string value of the determinant in the middle of the parallelogram."""
         painter.setPen(QPen(QColor(0, 0, 0), self.width_vector_line))
+
+        # We're building a QRect that encloses the determinant parallelogram
+        # Then we can center the text in this QRect
+        coords: list[tuple[float, float]] = [
+            (0, 0),
+            self.point_i,
+            self.point_j,
+            (
+                self.point_i[0] + self.point_j[0],
+                self.point_i[1] + self.point_j[1]
+            )
+        ]
+
+        xs = [t[0] for t in coords]
+        ys = [t[1] for t in coords]
+
+        top_left = QPoint(*self.canvas_coords(min(xs), max(ys)))
+        bottom_right = QPoint(*self.canvas_coords(max(xs), min(ys)))
+
+        rect = QRectF(top_left, bottom_right)
+
         painter.drawText(
-            *self.canvas_coords(
-                (self.point_i[0] + self.point_j[0]) / 2,
-                (self.point_i[1] + self.point_j[1]) / 2
-            ),
+            rect,
+            Qt.AlignHCenter | Qt.AlignVCenter,
             f'{self.det:.2f}'
         )
