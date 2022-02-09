@@ -191,7 +191,7 @@ class DefineVisuallyDialog(DefineDialog):
 
     def load_matrix(self, index: int) -> None:
         """Show the selected matrix on the plot. If the matrix is None, show the identity."""
-        matrix = self.matrix_wrapper[ALPHABET_NO_I[index]]
+        matrix = self.matrix_wrapper[self.selected_letter]
 
         if matrix is None:
             matrix = self.matrix_wrapper['I']
@@ -273,7 +273,7 @@ class DefineNumericallyDialog(DefineDialog):
 
     def load_matrix(self, index: int) -> None:
         """If the selected matrix is defined, load its values into the boxes."""
-        matrix = self.matrix_wrapper[ALPHABET_NO_I[index]]
+        matrix = self.matrix_wrapper[self.selected_letter]
 
         if matrix is None:
             for elem in self.matrix_elements:
@@ -399,9 +399,7 @@ class DefineAsAnExpressionDialog(DefineDialog):
 
     def load_matrix(self, index: int) -> None:
         """If the selected matrix is defined an expression, load that expression into the box."""
-        name = ALPHABET_NO_I[index]
-
-        if (expr := self.matrix_wrapper.get_expression(name)) is not None:
+        if (expr := self.matrix_wrapper.get_expression(self.selected_letter)) is not None:
             self.lineedit_expression_box.setText(expr)
         else:
             self.lineedit_expression_box.setText('')
