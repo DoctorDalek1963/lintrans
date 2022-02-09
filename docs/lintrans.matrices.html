@@ -216,6 +216,10 @@ in a wrapper. For an aware version of this function, use the
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lintrans.matrices.wrapper.</span></span><span class="sig-name descname"><span class="pre">MatrixWrapper</span></span><a class="headerlink" href="#lintrans.matrices.wrapper.MatrixWrapper" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A wrapper class to hold all possible matrices and allow access to them.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When defining a custom matrix, its name must be a capital letter and cannot be <code class="docutils literal notranslate"><span class="pre">I</span></code>.</p>
+</div>
 <p>The contained matrices can be accessed and assigned to using square bracket notation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Example</dt>
@@ -267,6 +271,11 @@ in a wrapper. For an aware version of this function, use the
 <dd><p>Get the matrix with the given name.</p>
 <p>If it is a simple name, it will just be fetched from the dictionary. If the name is <code class="docutils literal notranslate"><span class="pre">rot(x)</span></code>, with
 a given angle in degrees, then we return a new matrix representing a rotation by that angle.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the named matrix is defined as an expression, then this method will return its evaluation.
+If you want the expression itself, use <a class="reference internal" href="#lintrans.matrices.wrapper.MatrixWrapper.get_expression" title="lintrans.matrices.wrapper.MatrixWrapper.get_expression"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_expression()</span></code></a>.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The name of the matrix to get</p>
@@ -285,20 +294,42 @@ a given angle in degrees, then we return a new matrix representing a rotation by
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.matrices.wrapper.MatrixWrapper.__setitem__">
-<span class="sig-name descname"><span class="pre">__setitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">MatrixType</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.matrices.wrapper.MatrixWrapper.__setitem__" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__setitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">MatrixType</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.matrices.wrapper.MatrixWrapper.__setitem__" title="Permalink to this definition"></a></dt>
 <dd><p>Set the value of matrix <code class="docutils literal notranslate"><span class="pre">name</span></code> with the new_matrix.</p>
+<p>The new matrix may be a simple 2x2 NumPy array, or it could be a string, representing an
+expression in terms of other, previously defined matrices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<em>str</em>) – The name of the matrix to set the value of</p></li>
-<li><p><strong>new_matrix</strong> (<em>Optional</em><em>[</em><em>MatrixType</em><em>]</em>) – The value of the new matrix (may be None)</p></li>
+<li><p><strong>new_matrix</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>MatrixType</em><em>, </em><em>str</em><em>]</em><em>]</em>) – The value of the new matrix (may be None)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>NameError</strong> – If the name isn’t a valid matrix name or is ‘I’</p></li>
-<li><p><strong>TypeError</strong> – If the matrix isn’t a valid 2x2 NumPy array</p></li>
+<li><p><strong>NameError</strong> – If the name isn’t a legal matrix name</p></li>
+<li><p><strong>TypeError</strong> – If the matrix isn’t a valid 2x2 NumPy array or expression in terms of other defined matrices</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.matrices.wrapper.MatrixWrapper.get_expression">
+<span class="sig-name descname"><span class="pre">get_expression</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#lintrans.matrices.wrapper.MatrixWrapper.get_expression" title="Permalink to this definition"></a></dt>
+<dd><p>If the named matrix is defined as an expression, return that expression, else return None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The name of the matrix</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The expression that the matrix is defined as, or None</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Optional[str]</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>NameError</strong> – If the name is invalid</p>
 </dd>
 </dl>
 </dd></dl>
