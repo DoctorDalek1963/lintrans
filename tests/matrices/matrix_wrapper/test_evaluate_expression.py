@@ -10,7 +10,7 @@ from lintrans.typing import MatrixType
 from conftest import get_test_wrapper
 
 
-def test_simple_matrix_addition(test_wrapper) -> None:
+def test_simple_matrix_addition(test_wrapper: MatrixWrapper) -> None:
     """Test simple addition and subtraction of two matrices."""
 
     # NOTE: We assert that all of these values are not None just to stop mypy complaining
@@ -30,7 +30,7 @@ def test_simple_matrix_addition(test_wrapper) -> None:
     assert test_wrapper == get_test_wrapper()
 
 
-def test_simple_two_matrix_multiplication(test_wrapper) -> None:
+def test_simple_two_matrix_multiplication(test_wrapper: MatrixWrapper) -> None:
     """Test simple multiplication of two matrices."""
     assert test_wrapper['A'] is not None and test_wrapper['B'] is not None and test_wrapper['C'] is not None and \
            test_wrapper['D'] is not None and test_wrapper['E'] is not None and test_wrapper['F'] is not None and \
@@ -49,7 +49,7 @@ def test_simple_two_matrix_multiplication(test_wrapper) -> None:
     assert test_wrapper == get_test_wrapper()
 
 
-def test_identity_multiplication(test_wrapper) -> None:
+def test_identity_multiplication(test_wrapper: MatrixWrapper) -> None:
     """Test that multiplying by the identity doesn't change the value of a matrix."""
     assert test_wrapper['A'] is not None and test_wrapper['B'] is not None and test_wrapper['C'] is not None and \
            test_wrapper['D'] is not None and test_wrapper['E'] is not None and test_wrapper['F'] is not None and \
@@ -70,7 +70,7 @@ def test_identity_multiplication(test_wrapper) -> None:
     assert test_wrapper == get_test_wrapper()
 
 
-def test_simple_three_matrix_multiplication(test_wrapper) -> None:
+def test_simple_three_matrix_multiplication(test_wrapper: MatrixWrapper) -> None:
     """Test simple multiplication of two matrices."""
     assert test_wrapper['A'] is not None and test_wrapper['B'] is not None and test_wrapper['C'] is not None and \
            test_wrapper['D'] is not None and test_wrapper['E'] is not None and test_wrapper['F'] is not None and \
@@ -88,7 +88,7 @@ def test_simple_three_matrix_multiplication(test_wrapper) -> None:
     assert test_wrapper == get_test_wrapper()
 
 
-def test_matrix_inverses(test_wrapper) -> None:
+def test_matrix_inverses(test_wrapper: MatrixWrapper) -> None:
     """Test the inverses of single matrices."""
     assert test_wrapper['A'] is not None and test_wrapper['B'] is not None and test_wrapper['C'] is not None and \
            test_wrapper['D'] is not None and test_wrapper['E'] is not None and test_wrapper['F'] is not None and \
@@ -113,7 +113,7 @@ def test_matrix_inverses(test_wrapper) -> None:
     assert test_wrapper == get_test_wrapper()
 
 
-def test_matrix_powers(test_wrapper) -> None:
+def test_matrix_powers(test_wrapper: MatrixWrapper) -> None:
     """Test that matrices can be raised to integer powers."""
     assert test_wrapper['A'] is not None and test_wrapper['B'] is not None and test_wrapper['C'] is not None and \
            test_wrapper['D'] is not None and test_wrapper['E'] is not None and test_wrapper['F'] is not None and \
@@ -130,7 +130,7 @@ def test_matrix_powers(test_wrapper) -> None:
     assert test_wrapper == get_test_wrapper()
 
 
-def test_matrix_transpose(test_wrapper) -> None:
+def test_matrix_transpose(test_wrapper: MatrixWrapper) -> None:
     """Test matrix transpositions."""
     assert test_wrapper['A'] is not None and test_wrapper['B'] is not None and test_wrapper['C'] is not None and \
            test_wrapper['D'] is not None and test_wrapper['E'] is not None and test_wrapper['F'] is not None and \
@@ -155,7 +155,7 @@ def test_matrix_transpose(test_wrapper) -> None:
     assert test_wrapper == get_test_wrapper()
 
 
-def test_rotation_matrices(test_wrapper) -> None:
+def test_rotation_matrices(test_wrapper: MatrixWrapper) -> None:
     """Test that 'rot(angle)' can be used in an expression."""
     assert (test_wrapper.evaluate_expression('rot(90)') == create_rotation_matrix(90)).all()
     assert (test_wrapper.evaluate_expression('rot(180)') == create_rotation_matrix(180)).all()
@@ -173,7 +173,7 @@ def test_rotation_matrices(test_wrapper) -> None:
     assert test_wrapper == get_test_wrapper()
 
 
-def test_multiplication_and_addition(test_wrapper) -> None:
+def test_multiplication_and_addition(test_wrapper: MatrixWrapper) -> None:
     """Test multiplication and addition of matrices together."""
     assert test_wrapper['A'] is not None and test_wrapper['B'] is not None and test_wrapper['C'] is not None and \
            test_wrapper['D'] is not None and test_wrapper['E'] is not None and test_wrapper['F'] is not None and \
@@ -192,7 +192,7 @@ def test_multiplication_and_addition(test_wrapper) -> None:
     assert test_wrapper == get_test_wrapper()
 
 
-def test_complicated_expressions(test_wrapper) -> None:
+def test_complicated_expressions(test_wrapper: MatrixWrapper) -> None:
     """Test evaluation of complicated expressions."""
     assert test_wrapper['A'] is not None and test_wrapper['B'] is not None and test_wrapper['C'] is not None and \
            test_wrapper['D'] is not None and test_wrapper['E'] is not None and test_wrapper['F'] is not None and \
@@ -210,7 +210,7 @@ def test_complicated_expressions(test_wrapper) -> None:
     assert test_wrapper == get_test_wrapper()
 
 
-def test_value_errors(test_wrapper) -> None:
+def test_value_errors(test_wrapper: MatrixWrapper) -> None:
     """Test that evaluate_expression() raises a ValueError for any malformed input."""
     with pytest.raises(ValueError):
         test_wrapper.evaluate_expression('')

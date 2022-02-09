@@ -10,7 +10,7 @@ valid_matrix_names = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 test_matrix: MatrixType = np.array([[1, 2], [4, 3]])
 
 
-def test_basic_get_matrix(new_wrapper) -> None:
+def test_basic_get_matrix(new_wrapper: MatrixWrapper) -> None:
     """Test MatrixWrapper().__getitem__()."""
     for name in valid_matrix_names:
         assert new_wrapper[name] is None
@@ -18,7 +18,7 @@ def test_basic_get_matrix(new_wrapper) -> None:
     assert (new_wrapper['I'] == np.array([[1, 0], [0, 1]])).all()
 
 
-def test_get_name_error(new_wrapper) -> None:
+def test_get_name_error(new_wrapper: MatrixWrapper) -> None:
     """Test that MatrixWrapper().__getitem__() raises a NameError if called with an invalid name."""
     with pytest.raises(NameError):
         _ = new_wrapper['bad name']
@@ -28,7 +28,7 @@ def test_get_name_error(new_wrapper) -> None:
         _ = new_wrapper['a']
 
 
-def test_basic_set_matrix(new_wrapper) -> None:
+def test_basic_set_matrix(new_wrapper: MatrixWrapper) -> None:
     """Test MatrixWrapper().__setitem__()."""
     for name in valid_matrix_names:
         new_wrapper[name] = test_matrix
@@ -38,13 +38,13 @@ def test_basic_set_matrix(new_wrapper) -> None:
         assert new_wrapper[name] is None
 
 
-def test_set_identity_error(new_wrapper) -> None:
+def test_set_identity_error(new_wrapper: MatrixWrapper) -> None:
     """Test that MatrixWrapper().__setitem__() raises a NameError when trying to assign to I."""
     with pytest.raises(NameError):
         new_wrapper['I'] = test_matrix
 
 
-def test_set_name_error(new_wrapper) -> None:
+def test_set_name_error(new_wrapper: MatrixWrapper) -> None:
     """Test that MatrixWrapper().__setitem__() raises a NameError when trying to assign to an invalid name."""
     with pytest.raises(NameError):
         new_wrapper['bad name'] = test_matrix
@@ -54,7 +54,7 @@ def test_set_name_error(new_wrapper) -> None:
         new_wrapper['a'] = test_matrix
 
 
-def test_set_type_error(new_wrapper) -> None:
+def test_set_type_error(new_wrapper: MatrixWrapper) -> None:
     """Test that MatrixWrapper().__setitem__() raises a TypeError when trying to set a non-matrix."""
     with pytest.raises(TypeError):
         new_wrapper['M'] = 12
