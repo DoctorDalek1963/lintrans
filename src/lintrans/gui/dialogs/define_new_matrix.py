@@ -100,6 +100,8 @@ class DefineDialog(QDialog):
         for letter in ALPHABET_NO_I:
             self.combobox_letter.addItem(letter)
 
+        self.combobox_letter.activated.connect(self.load_matrix)
+
         # === Arrange the widgets
 
         self.setContentsMargins(10, 10, 10, 10)
@@ -129,6 +131,17 @@ class DefineDialog(QDialog):
     def update_confirm_button(self) -> None:
         """Enable the confirm button if it should be enabled, else, disable it."""
 
+    def load_matrix(self, index: int) -> None:
+        """Load the selected matrix into the dialog.
+
+        This method is optionally able to be overridden. If it is not overridden,
+        then no matrix is loaded when selecting a name.
+
+        We have this method in the superclass so that we can define it as the slot
+        for the combobox.changed signal in this constructor, rather than having to
+        define that in the constructor of every subclass.
+        """
+
     @abc.abstractmethod
     def confirm_matrix(self) -> None:
         """Confirm the inputted matrix and assign it.
@@ -151,8 +164,6 @@ class DefineVisuallyDialog(DefineDialog):
 
         # === Create the widgets
 
-        self.combobox_letter.activated.connect(self.show_matrix)
-
         self.plot = DefineVisuallyWidget(self)
 
         # === Arrange the widgets
@@ -164,7 +175,7 @@ class DefineVisuallyDialog(DefineDialog):
         self.vlay_all.addLayout(self.hlay_buttons)
 
         # We load the default matrix A into the plot
-        self.show_matrix(0)
+        self.load_matrix(0)
 
         # We also enable the confirm button, because any visually defined matrix is valid
         self.button_confirm.setEnabled(True)
@@ -177,7 +188,7 @@ class DefineVisuallyDialog(DefineDialog):
            so it's got an empty body. It's only here because we need to implement the abstract method.
         """
 
-    def show_matrix(self, index: int) -> None:
+    def load_matrix(self, index: int) -> None:
         """Show the selected matrix on the plot. If the matrix is None, show the identity."""
         matrix = self.matrix_wrapper[ALPHABET_NO_I[index]]
 
@@ -209,8 +220,6 @@ class DefineNumericallyDialog(DefineDialog):
         super().__init__(matrix_wrapper, *args, **kwargs)
 
         # === Create the widgets
-
-        self.combobox_letter.activated.connect(self.load_matrix)
 
         # tl = top left, br = bottom right, etc.
         self.element_tl = QtWidgets.QLineEdit(self)
@@ -353,8 +362,6 @@ class DefineAsAnExpressionDialog(DefineDialog):
         self.setMinimumWidth(450)
 
         # === Create the widgets
-
-        self.combobox_letter.activated.connect(self.load_matrix)
 
         self.lineedit_expression_box = QtWidgets.QLineEdit(self)
         self.lineedit_expression_box.setPlaceholderText('Enter matrix expression...')
