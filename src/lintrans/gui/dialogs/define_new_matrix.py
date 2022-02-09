@@ -392,9 +392,10 @@ class DefineAsAnExpressionDialog(DefineDialog):
 
     def update_confirm_button(self) -> None:
         """Enable the confirm button if the matrix expression is valid in the wrapper."""
-        self.button_confirm.setEnabled(
-            self.matrix_wrapper.is_valid_expression(self.lineedit_expression_box.text())
-        )
+        text = self.lineedit_expression_box.text()
+        valid_expression = self.matrix_wrapper.is_valid_expression(text)
+
+        self.button_confirm.setEnabled(valid_expression and self.selected_letter not in text)
 
     def load_matrix(self, index: int) -> None:
         """If the selected matrix is defined an expression, load that expression into the box."""
