@@ -6,7 +6,7 @@ import re
 from copy import copy
 from functools import reduce
 from operator import add, matmul
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 import numpy as np
 
@@ -16,6 +16,9 @@ from lintrans.typing import is_matrix_type, MatrixType
 
 class MatrixWrapper:
     """A wrapper class to hold all possible matrices and allow access to them.
+
+    .. note::
+       When defining a custom matrix, its name must be a capital letter and cannot be ``I``.
 
     The contained matrices can be accessed and assigned to using square bracket notation.
 
@@ -34,7 +37,7 @@ class MatrixWrapper:
 
     def __init__(self):
         """Initialise a :class:`MatrixWrapper` object with a dictionary of matrices which can be accessed."""
-        self._matrices: dict[str, Optional[MatrixType]] = {
+        self._matrices: dict[str, Optional[Union[MatrixType, str]]] = {
             'A': None, 'B': None, 'C': None, 'D': None,
             'E': None, 'F': None, 'G': None, 'H': None,
             'I': np.eye(2),  # I is always defined as the identity matrix
@@ -108,26 +111,33 @@ class MatrixWrapper:
             raise NameError(f'Unrecognised matrix name "{name}"')
 
         # We copy the matrix before we return it so the user can't accidentally mutate the matrix
-        return copy(self._matrices[name])
+        matrix = copy(self._matrices[name])
 
-    def __setitem__(self, name: str, new_matrix: Optional[MatrixType]) -> None:
+        if isinstance(matrix, str):
+            return self.evaluate_expression(matrix)
+
+        return matrix
+
+    def __setitem__(self, name: str, new_matrix: Optional[Union[MatrixType, str]]) -> None:
         """Set the value of matrix ``name`` with the new_matrix.
 
         :param str name: The name of the matrix to set the value of
-        :param Optional[MatrixType] new_matrix: The value of the new matrix (may be None)
+        :param Optional[Union[MatrixType, str]] new_matrix: The value of the new matrix (may be None)
 
-        :raises NameError: If the name isn't a valid matrix name or is 'I'
+        :raises NameError: If the name isn't a legal matrix name
         :raises TypeError: If the matrix isn't a valid 2x2 NumPy array
         """
-        if name not in self._matrices:
-            raise NameError('Matrix name must be a single capital letter')
-
-        if name == 'I':
-            raise NameError('Matrix name cannot be "I"')
+        if not (name in self._matrices and name != 'I'):
+            raise NameError('Matrix name is illegal')
 
         if new_matrix is None:
             self._matrices[name] = None
             return
+
+        if isinstance(new_matrix, str):
+            if self.is_valid_expression(new_matrix):
+                self._matrices[name] = new_matrix
+                return
 
         if not is_matrix_type(new_matrix):
             raise TypeError('Matrix must be a 2x2 NumPy array')
@@ -139,6 +149,24 @@ class MatrixWrapper:
         d = float(new_matrix[1][1])
 
         self._matrices[name] = np.array([[a, b], [c, d]])
+
+    def get_expression(self, name: str) -> Optional[str]:
+        """If the named matrix is defined as an expression, return that expression, else return None.
+
+        :param str name: The name of the matrix
+        :returns: The expression that the matrix is defined as, or None
+        :rtype: Optional[str]
+
+        :raises NameError: If the name is invalid
+        """
+        if name not in self._matrices:
+            raise NameError('Matrix must have a legal name')
+
+        matrix = self._matrices[name]
+        if isinstance(matrix, str):
+            return matrix
+
+        return None
 
     def is_valid_expression(self, expression: str) -> bool:
         """Check if the given expression is valid, using the context of the wrapper.
@@ -157,6 +185,10 @@ class MatrixWrapper:
         for matrix in {x for x in new_expression if re.match('[A-Z]', x)}:
             if self[matrix] is None:
                 return False
+
+            if (expr := self.get_expression(matrix)) is not None:
+                if not self.is_valid_expression(expr):
+                    return False
 
         return validate_matrix_expression(expression)
 
