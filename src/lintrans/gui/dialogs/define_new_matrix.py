@@ -6,10 +6,11 @@ import abc
 
 from numpy import array
 from PyQt5 import QtWidgets
-from PyQt5.QtGui import QKeySequence
+from PyQt5.QtGui import QDoubleValidator, QKeySequence
 from PyQt5.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
 from lintrans.gui.plots import DefineVisuallyWidget
+from lintrans.gui.validate import MatrixExpressionValidator
 from lintrans.matrices import create_rotation_matrix, MatrixWrapper
 from lintrans.typing import MatrixType
 
@@ -224,15 +225,19 @@ class DefineNumericallyDialog(DefineDialog):
         # tl = top left, br = bottom right, etc.
         self.element_tl = QtWidgets.QLineEdit(self)
         self.element_tl.textChanged.connect(self.update_confirm_button)
+        self.element_tl.setValidator(QDoubleValidator())
 
         self.element_tr = QtWidgets.QLineEdit(self)
         self.element_tr.textChanged.connect(self.update_confirm_button)
+        self.element_tr.setValidator(QDoubleValidator())
 
         self.element_bl = QtWidgets.QLineEdit(self)
         self.element_bl.textChanged.connect(self.update_confirm_button)
+        self.element_bl.setValidator(QDoubleValidator())
 
         self.element_br = QtWidgets.QLineEdit(self)
         self.element_br.textChanged.connect(self.update_confirm_button)
+        self.element_br.setValidator(QDoubleValidator())
 
         self.matrix_elements = (self.element_tl, self.element_tr, self.element_bl, self.element_br)
 
@@ -309,6 +314,7 @@ class DefineAsARotationDialog(DefineDialog):
         self.lineedit_angle = QtWidgets.QLineEdit(self)
         self.lineedit_angle.setPlaceholderText('angle')
         self.lineedit_angle.textChanged.connect(self.update_confirm_button)
+        self.lineedit_angle.setValidator(QDoubleValidator())
 
         self.label_close_paren = QtWidgets.QLabel(self)
         self.label_close_paren.setText(')')
@@ -366,6 +372,7 @@ class DefineAsAnExpressionDialog(DefineDialog):
         self.lineedit_expression_box = QtWidgets.QLineEdit(self)
         self.lineedit_expression_box.setPlaceholderText('Enter matrix expression...')
         self.lineedit_expression_box.textChanged.connect(self.update_confirm_button)
+        self.lineedit_expression_box.setValidator(MatrixExpressionValidator())
 
         # === Arrange the widgets
 
