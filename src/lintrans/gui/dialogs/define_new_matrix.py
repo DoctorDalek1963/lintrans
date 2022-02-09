@@ -255,8 +255,10 @@ class DefineNumericallyDialog(DefineDialog):
         self.vlay_all.addLayout(self.hlay_definition)
         self.vlay_all.addLayout(self.hlay_buttons)
 
-        # Finally, we load the default matrix A into the boxes
+        # We load the default matrix A into the boxes
         self.load_matrix(0)
+
+        self.element_tl.setFocus()
 
     def update_confirm_button(self) -> None:
         """Enable the confirm button if there are valid floats in every box."""
@@ -342,6 +344,8 @@ class DefineAsARotationDialog(DefineDialog):
         self.vlay_all.addLayout(self.hlay_rotation_definition)
         self.vlay_all.addLayout(self.hlay_checkbox_and_buttons)
 
+        self.lineedit_angle.setFocus()
+
     def update_confirm_button(self) -> None:
         """Enable the confirm button if there is a valid float in the angle box."""
         self.button_confirm.setEnabled(is_valid_float(self.lineedit_angle.text()))
@@ -381,8 +385,10 @@ class DefineAsAnExpressionDialog(DefineDialog):
         self.vlay_all.addLayout(self.hlay_definition)
         self.vlay_all.addLayout(self.hlay_buttons)
 
-        # Load the matrix if its defined as an expression
+        # Load the matrix if it's defined as an expression
         self.load_matrix(0)
+
+        self.lineedit_expression_box.setFocus()
 
     def update_confirm_button(self) -> None:
         """Enable the confirm button if the matrix expression is valid in the wrapper."""
