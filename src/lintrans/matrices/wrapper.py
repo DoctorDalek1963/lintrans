@@ -97,6 +97,10 @@ class MatrixWrapper:
         If it is a simple name, it will just be fetched from the dictionary. If the name is ``rot(x)``, with
         a given angle in degrees, then we return a new matrix representing a rotation by that angle.
 
+        .. note::
+           If the named matrix is defined as an expression, then this method will return its evaluation.
+           If you want the expression itself, use :meth:`get_expression`.
+
         :param str name: The name of the matrix to get
         :returns: The value of the matrix (may be None)
         :rtype: Optional[MatrixType]
@@ -121,11 +125,14 @@ class MatrixWrapper:
     def __setitem__(self, name: str, new_matrix: Optional[Union[MatrixType, str]]) -> None:
         """Set the value of matrix ``name`` with the new_matrix.
 
+        The new matrix may be a simple 2x2 NumPy array, or it could be a string, representing an
+        expression in terms of other, previously defined matrices.
+
         :param str name: The name of the matrix to set the value of
         :param Optional[Union[MatrixType, str]] new_matrix: The value of the new matrix (may be None)
 
         :raises NameError: If the name isn't a legal matrix name
-        :raises TypeError: If the matrix isn't a valid 2x2 NumPy array
+        :raises TypeError: If the matrix isn't a valid 2x2 NumPy array or expression in terms of other defined matrices
         """
         if not (name in self._matrices and name != 'I'):
             raise NameError('Matrix name is illegal')
