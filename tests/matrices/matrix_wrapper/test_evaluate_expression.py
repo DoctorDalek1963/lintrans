@@ -179,10 +179,14 @@ def test_multiplication_and_addition(test_wrapper: MatrixWrapper) -> None:
            test_wrapper['D'] is not None and test_wrapper['E'] is not None and test_wrapper['F'] is not None and \
            test_wrapper['G'] is not None
 
-    assert (test_wrapper.evaluate_expression('AB+C') == test_wrapper['A'] @ test_wrapper['B'] + test_wrapper['C']).all()
-    assert (test_wrapper.evaluate_expression('DE-D') == test_wrapper['D'] @ test_wrapper['E'] - test_wrapper['D']).all()
-    assert (test_wrapper.evaluate_expression('FD+AB') == test_wrapper['F'] @ test_wrapper['D'] + test_wrapper['A'] @ test_wrapper['B']).all()
-    assert (test_wrapper.evaluate_expression('BA-DE') == test_wrapper['B'] @ test_wrapper['A'] - test_wrapper['D'] @ test_wrapper['E']).all()
+    assert (test_wrapper.evaluate_expression('AB+C') ==
+            test_wrapper['A'] @ test_wrapper['B'] + test_wrapper['C']).all()
+    assert (test_wrapper.evaluate_expression('DE-D') ==
+            test_wrapper['D'] @ test_wrapper['E'] - test_wrapper['D']).all()
+    assert (test_wrapper.evaluate_expression('FD+AB') ==
+            test_wrapper['F'] @ test_wrapper['D'] + test_wrapper['A'] @ test_wrapper['B']).all()
+    assert (test_wrapper.evaluate_expression('BA-DE') ==
+            test_wrapper['B'] @ test_wrapper['A'] - test_wrapper['D'] @ test_wrapper['E']).all()
 
     assert (test_wrapper.evaluate_expression('2AB+3C') ==
             (2 * test_wrapper['A']) @ test_wrapper['B'] + (3 * test_wrapper['C'])).all()
