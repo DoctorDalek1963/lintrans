@@ -175,6 +175,17 @@ and a every superclass of a class must have the same metaclass, and <code class=
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineDialog.load_matrix">
+<span class="sig-name descname"><span class="pre">load_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineDialog.load_matrix" title="Permalink to this definition"></a></dt>
+<dd><p>Load the selected matrix into the dialog.</p>
+<p>This method is optionally able to be overridden. If it is not overridden,
+then no matrix is loaded when selecting a name.</p>
+<p>We have this method in the superclass so that we can define it as the slot
+for the combobox.changed signal in this constructor, rather than having to
+define that in the constructor of every subclass.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineDialog.confirm_matrix">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">confirm_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineDialog.confirm_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>Confirm the inputted matrix and assign it.</p>
@@ -214,8 +225,8 @@ so it’s got an empty body. It’s only here because we need to implement the a
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.show_matrix">
-<span class="sig-name descname"><span class="pre">show_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.show_matrix" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.load_matrix">
+<span class="sig-name descname"><span class="pre">load_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.load_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>Show the selected matrix on the plot. If the matrix is None, show the identity.</p>
 </dd></dl>
 
@@ -313,6 +324,12 @@ so it’s got an empty body. It’s only here because we need to implement the a
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineAsAnExpressionDialog.update_confirm_button">
 <span class="sig-name descname"><span class="pre">update_confirm_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineAsAnExpressionDialog.update_confirm_button" title="Permalink to this definition"></a></dt>
 <dd><p>Enable the confirm button if the matrix expression is valid in the wrapper.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineAsAnExpressionDialog.load_matrix">
+<span class="sig-name descname"><span class="pre">load_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineAsAnExpressionDialog.load_matrix" title="Permalink to this definition"></a></dt>
+<dd><p>If the selected matrix is defined an expression, load that expression into the box.</p>
 </dd></dl>
 
 <dl class="py method">
