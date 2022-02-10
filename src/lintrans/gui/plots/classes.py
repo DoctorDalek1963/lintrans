@@ -44,8 +44,8 @@ class BackgroundPlot(QWidget):
         self.setPalette(palette)
 
         # Set the gird colour to grey and the axes colour to black
-        self.colour_background_grid = QColor(128, 128, 128)
-        self.colour_background_axes = QColor(0, 0, 0)
+        self.colour_background_grid = QColor('#808080')
+        self.colour_background_axes = QColor('#000000')
 
         self.grid_spacing = BackgroundPlot.default_grid_spacing
         self.width_background_grid: float = 0.3
@@ -158,8 +158,8 @@ class VectorGridPlot(BackgroundPlot):
         self.point_i: tuple[float, float] = (1., 0.)
         self.point_j: tuple[float, float] = (0., 1.)
 
-        self.colour_i = QColor(37, 244, 15)
-        self.colour_j = QColor(8, 8, 216)
+        self.colour_i = QColor('#25f40f')
+        self.colour_j = QColor('#0808d8')
         self.colour_eigen = QColor('#fff900')
 
         self.width_vector_line = 1.8
@@ -419,7 +419,7 @@ class VectorGridPlot(BackgroundPlot):
 
     def draw_determinant_text(self, painter: QPainter) -> None:
         """Write the string value of the determinant in the middle of the parallelogram."""
-        painter.setPen(QPen(QColor(0, 0, 0), self.width_vector_line))
+        painter.setPen(QPen(QColor('#000000'), self.width_vector_line))
 
         # We're building a QRect that encloses the determinant parallelogram
         # Then we can center the text in this QRect
