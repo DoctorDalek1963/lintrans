@@ -275,36 +275,6 @@ so it’s got an empty body. It’s only here because we need to implement the a
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineAsARotationDialog">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lintrans.gui.dialogs.define_new_matrix.</span></span><span class="sig-name descname"><span class="pre">DefineAsARotationDialog</span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineAsARotationDialog" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lintrans.gui.dialogs.define_new_matrix.DefineDialog" title="lintrans.gui.dialogs.define_new_matrix.DefineDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">lintrans.gui.dialogs.define_new_matrix.DefineDialog</span></code></a></p>
-<p>The dialog class that allows the user to define a new matrix as a rotation.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineAsARotationDialog.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix_wrapper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="lintrans.matrices.html#lintrans.matrices.wrapper.MatrixWrapper" title="lintrans.matrices.wrapper.MatrixWrapper"><span class="pre">lintrans.matrices.wrapper.MatrixWrapper</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineAsARotationDialog.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>Create the widgets and layout of the dialog.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>matrix_wrapper</strong> (<a class="reference internal" href="lintrans.matrices.html#lintrans.matrices.wrapper.MatrixWrapper" title="lintrans.matrices.wrapper.MatrixWrapper"><em>MatrixWrapper</em></a>) – The MatrixWrapper that this dialog will mutate</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineAsARotationDialog.update_confirm_button">
-<span class="sig-name descname"><span class="pre">update_confirm_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineAsARotationDialog.update_confirm_button" title="Permalink to this definition"></a></dt>
-<dd><p>Enable the confirm button if there is a valid float in the angle box.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineAsARotationDialog.confirm_matrix">
-<span class="sig-name descname"><span class="pre">confirm_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineAsARotationDialog.confirm_matrix" title="Permalink to this definition"></a></dt>
-<dd><p>Create a rotation matrix with the angle in the box and assign it to the name in the combo box.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineAsAnExpressionDialog">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lintrans.gui.dialogs.define_new_matrix.</span></span><span class="sig-name descname"><span class="pre">DefineAsAnExpressionDialog</span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineAsAnExpressionDialog" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lintrans.gui.dialogs.define_new_matrix.DefineDialog" title="lintrans.gui.dialogs.define_new_matrix.DefineDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">lintrans.gui.dialogs.define_new_matrix.DefineDialog</span></code></a></p>
