@@ -160,7 +160,7 @@ class VectorGridPlot(BackgroundPlot):
 
         self.colour_i = QColor('#12c100')
         self.colour_j = QColor('#0808d8')
-        self.colour_eigen = QColor('#fff900')
+        self.colour_eigen = QColor('#eee900')
 
         self.width_vector_line = 1.8
         self.width_transformed_grid = 0.6
