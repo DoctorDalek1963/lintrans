@@ -10,7 +10,7 @@ from typing import Type
 import numpy as np
 from numpy import linalg
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import QThread
+from PyQt5.QtCore import pyqtSlot, QThread
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox,
                              QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout)
@@ -255,11 +255,13 @@ class LintransMainWindow(QMainWindow):
             self.button_render.setEnabled(valid)
             self.button_animate.setEnabled(valid)
 
+    @pyqtSlot()
     def reset_zoom(self) -> None:
         """Reset the zoom level back to normal."""
         self.plot.grid_spacing = self.plot.default_grid_spacing
         self.plot.update()
 
+    @pyqtSlot()
     def reset_transformation(self) -> None:
         """Reset the visualized transformation back to the identity."""
         self.plot.visualize_matrix_transformation(self.matrix_wrapper['I'])
@@ -267,6 +269,7 @@ class LintransMainWindow(QMainWindow):
         self.animating_sequence = False
         self.plot.update()
 
+    @pyqtSlot()
     def render_expression(self) -> None:
         """Render the transformation given by the expression in the input box."""
         try:
@@ -283,6 +286,7 @@ class LintransMainWindow(QMainWindow):
         self.plot.visualize_matrix_transformation(matrix)
         self.plot.update()
 
+    @pyqtSlot()
     def animate_expression(self) -> None:
         """Animate from the current matrix to the matrix in the expression box."""
         self.button_render.setEnabled(False)
@@ -422,6 +426,7 @@ class LintransMainWindow(QMainWindow):
 
         self.animating = False
 
+    @pyqtSlot(DefineDialog)
     def dialog_define_matrix(self, dialog_class: Type[DefineDialog]) -> None:
         """Open a generic definition dialog to define a new matrix.
 
@@ -447,6 +452,7 @@ class LintransMainWindow(QMainWindow):
         # So we don't care, we just assign the wrapper anyway
         dialog.finished.connect(lambda: self.assign_matrix_wrapper(dialog.matrix_wrapper))
 
+    @pyqtSlot(MatrixWrapper)
     def assign_matrix_wrapper(self, matrix_wrapper: MatrixWrapper) -> None:
         """Assign a new value to ``self.matrix_wrapper`` and give the expression box focus.
 
@@ -457,12 +463,14 @@ class LintransMainWindow(QMainWindow):
         self.lineedit_expression_box.setFocus()
         self.update_render_buttons()
 
+    @pyqtSlot()
     def dialog_change_display_settings(self) -> None:
         """Open the dialog to change the display settings."""
         dialog = DisplaySettingsDialog(self.plot.display_settings, self)
         dialog.open()
         dialog.finished.connect(lambda: self.assign_display_settings(dialog.display_settings))
 
+    @pyqtSlot(DisplaySettings)
     def assign_display_settings(self, display_settings: DisplaySettings) -> None:
         """Assign a new value to ``self.plot.display_settings`` and give the expression box focus."""
         self.plot.display_settings = display_settings
