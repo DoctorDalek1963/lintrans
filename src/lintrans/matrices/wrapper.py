@@ -133,6 +133,7 @@ class MatrixWrapper:
 
         :raises NameError: If the name isn't a legal matrix name
         :raises TypeError: If the matrix isn't a valid 2x2 NumPy array or expression in terms of other defined matrices
+        :raises ValueError: If you attempt to define a matrix in terms of itself
         """
         if not (name in self._matrices and name != 'I'):
             raise NameError('Matrix name is illegal')
@@ -143,8 +144,11 @@ class MatrixWrapper:
 
         if isinstance(new_matrix, str):
             if self.is_valid_expression(new_matrix):
-                self._matrices[name] = new_matrix
-                return
+                if name not in new_matrix:
+                    self._matrices[name] = new_matrix
+                    return
+                else:
+                    raise ValueError('Cannot define a matrix recursively')
 
         if not is_matrix_type(new_matrix):
             raise TypeError('Matrix must be a 2x2 NumPy array')
