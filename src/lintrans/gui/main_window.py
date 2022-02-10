@@ -450,16 +450,12 @@ class LintransMainWindow(QMainWindow):
         # So we have to use the finished slot to call a method when the user accepts the dialog
         # If the user rejects the dialog, this matrix_wrapper will be the same as the current one, because we copied it
         # So we don't care, we just assign the wrapper anyway
-        dialog.finished.connect(lambda: self.assign_matrix_wrapper(dialog.matrix_wrapper))
+        dialog.finished.connect(self.assign_matrix_wrapper)
 
-    @pyqtSlot(MatrixWrapper)
-    def assign_matrix_wrapper(self, matrix_wrapper: MatrixWrapper) -> None:
-        """Assign a new value to ``self.matrix_wrapper`` and give the expression box focus.
-
-        :param matrix_wrapper: The new value of the matrix wrapper to assign
-        :type matrix_wrapper: MatrixWrapper
-        """
-        self.matrix_wrapper = matrix_wrapper
+    @pyqtSlot()
+    def assign_matrix_wrapper(self) -> None:
+        """Assign a new value to ``self.matrix_wrapper`` and give the expression box focus."""
+        self.matrix_wrapper = self.sender().matrix_wrapper
         self.lineedit_expression_box.setFocus()
         self.update_render_buttons()
 
