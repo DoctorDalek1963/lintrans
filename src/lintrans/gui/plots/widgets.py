@@ -55,7 +55,8 @@ class VisualizeTransformationWidget(VectorGridPlot):
         self.draw_transformed_grid(painter)
         self.draw_vector_arrowheads(painter)
 
-        self.draw_eigenvectors(painter)
+        if self.display_settings.draw_eigenvectors:
+            self.draw_eigenvectors(painter)
 
         if self.display_settings.draw_determinant_parallelogram:
             self.draw_determinant_parallelogram(painter)

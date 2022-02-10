@@ -120,6 +120,11 @@ class DisplaySettingsDialog(SettingsDialog):
         )
         self.dict_checkboxes['t'] = self.checkbox_draw_determinant_text
 
+        self.checkbox_draw_eigenvectors = QCheckBox(self)
+        self.checkbox_draw_eigenvectors.setText('Draw &eigenvectors')
+        self.checkbox_draw_eigenvectors.setToolTip('Draw the eigenvectors of the transformations')
+        self.dict_checkboxes['e'] = self.checkbox_draw_eigenvectors
+
         # === Arrange the widgets in QGroupBoxes
 
         # Animations
@@ -143,6 +148,7 @@ class DisplaySettingsDialog(SettingsDialog):
         self.vlay_groupbox_matrix_info.setSpacing(20)
         self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_determinant_parallelogram)
         self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_determinant_text)
+        self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_eigenvectors)
 
         self.groupbox_matrix_info = QGroupBox('Matrix info', self)
         self.groupbox_matrix_info.setLayout(self.vlay_groupbox_matrix_info)
@@ -164,6 +170,7 @@ class DisplaySettingsDialog(SettingsDialog):
         # Matrix info
         self.checkbox_draw_determinant_parallelogram.setChecked(self.display_settings.draw_determinant_parallelogram)
         self.checkbox_draw_determinant_text.setChecked(self.display_settings.draw_determinant_text)
+        self.checkbox_draw_eigenvectors.setChecked(self.display_settings.draw_eigenvectors)
 
     def confirm_settings(self) -> None:
         """Build a :class:`lintrans.gui.settings.DisplaySettings` object and assign it."""
@@ -175,6 +182,7 @@ class DisplaySettingsDialog(SettingsDialog):
         # Matrix info
         self.display_settings.draw_determinant_parallelogram = self.checkbox_draw_determinant_parallelogram.isChecked()
         self.display_settings.draw_determinant_text = self.checkbox_draw_determinant_text.isChecked()
+        self.display_settings.draw_eigenvectors = self.checkbox_draw_eigenvectors.isChecked()
 
         self.accept()
 

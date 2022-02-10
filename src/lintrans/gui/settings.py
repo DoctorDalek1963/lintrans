@@ -37,3 +37,6 @@ class DisplaySettings:
 
     The text only gets draw if :attr:`draw_determinant_parallelogram` is also True.
     """
+
+    draw_eigenvectors: bool = False
+    """This controls whether we should draw the eigenvectors of the transformation."""
