@@ -158,7 +158,7 @@ class VectorGridPlot(BackgroundPlot):
         self.point_i: tuple[float, float] = (1., 0.)
         self.point_j: tuple[float, float] = (0., 1.)
 
-        self.colour_i = QColor('#25f40f')
+        self.colour_i = QColor('#12c100')
         self.colour_j = QColor('#0808d8')
         self.colour_eigen = QColor('#fff900')
 
