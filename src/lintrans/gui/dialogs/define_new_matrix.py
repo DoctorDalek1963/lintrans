@@ -298,67 +298,6 @@ class DefineNumericallyDialog(DefineDialog):
         self.accept()
 
 
-class DefineAsARotationDialog(DefineDialog):
-    """The dialog class that allows the user to define a new matrix as a rotation."""
-
-    def __init__(self, matrix_wrapper: MatrixWrapper, *args, **kwargs):
-        """Create the widgets and layout of the dialog.
-
-        :param MatrixWrapper matrix_wrapper: The MatrixWrapper that this dialog will mutate
-        """
-        super().__init__(matrix_wrapper, *args, **kwargs)
-
-        # === Create the widgets
-
-        self.label_rot = QtWidgets.QLabel(self)
-        self.label_rot.setText('rot(')
-
-        self.lineedit_angle = QtWidgets.QLineEdit(self)
-        self.lineedit_angle.setPlaceholderText('angle')
-        self.lineedit_angle.textChanged.connect(self.update_confirm_button)
-        self.lineedit_angle.setValidator(QDoubleValidator())
-
-        self.label_close_paren = QtWidgets.QLabel(self)
-        self.label_close_paren.setText(')')
-
-        self.checkbox_radians = QtWidgets.QCheckBox(self)
-        self.checkbox_radians.setText('Radians')
-
-        # === Arrange the widgets
-
-        self.hlay_checkbox_and_buttons = QHBoxLayout()
-        self.hlay_checkbox_and_buttons.setSpacing(20)
-        self.hlay_checkbox_and_buttons.addWidget(self.checkbox_radians)
-        self.hlay_checkbox_and_buttons.addLayout(self.hlay_buttons)
-
-        self.hlay_rotation_definition = QHBoxLayout()
-        self.hlay_rotation_definition.setSpacing(0)
-        self.hlay_rotation_definition.addWidget(self.combobox_letter)
-        self.hlay_rotation_definition.addSpacing(20)
-        self.hlay_rotation_definition.addWidget(self.label_equals)
-        self.hlay_rotation_definition.addSpacing(20)
-        self.hlay_rotation_definition.addWidget(self.label_rot)
-        self.hlay_rotation_definition.addWidget(self.lineedit_angle)
-        self.hlay_rotation_definition.addWidget(self.label_close_paren)
-
-        self.vlay_all.addLayout(self.hlay_rotation_definition)
-        self.vlay_all.addLayout(self.hlay_checkbox_and_buttons)
-
-        self.lineedit_angle.setFocus()
-
-    def update_confirm_button(self) -> None:
-        """Enable the confirm button if there is a valid float in the angle box."""
-        self.button_confirm.setEnabled(is_valid_float(self.lineedit_angle.text()))
-
-    def confirm_matrix(self) -> None:
-        """Create a rotation matrix with the angle in the box and assign it to the name in the combo box."""
-        self.matrix_wrapper[self.selected_letter] = create_rotation_matrix(
-            float(self.lineedit_angle.text()),
-            degrees=not self.checkbox_radians.isChecked()
-        )
-        self.accept()
-
-
 class DefineAsAnExpressionDialog(DefineDialog):
     """The dialog class that allows the user to define a matrix as an expression of other matrices."""
 

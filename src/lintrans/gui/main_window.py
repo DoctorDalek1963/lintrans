@@ -17,8 +17,7 @@ from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox
 
 from lintrans.matrices import MatrixWrapper
 from lintrans.typing import MatrixType
-from .dialogs import (DefineAsAnExpressionDialog, DefineAsARotationDialog, DefineDialog,
-                      DefineNumericallyDialog, DefineVisuallyDialog)
+from .dialogs import DefineAsAnExpressionDialog, DefineDialog, DefineNumericallyDialog, DefineVisuallyDialog
 from .dialogs.settings import DisplaySettingsDialog
 from .plots import VisualizeTransformationWidget
 from .settings import DisplaySettings
@@ -166,17 +165,11 @@ class LintransMainWindow(QMainWindow):
         self.button_define_numerically.clicked.connect(lambda: self.dialog_define_matrix(DefineNumericallyDialog))
         QShortcut(QKeySequence('Alt+2'), self).activated.connect(self.button_define_numerically.click)
 
-        self.button_define_as_rotation = QtWidgets.QPushButton(self)
-        self.button_define_as_rotation.setText('As a rotation')
-        self.button_define_as_rotation.setToolTip('Define an angle to rotate by<br><b>(Alt + 3)</b>')
-        self.button_define_as_rotation.clicked.connect(lambda: self.dialog_define_matrix(DefineAsARotationDialog))
-        QShortcut(QKeySequence('Alt+3'), self).activated.connect(self.button_define_as_rotation.click)
-
         self.button_define_as_expression = QtWidgets.QPushButton(self)
         self.button_define_as_expression.setText('As an expression')
         self.button_define_as_expression.setToolTip('Define a matrix in terms of other matrices<br><b>(Alt + 4)</b>')
         self.button_define_as_expression.clicked.connect(lambda: self.dialog_define_matrix(DefineAsAnExpressionDialog))
-        QShortcut(QKeySequence('Alt+4'), self).activated.connect(self.button_define_as_expression.click)
+        QShortcut(QKeySequence('Alt+3'), self).activated.connect(self.button_define_as_expression.click)
 
         # TODO: Implement this and enable button
         self.button_create_polygon.setEnabled(False)
@@ -220,7 +213,6 @@ class LintransMainWindow(QMainWindow):
         self.vlay_define_new_matrix.addWidget(self.label_define_new_matrix)
         self.vlay_define_new_matrix.addWidget(self.button_define_visually)
         self.vlay_define_new_matrix.addWidget(self.button_define_numerically)
-        self.vlay_define_new_matrix.addWidget(self.button_define_as_rotation)
         self.vlay_define_new_matrix.addWidget(self.button_define_as_expression)
 
         self.vlay_render = QVBoxLayout()
