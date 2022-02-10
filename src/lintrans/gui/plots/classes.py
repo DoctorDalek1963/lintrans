@@ -160,6 +160,7 @@ class VectorGridPlot(BackgroundPlot):
 
         self.colour_i = QColor(37, 244, 15)
         self.colour_j = QColor(8, 8, 216)
+        self.colour_eigen = QColor('#fff900')
 
         self.width_vector_line = 1.8
         self.width_transformed_grid = 0.6
@@ -445,3 +446,20 @@ class VectorGridPlot(BackgroundPlot):
             Qt.AlignHCenter | Qt.AlignVCenter,
             f'{self.det:.2f}'
         )
+
+    def draw_eigenvectors(self, painter: QPainter) -> None:
+        """Draw the eigenvectors of the displayed matrix transformation."""
+        painter.setPen(QPen(self.colour_eigen, self.width_vector_line))
+
+        values, vectors = np.linalg.eig(self.matrix)
+        vectors = vectors.T
+
+        for value, vector in zip(values, vectors):
+            x = value * vector[0]
+            y = value * vector[1]
+
+            if x.imag != 0 or y.imag != 0:
+                continue
+
+            painter.drawLine(*self.canvas_origin, *self.canvas_coords(x, y))
+            self.draw_arrowhead_away_from_origin(painter, (x, y))
