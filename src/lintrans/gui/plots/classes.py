@@ -158,12 +158,12 @@ class VectorGridPlot(BackgroundPlot):
         self.point_i: tuple[float, float] = (1., 0.)
         self.point_j: tuple[float, float] = (0., 1.)
 
-        self.colour_i = QColor('#12c100')
+        self.colour_i = QColor('#13cf00')
         self.colour_j = QColor('#0808d8')
-        self.colour_eigen = QColor('#eee900')
+        self.colour_eigen = QColor('#e90000')
 
         self.width_vector_line = 1.8
-        self.width_transformed_grid = 0.6
+        self.width_transformed_grid = 0.8
 
         self.arrowhead_length = 0.15
 
