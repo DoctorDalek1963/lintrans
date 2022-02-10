@@ -170,7 +170,7 @@ class VectorGridPlot(BackgroundPlot):
 
     @property
     def matrix(self) -> MatrixType:
-        """Return a the assembled matrix of the basis vectors."""
+        """Return the assembled matrix of the basis vectors."""
         return np.array([
             [self.point_i[0], self.point_j[0]],
             [self.point_i[1], self.point_j[1]]
