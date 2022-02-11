@@ -472,3 +472,27 @@ class VectorGridPlot(BackgroundPlot):
                 continue
 
             self.draw_position_vector(painter, (x, y), self.colour_eigen)
+
+    def draw_eigenlines(self, painter: QPainter) -> None:
+        """Draw the eigenlines (invariant lines).
+
+        :param QPainter painter: The painter to draw the lines with
+        """
+        painter.setPen(QPen(self.colour_eigen, self.width_transformed_grid))
+
+        for value, vector in self.eigs:
+            if value.imag != 0:
+                continue
+
+            x, y = vector
+
+            if x == 0:
+                x_mid = int(self.width() / 2)
+                painter.drawLine(x_mid, 0, x_mid, self.height())
+
+            elif y == 0:
+                y_mid = int(self.height() / 2)
+                painter.drawLine(0, y_mid, self.width(), y_mid)
+
+            else:
+                self.draw_oblique_line(painter, y / x, 0)

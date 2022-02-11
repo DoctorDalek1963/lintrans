@@ -55,6 +55,8 @@ class VisualizeTransformationWidget(VectorGridPlot):
         self.draw_transformed_grid(painter)
         self.draw_basis_vectors(painter)
 
+        self.draw_eigenlines(painter)
+
         if self.display_settings.draw_eigenvectors:
             self.draw_eigenvectors(painter)
 
