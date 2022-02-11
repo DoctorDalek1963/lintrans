@@ -339,18 +339,12 @@ class VectorGridPlot(BackgroundPlot):
             return True
 
     def draw_transformed_grid(self, painter: QPainter) -> None:
-        """Draw the transformed version of the grid, given by the unit vectors.
+        """Draw the transformed version of the grid, given by the basis vectors.
 
-        This method simply draws the unit vectors and their parallel grid lines.
+        .. note:: This method draws the grid, but not the basis vectors. Use :meth:`draw_basis_vectors` to draw them.
 
-        :param QPainter painter: The ``QPainter`` object to use for drawing the vectors and grid lines
+        :param QPainter painter: The ``QPainter`` object to use for drawing the grid lines
         """
-        # Draw the unit vectors
-        painter.setPen(QPen(self.colour_i, self.width_vector_line))
-        painter.drawLine(*self.canvas_origin, *self.canvas_coords(*self.point_i))
-        painter.setPen(QPen(self.colour_j, self.width_vector_line))
-        painter.drawLine(*self.canvas_origin, *self.canvas_coords(*self.point_j))
-
         # Draw all the parallel lines
         painter.setPen(QPen(self.colour_i, self.width_transformed_grid))
         self.draw_parallel_lines(painter, self.point_i, self.point_j)
@@ -391,15 +385,25 @@ class VectorGridPlot(BackgroundPlot):
         painter.drawLine(*self.canvas_coords(x, y), *self.canvas_coords(x + dx, y + dy))
         painter.drawLine(*self.canvas_coords(x, y), *self.canvas_coords(x - dy, y + dx))
 
-    def draw_vector_arrowheads(self, painter: QPainter) -> None:
+    def draw_position_vector(self, painter: QPainter, point: tuple[float, float], colour: QColor) -> None:
+        """Draw a vector from the origin to the given point.
+
+        :param QPainter painter: The ``QPainter`` object to use to draw the arrowheads with
+        :param point: The tip of the position vector in grid coords
+        :type point: tuple[float, float]
+        :param QColor colour: The colour to draw the position vector in
+        """
+        painter.setPen(QPen(colour, self.width_vector_line))
+        painter.drawLine(*self.canvas_origin, *self.canvas_coords(*point))
+        self.draw_arrowhead_away_from_origin(painter, point)
+
+    def draw_basis_vectors(self, painter: QPainter) -> None:
         """Draw arrowheads at the tips of the basis vectors.
 
         :param QPainter painter: The ``QPainter`` object to use to draw the arrowheads with
         """
-        painter.setPen(QPen(self.colour_i, self.width_vector_line))
-        self.draw_arrowhead_away_from_origin(painter, self.point_i)
-        painter.setPen(QPen(self.colour_j, self.width_vector_line))
-        self.draw_arrowhead_away_from_origin(painter, self.point_j)
+        self.draw_position_vector(painter, self.point_i, self.colour_i)
+        self.draw_position_vector(painter, self.point_j, self.colour_j)
 
     def draw_determinant_parallelogram(self, painter: QPainter) -> None:
         """Draw the parallelogram of the determinant of the matrix."""
@@ -449,8 +453,6 @@ class VectorGridPlot(BackgroundPlot):
 
     def draw_eigenvectors(self, painter: QPainter) -> None:
         """Draw the eigenvectors of the displayed matrix transformation."""
-        painter.setPen(QPen(self.colour_eigen, self.width_vector_line))
-
         values, vectors = np.linalg.eig(self.matrix)
         vectors = vectors.T
 
@@ -461,5 +463,4 @@ class VectorGridPlot(BackgroundPlot):
             if x.imag != 0 or y.imag != 0:
                 continue
 
-            painter.drawLine(*self.canvas_origin, *self.canvas_coords(x, y))
-            self.draw_arrowhead_away_from_origin(painter, (x, y))
+            self.draw_position_vector(painter, (x, y), self.colour_eigen)

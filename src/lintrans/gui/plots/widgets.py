@@ -53,7 +53,7 @@ class VisualizeTransformationWidget(VectorGridPlot):
 
         self.draw_background(painter)
         self.draw_transformed_grid(painter)
-        self.draw_vector_arrowheads(painter)
+        self.draw_basis_vectors(painter)
 
         if self.display_settings.draw_eigenvectors:
             self.draw_eigenvectors(painter)
@@ -98,7 +98,7 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
 
         self.draw_background(painter)
         self.draw_transformed_grid(painter)
-        self.draw_vector_arrowheads(painter)
+        self.draw_basis_vectors(painter)
 
         painter.end()
         event.accept()
