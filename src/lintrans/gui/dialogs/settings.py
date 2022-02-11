@@ -125,6 +125,11 @@ class DisplaySettingsDialog(SettingsDialog):
         self.checkbox_draw_eigenvectors.setToolTip('Draw the eigenvectors of the transformations')
         self.dict_checkboxes['e'] = self.checkbox_draw_eigenvectors
 
+        self.checkbox_draw_eigenlines = QCheckBox(self)
+        self.checkbox_draw_eigenlines.setText('Draw eigen&lines')
+        self.checkbox_draw_eigenlines.setToolTip('Draw the eigenlines (invariant lines) of the transformations')
+        self.dict_checkboxes['l'] = self.checkbox_draw_eigenlines
+
         # === Arrange the widgets in QGroupBoxes
 
         # Animations
@@ -149,6 +154,7 @@ class DisplaySettingsDialog(SettingsDialog):
         self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_determinant_parallelogram)
         self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_determinant_text)
         self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_eigenvectors)
+        self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_eigenlines)
 
         self.groupbox_matrix_info = QGroupBox('Matrix info', self)
         self.groupbox_matrix_info.setLayout(self.vlay_groupbox_matrix_info)
@@ -171,6 +177,7 @@ class DisplaySettingsDialog(SettingsDialog):
         self.checkbox_draw_determinant_parallelogram.setChecked(self.display_settings.draw_determinant_parallelogram)
         self.checkbox_draw_determinant_text.setChecked(self.display_settings.draw_determinant_text)
         self.checkbox_draw_eigenvectors.setChecked(self.display_settings.draw_eigenvectors)
+        self.checkbox_draw_eigenlines.setChecked(self.display_settings.draw_eigenlines)
 
     def confirm_settings(self) -> None:
         """Build a :class:`lintrans.gui.settings.DisplaySettings` object and assign it."""
@@ -183,6 +190,7 @@ class DisplaySettingsDialog(SettingsDialog):
         self.display_settings.draw_determinant_parallelogram = self.checkbox_draw_determinant_parallelogram.isChecked()
         self.display_settings.draw_determinant_text = self.checkbox_draw_determinant_text.isChecked()
         self.display_settings.draw_eigenvectors = self.checkbox_draw_eigenvectors.isChecked()
+        self.display_settings.draw_eigenlines = self.checkbox_draw_eigenlines.isChecked()
 
         self.accept()
 

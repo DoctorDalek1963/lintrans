@@ -40,3 +40,6 @@ class DisplaySettings:
 
     draw_eigenvectors: bool = False
     """This controls whether we should draw the eigenvectors of the transformation."""
+
+    draw_eigenlines: bool = False
+    """This controls whether we should draw the eigenlines of the transformation."""
