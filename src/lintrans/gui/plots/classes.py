@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 from abc import abstractmethod
+from typing import Iterable
 
 import numpy as np
+from nptyping import Float, NDArray
 from PyQt5.QtCore import QPoint, QRectF, Qt
 from PyQt5.QtGui import QBrush, QColor, QPainter, QPainterPath, QPaintEvent, QPen, QWheelEvent
 from PyQt5.QtWidgets import QWidget
@@ -181,6 +183,15 @@ class VectorGridPlot(BackgroundPlot):
     def det(self) -> float:
         """Return the determinant of the assembled matrix."""
         return float(np.linalg.det(self.matrix))
+
+    @property
+    def eigs(self) -> Iterable[tuple[float, NDArray[(1, 2), Float]]]:
+        """Return the eigenvalues and eigenvectors zipped together to be iterated over.
+
+        :rtype: Iterable[tuple[float, NDArray[(1, 2), Float]]]
+        """
+        values, vectors = np.linalg.eig(self.matrix)
+        return zip(values, vectors.T)
 
     @abstractmethod
     def paintEvent(self, event: QPaintEvent) -> None:
@@ -453,10 +464,7 @@ class VectorGridPlot(BackgroundPlot):
 
     def draw_eigenvectors(self, painter: QPainter) -> None:
         """Draw the eigenvectors of the displayed matrix transformation."""
-        values, vectors = np.linalg.eig(self.matrix)
-        vectors = vectors.T
-
-        for value, vector in zip(values, vectors):
+        for value, vector in self.eigs:
             x = value * vector[0]
             y = value * vector[1]
 
