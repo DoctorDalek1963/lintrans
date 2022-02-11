@@ -269,6 +269,17 @@ All useful behaviour should be implemented by any subclass.</p>
 <dd><p>Return the determinant of the assembled matrix.</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.eigs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">eigs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">NDArray</span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">2</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.eigs" title="Permalink to this definition"></a></dt>
+<dd><p>Return the eigenvalues and eigenvectors zipped together to be iterated over.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Iterable[tuple[float, NDArray[(1, 2), Float]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.paintEvent">
 <em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPaintEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.paintEvent" title="Permalink to this definition"></a></dt>
@@ -337,11 +348,14 @@ we were able to draw a line within the boundaries, and False if we couldn’t dr
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.draw_transformed_grid">
 <span class="sig-name descname"><span class="pre">draw_transformed_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.draw_transformed_grid" title="Permalink to this definition"></a></dt>
-<dd><p>Draw the transformed version of the grid, given by the unit vectors.</p>
-<p>This method simply draws the unit vectors and their parallel grid lines.</p>
+<dd><p>Draw the transformed version of the grid, given by the basis vectors.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method draws the grid, but not the basis vectors. Use <a class="reference internal" href="#lintrans.gui.plots.classes.VectorGridPlot.draw_basis_vectors" title="lintrans.gui.plots.classes.VectorGridPlot.draw_basis_vectors"><code class="xref py py-meth docutils literal notranslate"><span class="pre">draw_basis_vectors()</span></code></a> to draw them.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>painter</strong> (<em>QPainter</em>) – The <code class="docutils literal notranslate"><span class="pre">QPainter</span></code> object to use for drawing the vectors and grid lines</p>
+<dd class="field-odd"><p><strong>painter</strong> (<em>QPainter</em>) – The <code class="docutils literal notranslate"><span class="pre">QPainter</span></code> object to use for drawing the grid lines</p>
 </dd>
 </dl>
 </dd></dl>
@@ -361,8 +375,23 @@ we were able to draw a line within the boundaries, and False if we couldn’t dr
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.draw_vector_arrowheads">
-<span class="sig-name descname"><span class="pre">draw_vector_arrowheads</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.draw_vector_arrowheads" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.draw_position_vector">
+<span class="sig-name descname"><span class="pre">draw_position_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colour</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QColor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.draw_position_vector" title="Permalink to this definition"></a></dt>
+<dd><p>Draw a vector from the origin to the given point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>painter</strong> (<em>QPainter</em>) – The <code class="docutils literal notranslate"><span class="pre">QPainter</span></code> object to use to draw the arrowheads with</p></li>
+<li><p><strong>point</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – The tip of the position vector in grid coords</p></li>
+<li><p><strong>colour</strong> (<em>QColor</em>) – The colour to draw the position vector in</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.plots.classes.VectorGridPlot.draw_basis_vectors">
+<span class="sig-name descname"><span class="pre">draw_basis_vectors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QPainter</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.plots.classes.VectorGridPlot.draw_basis_vectors" title="Permalink to this definition"></a></dt>
 <dd><p>Draw arrowheads at the tips of the basis vectors.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
