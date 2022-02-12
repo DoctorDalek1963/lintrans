@@ -133,6 +133,9 @@ class LintransMainWindow(QMainWindow):
         # self.button_create_polygon.clicked.connect(self.create_polygon)
         self.button_create_polygon.setToolTip('Define a new polygon to view the transformation of')
 
+        # TODO: Implement this and enable button
+        self.button_create_polygon.setEnabled(False)
+
         self.button_change_display_settings = QtWidgets.QPushButton(self)
         self.button_change_display_settings.setText('Change\ndisplay settings')
         self.button_change_display_settings.clicked.connect(self.dialog_change_display_settings)
@@ -147,11 +150,7 @@ class LintransMainWindow(QMainWindow):
         self.button_reset_zoom.setToolTip('Reset the zoom level back to normal<br><b>(Ctrl + Shift + R)</b>')
         QShortcut(QKeySequence('Ctrl+Shift+R'), self).activated.connect(self.button_reset_zoom.click)
 
-        # Define new matrix buttons
-
-        self.label_define_new_matrix = QtWidgets.QLabel(self)
-        self.label_define_new_matrix.setText('Define a\nnew matrix')
-        self.label_define_new_matrix.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignBottom)
+        # Define new matrix buttons and their groupbox
 
         self.button_define_visually = QtWidgets.QPushButton(self)
         self.button_define_visually.setText('Visually')
@@ -167,12 +166,18 @@ class LintransMainWindow(QMainWindow):
 
         self.button_define_as_expression = QtWidgets.QPushButton(self)
         self.button_define_as_expression.setText('As an expression')
-        self.button_define_as_expression.setToolTip('Define a matrix in terms of other matrices<br><b>(Alt + 4)</b>')
+        self.button_define_as_expression.setToolTip('Define a matrix in terms of other matrices<br><b>(Alt + 3)</b>')
         self.button_define_as_expression.clicked.connect(lambda: self.dialog_define_matrix(DefineAsAnExpressionDialog))
         QShortcut(QKeySequence('Alt+3'), self).activated.connect(self.button_define_as_expression.click)
 
-        # TODO: Implement this and enable button
-        self.button_create_polygon.setEnabled(False)
+        self.vlay_define_new_matrix = QVBoxLayout()
+        self.vlay_define_new_matrix.setSpacing(20)
+        self.vlay_define_new_matrix.addWidget(self.button_define_visually)
+        self.vlay_define_new_matrix.addWidget(self.button_define_numerically)
+        self.vlay_define_new_matrix.addWidget(self.button_define_as_expression)
+
+        self.groupbox_define_new_matrix = QtWidgets.QGroupBox('Define a new matrix', self)
+        self.groupbox_define_new_matrix.setLayout(self.vlay_define_new_matrix)
 
         # Render buttons
 
@@ -208,13 +213,6 @@ class LintransMainWindow(QMainWindow):
         self.vlay_misc_buttons.addWidget(self.button_change_display_settings)
         self.vlay_misc_buttons.addWidget(self.button_reset_zoom)
 
-        self.vlay_define_new_matrix = QVBoxLayout()
-        self.vlay_define_new_matrix.setSpacing(20)
-        self.vlay_define_new_matrix.addWidget(self.label_define_new_matrix)
-        self.vlay_define_new_matrix.addWidget(self.button_define_visually)
-        self.vlay_define_new_matrix.addWidget(self.button_define_numerically)
-        self.vlay_define_new_matrix.addWidget(self.button_define_as_expression)
-
         self.vlay_render = QVBoxLayout()
         self.vlay_render.setSpacing(20)
         self.vlay_render.addWidget(self.button_reset)
@@ -225,7 +223,7 @@ class LintransMainWindow(QMainWindow):
         self.vlay_right.setSpacing(50)
         self.vlay_right.addLayout(self.vlay_misc_buttons)
         self.vlay_right.addItem(QSpacerItem(100, 2, hPolicy=QSizePolicy.Minimum, vPolicy=QSizePolicy.Expanding))
-        self.vlay_right.addLayout(self.vlay_define_new_matrix)
+        self.vlay_right.addWidget(self.groupbox_define_new_matrix)
         self.vlay_right.addItem(QSpacerItem(100, 2, hPolicy=QSizePolicy.Minimum, vPolicy=QSizePolicy.Expanding))
         self.vlay_right.addLayout(self.vlay_render)
 
