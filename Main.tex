@@ -1,0 +1,31 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[UKenglish]{babel}  % UK writing style
+\usepackage[a4paper, total={135mm, 255mm}]{geometry}  % Good margins
+\usepackage{csquotes}  % Context-sensitive quotes
+
+% This is used to allow for separate files for each section and then have them all in the main pdf with better compatibility and functionality than using \import{}
+\usepackage{subfiles}
+
+% This just allows for a nice bibliography
+\usepackage[backend=biber]{biblatex}
+\addbibresource{bibliography.bib}
+
+\usepackage{hyperref}  % Easy cross-referencing
+
+\title{\Huge{Lintrans}}
+\author{\Large{Dyson}}
+\date{\Large{\today}}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Analysis}
+\subfile{Sections/Analysis.tex}
+
+\printbibliography
+
+\end{document}
