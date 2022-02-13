@@ -9,7 +9,7 @@ from typing import Type
 
 import numpy as np
 from numpy import linalg
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot, QThread
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox,
