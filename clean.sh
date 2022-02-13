@@ -19,3 +19,5 @@ rm *.fdb_latexmk 2> /dev/null
 rm *.fls 2> /dev/null
 rm *.run.xml 2> /dev/null
 rm *.synctex.gz 2> /dev/null
+
+exit 0
