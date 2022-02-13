@@ -45,7 +45,7 @@ class BackgroundPlot(QWidget):
         palette.setColor(self.backgroundRole(), Qt.white)
         self.setPalette(palette)
 
-        # Set the gird colour to grey and the axes colour to black
+        # Set the grid colour to grey and the axes colour to black
         self.colour_background_grid = QColor('#808080')
         self.colour_background_axes = QColor('#000000')
 
