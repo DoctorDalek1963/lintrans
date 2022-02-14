@@ -6,7 +6,7 @@
 
 % This just allows for a nice bibliography
 \usepackage[backend=biber]{biblatex}
-\addbibresource{bibliography.bib}
+\addbibresource{references.bib}
 
 \usepackage{hyperref}  % Easy cross-referencing
 
@@ -74,7 +74,12 @@ Candidate Number:& 123456
 
 % END contents page
 
-% START rest of document
+% START main document
+
+% No indents, but nice spacing between paragraphs
+% This is just a personal style preference
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
 
 \pagenumbering{arabic}
 
@@ -84,8 +89,17 @@ Candidate Number:& 123456
 \section{Analysis}
 \subfile{sections/analysis.tex}
 
+% END main document
+
+% START bibliography
+
+\newpage
+
+% Manually add the bibliography (unnumbered) to the contents
+\addcontentsline{toc}{section}{References}
+
 \printbibliography
 
-% END rest of document
+% END bibliography
 
 \end{document}
