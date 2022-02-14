@@ -1,9 +1,9 @@
 # lintrans
 
-![Tests](https://github.com/DoctorDalek1963/lintrans/actions/workflows/tests.yml/badge.svg)
-![Linting](https://github.com/DoctorDalek1963/lintrans/actions/workflows/linting.yml/badge.svg)
-![Type Checks](https://github.com/DoctorDalek1963/lintrans/actions/workflows/type_checks.yml/badge.svg)
-![Docstrings](https://github.com/DoctorDalek1963/lintrans/actions/workflows/docstrings.yml/badge.svg)
+![Tests](https://github.com/DoctorDalek1963/lintrans/actions/workflows/tests.yaml/badge.svg)
+![Linting](https://github.com/DoctorDalek1963/lintrans/actions/workflows/linting.yaml/badge.svg)
+![Type Checks](https://github.com/DoctorDalek1963/lintrans/actions/workflows/type_checks.yaml/badge.svg)
+![Docstrings](https://github.com/DoctorDalek1963/lintrans/actions/workflows/docstrings.yaml/badge.svg)
 
 ![GPLv3 License](https://img.shields.io/github/license/DoctorDalek1963/lintrans?style=flat-square)
 ![Latest commit](https://img.shields.io/github/last-commit/DoctorDalek1963/lintrans?style=flat-square)
