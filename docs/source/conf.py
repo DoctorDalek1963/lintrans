@@ -62,6 +62,8 @@ html_static_path = ['_static']
 # For RTD theme
 html_show_sourcelink = False
 
+html_favicon = 'favicon.png'
+
 
 # -- Options for autodoc -----------------------------------------------------
 
