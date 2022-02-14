@@ -17,13 +17,13 @@ jobs:
       - name: Compile Main.tex
         uses: xu-cheng/latex-action@v2
         with:
-          root_file: Main.tex
+          root_file: main.tex
 
       - name: Put pdf in correct directory
         run: |
           sh clean.sh
           mkdir -p pdf_dir
-          mv Main.pdf pdf_dir/
+          mv main.pdf pdf_dir/lintrans.pdf
 
       - name: Deploy PDF
         uses: peaceiris/actions-gh-pages@v3.8.0
