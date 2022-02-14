@@ -36,4 +36,6 @@ jobs:
         publish_dir: ./docs/build/html/
         keep_files: true
         destination_dir: docs
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
         commit_message: 'compile docs:'
