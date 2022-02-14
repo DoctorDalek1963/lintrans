@@ -25,17 +25,11 @@ jobs:
           mkdir -p pdf_dir
           mv Main.pdf pdf_dir/
 
-      # The usage of this action is quite hacky
-      # It's designed to deploy a static site to gh-pages
-      # but I'm using it to "deploy" a pdf
       - name: Deploy PDF
         uses: peaceiris/actions-gh-pages@v3.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: pdf_dir/
-          publish_branch: pdf
+          publish_branch: gh-pages
           keep_files: true
-          enable_jekyll: true
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
           commit_message: 'compile pdf:'
