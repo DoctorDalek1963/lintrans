@@ -32,7 +32,7 @@ along with the tutorial (NOT YET WRITTEN).
 This project is also my A Level Computer Science NEA (Non-Exam Assessment), which means I need to provide a
 write-up of the development process. This write-up is written in LaTeX and can be found in the
 [`write-up`](https://github.com/DoctorDalek1963/lintrans/tree/write-up) branch. The compiled PDF can also be found
-on [my GitHub pages site](https://doctordalek1963.github.io/lintrans/Main.pdf).
+on [my GitHub pages site](https://doctordalek1963.github.io/lintrans/lintrans.pdf).
 
 ---
 
