@@ -26,13 +26,13 @@ This program is aimed at teachers teaching linear transformations, as well as st
 first time. The 3blue1brown series [Essence of Linear Algebra](https://www.youtube.com/watch?v=fNk_zzaMoSs&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)
 is a fantastic learning resource for this topic and I aim to provide an interactive supplement to that series.
 
-The Python source code can be found in `src/lintrans/` and the full documentation can be found on [my GitHub pages site](https://doctordalek1963.github.io/lintrans/docs/index.html)
+The Python source code can be found in `src/lintrans/` and the full documentation can be found on [my GitHub pages site](https://doctordalek1963.github.io/lintrans)
 along with the tutorial (NOT YET WRITTEN).
 
 This project is also my A Level Computer Science NEA (Non-Exam Assessment), which means I need to provide a
 write-up of the development process. This write-up is written in LaTeX and can be found in the
-[`write-up`](https://github.com/DoctorDalek1963/lintrans/tree/write-up) branch. The compiled PDF can also be found
-on [my GitHub pages site](https://doctordalek1963.github.io/lintrans/lintrans.pdf).
+[`write-up`](https://github.com/DoctorDalek1963/lintrans/tree/write-up) branch. The compiled PDF can also be
+downloaded from [my GitHub pages site](https://doctordalek1963.github.io/lintrans).
 
 ---
 
