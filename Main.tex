@@ -1,11 +1,8 @@
 \documentclass[a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[UKenglish]{babel}  % UK writing style
-\usepackage[a4paper, total={135mm, 255mm}]{geometry}  % Good margins
+\usepackage[a4paper, total={155mm, 245mm}]{geometry}  % Good margins
 \usepackage{csquotes}  % Context-sensitive quotes
-
-% This is used to allow for separate files for each section and then have them all in the main pdf with better compatibility and functionality than using \import{}
-\usepackage{subfiles}
 
 % This just allows for a nice bibliography
 \usepackage[backend=biber]{biblatex}
@@ -13,15 +10,71 @@
 
 \usepackage{hyperref}  % Easy cross-referencing
 
-\title{\Huge{Lintrans}}
-\author{\Large{Dyson}}
-\date{\Large{\today}}
+\usepackage{fancyhdr}  % Set up nice headers and footers
+\usepackage{lastpage}  % A reference to the last page in the document for page numbering
+
+\pagestyle{fancy}
+\fancyhf{}
+
+% Define header
+\lhead{Candidate number: 123456}
+\chead{Dyson}
+\rhead{Centre number: 123456}
+
+% This is used to allow for separate files for each section
+% It should be the last thing imported in the preamble
+\usepackage{subfiles}
 
 \begin{document}
 
-\maketitle
+% START title page
+
+\begin{center}
+	\vspace*{5cm}
+
+	\Huge{\texttt{lintrans}}
+
+	\vspace{0.5cm}
+
+	\Large{Dyson}
+
+	\vspace{0.5cm}
+
+	\Large{\today}
+
+	\vfill
+\end{center}
+
+\large{
+\begin{tabular}{ll}
+Centre Name:& The Duston School\\
+Centre Number:& 123456\\
+Candidate Number:& 123456
+\end{tabular}
+}
+
+\thispagestyle{empty}
+\newpage
+
+% END title page
+
+% START contents page
+
+\thispagestyle{fancy}
+\pagenumbering{roman}
+\cfoot{\thepage}
+
 \tableofcontents
 \newpage
+
+% END contents page
+
+% START rest of document
+
+\pagenumbering{arabic}
+
+% Define nice page numbers
+\cfoot{Page \thepage\ of \pageref{LastPage}}
 
 \section{Analysis}
 \subfile{Sections/Analysis.tex}
