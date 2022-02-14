@@ -82,7 +82,7 @@ class LintransMainWindow(QMainWindow):
         self.action_docs = QtWidgets.QAction(self)
         self.action_docs.setText('&Docs')
         self.action_docs.triggered.connect(
-            lambda: webbrowser.open_new_tab('https://doctordalek1963.github.io/lintrans')
+            lambda: webbrowser.open_new_tab('https://doctordalek1963.github.io/lintrans/docs/index.html')
         )
 
         self.action_about = QtWidgets.QAction(self)
