@@ -58,4 +58,27 @@ Another web app that I found was one simply called \enquote{Linear Transformatio
 
 I really like the vectors snapping to the grid, the input and output vectors, and rendering the determinant. This app also renders positive and negative determinants in different colours, which is really nice - I intend to use that idea in my own app. However, I think that the animation system here is flawed and not very easy to use. My animation will likely be a button, which just triggers an animation, rather than a slider. I also don't like the way vector dragging is handled. If you click anywhere on the grid, then the closest vector target (the final position of the target's associated vector) snaps to that location. I think it would be more intuitive to have to drag the vector from its current location to where you want it. This was also a problem with the MIT Mathlet.
 
+One of the solutions I found was a Desmos app\cite{desmos-2d-linear-transformation}, which was quite hard to use and arguably overcomplicated. Desmos is not designed for this kind of thing - it's designed to graph pure mathematical functions - and it shows here. However, this app brings some really interesting ideas to the table, mainly functions. This app allows you to define custom functions and view them before and after the transformation. This is achieved by treating the functions parametrically as the set of points $(t, f(t))$ and then transforming that coordinate pair by the given matrix and getting a new coordinate.
+\[\begin{pmatrix}
+	a & b\\
+	c & d
+\end{pmatrix}
+\begin{pmatrix}
+	t\\
+	f(t)
+\end{pmatrix} = \begin{pmatrix}
+	at + bf(t)\\
+	ct + df(t)
+\end{pmatrix}\]
+Desmos does this for every point and then renders the resulting transformed function parametrically. This is a really interesting technique and idea, but I'm not going to use it in my app. I don't think arbitrary functions fit with the linearity of the whole app, and I don't think it's necessary. It's just overcomplicating things, and rendering it on a widget would be tricky, because I'd have to render every point myself, possibly using something like OpenGL. It's just not worth implementing.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{desmos-2d-linear-transformation}
+	\caption{The Desmos app halfway through an animation, rendering $f(x) = \frac{\sin^2 x}{x}$ in orange}
+	\label{fig:desmos-2d-linear-transformation}
+\end{figure}
+
+Additionally, this Desmos app makes things quite hard to see. It's hard to tell where any of the vectors are - they just get lost in the sea of grid lines. This image also hides some of the extra information. For instance, this image doesn't show the original function $f(x) = \frac{\sin^2 x}{x}$, only the transformed version. I will give my vectors arrowheads to make them easily identifiable.
+
 \end{document}
