@@ -39,7 +39,7 @@ class LintransMainWindow(QMainWindow):
 
         self.matrix_wrapper = MatrixWrapper()
 
-        self.setWindowTitle('Linear Transformations')
+        self.setWindowTitle('lintrans')
         self.setMinimumSize(1000, 750)
 
         self.animating: bool = False
