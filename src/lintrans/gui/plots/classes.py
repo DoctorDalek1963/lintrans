@@ -163,6 +163,7 @@ class VectorGridPlot(BackgroundPlot):
         self.colour_i = QColor('#13cf00')
         self.colour_j = QColor('#0808d8')
         self.colour_eigen = QColor('#e90000')
+        self.colour_text = QColor('#000000')
 
         self.width_vector_line = 1.8
         self.width_transformed_grid = 0.8
@@ -434,7 +435,7 @@ class VectorGridPlot(BackgroundPlot):
 
     def draw_determinant_text(self, painter: QPainter) -> None:
         """Write the string value of the determinant in the middle of the parallelogram."""
-        painter.setPen(QPen(QColor('#000000'), self.width_vector_line))
+        painter.setPen(QPen(self.colour_text, self.width_vector_line))
 
         # We're building a QRect that encloses the determinant parallelogram
         # Then we can center the text in this QRect
@@ -472,6 +473,36 @@ class VectorGridPlot(BackgroundPlot):
                 continue
 
             self.draw_position_vector(painter, (x, y), self.colour_eigen)
+
+            # Now we need to draw the eigenvalue at the tip of the eigenvector
+
+            offset = 3
+            top_left: QPoint
+            bottom_right: QPoint
+            alignment_flags: int
+
+            if x >= 0 and y >= 0:  # Q1
+                top_left = QPoint(self.canvas_x(x) + offset, 0)
+                bottom_right = QPoint(self.width(), self.canvas_y(y) - offset)
+                alignment_flags = Qt.AlignLeft | Qt.AlignBottom
+
+            elif x < 0 and y >= 0:  # Q2
+                top_left = QPoint(0, 0)
+                bottom_right = QPoint(self.canvas_x(x) - offset, self.canvas_y(y) - offset)
+                alignment_flags = Qt.AlignRight | Qt.AlignBottom
+
+            elif x < 0 and y < 0:  # Q3
+                top_left = QPoint(0, self.canvas_y(y) + offset)
+                bottom_right = QPoint(self.canvas_x(x) - offset, self.height())
+                alignment_flags = Qt.AlignRight | Qt.AlignTop
+
+            else:  # Q4
+                top_left = QPoint(self.canvas_x(x) + offset, self.canvas_y(y) + offset)
+                bottom_right = QPoint(self.width(), self.height())
+                alignment_flags = Qt.AlignLeft | Qt.AlignTop
+
+            painter.setPen(QPen(self.colour_text, self.width_vector_line))
+            painter.drawText(QRectF(top_left, bottom_right), alignment_flags, f'{value:.2f}')
 
     def draw_eigenlines(self, painter: QPainter) -> None:
         """Draw the eigenlines (invariant lines).
