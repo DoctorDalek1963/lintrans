@@ -24,6 +24,12 @@ Finally, the core of the application is visualization, so that will definitely b
 
 \subsection{Stakeholders}
 
-Here's the section on stakeholders.
+Stakeholders for my app include A Level Further Maths students and teachers, who learn and teach linear transformations respectively. They will be able to provide useful input as to what they would like to see in the app, and they can provide feedback on what they like and what I can add or improve. I already know from experience that linear transformations are tricky to visualize and a computer-based visualization would be useful. My stakeholders agreed with this. Many teachers said that a desktop app that could render and animate linear transformations would be useful in a classroom environment and students said that it would be helpful to have something that they could play around with at home and use to get to grips with matrices and linear transformations.
+
+Some teachers also suggested that it would be useful to have an option to save and load sets of matrices. This would allow them to have a single save file containing some matrices, and then just load this file to use for demonstrations in the classroom. This would probably be quite easy to implement. I could just wrap all the relevant information into one object and use Python's \texttt{pickle} module to save the binary data to a file, and then load this data back into the app in a similar way.
+
+My stakeholders agreed that being able to see incremental animation - where, for example, we apply matrix $\mathbf{A}$ to the current scene, pause, and then apply matrix $\mathbf{B}$ - would be beneficial. This would be a good demonstration of matrix multiplication being non-commutative. $\mathbf{AB}$ is not always equal to $\mathbf{BA}$. Being able to see this in terms of animating linear transformations would be good for learning.
+
+They also agreed that a tutorial on using the software would be useful, so I plan to implement this through an online written tutorial hosted with GitHub Pages, and perhaps a video tutorial as well. This would make the app much easier to use for people who have never seen it before. It wouldn't be a lesson on the maths itself, just a guide on how to use the software.
 
 \end{document}
