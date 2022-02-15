@@ -32,4 +32,19 @@ My stakeholders agreed that being able to see incremental animation - where, for
 
 They also agreed that a tutorial on using the software would be useful, so I plan to implement this through an online written tutorial hosted with GitHub Pages, and perhaps a video tutorial as well. This would make the app much easier to use for people who have never seen it before. It wouldn't be a lesson on the maths itself, just a guide on how to use the software.
 
+\subsection{Research on existing solutions}
+
+There are actually quite a few web apps designed to help visualize 2D linear transformations but many of them are hard to use and lacking many features. Arguably the best app that I found was an MIT \enquote{Mathlet} - a simple web app designed to help visualize a maths concept. This one is called \enquote{Matrix Vector}\cite{mit-mathlet-matrix-vector} and allows the user to drag an input vector around the plane and see the corresponding output vector, transformed by a matrix that the user can define, although this definition is finicky since it involves sliders rather than keyboard input.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\linewidth]{mit-mathlet-matrix-vector}
+\caption{The MIT \enquote{Matrix Vector} Mathlet}
+\label{fig:mit-mathlet-matrix-vector}
+\end{figure}
+
+This app fails in two crucial ways in my opinion. It doesn't show the basis vectors or let the user drag them around, and the user can only define and therefore visualize a single matrix at once. This second problem was common among every solution I found, so I won't mention it again, but it is a big issue in my opinion and my app will allow for multiple matrices. I like the idea of having a draggable input vector and rendering its output, so I will probably have this feature in my app, but I also want the ability to define multiple matrices and be able to drag the basis vectors to visually define a matrix.
+
+Although, in the comments of this Mathlet, a user called \enquote{David~S.~Bruce} suggested that the Mathlet should display the basis vectors, to which a user called \enquote{hrm} (who I assume to be the \enquote{H.~Miller} to whom the copyright of the whole website is accredited) replied saying that this Mathlet is primarily focussed on eigenvectors, that it is perhaps badly named, and that displaying the basis vectors \enquote{would make a good focus for a second Mathlet about 2x2 matrices}. This Mathlet does not exist. But I do like the idea of showing the eigenvectors and eigenlines, so I will definitely have that in my app.
+
 \end{document}
