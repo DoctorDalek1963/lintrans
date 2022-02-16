@@ -4,4 +4,4 @@ from . import gui, matrices, typing
 
 __all__ = ['gui', 'matrices', 'typing']
 
-__version__ = '0.1.0-alpha'
+__version__ = '0.1.1-alpha'
