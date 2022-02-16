@@ -164,11 +164,8 @@ in a wrapper. For an aware version of this function, use the
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>expression</strong> (<em>str</em>) – The expression to be validated</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns bool</dt>
 <dd class="field-even"><p>Whether the expression is valid according to the schema</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -281,14 +278,11 @@ If you want the expression itself, use <a class="reference internal" href="#lint
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The name of the matrix to get</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns Optional[MatrixType]</dt>
 <dd class="field-even"><p>The value of the matrix (may be None)</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Optional[MatrixType]</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>NameError</strong> – If there is no matrix with the given name</p>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>NameError</strong> – If there is no matrix with the given name</p>
 </dd>
 </dl>
 </dd></dl>
@@ -324,14 +318,11 @@ expression in terms of other, previously defined matrices.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The name of the matrix</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns Optional[str]</dt>
 <dd class="field-even"><p>The expression that the matrix is defined as, or None</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Optional[str]</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>NameError</strong> – If the name is invalid</p>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>NameError</strong> – If the name is invalid</p>
 </dd>
 </dl>
 </dd></dl>
@@ -346,11 +337,11 @@ ensures that all the matrices in the expression are defined in the wrapper.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>expression</strong> (<em>str</em>) – The expression to validate</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns bool</dt>
 <dd class="field-even"><p>Whether the expression is valid in this wrapper</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>LinAlgError</strong> – If a matrix is defined in terms of the inverse of a singular matrix</p>
 </dd>
 </dl>
 </dd></dl>
@@ -363,14 +354,11 @@ ensures that all the matrices in the expression are defined in the wrapper.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>expression</strong> (<em>str</em>) – The expression to be parsed</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns MatrixType</dt>
 <dd class="field-even"><p>The matrix result of the expression</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>MatrixType</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If the expression is invalid</p>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the expression is invalid</p>
 </dd>
 </dl>
 </dd></dl>
@@ -403,11 +391,8 @@ ensures that all the matrices in the expression are defined in the wrapper.</p>
 <li><p><strong>degrees</strong> (<em>bool</em>) – Whether to interpret the angle as degrees (True) or radians (False)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns MatrixType</dt>
 <dd class="field-even"><p>The resultant matrix</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>MatrixType</p>
 </dd>
 </dl>
 </dd></dl>
