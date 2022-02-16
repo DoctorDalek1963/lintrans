@@ -8,9 +8,9 @@
 \graphicspath{{./images/}}
 
 \usepackage{fontspec}
-\newfontfamily{\hackfont}{Hack}
+\setmonofont[Scale=MatchLowercase]{Hack}
 
-% This just allows for a nice bibliography
+% This allows for a nice, automatic bibliography
 \usepackage[backend=biber, sorting=none, style=numeric]{biblatex}
 \addbibresource{references.bib}
 
@@ -43,7 +43,7 @@
 \begin{center}
 	\vspace*{6.5cm}
 
-	\Huge{\hackfont lintrans}
+	\Huge{\texttt{lintrans}}
 
 	\vspace{0.8cm}
 
