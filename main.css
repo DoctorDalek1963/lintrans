@@ -24,8 +24,9 @@ div.wrapper-box {
 }
 
 h1.lintrans-title {
-	font-family: 'Courier New', Courier, monospace;
+	font-family: 'Hack', Courier, monospace;
 	font-size: 2.5em;
+	font-weight: normal;
 }
 
 div.lintrans-info {
