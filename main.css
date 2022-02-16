@@ -27,10 +27,11 @@ h1.lintrans-title {
 	font-family: 'Hack', Courier, monospace;
 	font-size: 2.5em;
 	font-weight: normal;
+	margin-bottom: 0.2em;
 }
 
 div.lintrans-info {
-	margin-top: 1em;
+	margin-top: 1.1em;
 }
 
 a {
