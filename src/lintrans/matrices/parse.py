@@ -41,8 +41,7 @@ def validate_matrix_expression(expression: str) -> bool:
     :meth:`lintrans.matrices.wrapper.MatrixWrapper.is_valid_expression` method.
 
     :param str expression: The expression to be validated
-    :returns: Whether the expression is valid according to the schema
-    :rtype: bool
+    :returns bool: Whether the expression is valid according to the schema
     """
     # Remove all whitespace
     expression = re.sub(r'\s', '', expression)

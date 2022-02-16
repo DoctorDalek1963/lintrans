@@ -102,8 +102,7 @@ class MatrixWrapper:
            If you want the expression itself, use :meth:`get_expression`.
 
         :param str name: The name of the matrix to get
-        :returns: The value of the matrix (may be None)
-        :rtype: Optional[MatrixType]
+        :returns Optional[MatrixType]: The value of the matrix (may be None)
 
         :raises NameError: If there is no matrix with the given name
         """
@@ -165,8 +164,7 @@ class MatrixWrapper:
         """If the named matrix is defined as an expression, return that expression, else return None.
 
         :param str name: The name of the matrix
-        :returns: The expression that the matrix is defined as, or None
-        :rtype: Optional[str]
+        :returns Optional[str]: The expression that the matrix is defined as, or None
 
         :raises NameError: If the name is invalid
         """
@@ -186,8 +184,7 @@ class MatrixWrapper:
         ensures that all the matrices in the expression are defined in the wrapper.
 
         :param str expression: The expression to validate
-        :returns: Whether the expression is valid in this wrapper
-        :rtype: bool
+        :returns bool: Whether the expression is valid in this wrapper
         """
         # Get rid of the transposes to check all capital letters
         new_expression = expression.replace('^T', '').replace('^{T}', '')
@@ -207,8 +204,7 @@ class MatrixWrapper:
         """Evaluate a given expression and return the matrix evaluation.
 
         :param str expression: The expression to be parsed
-        :returns: The matrix result of the expression
-        :rtype: MatrixType
+        :returns MatrixType: The matrix result of the expression
 
         :raises ValueError: If the expression is invalid
         """
@@ -259,8 +255,7 @@ def create_rotation_matrix(angle: float, *, degrees: bool = True) -> MatrixType:
 
     :param float angle: The angle to rotate anticlockwise by
     :param bool degrees: Whether to interpret the angle as degrees (True) or radians (False)
-    :returns: The resultant matrix
-    :rtype: MatrixType
+    :returns MatrixType: The resultant matrix
     """
     rad = np.deg2rad(angle) if degrees else angle
     return np.array([
