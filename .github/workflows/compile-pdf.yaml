@@ -14,10 +14,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Download fonts
+        run: |
+          mkdir -p .fonts
+          pushd .fonts
+          wget https://github.com/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.zip
+          unzip Hack-v3.003-ttf.zip
+          rm Hack-v3.003-ttf.zip
+          popd
+
       - name: Compile Main.tex
         uses: xu-cheng/latex-action@v2
         with:
           root_file: main.tex
+          args: -lualatex -file-line-error -halt-on-error -interaction=nonstopmode
+          extra_fonts: ./.fonts/ttf/Hack-*.ttf
 
       - name: Put pdf in correct directory
         run: |

@@ -20,4 +20,8 @@
 *.run.xml
 *.synctex.gz
 
+# We want to ignore the PDF itself to allow me to keep a local build
 *.pdf
+
+# We also want to ignore the fonts directory, because that gets handled by the compilation workflow
+.fonts/
