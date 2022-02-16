@@ -185,6 +185,8 @@ class MatrixWrapper:
 
         :param str expression: The expression to validate
         :returns bool: Whether the expression is valid in this wrapper
+
+        :raises LinAlgError: If a matrix is defined in terms of the inverse of a singular matrix
         """
         # Get rid of the transposes to check all capital letters
         new_expression = expression.replace('^T', '').replace('^{T}', '')
