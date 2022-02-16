@@ -8,6 +8,9 @@
 \usepackage{graphicx}
 \graphicspath{{./images/}}
 
+\usepackage{fontspec}
+\newfontfamily{\hackfont}{Hack}
+
 % This just allows for a nice bibliography
 \usepackage[backend=biber, sorting=none, style=numeric]{biblatex}
 \addbibresource{references.bib}
@@ -39,17 +42,13 @@
 % START title page
 
 \begin{center}
-	\vspace*{5cm}
+	\vspace*{6.5cm}
 
-	\Huge{\texttt{lintrans}}
+	\Huge{\hackfont lintrans}
 
-	\vspace{0.5cm}
+	\vspace{0.8cm}
 
-	\Large{Dyson}
-
-	\vspace{0.5cm}
-
-	\Large{\today}
+	\Large{by Dyson}
 
 	\vfill
 \end{center}
