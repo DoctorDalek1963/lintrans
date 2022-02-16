@@ -9,6 +9,7 @@ from typing import Type
 
 import numpy as np
 from numpy import linalg
+from numpy.linalg import LinAlgError
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot, QThread
 from PyQt5.QtGui import QKeySequence
@@ -16,12 +17,13 @@ from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox
                              QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout)
 
 from lintrans.matrices import MatrixWrapper
+from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.typing import MatrixType
 from .dialogs import DefineAsAnExpressionDialog, DefineDialog, DefineNumericallyDialog, DefineVisuallyDialog
 from .dialogs.settings import DisplaySettingsDialog
 from .plots import VisualizeTransformationWidget
 from .settings import DisplaySettings
-from lintrans.gui.validate import MatrixExpressionValidator
+from .validate import MatrixExpressionValidator
 
 
 class LintransMainWindow(QMainWindow):
@@ -242,14 +244,26 @@ class LintransMainWindow(QMainWindow):
         """Enable or disable the render and animate buttons according to whether the matrix expression is valid."""
         text = self.lineedit_expression_box.text()
 
+        # Let's say that the user defines a non-singular matrix A, then defines B as A^-1
+        # If they then redefine A and make it singular, then we get a LinAlgError when
+        # trying to evaluate an expression with B in it
+        # To fix this, we just do naive validation rather than aware validation
         if ',' in text:
             self.button_render.setEnabled(False)
 
-            valid = all(self.matrix_wrapper.is_valid_expression(x) for x in text.split(','))
+            try:
+                valid = all(self.matrix_wrapper.is_valid_expression(x) for x in text.split(','))
+            except LinAlgError:
+                valid = all(validate_matrix_expression(x) for x in text.split(','))
+
             self.button_animate.setEnabled(valid)
 
         else:
-            valid = self.matrix_wrapper.is_valid_expression(text)
+            try:
+                valid = self.matrix_wrapper.is_valid_expression(text)
+            except LinAlgError:
+                valid = validate_matrix_expression(text)
+
             self.button_render.setEnabled(valid)
             self.button_animate.setEnabled(valid)
 
@@ -273,7 +287,7 @@ class LintransMainWindow(QMainWindow):
         try:
             matrix = self.matrix_wrapper.evaluate_expression(self.lineedit_expression_box.text())
 
-        except linalg.LinAlgError:
+        except LinAlgError:
             self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
             return
 
@@ -307,7 +321,7 @@ class LintransMainWindow(QMainWindow):
             for expr in text.split(',')[::-1]:
                 try:
                     new_matrix = self.matrix_wrapper.evaluate_expression(expr) @ current_matrix
-                except linalg.LinAlgError:
+                except LinAlgError:
                     self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
                     return
 
@@ -330,7 +344,7 @@ class LintransMainWindow(QMainWindow):
             try:
                 matrix_target = self.matrix_wrapper.evaluate_expression(text)
 
-            except linalg.LinAlgError:
+            except LinAlgError:
                 self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
                 return
 
