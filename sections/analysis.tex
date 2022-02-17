@@ -6,7 +6,7 @@ One of the topics in the A Level Further Maths course is linear transformations,
 
 My solution is to develop a desktop application that will allow the user to define $2 \times 2$ matrices and view these matrices and compositions thereof as linear transformations of a 2D plane. This will give students a way to get to grips with linear transformations in a more hands-on way, and will give teachers the ability to easily and visually show concepts like determinants and invariant lines.
 
-\subsection{Computational Approach}
+\subsection{Computational Approach\label{subsection:computational-approach}}
 
 This solution is particularly well suited to a computational approach since it is entirely focussed on visualizing transformations, which require complex mathematics to properly display. It will also have lots of settings to allow the user to configure aspects of the visualization. As previously mentioned, visualizing transformations in one's own head is difficult, so a piece of software to do it would be very valuable to teachers and learners, but current solutions are considerably lacking.
 
@@ -22,7 +22,7 @@ I will also make use of iteration, primarily in animation. I will have to re-cal
 
 Finally, the core of the application is visualization, so that will definitely be used a lot. I will have to calculate positions of points and lines based on given matrices, and when animating, I will also have to calculate these matrices based on the current frame. Then I will have to use the rendering capabilities of the GUI framework that I choose to render these calculated points and lines onto a widget, which will form the viewport of the main GUI. I may also have to convert between coordinate systems. I will have the origin in the middle with positive $x$ going to the right and positive $y$ going up, but I may need to convert that to standard computer graphics coordinates with the origin in the top left, positive $x$ going to the right, and positive $y$ going down. This visualization of linear transformations is the core component of the app and is the primary feature, so it is incredibly important.
 
-\subsection{Stakeholders}
+\subsection{Stakeholders\label{subsection:stakeholders}}
 
 Stakeholders for my app include A Level Further Maths students and teachers, who learn and teach linear transformations respectively. They will be able to provide useful input as to what they would like to see in the app, and they can provide feedback on what they like and what I can add or improve. I already know from experience that linear transformations are tricky to visualize and a computer-based visualization would be useful. My stakeholders agreed with this. Many teachers said that a desktop app that could render and animate linear transformations would be useful in a classroom environment and students said that it would be helpful to have something that they could play around with at home and use to get to grips with matrices and linear transformations.
 
@@ -32,7 +32,7 @@ My stakeholders agreed that being able to see incremental animation - where, for
 
 They also agreed that a tutorial on using the software would be useful, so I plan to implement this through an online written tutorial hosted with GitHub Pages, and perhaps a video tutorial as well. This would make the app much easier to use for people who have never seen it before. It wouldn't be a lesson on the maths itself, just a guide on how to use the software.
 
-\subsection{Research on existing solutions}
+\subsection{Research on existing solutions\label{subsection:research-on-existing-solutions}}
 
 There are actually quite a few web apps designed to help visualize 2D linear transformations but many of them are hard to use and lacking many features.
 
@@ -102,7 +102,7 @@ The last solution that I want to talk about is a GeoGebra applet simply titled \
 
 The main thing I wanted to say about this one is about the N. I don't particularly want the letter N to be a prominent part of my own app, but I really like the idea of being able to define a custom polygon and see how that polygon gets transformed by a given transformation. I think that would really help with building intuition and it shouldn't be too hard to implement.
 
-\subsection{Essential features}
+\subsection{Essential features\label{subsection:essential-features}}
 
 The primary aim of this application is to visualize linear transformations, so this will obviously be the centre of the app and an essential feature. I will have a widget which can render a background grid and a second version of the grid, transformed according to a user-defined matrix expression. This is necessary because it is the entire purpose of the app. It's designed to visualize linear transformations and would be completely useless without this visual component. I will give the user the ability to render a custom matrix expression containing matrices they have previously defined, as well as reset the canvas to the default identity matrix transformation. This will obviously require an input box to enter the expression, a render button, a reset button, and various dialog boxes to define matrices in different ways. I want the user to be able to define a matrix as a set of 4 numbers, and by dragging the basis vectors $i$ and $j$. These dialogs will allow the user to define new matrices to be used in expressions, and having multiple ways to do it will make it easier.
 
@@ -112,7 +112,7 @@ Something that I thought was a big problem in every alternative solution I found
 
 Additionally, being able to show information on the currently displayed matrix is an essential tool for learning. Rendering things like the determinant parallelogram and the invariant lines of the transformation will greatly assist with learning and building intuition, so I think that having the option to render these attributes of the currently displayed transformation is necessary for success.
 
-\subsection{Limitations}
+\subsection{Limitations\label{subsection:limitations}}
 
 The main limitation in this app is likely to be drawing grid lines. Most transformations will be fine but in some cases, the app will be required to draw potentially thousands of grid lines on the canvas and this will probably cause noticeable lag, especially in the animations. I will have to artificially limit the number of grid lines that can be drawn on the screen. This won't look fantastic, because it means that the grid lines will only extend a certain distance from the origin, but it's an inherent limitation of computers. Perhaps if I was using a faster, compiled language like C++ rather than Python, this processing would happen faster and I could render more grid lines, but it's impossible to render all the grid lines and any implementation of this idea must limit them for performance.
 
@@ -122,9 +122,9 @@ I'm also not going to do any work with 3D linear transformations. 3D transformat
 
 There are other limitations inherent to matrices. For instance, it's impossible to take an inverse of a singular matrix. There's nothing I can do about that without rewriting most of mathematics. Matrices can also only represent linear transformations. There's definitely a market for an app that could render any arbitrary transformation from $\mathbb{R}^2 \to \mathbb{R}^2$ - I know I'd want an app like that - but matrices can only represent linear transformations, so those are the only kind of transformations that I'll be looking at with this project.
 
-\subsection{Hardware and software requirements}
+\subsection{Hardware and software requirements\label{subsection:hardware-and-software-requirements}}
 
-\subsubsection{Hardware}
+\subsubsection{Hardware\label{subsubsection:hardware}}
 
 % TODO: Add size of final binary
 
@@ -134,7 +134,7 @@ I will also require that the user has a monitor that is at least $1920 \times 10
 
 I will also require a keyboard with all standard Latin alphabet characters. This is because the matrices are defined as uppercase Latin letters. Any UK or US keyboard will suffice for this. The app will also require a mouse with at least one button. I don't intend to have right click do anything, so only the primary mouse button is required, although getting a single button mouse to even work on modern computers is probably quite a challenge. A separate mouse is not strictly required - a laptop trackpad is equally sufficient.
 
-\subsubsection{Software}
+\subsubsection{Software\label{subsubsection:software}}
 
 Software requirements differ slightly between release and development, although everything that the release environment requires is also required by the development environment. I will require a modern operating system - namely Windows 10 or later, macOS 10.9 \enquote{Mavericks}\footnote{Because Python 3.10 won't compile on any earlier versions of macOS\cite{python-3-10-downloads-page}} or later, or any modern Linux distro\footnote{Specifying a Linux version is practically impossible. Python 3.10 isn't available in many package repositories, but will compile on any modern distro. Qt5 is available in many package repositories and can be compiled on any \texttt{x86} or \texttt{x86\_64} Linux machine with \texttt{gcc} version 5 or later\cite{qt5-linux-build-dependencies}}. Basically, it just requires an operating system that is compatible with Python 3.10 and Qt5, since I'll be using these in the project. Of course, Qt5 will need to be installed on the user's computer, although it's standard pretty much everywhere these days.
 
