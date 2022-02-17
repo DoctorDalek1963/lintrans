@@ -1,9 +1,11 @@
-Welcome to lintrans's documentation!
-====================================
+Welcome to the lintrans docs
+============================
 
-This project aims to provide an easy way to visualize matrices as linear transformations.
-The program allows the user to define and manipulate 2x2 matrices. This is the documentation
-for the underlying library and GUI code.
+This is the backend documentation for lintrans version |release|. It is
+a reference for the library and GUI code. If you want a tutorial on how
+to use the software, that will be available `here`_.
+
+.. _here: https://doctordalek1963.github.io/lintrans/tutorial/index.html
 
 .. toctree::
    :maxdepth: 1

@@ -4,7 +4,7 @@
 # This program is licensed under GNU GPLv3, available here:
 # <https://www.gnu.org/licenses/gpl-3.0.html>
 
-"""The package that supplies type aliases for linear algebra and transformations."""
+"""This package supplies type aliases for linear algebra and transformations."""
 
 from __future__ import annotations
 
