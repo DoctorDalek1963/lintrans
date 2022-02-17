@@ -142,4 +142,23 @@ Python 3.10 won't actually be required for the end user, because I will be compi
 
 In the development environment, I use PyCharm for actually writing my code, and I use a virtual environment to isolate my project dependencies. There are also some development dependencies listed in the file \texttt{dev\_requirements.txt}. They are: \texttt{mypy}, \texttt{pyqt5-stubs}, \texttt{flake8}, \texttt{pycodestyle}, \texttt{pydocstyle}, and \texttt{pytest}. \texttt{mypy} is a static type checker\footnote{Python has weak, dynamic typing with optional type annotations but \texttt{mypy} enforces these static type annotations}; \texttt{pyqt5-stubs} is a collection of type annotations for the PyQt5 API; \texttt{flake8}, \texttt{pycodestyle}, and \texttt{pydocstyle} are all linters; and \texttt{pytest} is a unit testing framework. I use these libraries to make sure my code is good quality and actually working properly during development.
 
+\subsection{Success criteria\label{subsection:success-criteria}}
+
+The main aim of the app is to help teach students about linear transformations. As such, the primary measure of success will be letting teachers get to grips with the app and then asking if they would use it in the classroom or recommend it to students to use at home.
+
+Additionally, the app must fulfil some basic requirements:
+\vspace{-0.3cm}
+\begin{enumerate}
+	\item\label{success-criterion:define-multiple-matrices} It must allow the user to define multiple matrices
+	\item\label{success-criterion:validate-arbitrary-matrix-expressions} It must be able to validate arbitrary matrix expressions
+	\item\label{success-criterion:visualize-any-valid-expression} It must be able to visualize any valid matrix expression
+	\item\label{success-criterion:animate-any-valid-expression} It must be able to animate any valid matrix expression
+\end{enumerate}
+
+Defining multiple matrices is a feature that I thought was lacking from every other solution I researched, and I think it would make the app much easier to use, so I think it's necessary for success. Validating matrix expressions is necessary because if the user tries to render an expression that doesn't make sense, has an undefined matrix, or has the inverse of a singular matrix, then we have to disallow that or else the app will crash.
+
+Visualizing matrix expressions as linear transformations is the core part of the app, so this is definitely a requirement for success. Animating these expressions is also a pretty crucial part of the app, so I would consider this necessary for success.
+
+If the majority of teachers would use or recommend the app and it meets all of these points, then I will consider the app as a whole to be a success.
+
 \end{document}
