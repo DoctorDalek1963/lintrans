@@ -38,12 +38,14 @@ There are actually quite a few web apps designed to help visualize 2D linear tra
 
 \subsubsection{MIT \enquote{Matrix Vector} Mathlet\label{subsubsection:mit-mathlet-matrix-vector}}
 
-\begin{figure}[h]
+\begin{wrapfigure}{R}{0.5\linewidth}
+	\vspace{-1em}
 	\centering
-	\includegraphics[width=0.9\linewidth]{mit-mathlet-matrix-vector}
+	\includegraphics[width=\linewidth]{mit-mathlet-matrix-vector}
 	\caption{The MIT \enquote{Matrix Vector} Mathlet}
 	\label{fig:mit-mathlet-matrix-vector}
-\end{figure}
+	\vspace{-1em}
+\end{wrapfigure}
 
 Arguably the best app that I found was an MIT \enquote{Mathlet} - a simple web app designed to help visualize a maths concept. This one is called \enquote{Matrix Vector}\cite{mit-mathlet-matrix-vector} and allows the user to drag an input vector around the plane and see the corresponding output vector, transformed by a matrix that the user can define, although this definition is finicky since it involves sliders rather than keyboard input.
 
@@ -53,12 +55,14 @@ However, in the comments on this Mathlet, a user called \enquote{David~S.~Bruce}
 
 \subsubsection{Linear Transformation Visualizer\label{subsubsection:shad-io-matvis}}
 
-\begin{figure}[h]
+\begin{wrapfigure}{L}{0.5\linewidth}
+	\vspace{-1em}
 	\centering
 	\includegraphics[width=\linewidth]{shad-io-matvis}
 	\caption{\enquote{Linear Transformation Visualizer} halfway through an animation}
 	\label{fig:shad-io-matvis}
-\end{figure}
+	\vspace{-1em}
+\end{wrapfigure}
 
 Another web app that I found was one simply called \enquote{Linear Transformation Visualizer} by Shad~Sharma\cite{shad-io-matvis}. This one was similarly inspired by 3blue1brown's YouTube series. This app has the ability to render input and output vectors and eigenlines, but it can also render the determinant parallelogram; it allows the user to drag the basis vectors; and it has the option to snap vectors to the background grid, which is quite useful. It also implements a simple form of animation where the tips of the vectors move in straight lines from where they start to where they end, and the animation is controlled by dragging a slider labelled $t$. This isn't particularly intuitive.
 
@@ -66,37 +70,31 @@ I really like the vectors snapping to the grid, the input and output vectors, an
 
 \subsubsection{Desmos app\label{subsubsection:desmos-2d-linear-transformation}}
 
-\begin{figure}[h]
+\begin{wrapfigure}{R}{0.5\linewidth}
+	\vspace{-1em}
 	\centering
 	\includegraphics[width=\linewidth]{desmos-2d-linear-transformation}
 	\caption{The Desmos app halfway through an animation, rendering $f(x) = \frac{\sin^2 x}{x}$ in orange}
 	\label{fig:desmos-2d-linear-transformation}
-\end{figure}
+	\vspace{-1em}
+\end{wrapfigure}
 
-One of the solutions I found was a Desmos app\cite{desmos-2d-linear-transformation}, which was quite hard to use and arguably overcomplicated. Desmos is not designed for this kind of thing - it's designed to graph pure mathematical functions - and it shows here. However, this app brings some really interesting ideas to the table, mainly functions. This app allows you to define custom functions and view them before and after the transformation. This is achieved by treating the functions parametrically as the set of points $(t, f(t))$ and then transforming that coordinate pair by the given matrix and getting a new coordinate.
-\[\begin{pmatrix}
-	a & b\\
-	c & d
-\end{pmatrix}
-\begin{pmatrix}
-	t\\
-	f(t)
-\end{pmatrix} = \begin{pmatrix}
-	at + bf(t)\\
-	ct + df(t)
-\end{pmatrix}\]
+One of the solutions I found was a Desmos app\cite{desmos-2d-linear-transformation}, which was quite hard to use and arguably overcomplicated. Desmos is not designed for this kind of thing - it's designed to graph pure mathematical functions - and it shows here. However, this app brings some really interesting ideas to the table, mainly functions. This app allows you to define custom functions and view them before and after the transformation. This is achieved by treating the functions parametrically as the set of points $(t, f(t))$ and then transforming each coordinate by the given matrix to get a new coordinate.
+
 Desmos does this for every point and then renders the resulting transformed function parametrically. This is a really interesting technique and idea, but I'm not going to use it in my app. I don't think arbitrary functions fit with the linearity of the whole app, and I don't think it's necessary. It's just overcomplicating things, and rendering it on a widget would be tricky, because I'd have to render every point myself, possibly using something like OpenGL. It's just not worth implementing.
 
 Additionally, this Desmos app makes things quite hard to see. It's hard to tell where any of the vectors are - they just get lost in the sea of grid lines. This image also hides some of the extra information. For instance, this image doesn't show the original function $f(x) = \frac{\sin^2 x}{x}$, only the transformed version. This app easily gets quite cluttered. I will give my vectors arrowheads to make them easily identifiable amongst the grid lines.
 
 \subsubsection{Visualizing Linear Transformations\label{subsubsection:geogebra-applet}}
 
-\begin{figure}[h]
+\begin{wrapfigure}{L}{0.5\linewidth}
+	\vspace{-1em}
 	\centering
 	\includegraphics[width=\linewidth]{geogebra-applet}
 	\caption{The GeoGebra applet rendering its default matrix}
 	\label{fig:geogebra-applet}
-\end{figure}
+	%\vspace{-1em}
+\end{wrapfigure}
 
 The last solution that I want to talk about is a GeoGebra applet simply titled \enquote{Visualizing Linear Transformations}\cite{geogebra-applet}. This applet has input and output vectors, original and transformed grid lines, a unit circle, and the letter N. It allows the user to define a matrix as 4 numbers and view the aforementioned N (which the user can translate to anywhere on the grid), the unit circle, the input/output vectors, and the grid lines. It also has the input vector snapping to integer coordinates, but that's a standard part of GeoGebra.
 
