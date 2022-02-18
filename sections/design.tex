@@ -1,0 +1,34 @@
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Problem decomposition\label{subsection:problem-decomposition}}
+
+I have decomposed the problem of visualization as follows:
+\begin{center}
+\begin{tikzpicture}[
+	every node/.style = {rectangle, minimum size = 6mm, very thick, draw=black, font=\ttfamily, align=center},
+	every path/.style = {very thick},
+	level 1/.style = {sibling distance = 30mm, level distance = 22mm},
+	level 2/.style = {sibling distance = 21mm},
+	edge from parent fork down
+]
+\node {Visualize}
+	child {node {Define\\matrices}}
+	child {node {Evaluate\\expressions}
+		child {node {Validate}}
+		child {node {Parse}}
+		child {node {Evaluate}}
+	}
+	child {node {Render\slash animate}};
+\end{tikzpicture}
+\end{center}
+Defining matrices is key to visualization because we need to have matrices to actually visualize. This is a key part of the app, and the user will be able to define multiple separate matrices.
+
+Evaluating expressions is another key part of the app and can be further broken down into validating, parsing, and actually evaluating. Validating an expression simply consists of checking that it adheres to a set of syntax rules for matrix expressions, and that it only contains matrices which have already been defined. Parsing consists of breaking an expression down into tokens, which are then much easier to evaluate. Evaluating these tokens is then just a series of simple operations, which will produce a final matrix at the end.
+
+Rendering and animating will likely be the largest part in reality, but I've chosen not to decompose it any further here, because that belongs more in the solution decomposition section. Rendering and animating means taking the evaluated matrix expression and rendering or animating it as a linear transformation.
+
+I have deliberately broken this problem down into parts that can be easily translated into modules in my eventual coded solution. This is simply to ease the design and development process, since now I already know my basic project structure. This problem could've been broken down into the parts that the user will directly interact with, but that would be less useful to me when actually starting development, since I would then have to decompose the problem differently to write the actual code.
+
+\end{document}
