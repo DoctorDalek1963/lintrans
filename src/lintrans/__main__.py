@@ -6,7 +6,10 @@
 # This program is licensed under GNU GPLv3, available here:
 # <https://www.gnu.org/licenses/gpl-3.0.html>
 
-"""A very simple script to run the GUI."""
+"""This module very simply runs the app by calling :func:`lintrans.gui.main_window.main`.
+
+This allows the user to run the app like ``python -m lintrans`` from the command line.
+"""
 
 import sys
 
