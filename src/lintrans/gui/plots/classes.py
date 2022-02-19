@@ -17,7 +17,7 @@ from PyQt5.QtCore import QPoint, QRectF, Qt
 from PyQt5.QtGui import QBrush, QColor, QPainter, QPainterPath, QPaintEvent, QPen, QWheelEvent
 from PyQt5.QtWidgets import QWidget
 
-from lintrans.typing import MatrixType
+from lintrans.typing_ import MatrixType
 
 
 class BackgroundPlot(QWidget):

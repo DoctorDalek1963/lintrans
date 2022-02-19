@@ -17,7 +17,7 @@ from typing import Any, Optional, Union
 import numpy as np
 
 from .parse import parse_matrix_expression, validate_matrix_expression
-from lintrans.typing import is_matrix_type, MatrixType
+from lintrans.typing_ import is_matrix_type, MatrixType
 
 
 class MatrixWrapper:

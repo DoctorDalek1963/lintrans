@@ -24,7 +24,7 @@ from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox
 
 from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
-from lintrans.typing import MatrixType
+from lintrans.typing_ import MatrixType
 from .dialogs import DefineAsAnExpressionDialog, DefineDialog, DefineNumericallyDialog, DefineVisuallyDialog
 from .dialogs.settings import DisplaySettingsDialog
 from .plots import VisualizeTransformationWidget

@@ -14,7 +14,7 @@ Subpackages
 
    lintrans.gui
    lintrans.matrices
-   lintrans.typing
+   lintrans.typing_
 
 Submodules
 ----------

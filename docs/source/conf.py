@@ -35,7 +35,8 @@ release = lintrans.__version__
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc'
+    'sphinx.ext.autodoc',
+    'sphinx.ext.intersphinx'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -80,8 +81,12 @@ autodoc_default_options = {
 }
 
 autodoc_type_aliases = {
-    'MatrixType': 'lintrans.typing.MatrixType',
-    'MatrixParseList': 'lintrans.typing.MatrixParseList'
+    'MatrixType': 'lintrans.typing_.MatrixType',
+    'MatrixParseList': 'lintrans.typing_.MatrixParseList'
 }
 
 autodoc_class_signature = 'separated'
+
+# -- Options for intersphinx -------------------------------------------------
+
+intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}

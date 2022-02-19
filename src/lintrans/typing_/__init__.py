@@ -4,7 +4,13 @@
 # This program is licensed under GNU GPLv3, available here:
 # <https://www.gnu.org/licenses/gpl-3.0.html>
 
-"""This package supplies type aliases for linear algebra and transformations."""
+"""This package supplies type aliases for linear algebra and transformations.
+
+.. note::
+   This package is called ``typing_`` and not ``typing`` to avoid name collisions with the
+   builtin :external:mod:`typing`. I don't quite know how this collision occurs, but renaming
+   this module fixed the problem.
+"""
 
 from __future__ import annotations
 
@@ -36,6 +42,6 @@ def is_matrix_type(matrix: Any) -> TypeGuard[NDArray[(2, 2), Float]]:
 
     .. note::
        This function is a TypeGuard, meaning if it returns True, then the
-       passed value must be a :attr:`lintrans.typing.MatrixType`.
+       passed value must be a :attr:`lintrans.typing_.MatrixType`.
     """
     return isinstance(matrix, ndarray) and matrix.shape == (2, 2)

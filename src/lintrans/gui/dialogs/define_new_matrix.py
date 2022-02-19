@@ -18,7 +18,7 @@ from PyQt5.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QShortcut, QSizeP
 from lintrans.gui.plots import DefineVisuallyWidget
 from lintrans.gui.validate import MatrixExpressionValidator
 from lintrans.matrices import MatrixWrapper
-from lintrans.typing import MatrixType
+from lintrans.typing_ import MatrixType
 
 ALPHABET_NO_I = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 

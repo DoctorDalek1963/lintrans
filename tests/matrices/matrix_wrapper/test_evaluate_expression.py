@@ -5,7 +5,7 @@ from numpy import linalg as la
 import pytest
 
 from lintrans.matrices import MatrixWrapper, create_rotation_matrix
-from lintrans.typing import MatrixType
+from lintrans.typing_ import MatrixType
 
 from conftest import get_test_wrapper
 

@@ -3,7 +3,7 @@
 import pytest
 
 from lintrans.matrices.parse import parse_matrix_expression, validate_matrix_expression
-from lintrans.typing import MatrixParseList
+from lintrans.typing_ import MatrixParseList
 
 valid_inputs: list[str] = [
     'A', 'AB', '3A', '1.2A', '-3.4A', 'A^2', 'A^-1', 'A^{-1}',

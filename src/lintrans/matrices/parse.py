@@ -11,7 +11,7 @@ from __future__ import annotations
 import re
 from typing import Pattern
 
-from lintrans.typing import MatrixParseList
+from lintrans.typing_ import MatrixParseList
 
 
 class MatrixParseError(Exception):
@@ -62,7 +62,7 @@ def validate_matrix_expression(expression: str) -> bool:
 
 
 def parse_matrix_expression(expression: str) -> MatrixParseList:
-    """Parse the matrix expression and return a :data:`lintrans.typing.MatrixParseList`.
+    """Parse the matrix expression and return a :data:`lintrans.typing_.MatrixParseList`.
 
     :Example:
 
@@ -81,7 +81,7 @@ def parse_matrix_expression(expression: str) -> MatrixParseList:
 
     :param str expression: The expression to be parsed
     :returns: A list of parsed components
-    :rtype: :data:`lintrans.typing.MatrixParseList`
+    :rtype: :data:`lintrans.typing_.MatrixParseList`
     """
     # Remove all whitespace
     expression = re.sub(r'\s', '', expression)

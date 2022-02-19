@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from lintrans.matrices import create_rotation_matrix
-from lintrans.typing import MatrixType
+from lintrans.typing_ import MatrixType
 
 angles_and_matrices: list[tuple[float, float, MatrixType]] = [
     (0, 0, np.array([[1, 0], [0, 1]])),
