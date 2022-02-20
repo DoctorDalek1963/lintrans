@@ -53,9 +53,11 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="lintrans.matrices.html">lintrans.matrices package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="lintrans.typing.html">lintrans.typing package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lintrans.typing_.html">lintrans.typing_ package</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="lintrans.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lintrans.html#module-lintrans.__main__">lintrans.__main__ module</a></li>
 </ul>
 </li>
 </ul>
@@ -100,7 +102,7 @@
 <p>This module provides an abstract <a class="reference internal" href="#lintrans.gui.dialogs.define_new_matrix.DefineDialog" title="lintrans.gui.dialogs.define_new_matrix.DefineDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefineDialog</span></code></a> class and subclasses, allowing definition of new matrices.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.is_valid_float">
-<span class="sig-prename descclassname"><span class="pre">lintrans.gui.dialogs.define_new_matrix.</span></span><span class="sig-name descname"><span class="pre">is_valid_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.is_valid_float" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">lintrans.gui.dialogs.define_new_matrix.</span></span><span class="sig-name descname"><span class="pre">is_valid_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.is_valid_float" title="Permalink to this definition"></a></dt>
 <dd><p>Check if the string is a valid float (or anything that can be cast to a float, such as an int).</p>
 <p>This function simply checks that <code class="docutils literal notranslate"><span class="pre">float(string)</span></code> doesn’t raise an error.</p>
 <div class="admonition note">
@@ -109,7 +111,7 @@
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>string</strong> (<em>str</em>) – The string to check</p>
+<dd class="field-odd"><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The string to check</p>
 </dd>
 <dt class="field-even">Returns bool</dt>
 <dd class="field-even"><p>Whether the string is a valid float</p>
@@ -119,13 +121,13 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.round_float">
-<span class="sig-prename descclassname"><span class="pre">lintrans.gui.dialogs.define_new_matrix.</span></span><span class="sig-name descname"><span class="pre">round_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.round_float" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">lintrans.gui.dialogs.define_new_matrix.</span></span><span class="sig-name descname"><span class="pre">round_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.round_float" title="Permalink to this definition"></a></dt>
 <dd><p>Round a floating point number to a given number of decimal places for pretty printing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>num</strong> (<em>float</em>) – The number to round</p></li>
-<li><p><strong>precision</strong> (<em>int</em>) – The number of decimal places to round to</p></li>
+<li><p><strong>num</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – The number to round</p></li>
+<li><p><strong>precision</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The number of decimal places to round to</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns str</dt>
@@ -165,19 +167,19 @@ and a every superclass of a class must have the same metaclass, and <code class=
 
 <dl class="py property">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineDialog.selected_letter">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">selected_letter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineDialog.selected_letter" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">selected_letter</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineDialog.selected_letter" title="Permalink to this definition"></a></dt>
 <dd><p>Return the letter currently selected in the combo box.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineDialog.update_confirm_button">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_confirm_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineDialog.update_confirm_button" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_confirm_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineDialog.update_confirm_button" title="Permalink to this definition"></a></dt>
 <dd><p>Enable the confirm button if it should be enabled, else, disable it.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineDialog.load_matrix">
-<span class="sig-name descname"><span class="pre">load_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineDialog.load_matrix" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">load_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineDialog.load_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>Load the selected matrix into the dialog.</p>
 <p>This method is optionally able to be overridden. If it is not overridden,
 then no matrix is loaded when selecting a name.</p>
@@ -188,7 +190,7 @@ define that in the constructor of every subclass.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineDialog.confirm_matrix">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">confirm_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineDialog.confirm_matrix" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">confirm_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineDialog.confirm_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>Confirm the inputted matrix and assign it.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -216,7 +218,7 @@ define that in the constructor of every subclass.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.update_confirm_button">
-<span class="sig-name descname"><span class="pre">update_confirm_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.update_confirm_button" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update_confirm_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.update_confirm_button" title="Permalink to this definition"></a></dt>
 <dd><p>Enable the confirm button.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -227,13 +229,13 @@ so it’s got an empty body. It’s only here because we need to implement the a
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.load_matrix">
-<span class="sig-name descname"><span class="pre">load_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.load_matrix" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">load_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.load_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>Show the selected matrix on the plot. If the matrix is None, show the identity.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.confirm_matrix">
-<span class="sig-name descname"><span class="pre">confirm_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.confirm_matrix" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">confirm_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog.confirm_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>Confirm the matrix that’s been defined visually.</p>
 </dd></dl>
 
@@ -257,19 +259,19 @@ so it’s got an empty body. It’s only here because we need to implement the a
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineNumericallyDialog.update_confirm_button">
-<span class="sig-name descname"><span class="pre">update_confirm_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineNumericallyDialog.update_confirm_button" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update_confirm_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineNumericallyDialog.update_confirm_button" title="Permalink to this definition"></a></dt>
 <dd><p>Enable the confirm button if there are valid floats in every box.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineNumericallyDialog.load_matrix">
-<span class="sig-name descname"><span class="pre">load_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineNumericallyDialog.load_matrix" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">load_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineNumericallyDialog.load_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>If the selected matrix is defined, load its values into the boxes.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineNumericallyDialog.confirm_matrix">
-<span class="sig-name descname"><span class="pre">confirm_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineNumericallyDialog.confirm_matrix" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">confirm_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineNumericallyDialog.confirm_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>Confirm the matrix in the boxes and assign it to the name in the combo box.</p>
 </dd></dl>
 
@@ -293,19 +295,19 @@ so it’s got an empty body. It’s only here because we need to implement the a
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineAsAnExpressionDialog.update_confirm_button">
-<span class="sig-name descname"><span class="pre">update_confirm_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineAsAnExpressionDialog.update_confirm_button" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update_confirm_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineAsAnExpressionDialog.update_confirm_button" title="Permalink to this definition"></a></dt>
 <dd><p>Enable the confirm button if the matrix expression is valid in the wrapper.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineAsAnExpressionDialog.load_matrix">
-<span class="sig-name descname"><span class="pre">load_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineAsAnExpressionDialog.load_matrix" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">load_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineAsAnExpressionDialog.load_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>If the selected matrix is defined an expression, load that expression into the box.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineAsAnExpressionDialog.confirm_matrix">
-<span class="sig-name descname"><span class="pre">confirm_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineAsAnExpressionDialog.confirm_matrix" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">confirm_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineAsAnExpressionDialog.confirm_matrix" title="Permalink to this definition"></a></dt>
 <dd><p>Evaluate the matrix expression and assign its value to the name in the combo box.</p>
 </dd></dl>
 
@@ -328,13 +330,13 @@ so it’s got an empty body. It’s only here because we need to implement the a
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.settings.SettingsDialog.load_settings">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.settings.SettingsDialog.load_settings" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.settings.SettingsDialog.load_settings" title="Permalink to this definition"></a></dt>
 <dd><p>Load the current settings into the widgets.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.settings.SettingsDialog.confirm_settings">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">confirm_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.settings.SettingsDialog.confirm_settings" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">confirm_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.settings.SettingsDialog.confirm_settings" title="Permalink to this definition"></a></dt>
 <dd><p>Confirm the settings chosen in the dialog.</p>
 </dd></dl>
 
@@ -358,26 +360,26 @@ so it’s got an empty body. It’s only here because we need to implement the a
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.settings.DisplaySettingsDialog.load_settings">
-<span class="sig-name descname"><span class="pre">load_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.settings.DisplaySettingsDialog.load_settings" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">load_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.settings.DisplaySettingsDialog.load_settings" title="Permalink to this definition"></a></dt>
 <dd><p>Load the current display settings into the widgets.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.settings.DisplaySettingsDialog.confirm_settings">
-<span class="sig-name descname"><span class="pre">confirm_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.settings.DisplaySettingsDialog.confirm_settings" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">confirm_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.settings.DisplaySettingsDialog.confirm_settings" title="Permalink to this definition"></a></dt>
 <dd><p>Build a <a class="reference internal" href="lintrans.gui.html#lintrans.gui.settings.DisplaySettings" title="lintrans.gui.settings.DisplaySettings"><code class="xref py py-class docutils literal notranslate"><span class="pre">lintrans.gui.settings.DisplaySettings</span></code></a> object and assign it.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.settings.DisplaySettingsDialog.update_gui">
-<span class="sig-name descname"><span class="pre">update_gui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.settings.DisplaySettingsDialog.update_gui" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update_gui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.settings.DisplaySettingsDialog.update_gui" title="Permalink to this definition"></a></dt>
 <dd><p>Update the GUI according to other widgets in the GUI.</p>
 <p>For example, this method updates which checkboxes are enabled based on the values of other checkboxes.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.settings.DisplaySettingsDialog.keyPressEvent">
-<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QKeyEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#lintrans.gui.dialogs.settings.DisplaySettingsDialog.keyPressEvent" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PyQt5.QtGui.QKeyEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.settings.DisplaySettingsDialog.keyPressEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Handle a <code class="docutils literal notranslate"><span class="pre">QKeyEvent</span></code> by manually activating toggling checkboxes.</p>
 <p>Qt handles these shortcuts automatically and allows the user to do <code class="docutils literal notranslate"><span class="pre">Alt</span> <span class="pre">+</span> <span class="pre">Key</span></code>
 to activate a simple shortcut defined with <code class="docutils literal notranslate"><span class="pre">&amp;</span></code>. However, I like to be able to
