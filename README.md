@@ -46,7 +46,7 @@ page.
 
 ## Info
 
-This project is licensed under GNU GPL v3 and is copyright Dyson, 2021. That means that anyone can use the
+This project is licensed under GNU GPL v3 and is copyright D. Dyson, 2021. That means that anyone can use the
 project and view or edit the source code for free, but I provide no warranty and take no liability. It also
 means that if you make any modifications to the source code, then it must remain open source and licensed under
 GPL (v3 or later). It also means that no-one can close off the source code or charge money for this program. It

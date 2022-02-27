@@ -22,7 +22,7 @@ import lintrans
 # -- Project information -----------------------------------------------------
 
 project = 'lintrans'
-author = 'Dyson (DoctorDalek1963)'
+author = 'D. Dyson (DoctorDalek1963)'
 copyright = f'2021 - 2022, {author}'
 
 # The full version, including alpha/beta/rc tags
