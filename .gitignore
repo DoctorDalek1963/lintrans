@@ -14,3 +14,7 @@ venv/
 
 # This allows me to build the docs locally
 docs/build/
+
+# This allows me to have the graphs locally but always recompile them for gh-pages
+*.gv
+docs/source/*imports.png
