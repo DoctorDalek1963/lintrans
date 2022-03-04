@@ -29,12 +29,14 @@ jobs:
       run: |
         pip install pylint
         shopt -s globstar
+        pwd
+        ls -la docs/source
         pylint --exit-zero --int-import-graph=docs/source/int-imports.png src/lintrans/**/*.py
         mkdir docs/source/_static
         ls -la docs/source
 
     - name: Build docs
-      run: cd docs/ && make html && cd ..
+      run: cd docs/ && make html && cd .. && ls -la docs/build/html
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3.8.0
