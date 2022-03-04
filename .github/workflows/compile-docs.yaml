@@ -24,11 +24,11 @@ jobs:
         pip install --upgrade pip
         pip install -r requirements.txt -r docs/docs_requirements.txt
         pip install -e .
+        pip install pylint
+        sudo apt-get install -y graphviz
 
     - name: Create pylint import graphs
       run: |
-        pip install pylint
-        sudo apt-get install -y graphviz
         shopt -s globstar
         pylint --rcfile=/dev/null --exit-zero --reports=y --disable=all --enable=imports,RP0402 --int-import-graph=docs/source/int-imports.png src/lintrans/**/*.py
 
