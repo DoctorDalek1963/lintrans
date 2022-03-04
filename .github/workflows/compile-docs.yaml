@@ -30,6 +30,8 @@ jobs:
         pip install pylint
         shopt -s globstar
         pylint --exit-zero --int-import-graph=docs/source/int-imports.png src/lintrans/**/*.py
+        mkdir docs/source/_static
+        ls -la docs/source
 
     - name: Build docs
       run: cd docs/ && make html && cd ..
