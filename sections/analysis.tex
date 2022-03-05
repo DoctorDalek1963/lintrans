@@ -154,12 +154,15 @@ Additionally, the app must fulfil some basic requirements:
 	\item\label{success-criterion:render-any-valid-expression} It must be able to render any valid matrix expression
 	\item\label{success-criterion:animate-any-valid-expression} It must be able to animate any valid matrix expression
 	\item\label{success-criterion:display-matrix-info} It must be able to display information about the currently rendered transformation (determinant, eigenlines, etc.)
+	\item\label{success-criterion:save-and-load-sessions} It must be able to save and load sessions (defined matrices, display settings, etc.)
 	\item\label{success-criterion:transform-polygons} It must allow the user to define and transform arbitrary polygons
 \end{enumerate}
 
 Defining multiple matrices is a feature that I thought was lacking from every other solution I researched, and I think it would make the app much easier to use, so I think it's necessary for success. Validating matrix expressions is necessary because if the user tries to render an expression that doesn't make sense, has an undefined matrix, or contains the inverse of a singular matrix, then we have to disallow that or else the app will crash.
 
 Visualizing matrix expressions as linear transformations is the core part of the app, so basic rendering of them is definitely a requirement for success. Animating these expressions is also a pretty crucial part of the app, so I would consider this necessary for success. Displaying the information of a matrix transformation is also very useful for building understanding, so I would consider this needed to succeed.
+
+Saving and loading isn't strictly necessary for success, but it is a standard part of many apps, so will likely be expected by users, and it will benefit the app by allowing teachers to plan lessons in advance and save the matrices they've defined for that lesson to be loaded later.
 
 Transforming polygons is the lowest priority item on this list and will likely be implemented last, but it would definitely benefit learning. I wouldn't consider it necessary for success, but it would be very good to include, and it's certainly a feature that I want to have.
 
