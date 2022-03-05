@@ -35,7 +35,7 @@ class BackgroundPlot(QWidget):
        and a every superclass of a class must have the same metaclass, and ``QWidget`` is not an abstract class.
     """
 
-    default_grid_spacing: int = 75
+    default_grid_spacing: int = 85
 
     def __init__(self, *args, **kwargs):
         """Create the widget and setup backend stuff for rendering.
@@ -166,9 +166,9 @@ class VectorGridPlot(BackgroundPlot):
         self.point_i: tuple[float, float] = (1., 0.)
         self.point_j: tuple[float, float] = (0., 1.)
 
-        self.colour_i = QColor('#13cf00')
-        self.colour_j = QColor('#0808d8')
-        self.colour_eigen = QColor('#e90000')
+        self.colour_i = QColor('#0808d8')
+        self.colour_j = QColor('#e90000')
+        self.colour_eigen = QColor('#13cf00')
         self.colour_text = QColor('#000000')
 
         self.width_vector_line = 1.8
