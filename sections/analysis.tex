@@ -134,6 +134,8 @@ I will also require a keyboard with all standard Latin alphabet characters. This
 
 \subsubsection{Software\label{subsubsection:software}}
 
+% TODO: Find actual Windows version requirement
+
 Software requirements differ slightly between release and development, although everything that the release environment requires is also required by the development environment. I will require a modern operating system - namely Windows 10 or later, macOS 10.9 \enquote{Mavericks}\footnote{Python 3.10 won't compile on any earlier versions of macOS\cite{python-3-10-downloads-page}} or later, or any modern Linux distro\footnote{Specifying a Linux version is practically impossible. Python 3.10 isn't available in many package repositories, but will compile on any modern distro. Qt5 is available in many package repositories and can be compiled on any \texttt{x86} or \texttt{x86\_64} generic Linux machine with \texttt{gcc} version 5 or later\cite{qt5-linux-build-dependencies}}. Basically, it just requires an operating system that is compatible with Python 3.10 and Qt5, since I'll be using these in the project. Of course, Qt5 will need to be installed on the user's computer, although it's standard pretty much everywhere these days.
 
 Python 3.10 won't actually be required for the end user, because I will be compiling the app into a stand-alone binary executable for release, and this binary will contain the required Python runtime and dependencies. However, if the user wishes to download and run the source code themself, then they will need Python 3.10 and the package dependencies: \texttt{numpy}, \texttt{nptyping}, and \texttt{pyqt5}. These can be automatically installed with the command \texttt{python -m pip install -r requirements.txt} from the root of the repository. \texttt{numpy} is a maths library that allows for fast matrix maths; \texttt{nptyping} is used by \texttt{mypy} for type-checking and isn't actually a runtime dependency but the imports in the \texttt{typing} module fail if it's not installed at runtime; and \texttt{pyqt5} is a library that just allows interop between Python and Qt5, which is originally a C++ library.
@@ -159,8 +161,8 @@ Defining multiple matrices is a feature that I thought was lacking from every ot
 
 Visualizing matrix expressions as linear transformations is the core part of the app, so basic rendering of them is definitely a requirement for success. Animating these expressions is also a pretty crucial part of the app, so I would consider this necessary for success. Displaying the information of a matrix transformation is also very useful for building understanding, so I would consider this needed to succeed.
 
-Transforming polygons is probably the lowest priority item on this list, but it would greatly benefit learning, so I would consider it necessary for success.
+Transforming polygons is the lowest priority item on this list and will likely be implemented last, but it would definitely benefit learning. I wouldn't consider it necessary for success, but it would be very good to include, and it's certainly a feature that I want to have.
 
-If the majority of teachers would use or recommend the app and it meets all of these points, then I will consider the app as a whole to be a success.
+If the majority of teachers would use and/or recommend the app and it meets all of these points, then I will consider the app as a whole to be a success.
 
 \end{document}
