@@ -14,19 +14,16 @@ I have decomposed the problem of visualization as follows:
 	vertical/.style={grow=down, xshift=1em, anchor=west, edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}, level distance={#1*6ex}},
 	level 1/.style={sibling distance=9.5em},
 ]
-\node [root] {Visualize}
-	child [grow=down, level distance=5ex, shape=coordinate] {
-		child [grow=down, level distance=-2ex] [edge from parent path={(\tikzparentnode.south) -| (\tikzchildnode.north)}]
-		child {node {Define\\matrices}}
-		child {node {Evaluate\\expressions}
-			child [vertical=1] {node [module] {Validate}}
-			child [vertical=2] {node [module] {Parse}}
-			child [vertical=3] {node [module] {Compute}}
-		}
-		child {node {Render\slash animate}
-			child [vertical=1] {node [module] {Evaluate\\positions}}
-			child [vertical=2.5] {node [module] {Render\\widget}}
-		}
+\node [root] {Visualize} [grow=down, level distance=9ex] [edge from parent fork down]
+	child {node {Define\\matrices}}
+	child {node {Evaluate\\expressions}
+		child [vertical=1] {node [module] {Validate}}
+		child [vertical=2] {node [module] {Parse}}
+		child [vertical=3] {node [module] {Compute}}
+	}
+	child {node {Render\slash animate}
+		child [vertical=1] {node [module] {Evaluate\\positions}}
+		child [vertical=2.5] {node [module] {Render\\widget}}
 	};
 \end{tikzpicture}
 \end{center}

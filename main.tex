@@ -10,7 +10,8 @@
 \usepackage{graphicx}
 \graphicspath{{./images/}}
 
-\usepackage{wrapfig}
+\usepackage{wrapfig}  % Allow for wrapping text around figures
+\usepackage[bottom]{footmisc}  % Force footnotes to bottom of page
 
 \usepackage{fontspec}
 \setmonofont[Scale=MatchLowercase]{Hack}
@@ -19,7 +20,7 @@
 \usepackage[backend=biber, sorting=none, style=numeric]{biblatex}
 \addbibresource{references.bib}
 
-\usepackage[hidelinks]{hyperref}  % Easy cross-referencing
+\usepackage[hidelinks]{hyperref}  % Easy cross-referencing, but without ugly highlighting
 
 \hypersetup{
 	pdftitle=lintrans,
