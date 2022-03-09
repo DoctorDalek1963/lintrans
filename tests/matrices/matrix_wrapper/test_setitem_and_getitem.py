@@ -3,11 +3,14 @@
 import numpy as np
 from numpy import linalg as la
 import pytest
+from typing import Any
 
 from lintrans.matrices import MatrixWrapper
 from lintrans.typing_ import MatrixType
 
 valid_matrix_names = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+invalid_matrix_names = ['bad name', '123456', 'Th15 Is an 1nV@l1D n@m3', 'abc', 'a']
+
 test_matrix: MatrixType = np.array([[1, 2], [4, 3]])
 
 
@@ -21,12 +24,9 @@ def test_basic_get_matrix(new_wrapper: MatrixWrapper) -> None:
 
 def test_get_name_error(new_wrapper: MatrixWrapper) -> None:
     """Test that MatrixWrapper().__getitem__() raises a NameError if called with an invalid name."""
-    with pytest.raises(NameError):
-        _ = new_wrapper['bad name']
-        _ = new_wrapper['123456']
-        _ = new_wrapper['Th15 Is an 1nV@l1D n@m3']
-        _ = new_wrapper['abc']
-        _ = new_wrapper['a']
+    for name in invalid_matrix_names:
+        with pytest.raises(NameError):
+            _ = new_wrapper[name]
 
 
 def test_basic_set_matrix(new_wrapper: MatrixWrapper) -> None:
@@ -51,8 +51,14 @@ def test_set_expression(test_wrapper: MatrixWrapper) -> None:
 
     with pytest.raises(TypeError):
         test_wrapper['U'] = 'A+1'
+
+    with pytest.raises(TypeError):
         test_wrapper['V'] = 'K'
+
+    with pytest.raises(TypeError):
         test_wrapper['W'] = 'L^2'
+
+    with pytest.raises(TypeError):
         test_wrapper['X'] = 'M^-1'
 
 
@@ -127,24 +133,26 @@ def test_set_identity_error(new_wrapper: MatrixWrapper) -> None:
 
 def test_set_name_error(new_wrapper: MatrixWrapper) -> None:
     """Test that MatrixWrapper().__setitem__() raises a NameError when trying to assign to an invalid name."""
-    with pytest.raises(NameError):
-        new_wrapper['bad name'] = test_matrix
-        new_wrapper['123456'] = test_matrix
-        new_wrapper['Th15 Is an 1nV@l1D n@m3'] = test_matrix
-        new_wrapper['abc'] = test_matrix
-        new_wrapper['a'] = test_matrix
+    for name in invalid_matrix_names:
+        with pytest.raises(NameError):
+            new_wrapper[name] = test_matrix
 
 
 def test_set_type_error(new_wrapper: MatrixWrapper) -> None:
     """Test that MatrixWrapper().__setitem__() raises a TypeError when trying to set a non-matrix."""
-    with pytest.raises(TypeError):
-        new_wrapper['M'] = 12
-        new_wrapper['M'] = [1, 2, 3, 4, 5]
-        new_wrapper['M'] = [[1, 2], [3, 4]]
-        new_wrapper['M'] = True
-        new_wrapper['M'] = 24.3222
-        new_wrapper['M'] = 'This is totally a matrix, I swear'
-        new_wrapper['M'] = MatrixWrapper
-        new_wrapper['M'] = MatrixWrapper()
-        new_wrapper['M'] = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-        new_wrapper['M'] = np.eye(100)
+    invalid_values: list[Any] = [
+                                 12,
+                                 [1, 2, 3, 4, 5],
+                                 [[1, 2], [3, 4]],
+                                 True,
+                                 24.3222,
+                                 'This is totally a matrix, I swear',
+                                 MatrixWrapper,
+                                 MatrixWrapper(),
+                                 np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
+                                 np.eye(100)
+                                 ]
+
+    for value in invalid_values:
+        with pytest.raises(TypeError):
+            new_wrapper['M'] = value

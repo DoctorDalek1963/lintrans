@@ -216,19 +216,12 @@ def test_complicated_expressions(test_wrapper: MatrixWrapper) -> None:
 
 def test_value_errors(test_wrapper: MatrixWrapper) -> None:
     """Test that evaluate_expression() raises a ValueError for any malformed input."""
-    with pytest.raises(ValueError):
-        test_wrapper.evaluate_expression('')
-        test_wrapper.evaluate_expression('+')
-        test_wrapper.evaluate_expression('-')
-        test_wrapper.evaluate_expression('This is not a valid expression')
-        test_wrapper.evaluate_expression('3+4')
-        test_wrapper.evaluate_expression('A+2')
-        test_wrapper.evaluate_expression('A^')
-        test_wrapper.evaluate_expression('^2')
-        test_wrapper.evaluate_expression('A^-')
-        test_wrapper.evaluate_expression('At')
-        test_wrapper.evaluate_expression('A^t')
-        test_wrapper.evaluate_expression('3^2')
+    invalid_expressions = ['', '+', '-', 'This is not a valid expression', '3+4',
+                           'A+2', 'A^', '^2', 'A^-', 'At', 'A^t', '3^2']
+
+    for expression in invalid_expressions:
+        with pytest.raises(ValueError):
+            test_wrapper.evaluate_expression(expression)
 
 
 def test_linalgerror() -> None:
@@ -252,6 +245,8 @@ def test_linalgerror() -> None:
 
     with pytest.raises(np.linalg.LinAlgError):
         wrapper.evaluate_expression('A^-1')
+
+    with pytest.raises(np.linalg.LinAlgError):
         wrapper.evaluate_expression('B^-1')
 
     assert (wrapper['A'] == matrix_a).all()
