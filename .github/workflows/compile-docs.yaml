@@ -2,7 +2,8 @@ name: Compile docs for gh-pages
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   compile-docs:

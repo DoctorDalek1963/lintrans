@@ -2,6 +2,9 @@ name: Compile and release
 
 on:
   push:
+    branches:
+      - main
+
     tags:
       - 'v*.*.*'
 
