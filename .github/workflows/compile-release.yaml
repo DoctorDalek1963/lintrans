@@ -79,6 +79,10 @@ jobs:
           pip install -e .
           pip install pyinstaller
 
+      - name: Install UPX
+        if: runner.os == 'Linux'
+        run: sudo apt install upx-ucl
+
       - name: Compile
         run: pyinstaller --onefile --windowed --distpath=./dist --name lintrans-${{ runner.os }}-${{ env.GITHUB_REF_NAME }} src/lintrans/__main__.py
 
