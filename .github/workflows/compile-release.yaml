@@ -86,7 +86,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.os }}-binary
-          path: dist/main*
+          path: dist/lintrans*
 
   publish:
     needs: compile
@@ -127,9 +127,9 @@ jobs:
           prerelease: false
           draft: true  # I'll manually add the title and description when the draft is online
           files: |
-            dist/main-Windows.exe
-            dist/main-macOS
-            dist/main-Linux
+            dist/lintrans-Windows.exe
+            dist/lintrans-macOS
+            dist/lintrans-Linux
 
       - name: Upload binaries (pre-release)
         if: steps.checkalpha.outputs.isalpha == 1
@@ -139,6 +139,6 @@ jobs:
           prerelease: true
           draft: true  # I'll manually add the title and description when the draft is online
           files: |
-            dist/main-Windows.exe
-            dist/main-macOS
-            dist/main-Linux
+            dist/lintrans-Windows.exe
+            dist/lintrans-macOS
+            dist/lintrans-Linux
