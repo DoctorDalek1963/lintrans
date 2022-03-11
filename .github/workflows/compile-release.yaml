@@ -84,9 +84,7 @@ jobs:
         run: sudo apt install upx-ucl
 
       - name: Compile
-        run: |
-          filename="lintrans-${{ runner.os }}-$(echo $GITHUB_REF | grep -Po -- 'v.*$')"
-          pyinstaller --onefile --windowed --distpath=./dist --name $filename src/lintrans/__main__.py
+        run: pyinstaller --onefile --windowed --distpath=./dist --name lintrans-${{ runner.os }}-$GITHUB_REF_NAME src/lintrans/__main__.py
         shell: bash
 
       - name: Upload artifact
