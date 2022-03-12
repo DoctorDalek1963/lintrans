@@ -451,7 +451,7 @@ class LintransMainWindow(QMainWindow):
         The class for the desired dialog is passed as an argument. We create an
         instance of this class and the dialog is opened asynchronously and modally
         (meaning it blocks interaction with the main window) with the proper method
-        connected to the ``dialog.finished`` slot.
+        connected to the ``dialog.accepted`` signal.
 
         .. note:: ``dialog_class`` must subclass :class:`lintrans.gui.dialogs.define_new_matrix.DefineDialog`.
 
@@ -465,10 +465,8 @@ class LintransMainWindow(QMainWindow):
         # .open() is asynchronous and doesn't spawn a new event loop, but the dialog is still modal (blocking)
         dialog.open()
 
-        # So we have to use the finished slot to call a method when the user accepts the dialog
-        # If the user rejects the dialog, this matrix_wrapper will be the same as the current one, because we copied it
-        # So we don't care, we just assign the wrapper anyway
-        dialog.finished.connect(self.assign_matrix_wrapper)
+        # So we have to use the accepted signal to call a method when the user accepts the dialog
+        dialog.accepted.connect(self.assign_matrix_wrapper)
 
     @pyqtSlot()
     def assign_matrix_wrapper(self) -> None:
@@ -482,7 +480,7 @@ class LintransMainWindow(QMainWindow):
         """Open the dialog to change the display settings."""
         dialog = DisplaySettingsDialog(self.plot.display_settings, self)
         dialog.open()
-        dialog.finished.connect(lambda: self.assign_display_settings(dialog.display_settings))
+        dialog.accepted.connect(lambda: self.assign_display_settings(dialog.display_settings))
 
     @pyqtSlot(DisplaySettings)
     def assign_display_settings(self, display_settings: DisplaySettings) -> None:
@@ -510,6 +508,7 @@ class LintransMainWindow(QMainWindow):
 
         dialog.open()
 
+        # This is `finished` rather than `accepted` because we want to update the buttons no matter what
         dialog.finished.connect(self.update_render_buttons)
 
     def is_matrix_too_big(self, matrix: MatrixType) -> bool:
