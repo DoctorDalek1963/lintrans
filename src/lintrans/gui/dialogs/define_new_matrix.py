@@ -12,6 +12,7 @@ import abc
 
 from numpy import array
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QDoubleValidator, QKeySequence
 from PyQt5.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
@@ -135,9 +136,11 @@ class DefineDialog(QDialog):
         return str(self.combobox_letter.currentText())
 
     @abc.abstractmethod
+    @pyqtSlot()
     def update_confirm_button(self) -> None:
         """Enable the confirm button if it should be enabled, else, disable it."""
 
+    @pyqtSlot(int)
     def load_matrix(self, index: int) -> None:
         """Load the selected matrix into the dialog.
 
@@ -150,6 +153,7 @@ class DefineDialog(QDialog):
         """
 
     @abc.abstractmethod
+    @pyqtSlot()
     def confirm_matrix(self) -> None:
         """Confirm the inputted matrix and assign it.
 
@@ -187,6 +191,7 @@ class DefineVisuallyDialog(DefineDialog):
         # We also enable the confirm button, because any visually defined matrix is valid
         self.button_confirm.setEnabled(True)
 
+    @pyqtSlot()
     def update_confirm_button(self) -> None:
         """Enable the confirm button.
 
@@ -195,6 +200,7 @@ class DefineVisuallyDialog(DefineDialog):
            so it's got an empty body. It's only here because we need to implement the abstract method.
         """
 
+    @pyqtSlot(int)
     def load_matrix(self, index: int) -> None:
         """Show the selected matrix on the plot. If the matrix is None, show the identity."""
         matrix = self.matrix_wrapper[self.selected_letter]
@@ -205,6 +211,7 @@ class DefineVisuallyDialog(DefineDialog):
         self.plot.visualize_matrix_transformation(matrix)
         self.plot.update()
 
+    @pyqtSlot()
     def confirm_matrix(self) -> None:
         """Confirm the matrix that's been defined visually."""
         matrix: MatrixType = array([
@@ -266,6 +273,7 @@ class DefineNumericallyDialog(DefineDialog):
 
         self.element_tl.setFocus()
 
+    @pyqtSlot()
     def update_confirm_button(self) -> None:
         """Enable the confirm button if there are valid floats in every box."""
         for elem in self.matrix_elements:
@@ -277,6 +285,7 @@ class DefineNumericallyDialog(DefineDialog):
         # If we didn't find anything invalid
         self.button_confirm.setEnabled(True)
 
+    @pyqtSlot(int)
     def load_matrix(self, index: int) -> None:
         """If the selected matrix is defined, load its values into the boxes."""
         matrix = self.matrix_wrapper[self.selected_letter]
@@ -293,6 +302,7 @@ class DefineNumericallyDialog(DefineDialog):
 
         self.update_confirm_button()
 
+    @pyqtSlot()
     def confirm_matrix(self) -> None:
         """Confirm the matrix in the boxes and assign it to the name in the combo box."""
         matrix: MatrixType = array([
@@ -335,6 +345,7 @@ class DefineAsAnExpressionDialog(DefineDialog):
 
         self.lineedit_expression_box.setFocus()
 
+    @pyqtSlot()
     def update_confirm_button(self) -> None:
         """Enable the confirm button if the matrix expression is valid in the wrapper."""
         text = self.lineedit_expression_box.text()
@@ -342,6 +353,7 @@ class DefineAsAnExpressionDialog(DefineDialog):
 
         self.button_confirm.setEnabled(valid_expression and self.selected_letter not in text)
 
+    @pyqtSlot(int)
     def load_matrix(self, index: int) -> None:
         """If the selected matrix is defined an expression, load that expression into the box."""
         if (expr := self.matrix_wrapper.get_expression(self.selected_letter)) is not None:
@@ -349,6 +361,7 @@ class DefineAsAnExpressionDialog(DefineDialog):
         else:
             self.lineedit_expression_box.setText('')
 
+    @pyqtSlot()
     def confirm_matrix(self) -> None:
         """Evaluate the matrix expression and assign its value to the name in the combo box."""
         self.matrix_wrapper[self.selected_letter] = self.lineedit_expression_box.text()
