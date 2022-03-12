@@ -8,7 +8,6 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
 
     steps:
       - uses: actions/checkout@v2
@@ -34,7 +33,6 @@ jobs:
   test:
     needs: check
     runs-on: ${{ matrix.os }}
-    if: github.ref == 'refs/heads/main'
 
     strategy:
       matrix:
@@ -62,7 +60,6 @@ jobs:
   compile:
     needs: test
     runs-on: ${{ matrix.os }}
-    if: github.ref == 'refs/heads/main'
 
     strategy:
       matrix:
@@ -100,7 +97,6 @@ jobs:
   publish:
     needs: compile
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
 
     steps:
       - uses: actions/checkout@v2
