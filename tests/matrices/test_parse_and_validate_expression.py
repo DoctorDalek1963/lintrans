@@ -2,7 +2,7 @@
 
 import pytest
 
-from lintrans.matrices.parse import parse_matrix_expression, validate_matrix_expression
+from lintrans.matrices.parse import MatrixParseError, parse_matrix_expression, validate_matrix_expression
 from lintrans.typing_ import MatrixParseList
 
 valid_inputs: list[str] = [
@@ -81,3 +81,10 @@ def test_parse_matrix_expression() -> None:
         # Test it with and without whitespace
         assert parse_matrix_expression(expression) == parsed_expression
         assert parse_matrix_expression(expression.replace(' ', '')) == parsed_expression
+
+
+def test_parse_error() -> None:
+    """Test that parse_matrix_expression() raises a MatrixParseError."""
+    for expression in invalid_inputs:
+        with pytest.raises(MatrixParseError):
+            parse_matrix_expression(expression)
