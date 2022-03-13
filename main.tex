@@ -11,6 +11,11 @@
 	fontsize=\footnotesize
 }
 
+% Make the line numbers in the appendices look better
+\renewcommand{\theFancyVerbLine}{\ttfamily
+	\textcolor[rgb]{0.5,0.5,1}{\footnotesize
+		\oldstylenums{\arabic{FancyVerbLine}}}}
+
 \usepackage{csquotes}  % Context-sensitive quotes
 \usepackage{amsmath, amssymb, mathtools}  % Mathematical stuff
 
