@@ -69,7 +69,7 @@ I have decomposed my solution like so:
 
 The \texttt{lintrans} node is simply the root of the whole project. \texttt{\_\_main\_\_} is the Python way to make the project executable as \texttt{python -m lintrans} on the command line. For release, I will package it into a standalone binary executable.
 
-\texttt{matrices} is the package that will allow the user to define, validate, parse, evaluate, and use matrices. The \texttt{parse} module will contain functions to validate matrix expressions - likely using regular expressions - and functions to parse matrix expressions. It will not know which matrices are defined, so validation will be na\"{i}ve and evaluation will be elsewhere. The \texttt{wrapper} module will contain a \texttt{MatrixWrapper} class, which will hold a dictionary of matrix names and values. It is this class which will have aware validation - making sure that all matrices are actually defined - as well the ability to evaluate matrix expressions, in addition to its basic behaviour of setting and getting matrices.
+\texttt{matrices} is the package that will allow the user to define, validate, parse, evaluate, and use matrices. The \texttt{parse} module will contain functions to validate matrix expressions - likely using regular expressions - and functions to parse matrix expressions. It will not know which matrices are defined, so validation will be na\"{i}ve and evaluation will be elsewhere. The \texttt{wrapper} module will contain a \texttt{MatrixWrapper} class, which will hold a dictionary of matrix names and values. It is this class which will have aware validation - making sure that all matrices are actually defined - as well the ability to evaluate matrix expressions, in addition to its basic behaviour of setting and getting matrices. This \texttt{matrices} package will also have a \texttt{create\_rotation\_matrix} function that will generate a rotation matrix from an angle using the formula $\begin{psmallmatrix}\cos\theta & -\sin\theta\\\sin\theta & \cos\theta\end{psmallmatrix}$. It will be in the \texttt{wrapper} module since it's related to defining and manipulating matrices, but it will be exported and accessible as \texttt{lintrans.matrices.create\_rotation\_matrix}.
 
 \texttt{gui} is the package that will contain all the frontend code for everything GUI-related. \texttt{main\_window} is the module that will contain a \texttt{LintransMainWindow} class, which will act as the main window of the application and have an instance of \texttt{MatrixWrapper} to keep track of which matrices are defined and allow for evaluation of matrix expressions. It will also have methods for rendering and animating matrix expressions, which will be connected to buttons in the GUI. This module will also contain a simple \texttt{main()} function to instantiate and launch the application GUI.
 
@@ -143,5 +143,78 @@ Validation will also play a very big role in the application. The user will be a
 Additionally, the buttons to render and animate the current matrix expression will only be enabled when the expression is valid. Textboxes in Qt5 emit a \texttt{textChanged} signal, which can be connected to a slot. This is just a method that gets called whenever the text in the textbox is changed, so I can use this method to validate the input and update the buttons accordingly. An empty string will count as invalid, so the buttons will be disabled when the box is empty.
 
 I will also apply this matrix expression validation to the textbox in the dialog which allows the user to define a matrix as an expression involving other matrices, and I will validate the input in the numeric definition dialog to make sure that all the inputs are floats. Again, this is to prevent crashes, since a matrix with non-number values in it will likely crash the program.
+
+\subsection{Iterative test data\label{subsection:iterative-test-data}}
+
+% TODO: Improve this
+
+In unit testing, I will test the validation, parsing, and generation of rotation matrices from an angle. I will also unit test the utility functions for the GUI, like \texttt{is\_valid\_float}.
+
+For the validation of matrix expressions, I will have data like the following:
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Valid & Invalid\\
+\hline
+\texttt{"A"} & \texttt{""}\\
+\hline
+\texttt{"AB"} & \texttt{"A\textasciicircum"}\\
+\hline
+\texttt{"-3.4A"} & \texttt{"rot()"}\\
+\hline
+\texttt{"A\textasciicircum2"} & \texttt{"A\textasciicircum\{2"}\\
+\hline
+\texttt{"A\textasciicircum T"} & \texttt{"\textasciicircum12"}\\
+\hline
+\texttt{"A\textasciicircum\{-1\}"} & \texttt{"A\textasciicircum3.2"}\\
+\hline
+\texttt{"rot(45)"} & \texttt{"A\textasciicircum B"}\\
+\hline
+\texttt{"3A\textasciicircum\{12\}"} & \texttt{".A"}\\
+\hline
+\texttt{"2B\textasciicircum2+A\textasciicircum TC\textasciicircum\{-1\}"} & \texttt{"--A"}\\
+\hline
+\texttt{"3.5A\textasciicircum{4}5.6rot(19.2\textasciicircum T-B\textasciicircum{-1}4.1C\textasciicircum5"} & \texttt{"A--B"}\\
+\hline
+\end{tabular}
+\end{center}
+
+This list is not exhaustive, mostly to save space and time, but the full unit testing code is included in the appendix.
+
+The invalid expressions presented here have been chosen to be almost valid, but not quite. They are edge cases. I will also test blatantly invalid expressions like \texttt{"This is a matrix expression"} to make sure the validation works.
+
+Here's an example of some test data for parsing:\vspace{-1em}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+Input & Expected\\
+\hline
+\texttt{"A"} & \texttt{[[("", "A", "")]]}\\
+\hline
+\texttt{"AB"} & \texttt{[[("", "A", ""), ("", "B", "")]]}\\
+\hline
+\texttt{"2A+B\textasciicircum2"} & \texttt{[[("2", "A", ""), ("", "B", "2")]]}\\
+\hline
+\texttt{"3A\textasciicircum T2.4B\textasciicircum\{-1\}-C"} & \texttt{[[("3", "A", "T"), ("2.4", "B", "-1")], [("-1", "C", "")]]}\\
+\hline
+\end{tabular}
+\end{center}
+
+The parsing output is pretty verbose and this table doesn't have enough space for most of the more complicated inputs, so here's a monster one:
+\begin{center}
+\texttt{"2.14A\textasciicircum\{3\} 4.5rot(14.5)\textasciicircum-1 + 8.5B\textasciicircum T 5.97C\textasciicircum14 - 3.14D\textasciicircum\{-1\} 6.7E\textasciicircum T"}
+\end{center}
+which should parse to give:
+\begin{center}
+\texttt{[[("2.14", "A", "3"), ("4.5", "rot(14.5)", "-1")], [("8.5", "B", "T"), ("5.97", "C", "14")], [("-3.14", "D", "-1"), ("6.7", "E", "T")]]}
+\end{center}
+
+Any invalid expression will also raise a parse error, so I will check every invalid input previously mentioned and make sure it raises the appropriate error.
+
+Again, this section is brief to save space and time. All unit tests are included in the appendix.
+
+\subsection{Post-development test data\label{subsection:post-development-test-data}}
+
+% TODO: Finish this
 
 \end{document}
