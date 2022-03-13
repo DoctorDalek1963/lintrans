@@ -37,7 +37,7 @@ jobs:
         uses: xu-cheng/latex-action@v2
         with:
           root_file: main.tex
-          args: -lualatex -file-line-error -halt-on-error -interaction=nonstopmode
+          args: -lualatex -file-line-error -halt-on-error -interaction=nonstopmode -shell-escape
           extra_fonts: ./.fonts/ttf/Hack-*.ttf
 
       - name: Put pdf in correct directory

@@ -8,6 +8,7 @@
 
 """This is a simple little script to generate the code appendices for the write-up from the source code."""
 
+import os
 from glob import glob
 
 
@@ -23,6 +24,9 @@ FOOTER = '\\end{document}\n'
 def generate_files(directory: str, type_: str) -> None:
     """Generate the .tex files for the appendices."""
     filenames = glob(f'lintrans/{directory}/**/*.py', recursive=True)
+
+    if not os.path.isdir('sections/appendices'):
+        os.makedirs('sections/appendices')
 
     with open(f'sections/appendices/{type_}_code.tex', 'w', encoding='utf-8') as f:
         f.write(HEADER)
