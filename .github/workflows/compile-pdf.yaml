@@ -2,7 +2,8 @@ name: Compile LaTeX PDF for gh-pages
 
 on:
   push:
-    branches: [ write-up ]
+    branches:
+      - write-up
 
 jobs:
   compile-latex:
