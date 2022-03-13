@@ -1,6 +1,16 @@
 \documentclass[a4paper]{article}
 \usepackage[UKenglish]{babel}  % UK writing style
 \usepackage[a4paper, total={155mm, 245mm}]{geometry}  % Good margins
+
+\usepackage{minted}  % Code highlighting for appendices
+\setminted[python]{
+	linenos,
+	breaklines,
+	breakafter=(\{[\,,
+	breakbefore=)\}]\#,
+	fontsize=\footnotesize
+}
+
 \usepackage{csquotes}  % Context-sensitive quotes
 \usepackage{amsmath, amssymb, mathtools}  % Mathematical stuff
 
@@ -92,7 +102,7 @@ Candidate Number:& 123456
 \pagenumbering{arabic}
 
 % Define nice page numbers
-\cfoot{Page \thepage\ of \pageref*{LastPage}}
+\cfoot{Page \thepage\ of \pageref*{last_document_page}}
 
 \section{Analysis\label{section:analysis}}
 \subfile{sections/analysis.tex}
@@ -113,6 +123,24 @@ Candidate Number:& 123456
 
 \printbibliography
 
+\label{last_document_page}
+
 % END bibliography
+
+% START appendix
+
+\clearpage
+
+\appendix
+
+\cfoot{\thepage}
+
+\section{Project Code\label{appendix:project-code}}
+\subfile{sections/appendices/project_code.tex}
+
+\section{Testing code\label{appendix:testing-code}}
+\subfile{sections/appendices/testing_code.tex}
+
+% END appendix
 
 \end{document}
