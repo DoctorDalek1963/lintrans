@@ -70,14 +70,14 @@ class DefineDialog(QDialog):
     .. warning:: This class should never be directly instantiated, only subclassed.
 
     .. note::
-       I would make this class have ``metaclass=abc.ABCMeta``, but I can't because it subclasses ``QDialog``,
-       and a every superclass of a class must have the same metaclass, and ``QDialog`` is not an abstract class.
+       I would make this class have ``metaclass=abc.ABCMeta``, but I can't because it subclasses :class:`QDialog`,
+       and a every superclass of a class must have the same metaclass, and :class:`QDialog` is not an abstract class.
     """
 
     def __init__(self, matrix_wrapper: MatrixWrapper, *args, **kwargs):
         """Create the widgets and layout of the dialog.
 
-        .. note:: ``*args`` and ``**kwargs`` are passed to the super constructor (``QDialog``).
+        .. note:: ``*args`` and ``**kwargs`` are passed to the super constructor (:class:`QDialog`).
 
         :param MatrixWrapper matrix_wrapper: The MatrixWrapper that this dialog will mutate
         """
@@ -148,8 +148,8 @@ class DefineDialog(QDialog):
         then no matrix is loaded when selecting a name.
 
         We have this method in the superclass so that we can define it as the slot
-        for the combobox.changed signal in this constructor, rather than having to
-        define that in the constructor of every subclass.
+        for the :meth:`QComboBox.activated` signal in this constructor, rather than
+        having to define that in the constructor of every subclass.
         """
 
     @abc.abstractmethod

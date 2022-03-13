@@ -33,6 +33,9 @@ jobs:
         shopt -s globstar
         pylint --rcfile=/dev/null --exit-zero --reports=y --disable=all --enable=imports,RP0402 --int-import-graph=docs/source/int-imports.png src/lintrans/**/*.py
 
+    - name: Create .inv files for intersphinx
+      run: cd docs/ && python create_objects_inv.py && cd ..
+
     - name: Build docs
       run: cd docs/ && make html && cd ..
 

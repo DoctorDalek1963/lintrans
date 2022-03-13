@@ -46,7 +46,7 @@ class VisualizeTransformationWidget(VectorGridPlot):
         self.point_j = (matrix[0][1], matrix[1][1])
 
     def paintEvent(self, event: QPaintEvent) -> None:
-        """Handle a ``QPaintEvent`` by drawing the background grid and the transformed grid.
+        """Handle a :class:`QPaintEvent` by drawing the background grid and the transformed grid.
 
         The transformed grid is defined by the basis vectors i and j, which can
         be controlled with the :meth:`visualize_matrix_transformation` method.
@@ -94,7 +94,7 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
         self.epsilon: int = 5
 
     def paintEvent(self, event: QPaintEvent) -> None:
-        """Handle a ``QPaintEvent`` by drawing the background grid and the transformed grid.
+        """Handle a :class:`QPaintEvent` by drawing the background grid and the transformed grid.
 
         The transformed grid is defined by the basis vectors i and j,
         which can be dragged around in the widget.

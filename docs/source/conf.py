@@ -89,4 +89,7 @@ autodoc_class_signature = 'separated'
 
 # -- Options for intersphinx -------------------------------------------------
 
-intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'PyQt5': ('https://doc.qt.io/qt-5/', 'pyqt5-objects.inv')
+}

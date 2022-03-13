@@ -31,8 +31,8 @@ class BackgroundPlot(QWidget):
     .. warning:: This class should never be directly instantiated, only subclassed.
 
     .. note::
-       I would make this class have ``metaclass=abc.ABCMeta``, but I can't because it subclasses ``QWidget``,
-       and a every superclass of a class must have the same metaclass, and ``QWidget`` is not an abstract class.
+       I would make this class have ``metaclass=abc.ABCMeta``, but I can't because it subclasses :class:`QWidget`,
+       and a every superclass of a class must have the same metaclass, and :class:`QWidget` is not an abstract class.
     """
 
     default_grid_spacing: int = 85
@@ -40,7 +40,7 @@ class BackgroundPlot(QWidget):
     def __init__(self, *args, **kwargs):
         """Create the widget and setup backend stuff for rendering.
 
-        .. note:: ``*args`` and ``**kwargs`` are passed the superclass constructor (``QWidget``).
+        .. note:: ``*args`` and ``**kwargs`` are passed the superclass constructor (:class:`QWidget`).
         """
         super().__init__(*args, **kwargs)
 
@@ -62,17 +62,17 @@ class BackgroundPlot(QWidget):
     def canvas_origin(self) -> tuple[int, int]:
         """Return the canvas coords of the grid origin.
 
-        :returns: The canvas coordinates of the grid origin. Can be fed to a ``drawLine`` call when unpacked
+        :returns: The canvas coordinates of the grid origin. Can be fed to a :meth:`drawLine:iiii` call when unpacked
         :rtype: tuple[int, int]
         """
         return self.width() // 2, self.height() // 2
 
     def canvas_x(self, x: float) -> int:
-        """Convert an x coordinate from grid coords to canvas coords, ready to feed to a ``drawLine`` call."""
+        """Convert an x coordinate from grid coords to canvas coords, ready to feed to a :meth:`drawLine:iiii` call."""
         return int(self.canvas_origin[0] + x * self.grid_spacing)
 
     def canvas_y(self, y: float) -> int:
-        """Convert a y coordinate from grid coords to canvas coords, ready to feed to a ``drawLine`` call."""
+        """Convert a y coordinate from grid coords to canvas coords, ready to feed to a :meth:`drawLine:iiii` call."""
         return int(self.canvas_origin[1] - y * self.grid_spacing)
 
     def canvas_coords(self, x: float, y: float) -> tuple[int, int]:
@@ -105,7 +105,7 @@ class BackgroundPlot(QWidget):
 
     @abstractmethod
     def paintEvent(self, event: QPaintEvent) -> None:
-        """Handle a ``QPaintEvent``.
+        """Handle a :class:`QPaintEvent`.
 
         .. note:: This method is abstract and must be overridden by all subclasses.
         """
@@ -115,7 +115,7 @@ class BackgroundPlot(QWidget):
 
         .. note:: This method is just a utility method for subclasses to use to render the background grid.
 
-        :param QPainter painter: The ``QPainter`` object to use for drawing the background
+        :param QPainter painter: The painter to draw the background with
         """
         # Draw the grid
         painter.setPen(QPen(self.colour_background_grid, self.width_background_grid))
@@ -136,7 +136,7 @@ class BackgroundPlot(QWidget):
         painter.drawLine(0, self.height() // 2, self.width(), self.height() // 2)
 
     def wheelEvent(self, event: QWheelEvent) -> None:
-        """Handle a ``QWheelEvent`` by zooming in or our of the grid."""
+        """Handle a :class:`QWheelEvent` by zooming in or our of the grid."""
         # angleDelta() returns a number of units equal to 8 times the number of degrees rotated
         degrees = event.angleDelta() / 8
 
@@ -202,7 +202,7 @@ class VectorGridPlot(BackgroundPlot):
 
     @abstractmethod
     def paintEvent(self, event: QPaintEvent) -> None:
-        """Handle a ``QPaintEvent``.
+        """Handle a :class:`QPaintEvent`.
 
         .. note:: This method is abstract and must be overridden by all subclasses.
         """
@@ -210,7 +210,7 @@ class VectorGridPlot(BackgroundPlot):
     def draw_parallel_lines(self, painter: QPainter, vector: tuple[float, float], point: tuple[float, float]) -> None:
         """Draw a set of evenly spaced grid lines parallel to ``vector`` intersecting ``point``.
 
-        :param QPainter painter: The ``QPainter`` object to use to draw the lines with
+        :param QPainter painter: The painter to draw the lines with
         :param vector: The vector to draw the grid lines parallel to
         :type vector: tuple[float, float]
         :param point: The point for the lines to intersect with
@@ -301,7 +301,7 @@ class VectorGridPlot(BackgroundPlot):
         This method just calls :meth:`draw_oblique_line` with ``c`` and ``-c``,
         and returns True if either call returned True.
 
-        :param QPainter painter: The ``QPainter`` object to use for drawing the vectors and grid lines
+        :param QPainter painter: The painter to draw the vectors and grid lines with
         :param float m: The gradient of the lines to draw
         :param float c: The y-intercept of the lines to draw. We use the positive and negative versions
         :returns bool: Whether we were able to draw any lines on the canvas
@@ -317,7 +317,7 @@ class VectorGridPlot(BackgroundPlot):
         We only draw the part of the line that fits within the canvas, returning True if
         we were able to draw a line within the boundaries, and False if we couldn't draw a line
 
-        :param QPainter painter: The ``QPainter`` object to use for drawing the vectors and grid lines
+        :param QPainter painter: The painter to draw the vectors and grid lines with
         :param float m: The gradient of the line to draw
         :param float c: The y-intercept of the line to draw
         :returns bool: Whether we were able to draw a line on the canvas
@@ -361,7 +361,7 @@ class VectorGridPlot(BackgroundPlot):
 
         .. note:: This method draws the grid, but not the basis vectors. Use :meth:`draw_basis_vectors` to draw them.
 
-        :param QPainter painter: The ``QPainter`` object to use for drawing the grid lines
+        :param QPainter painter: The painter to draw the grid lines with
         """
         # Draw all the parallel lines
         painter.setPen(QPen(self.colour_i, self.width_transformed_grid))
@@ -372,7 +372,7 @@ class VectorGridPlot(BackgroundPlot):
     def draw_arrowhead_away_from_origin(self, painter: QPainter, point: tuple[float, float]) -> None:
         """Draw an arrowhead at ``point``, pointing away from the origin.
 
-        :param QPainter painter: The ``QPainter`` object to use to draw the arrowheads with
+        :param QPainter painter: The painter to draw the arrowhead with
         :param point: The point to draw the arrowhead at, given in grid coords
         :type point: tuple[float, float]
         """
@@ -406,7 +406,7 @@ class VectorGridPlot(BackgroundPlot):
     def draw_position_vector(self, painter: QPainter, point: tuple[float, float], colour: QColor) -> None:
         """Draw a vector from the origin to the given point.
 
-        :param QPainter painter: The ``QPainter`` object to use to draw the arrowheads with
+        :param QPainter painter: The painter to draw the position vector with
         :param point: The tip of the position vector in grid coords
         :type point: tuple[float, float]
         :param QColor colour: The colour to draw the position vector in
@@ -418,13 +418,16 @@ class VectorGridPlot(BackgroundPlot):
     def draw_basis_vectors(self, painter: QPainter) -> None:
         """Draw arrowheads at the tips of the basis vectors.
 
-        :param QPainter painter: The ``QPainter`` object to use to draw the arrowheads with
+        :param QPainter painter: The painter to draw the basis vectors with
         """
         self.draw_position_vector(painter, self.point_i, self.colour_i)
         self.draw_position_vector(painter, self.point_j, self.colour_j)
 
     def draw_determinant_parallelogram(self, painter: QPainter) -> None:
-        """Draw the parallelogram of the determinant of the matrix."""
+        """Draw the parallelogram of the determinant of the matrix.
+
+        :param QPainter painter: The painter to draw the parallelogram with
+        """
         if self.det == 0:
             return
 
@@ -440,7 +443,10 @@ class VectorGridPlot(BackgroundPlot):
         painter.fillPath(path, brush)
 
     def draw_determinant_text(self, painter: QPainter) -> None:
-        """Write the string value of the determinant in the middle of the parallelogram."""
+        """Write the string value of the determinant in the middle of the parallelogram.
+
+        :param QPainter painter: The painter to draw the determinant text with
+        """
         painter.setPen(QPen(self.colour_text, self.width_vector_line))
 
         # We're building a QRect that encloses the determinant parallelogram
@@ -470,7 +476,10 @@ class VectorGridPlot(BackgroundPlot):
         )
 
     def draw_eigenvectors(self, painter: QPainter) -> None:
-        """Draw the eigenvectors of the displayed matrix transformation."""
+        """Draw the eigenvectors of the displayed matrix transformation.
+
+        :param QPainter painter: The painter to draw the eigenvectors with
+        """
         for value, vector in self.eigs:
             x = value * vector[0]
             y = value * vector[1]
@@ -513,7 +522,7 @@ class VectorGridPlot(BackgroundPlot):
     def draw_eigenlines(self, painter: QPainter) -> None:
         """Draw the eigenlines (invariant lines).
 
-        :param QPainter painter: The painter to draw the lines with
+        :param QPainter painter: The painter to draw the eigenlines with
         """
         painter.setPen(QPen(self.colour_eigen, self.width_transformed_grid))
 

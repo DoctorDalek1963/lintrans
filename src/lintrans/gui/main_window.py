@@ -451,7 +451,7 @@ class LintransMainWindow(QMainWindow):
         The class for the desired dialog is passed as an argument. We create an
         instance of this class and the dialog is opened asynchronously and modally
         (meaning it blocks interaction with the main window) with the proper method
-        connected to the ``dialog.accepted`` signal.
+        connected to the :meth:`QDialog.accepted` signal.
 
         .. note:: ``dialog_class`` must subclass :class:`lintrans.gui.dialogs.define_new_matrix.DefineDialog`.
 
@@ -531,7 +531,7 @@ class LintransMainWindow(QMainWindow):
 def main(args: list[str]) -> None:
     """Run the GUI by creating and showing an instance of :class:`LintransMainWindow`.
 
-    :param list[str] args: The args to pass to ``QApplication()`` (normally ``sys.argv``)
+    :param list[str] args: The args to pass to :class:`QApplication` (normally ``sys.argv``)
     """
     app = QApplication(args)
     window = LintransMainWindow()

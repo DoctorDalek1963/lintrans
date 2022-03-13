@@ -208,7 +208,7 @@ class DisplaySettingsDialog(SettingsDialog):
         self.checkbox_draw_determinant_text.setEnabled(self.checkbox_draw_determinant_parallelogram.isChecked())
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
-        """Handle a ``QKeyEvent`` by manually activating toggling checkboxes.
+        """Handle a :class:`QKeyEvent` by manually activating toggling checkboxes.
 
         Qt handles these shortcuts automatically and allows the user to do ``Alt + Key``
         to activate a simple shortcut defined with ``&``. However, I like to be able to
