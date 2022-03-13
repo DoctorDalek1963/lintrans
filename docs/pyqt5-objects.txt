@@ -15,8 +15,7 @@ QWidget      py:class 1 qwidget.html      -
 
 # === Methods
 
-# This signature doesn't include the `QPainter.` at the start just to save on line length
-drawLine:iiii py:method 1 qpainter.html#drawLine-2 drawLine()
+QPainter.drawLine:iiii py:method 1 qpainter.html#drawLine-2 QPainter.drawLine()
 
 # === Signals
 

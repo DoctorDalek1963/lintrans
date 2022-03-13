@@ -62,24 +62,39 @@ class BackgroundPlot(QWidget):
     def canvas_origin(self) -> tuple[int, int]:
         """Return the canvas coords of the grid origin.
 
-        :returns: The canvas coordinates of the grid origin. Can be fed to a :meth:`drawLine:iiii` call when unpacked
+        The return value is intended to be unpacked and passed to a :meth:`QPainter.drawLine:iiii` call.
+
+        See :meth:`canvas_coords`.
+
+        :returns: The canvas coordinates of the grid origin
         :rtype: tuple[int, int]
         """
         return self.width() // 2, self.height() // 2
 
     def canvas_x(self, x: float) -> int:
-        """Convert an x coordinate from grid coords to canvas coords, ready to feed to a :meth:`drawLine:iiii` call."""
+        """Convert an x coordinate from grid coords to canvas coords."""
         return int(self.canvas_origin[0] + x * self.grid_spacing)
 
     def canvas_y(self, y: float) -> int:
-        """Convert a y coordinate from grid coords to canvas coords, ready to feed to a :meth:`drawLine:iiii` call."""
+        """Convert a y coordinate from grid coords to canvas coords."""
         return int(self.canvas_origin[1] - y * self.grid_spacing)
 
     def canvas_coords(self, x: float, y: float) -> tuple[int, int]:
         """Convert a coordinate from grid coords to canvas coords.
 
         This method is intended to be used like
-        ``painter.drawLine(*self.canvas_coords(x1, y1), *self.canvas_coords(x2, y2))``.
+
+        .. code::
+
+           painter.drawLine(*self.canvas_coords(x1, y1), *self.canvas_coords(x2, y2))
+
+        or like
+
+        .. code::
+
+           painter.drawLine(*self.canvas_origin, *self.canvas_coords(x, y))
+
+        See :attr:`canvas_origin`.
 
         :param float x: The x component of the grid coordinate
         :param float y: The y component of the grid coordinate

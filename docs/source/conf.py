@@ -87,6 +87,7 @@ autodoc_type_aliases = {
 
 autodoc_class_signature = 'separated'
 
+
 # -- Options for intersphinx -------------------------------------------------
 
 intersphinx_mapping = {
