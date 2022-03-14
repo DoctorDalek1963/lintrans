@@ -1,0 +1,27 @@
+% lintrans - The linear transformation visualizer
+% Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
+
+% This program is licensed under GNU GPLv3, available here:
+% <https://www.gnu.org/licenses/gpl-3.0.html>
+
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+
+Please note, throughout this section, every code snippet will have two comments at the top. The first is the git commit hash that the snippet was taken from\footnote{A history of all commits can be found in the GitHub repository\cite{lintrans-github}}. The second comment is the file name and line numbers. If the line numbers are omitted, then the snippet is the whole file. After a certain point, I introduced copyright comments at the top of every file. These are always omitted here.
+
+The first real part of development was creating the \texttt{MatrixWrapper} class. It needs a simple instance dictionary to be created in the constructor, and it needs a way of accessing the matrices. I decided to use Python's \texttt{\_\_getitem\_\_} and \texttt{\_\_setitem\_\_} special methods\cite{python-3-special-methods} to allow indexing into a \texttt{MatrixWrapper} object like \texttt{wrapper['M']}. This simplifies using the class.
+%: 29ec1fedbf307e3b7ca731c4a381535fec899b0b
+%: src/lintrans/matrices/wrapper.py
+
+This code is very simple. The constructor (\texttt{\_\_init\_\_}) creates a dictionary of matrices which all start out as having no value, except the identity matrix \textbf{I}. The \texttt{\_\_getitem\_\_} and \texttt{\_\_setitem\_\_} methods allow the user to easily get and set matrices just like a dictionary.
+
+In fact, I could make this class subclass \texttt{dict}, but I want to extend it with much more functionality later, so I chose to handle the dictionary stuff myself.
+
+I then had to write unit tests for this class, and I chose to do all my unit tests using a framework called \texttt{pytest}.
+%: 29ec1fedbf307e3b7ca731c4a381535fec899b0b
+%: tests/test_matrix_wrapper.py
+
+These tests are quite simple and just ensure that the expected behaviour works the way it should, and that the correct errors are raised when they should be.
+
+\end{document}

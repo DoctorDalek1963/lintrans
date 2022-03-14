@@ -33,3 +33,5 @@
 _minted-main/
 lintrans
 sections/appendices/
+
+sections/processed_*.tex
