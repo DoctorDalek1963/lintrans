@@ -46,38 +46,6 @@ def generate_files(directory: str, type_: str) -> None:
         f.write(FOOTER)
 
 
-# def src_files() -> None:
-    # """Generate the .tex files for the source code (no unit tests)."""
-    # filenames = glob('lintrans/src/lintrans/**/*.py', recursive=True)
-
-    # with open('sections/appendices/project_code.tex', 'w', encoding='utf-8') as f:
-        # f.write(HEADER)
-
-        # for name in filenames:
-            # stripped_name = name[22:]
-            # f.write(r'\subsection{\texttt{' + stripped_name.replace('_', r'\_') + '}'
-                    # r'\label{appendix:project-code:' + stripped_name + '}}\n')
-            # f.write(r'\inputminted{python}{' + name + '}\n\n')
-
-        # f.write(FOOTER)
-
-
-# def test_files() -> None:
-    # """Generate the .tex files for the unit tests."""
-    # filenames = glob('lintrans/tests/**/*.py', recursive=True)
-
-    # with open('sections/appendices/testing_code.tex', 'w', encoding='utf-8') as f:
-        # f.write(HEADER)
-
-        # for name in filenames:
-            # stripped_name = name[22:]
-            # f.write(r'\subsection{\texttt{' + stripped_name.replace('_', r'\_') + '}'
-                    # r'\label{appendix:testing-code:' + stripped_name + '}}\n')
-            # f.write(r'\inputminted{python}{' + name + '}\n\n')
-
-        # f.write(FOOTER)
-
-
 if __name__ == '__main__':
     generate_files('src/lintrans', 'project')
     generate_files('tests', 'testing')
