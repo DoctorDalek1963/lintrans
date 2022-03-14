@@ -29,6 +29,7 @@ FOOTER = '\\end{document}\n'
 
 def generate_files(directory: str, type_: str) -> None:
     """Generate the .tex files for the appendices."""
+    print(f'Generating appendix for {type_}')
     filenames = glob(f'lintrans/{directory}/**/*.py', recursive=True)
 
     if not os.path.isdir('sections/appendices'):
