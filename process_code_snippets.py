@@ -17,10 +17,11 @@ are optional. If omitted, the whole file is included.
 import io
 import os
 import re
+from textwrap import dedent
 
 import git
 
-COMMENT_PATTERN = re.compile(r'%: ([0-9a-f]+)\n%: ([^\s:]+)(:\d+-\d+)?')
+COMMENT_PATTERN = re.compile(r'%: ([0-9a-f]+)\n%: ([^\s:]+)(:\d+-\d+)?( strip)?')
 
 COPYRIGHT_COMMENT = '''# lintrans - The linear transformation visualizer
 # Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
@@ -39,7 +40,11 @@ def process_snippets(filename: str) -> None:
     with open(filename, 'r', encoding='utf-8') as f:
         full_text = f.read()
 
-    for commit_hash, snippet_file_name, lines in re.findall(COMMENT_PATTERN, full_text):
+    print(f'Processing {filename}')
+
+    for commit_hash, snippet_file_name, lines, strip_flag in re.findall(COMMENT_PATTERN, full_text):
+        print(f'  Processing snippet: {commit_hash} {snippet_file_name}{lines}')
+
         # Get the Repo object and get the desired commit
         repo = git.repo.Repo('lintrans')
         file_blob = repo.commit(commit_hash).tree / snippet_file_name
@@ -61,6 +66,9 @@ def process_snippets(filename: str) -> None:
         if snippet.endswith('\n'):
             snippet = snippet[:-1]
 
+        if strip_flag:
+            snippet = dedent(snippet)
+
         # Wrap the snippet from the file in the necessary stuff for LaTeX
         snippet = f'''\\begin{{minted}}{{python}}
 # {commit_hash}
@@ -71,7 +79,7 @@ def process_snippets(filename: str) -> None:
 
         # Then replace the comments with the actual snippet
         full_text = full_text.replace(
-            f'%: {commit_hash}\n%: {snippet_file_name}{lines}',
+            f'%: {commit_hash}\n%: {snippet_file_name}{lines}{strip_flag}',
             snippet
         )
 
