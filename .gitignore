@@ -18,7 +18,7 @@
 *.fdb_latexmk
 *.fls
 *.run.xml
-*.synctex.gz
+*.synctex*
 
 # We want to ignore the PDF itself to allow me to keep a local build
 *.pdf
