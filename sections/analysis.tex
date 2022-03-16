@@ -12,7 +12,7 @@ One of the topics in the A Level Further Maths course is linear transformations,
 
 My solution is to develop a desktop application that will allow the user to define $2 \times 2$ matrices and view these matrices and compositions thereof as linear transformations of a 2D plane. This will give students a way to get to grips with linear transformations in a more hands-on way, and will give teachers the ability to easily and visually show concepts like the determinant and invariant lines.
 
-\subsection{Computational Approach\label{subsection:computational-approach}}
+\subsection{Computational Approach\label{subsection:analysis:computational-approach}}
 
 This solution is particularly well suited to a computational approach since it is entirely focussed on visualizing transformations, which require complex mathematics to properly display. It will also have lots of settings to allow the user to configure aspects of the visualization. As previously mentioned, visualizing transformations in one's own head is difficult, so a piece of software to do it would be very valuable to teachers and learners, but current solutions are considerably lacking.
 
@@ -28,7 +28,7 @@ I will also make use of iteration, primarily in animation. I will have to re-cal
 
 Finally, the core of the application is visualization, so that will definitely be used a lot. I will have to calculate positions of points and lines based on given matrices, and when animating, I will also have to calculate these matrices based on the current frame. Then I will have to use the rendering capabilities of the GUI framework that I choose to render these calculated points and lines onto a widget, which will form the viewport of the main GUI. I may also have to convert between coordinate systems. I will have the origin in the middle with positive $x$ going to the right and positive $y$ going up, but I may need to convert that to standard computer graphics coordinates with the origin in the top left, positive $x$ going to the right, and positive $y$ going down. This visualization of linear transformations is the core component of the app and is the primary feature, so it is incredibly important.
 
-\subsection{Stakeholders\label{subsection:stakeholders}}
+\subsection{Stakeholders\label{subsection:analysis:stakeholders}}
 
 Stakeholders for my app include A Level Further Maths students and teachers, who learn and teach linear transformations respectively. They will be able to provide useful input as to what they would like to see in the app, and they can provide feedback on what they like and what I can add or improve. I already know from experience that linear transformations are tricky to visualize and a computer-based visualization would be useful. My stakeholders agreed with this. Many teachers said that a desktop app that could render and animate linear transformations would be useful in a classroom environment and students said that it would be helpful to have something that they could play around with at home and use to get to grips with matrices and linear transformations.
 
@@ -38,11 +38,11 @@ My stakeholders agreed that being able to see incremental animation - where, for
 
 They also agreed that a tutorial on using the software would be useful, so I plan to implement this through an online written tutorial hosted with GitHub Pages, and perhaps a video tutorial as well. This would make the app much easier to use for people who have never seen it before. It wouldn't be a lesson on the maths itself, just a guide on how to use the software.
 
-\subsection{Research on existing solutions\label{subsection:research-on-existing-solutions}}
+\subsection{Research on existing solutions\label{subsection:analysis:research-on-existing-solutions}}
 
 There are actually quite a few web apps designed to help visualize 2D linear transformations but many of them are hard to use and lacking many features.
 
-\subsubsection{MIT \enquote{Matrix Vector} Mathlet\label{subsubsection:mit-mathlet-matrix-vector}}
+\subsubsection{MIT \enquote{Matrix Vector} Mathlet\label{subsubsection:analysis:mit-mathlet-matrix-vector}}
 
 \begin{wrapfigure}{R}{0.5\linewidth}
 	\vspace{-1em}
@@ -59,7 +59,7 @@ This app fails in two crucial ways in my opinion. It doesn't show the basis vect
 
 However, in the comments on this Mathlet, a user called \enquote{David~S.~Bruce} suggested that the Mathlet should display the basis vectors, to which a user called \enquote{hrm} (who I assume to be the \enquote{H.~Miller} to whom the copyright of the whole website is accredited) replied saying that this Mathlet is primarily focussed on eigenvectors, that it is perhaps badly named, and that displaying the basis vectors \enquote{would make a good focus for a second Mathlet about $2 \times 2$ matrices}. This Mathlet does not exist. But I do like the idea of showing the eigenvectors and eigenlines, so I will definitely have that in my app. Showing the invariant lines or lack thereof will help with learning, since these are often hard to visualize.
 
-\subsubsection{Linear Transformation Visualizer\label{subsubsection:shad-io-matvis}}
+\subsubsection{Linear Transformation Visualizer\label{subsubsection:analysis:shad-io-matvis}}
 
 \begin{wrapfigure}{L}{0.5\linewidth}
 	\vspace{-1em}
@@ -74,7 +74,7 @@ Another web app that I found was one simply called \enquote{Linear Transformatio
 
 I really like the vectors snapping to the grid, the input and output vectors, and rendering the determinant. This app also renders positive and negative determinants in different colours, which is really nice - I intend to use that idea in my own app, since it helps create understanding about negative determinants in terms of orientation changes. However, I think that the animation system here is flawed and not very easy to use. My animation will likely be a button, which just triggers an animation, rather than a slider. I also don't like the way vector dragging is handled. If you click anywhere on the grid, then the closest vector target (the final position of the target's associated vector) snaps to that location. I think it would be more intuitive to have to drag the vector from its current location to where you want it. This was also a problem with the MIT Mathlet.
 
-\subsubsection{Desmos app\label{subsubsection:desmos-2d-linear-transformation}}
+\subsubsection{Desmos app\label{subsubsection:analysis:desmos-2d-linear-transformation}}
 
 \begin{wrapfigure}{R}{0.5\linewidth}
 	\vspace{-1em}
@@ -91,7 +91,7 @@ Desmos does this for every point and then renders the resulting transformed func
 
 Additionally, this Desmos app makes things quite hard to see. It's hard to tell where any of the vectors are - they just get lost in the sea of grid lines. This image also hides some of the extra information. For instance, this image doesn't show the original function $f(x) = \frac{\sin^2 x}{x}$, only the transformed version. This app easily gets quite cluttered. I will give my vectors arrowheads to make them easily identifiable amongst the grid lines.
 
-\subsubsection{Visualizing Linear Transformations\label{subsubsection:geogebra-applet}}
+\subsubsection{Visualizing Linear Transformations\label{subsubsection:analysis:geogebra-applet}}
 
 \begin{wrapfigure}{L}{0.5\linewidth}
 	\vspace{-1em}
@@ -106,7 +106,7 @@ The last solution that I want to talk about is a GeoGebra applet simply titled \
 
 I've already talked about most of these features but the thing I wanted to talk about here is the N. I don't particularly want the letter N to be a prominent part of my own app, but I really like the idea of being able to define a custom polygon and see how that polygon gets transformed by a given transformation. I think that would really help with building intuition and it shouldn't be too hard to implement.
 
-\subsection{Essential features\label{subsection:essential-features}}
+\subsection{Essential features\label{subsection:analysis:essential-features}}
 
 The primary aim of this application is to visualize linear transformations, so this will obviously be the centre of the app and an essential feature. I will have a widget which can render a background grid and a second version of the grid, transformed according to a user-defined matrix expression. This is necessary because it is the entire purpose of the app. It's designed to visualize linear transformations and would be completely useless without this visual component. I will give the user the ability to render a custom matrix expression containing matrices they have previously defined, as well as reset the canvas to the default identity matrix transformation. This will obviously require an input box to enter the expression, a render button, a reset button, and various dialog boxes to define matrices in different ways. I want the user to be able to define a matrix as a set of 4 numbers, and by dragging the basis vectors $i$ and $j$. These dialogs will allow the user to define new matrices to be used in expressions, and having multiple ways to do it will make it easier, and will aid learning.
 
@@ -116,19 +116,19 @@ Something that I thought was a big problem in every alternative solution I found
 
 Additionally, being able to show information on the currently displayed matrix is an essential tool for learning. Rendering things like the determinant parallelogram and the invariant lines of the transformation will greatly assist with learning and building understanding, so I think that having the option to render these attributes of the currently displayed transformation is necessary for success.
 
-\subsection{Limitations\label{subsection:limitations}}
+\subsection{Limitations\label{subsection:analysis:limitations}}
 
 The main limitation in this app is likely to be drawing grid lines. Most transformations will be fine but in some cases, the app will be required to draw potentially thousands of grid lines on the canvas and this will probably cause noticeable lag, especially in the animations. I will have to artificially limit the number of grid lines that can be drawn on the screen. This won't look fantastic, because it means that the grid lines will only extend a certain distance from the origin, but it's an inherent limitation of computers. Perhaps if I was using a faster, compiled language like C++ rather than Python, this processing would happen faster and I could render more grid lines, but it's impossible to render all the grid lines and any implementation of this idea must limit them for performance.
 
-An interesting limitation is that I don't think I'll implement panning. I suspect that I'll have to convert between coordinate systems and having the origin in the centre of the canvas will probably make the code much simpler. Also, linear transformations always leave the origin fixed, so always having it in the centre of the canvas seems thematically appropriate. Panning is certainly an option - the Desmos solution in \S\ref{subsubsection:desmos-2d-linear-transformation} and GeoGebra solution in \S\ref{subsubsection:geogebra-applet} both allow panning as a default part of Desmos and GeoGebra respectively, for example - but I don't think I'll implement it myself. I just don't think it's worth it.
+An interesting limitation is that I don't think I'll implement panning. I suspect that I'll have to convert between coordinate systems and having the origin in the centre of the canvas will probably make the code much simpler. Also, linear transformations always leave the origin fixed, so always having it in the centre of the canvas seems thematically appropriate. Panning is certainly an option - the Desmos solution in \S\ref{subsubsection:analysis:desmos-2d-linear-transformation} and GeoGebra solution in \S\ref{subsubsection:analysis:geogebra-applet} both allow panning as a default part of Desmos and GeoGebra respectively, for example - but I don't think I'll implement it myself. I just don't think it's worth it.
 
 I'm also not going to do any work with 3D linear transformations. 3D transformations are often harder to visualize and thus it would make sense to target them in an app like this, designed to help with learning and intuition, but 3D transformations are also harder to code. I would have to use a full graphics package rather than a simple widget, and I think it would be too much work for this project and I wouldn't be able to do it in the time frame. It's definitely a good idea, but I'm currently incapable of creating an app like that.
 
 There are other limitations inherent to matrices. For instance, it's impossible to take an inverse of a singular matrix. There's nothing I can do about that without rewriting most of mathematics. Matrices can also only represent linear transformations. There's definitely a market for an app that could render any arbitrary transformation from $\mathbb{R}^2 \to \mathbb{R}^2$ - I know I'd want an app like that - but matrices can only represent linear transformations, so those are the only kind of transformations that I'll be looking at with this project.
 
-\subsection{Hardware and software requirements\label{subsection:hardware-and-software-requirements}}
+\subsection{Hardware and software requirements\label{subsection:analysis:hardware-and-software-requirements}}
 
-\subsubsection{Hardware\label{subsubsection:hardware}}
+\subsubsection{Hardware\label{subsubsection:analysis:hardware}}
 
 % TODO: Add size of final binary
 
@@ -138,7 +138,7 @@ I will also require that the user has a monitor that is at least $1920 \times 10
 
 I will also require a keyboard with all standard Latin alphabet characters. This is because the matrices are defined as uppercase Latin letters. Any UK or US keyboard will suffice for this. The app will also require a mouse with at least one button. I don't intend to have right click do anything, so only the primary mouse button is required, although getting a single button mouse to actually work on modern computers is probably quite a challenge. A separate mouse is not strictly required - a laptop trackpad is equally sufficient.
 
-\subsubsection{Software\label{subsubsection:software}}
+\subsubsection{Software\label{subsubsection:analysis:software}}
 
 % TODO: Find actual Windows version requirement
 
@@ -148,7 +148,7 @@ Python 3.10 won't actually be required for the end user, because I will be compi
 
 In the development environment, I use PyCharm for actually writing my code, and I use a virtual environment to isolate my project dependencies. There are also some development dependencies listed in the file \texttt{dev\_requirements.txt}. They are: \texttt{mypy}, \texttt{pyqt5-stubs}, \texttt{flake8}, \texttt{pycodestyle}, \texttt{pydocstyle}, and \texttt{pytest}. \texttt{mypy} is a static type checker\footnote{Python has weak, dynamic typing with optional type annotations but \texttt{mypy} enforces these static type annotations}; \texttt{pyqt5-stubs} is a collection of type annotations for the PyQt5 API for \texttt{mypy} to use; \texttt{flake8}, \texttt{pycodestyle}, and \texttt{pydocstyle} are all linters; and \texttt{pytest} is a unit testing framework. I use these libraries to make sure my code is good quality and actually working properly during development.
 
-\subsection{Success criteria\label{subsection:success-criteria}}
+\subsection{Success criteria\label{subsection:analysis:success-criteria}}
 
 The main aim of the app is to help teach students about linear transformations. As such, the primary measure of success will be letting teachers get to grips with the app and then asking if they would use it in the classroom or recommend it to students to use at home.
 
