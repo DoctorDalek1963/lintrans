@@ -24,3 +24,6 @@ docs/source/*imports.png
 *.spec
 dist/
 build/
+
+# This is pre-compile stuff
+version_info.txt

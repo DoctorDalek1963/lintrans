@@ -84,8 +84,23 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt install upx-ucl
 
-      - name: Compile
+      - name: Pre-compile
+        run: python precompile.py ${{ runner.os }} $GITHUB_REF_NAME
+        shell: bash
+
+      - name: Compile (Linux)
+        if: runner.os == 'Linux'
         run: pyinstaller --onefile --windowed --distpath=./dist --name lintrans-${{ runner.os }}-$GITHUB_REF_NAME src/lintrans/__main__.py
+        shell: bash
+
+      - name: Compile (macOS)
+        if: runner.os == 'macOS'
+        run: pyinstaller --onefile --windowed --distpath=./dist --name lintrans-${{ runner.os }}-$GITHUB_REF_NAME src/lintrans/__main__.py
+        shell: bash
+
+      - name: Compile (Windows)
+        if: runner.os == 'Windows'
+        run: pyinstaller --onefile --windowed --distpath=./dist --version-file version_file.txt --name lintrans-${{ runner.os }}-$GITHUB_REF_NAME src/lintrans/__main__.py
         shell: bash
 
       - name: Upload artifact
