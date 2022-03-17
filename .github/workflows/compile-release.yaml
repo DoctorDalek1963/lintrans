@@ -100,7 +100,7 @@ jobs:
 
       - name: Compile (Windows)
         if: runner.os == 'Windows'
-        run: pyinstaller --onefile --windowed --distpath=./dist --version-file version_file.txt --name lintrans-${{ runner.os }}-$GITHUB_REF_NAME src/lintrans/__main__.py
+        run: pyinstaller --onefile --windowed --distpath=./dist --version-file version_info.txt --name lintrans-${{ runner.os }}-$GITHUB_REF_NAME src/lintrans/__main__.py
         shell: bash
 
       - name: Upload artifact

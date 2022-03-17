@@ -39,7 +39,7 @@ def precompile_windows(args: list[str]) -> None:
 
     version_tuple = f'{major}, {minor}, {patch}, 0'
 
-    version_file = f'''VSVersionInfo(
+    version_info = f'''VSVersionInfo(
   ffi=FixedFileInfo(
     filevers=({version_tuple}),
     prodvers=({version_tuple}),
@@ -72,9 +72,9 @@ def precompile_windows(args: list[str]) -> None:
 '''
 
     with open('version_info.txt', 'w', encoding='utf-8') as f:
-        f.write(version_file)
+        f.write(version_info)
 
-    print('Version file written to version_file.txt')
+    print('Version file written to version_info.txt')
 
 
 def main(args: list[str]) -> None:
