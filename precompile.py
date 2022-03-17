@@ -54,6 +54,7 @@ def precompile_windows(args: list[str]) -> None:
     StringFileInfo(
       [
         StringTable(
+          '040904B0',
           kids=[
             StringStruct('CompanyName', 'D. Dyson (DoctorDalek1963)'),
             StringStruct('FileDescription', 'Linear transformation visualizer'),
@@ -66,7 +67,8 @@ def precompile_windows(args: list[str]) -> None:
           ]
         )
       ]
-    )
+    ),
+    VarFileInfo([VarStruct('Translation', [2057, 1200])])
   ]
 )
 '''
