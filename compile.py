@@ -31,12 +31,12 @@ class Compiler:
     ):
         """Create a Compiler object."""
         self.platform = platform if platform else sys.platform
-        self.version_name = version_name if version_name else lintrans.__version__
+        self.version_name = version_name if version_name else 'v' + lintrans.__version__
         self.filename = filename if filename else 'lintrans'
 
     def _windows_generate_version_info(self) -> None:
         """Generate version_info.txt for Windows."""
-        if (m := re.match(r'v?(\d+)\.(\d+)\.(\d+)(-alpha)?', self.version_name)) is not None:
+        if (m := re.match(r'v(\d+)\.(\d+)\.(\d+)(-alpha)?', self.version_name)) is not None:
             major, minor, patch, alpha = m.groups()
 
         else:
