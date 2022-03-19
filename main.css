@@ -42,7 +42,7 @@ div.lintrans-info {
 	margin-top: 1.1em;
 }
 
-a {
+a.clickable-image {
 	text-decoration: none;
 	margin: 0.5em
 }
