@@ -120,7 +120,7 @@ class Compiler:
             <string>APPL</string>
             <key>CFBundleVersion</key>
             <string>{self.version_name}</string>
-            <key>CFBundleShortVerionString</key>
+            <key>CFBundleShortVersionString</key>
             <string>{short_version_name}</string>
             <key>NSHighResolutionCapable</key>
             <true/>
