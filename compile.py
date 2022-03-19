@@ -34,8 +34,8 @@ class Compiler:
         self.version_name = version_name if version_name else lintrans.__version__
         self.filename = filename if filename else 'lintrans'
 
-    def _precompile_windows(self) -> None:
-        """Pre-compile for Windows."""
+    def _windows_generate_version_info(self) -> None:
+        """Generate version_info.txt for Windows."""
         if (m := re.match(r'v?(\d+)\.(\d+)\.(\d+)(-alpha)?', self.version_name)) is not None:
             major, minor, patch, alpha = m.groups()
 
@@ -89,20 +89,51 @@ class Compiler:
 
         print('Version file written to version_info.txt')
 
-    def precompile(self) -> None:
-        """Pre-compile for the appropriate operating system."""
-        if self.platform == 'linux':
-            print("Linux doesn't need any pre-compilation")
+    def _macos_replace_info_plist(self) -> None:
+        """Replace the Info.plist file in the macOS app."""
+        short_version_name = self.version_name
 
-        elif self.platform == 'darwin':
-            print("macOS doesn't need any pre-compilation")
+        if short_version_name.startswith('v'):
+            short_version_name = short_version_name[1:]
 
-        elif self.platform == 'win32':
-            print('Pre-compiling for Windows')
-            self._precompile_windows()
+        if short_version_name.endswith('-alpha'):
+            short_version_name = short_version_name[:-6]
 
-        else:
-            raise ValueError(f'Unsupported operating system "{self.platform}"')
+        new_info_plist = dedent(f'''
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"
+        <plist version="1.0">
+        <dict>
+            <key>CFBundleDisplayName</key>
+            <string>lintrans</string>
+            <key>CFBundleExecutable</key>
+            <string>lintrans</string>
+            <key>CFBundleIconFile</key>
+            <string>icon-windowed.icns</string>
+            <key>CFBundleIdentifier</key>
+            <string>lintrans</string>
+            <key>CFBundleInfoDictionaryVersion</key>
+            <string>6.0</string>
+            <key>CFBundleName</key>
+            <string>lintrans</string>
+            <key>CFBundleType</key>
+            <string>APPL</string>
+            <key>CFBundleVersion</key>
+            <string>{self.version_name}</string>
+            <key>CFBundleShortVerionString</key>
+            <string>{short_version_name}</string>
+            <key>NSHighResolutionCapable</key>
+            <true/>
+            <key>NSHumanReadableCopyright</key>
+            <string>(C) D. Dyson (DoctorDalek1963) under GPLv3</string>
+            <key></key>
+            <string></string>
+        </dict>
+        </plist>
+        ''')
+
+        with open(self.filename + '.app', 'w', encoding='utf-8') as f:
+            f.write(new_info_plist)
 
     def _get_pyi_args(self) -> list[str]:
         """Return the common args for PyInstaller."""
@@ -123,6 +154,8 @@ class Compiler:
 
         os.rename(os.path.join('dist', self.filename + '.app'), self.filename + '.app')
 
+        self._macos_replace_info_plist()
+
     def _compile_linux(self) -> None:
         """Compile for Linux."""
         run_pyi(self._get_pyi_args())
@@ -131,8 +164,9 @@ class Compiler:
 
     def _compile_windows(self) -> None:
         """Compile for Windows."""
-        if not os.path.isfile('version_info.txt'):
-            raise ValueError('Windows compilation requires version_info.txt from pre-compilation')
+        self._windows_generate_version_info()
+
+        assert os.path.isfile('version_info.txt'), 'version_info.txt must exist for Windows compilation'
 
         run_pyi([
             *self._get_pyi_args(),
@@ -172,7 +206,6 @@ def main() -> None:
     args = parser.parse_args()
 
     compiler = Compiler(filename=args.filename, version_name=args.version)
-    compiler.precompile()
     compiler.compile()
 
 
