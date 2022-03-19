@@ -25,14 +25,14 @@ class Compiler:
 
     def __init__(
             self, *,
-            platform: str | None = None,
-            version_name: str | None = None,
-            filename: str | None = None
+            filename: str,
+            version_name: str,
+            platform: str | None = None
     ):
         """Create a Compiler object."""
+        self.filename = filename
+        self.version_name = version_name
         self.platform = platform if platform else sys.platform
-        self.version_name = version_name if version_name else 'v' + lintrans.__version__
-        self.filename = filename if filename else 'lintrans'
 
     def _windows_generate_version_info(self) -> None:
         """Generate version_info.txt for Windows."""
@@ -198,8 +198,20 @@ class Compiler:
 def main() -> None:
     """Run any pre-compilation, and then compile."""
     parser = argparse.ArgumentParser(description='Compile this version of lintrans for your operating system', add_help=True)
-    parser.add_argument('-f', '--filename', type=str, required=False, default=None, help='the filename (without extension)')
-    parser.add_argument('-v', '--version', type=str, required=False, default=None, help='the version name in the format v1.2.3')
+    parser.add_argument(
+        '-f', '--filename',
+        type=str,
+        required=False,
+        default='lintrans',
+        help='the filename (without extension)'
+    )
+    parser.add_argument(
+        '-v', '--version',
+        type=str,
+        required=False,
+        default='v' + lintrans.__version__,
+        help='the version name in the format v1.2.3'
+    )
 
     args = parser.parse_args()
 
