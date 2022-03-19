@@ -111,8 +111,10 @@ class Compiler:
             '--onefile',
             '--windowed',
             '--distpath=./dist',
-            '--name',
-            self.filename
+            '--workpath=./build',
+            '--noconfirm',
+            '--clean',
+            f'--name={self.filename}'
         ]
 
     def _compile_macos(self) -> None:
