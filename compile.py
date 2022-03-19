@@ -36,9 +36,7 @@ class Compiler:
 
     def _precompile_windows(self) -> None:
         """Pre-compile for Windows."""
-        print('Pre-compiling for Windows')
-
-        if (m := re.match(r'v(\d+)\.(\d+)\.(\d+)(-alpha)?', self.version_name)) is not None:
+        if (m := re.match(r'v?(\d+)\.(\d+)\.(\d+)(-alpha)?', self.version_name)) is not None:
             major, minor, patch, alpha = m.groups()
 
         else:
