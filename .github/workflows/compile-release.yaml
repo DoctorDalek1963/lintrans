@@ -36,7 +36,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-20.04, macos-10.15, windows-2019]
+        os: [ubuntu-20.04, windows-2019]
 
     steps:
       - uses: actions/checkout@v2
@@ -63,7 +63,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-20.04, macos-10.15, windows-2019]
+        os: [ubuntu-20.04, windows-2019]
 
     steps:
       - uses: actions/checkout@v2
@@ -84,23 +84,8 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt install upx-ucl
 
-      - name: Pre-compile
-        run: python precompile.py ${{ runner.os }} $GITHUB_REF_NAME
-        shell: bash
-
-      - name: Compile (Linux)
-        if: runner.os == 'Linux'
-        run: pyinstaller --onefile --windowed --distpath=./dist --name lintrans-${{ runner.os }}-$GITHUB_REF_NAME src/lintrans/__main__.py
-        shell: bash
-
-      - name: Compile (macOS)
-        if: runner.os == 'macOS'
-        run: pyinstaller --onefile --windowed --distpath=./dist --name lintrans-${{ runner.os }}-$GITHUB_REF_NAME src/lintrans/__main__.py
-        shell: bash
-
-      - name: Compile (Windows)
-        if: runner.os == 'Windows'
-        run: pyinstaller --onefile --windowed --distpath=./dist --version-file version_info.txt --name lintrans-${{ runner.os }}-$GITHUB_REF_NAME src/lintrans/__main__.py
+      - name: Compile
+        run: python compile.py -f lintrans-${{ runner.os }}-${{ env.GITHUB_REF_NAME }} -v $GITHUB_REF_NAME
         shell: bash
 
       - name: Upload artifact
@@ -120,12 +105,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: Windows-binary
-          path: dist/
-
-      - name: Download macOS binary
-        uses: actions/download-artifact@v3
-        with:
-          name: macOS-binary
           path: dist/
 
       - name: Download Linux binary
