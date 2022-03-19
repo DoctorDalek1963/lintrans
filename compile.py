@@ -82,7 +82,7 @@ class Compiler:
             VarFileInfo([VarStruct('Translation', [2057, 1200])])
           ]
         )
-        ''')
+        '''[1:])
 
         with open('version_info.txt', 'w', encoding='utf-8') as f:
             f.write(version_info)
@@ -126,11 +126,9 @@ class Compiler:
             <true/>
             <key>NSHumanReadableCopyright</key>
             <string>(C) D. Dyson (DoctorDalek1963) under GPLv3</string>
-            <key></key>
-            <string></string>
         </dict>
         </plist>
-        ''')
+        '''[1:])
 
         with open(os.path.join(self.filename + '.app','Contents', 'Info.plist'), 'w', encoding='utf-8') as f:
             f.write(new_info_plist)
