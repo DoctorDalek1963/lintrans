@@ -117,7 +117,7 @@ class Compiler:
 
     def _compile_macos(self) -> None:
         """Compile for macOS."""
-        run_pyi(self._get_pyi_args)
+        run_pyi(self._get_pyi_args())
 
         os.rename(os.path.join('dist', self.filename + '.app'), self.filename + '.app')
 
