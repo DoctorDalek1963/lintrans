@@ -92,7 +92,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ runner.os }}-binary
-          path: dist/lintrans*
+          path: lintrans-${{ runner.os }}-${{ env.GITHUB_REF_NAME }}*
 
   publish:
     needs: compile
@@ -119,13 +119,22 @@ jobs:
           isalpha=$(if [ -n "$(echo $GITHUB_REF | grep -o -- 'alpha')" ]; then echo 1; else echo 0; fi)
           echo "::set-output name=isalpha::$isalpha"
 
+      # This is practically the same step twice just to allow for prereleases
       - name: Upload binaries (normal release)
         if: steps.checkalpha.outputs.isalpha == 0
         uses: softprops/action-gh-release@v1
         with:
           fail_on_unmatched_files: true
           prerelease: false
-          draft: true  # I'll manually add the title and description when the draft is online
+          draft: true
+          body: "DESCRIPTION
+
+          The Linux binary should work fine, but on Windows, you will get a warning that the program may be unsafe. This is expected and you can just ignore it. There's no binary for macOS.
+
+          If you're running macOS, then you will need to build the program from source. This is also an option on Linux and Windows. Instructions can be found [here](https://doctordalek1963.github.io/lintrans/tutorial/install.html).
+
+          ### Changelog
+          - ITEM"
           files: dist/lintrans*
 
       - name: Upload binaries (pre-release)
@@ -134,5 +143,13 @@ jobs:
         with:
           fail_on_unmatched_files: true
           prerelease: true
-          draft: true  # I'll manually add the title and description when the draft is online
+          draft: true
+          body: "DESCRIPTION
+
+          The Linux binary should work fine, but on Windows, you will get a warning that the program may be unsafe. This is expected and you can just ignore it. There's no binary for macOS.
+
+          If you're running macOS, then you will need to build the program from source. This is also an option on Linux and Windows. Instructions can be found [here](https://doctordalek1963.github.io/lintrans/tutorial/install.html).
+
+          ### Changelog
+          - ITEM"
           files: dist/lintrans*
