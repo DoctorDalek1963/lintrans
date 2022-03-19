@@ -132,7 +132,7 @@ class Compiler:
         </plist>
         ''')
 
-        with open(self.filename + '.app', 'w', encoding='utf-8') as f:
+        with open(os.path.join(self.filename + '.app','Contents', 'Info.plist'), 'w', encoding='utf-8') as f:
             f.write(new_info_plist)
 
     def _get_pyi_args(self) -> list[str]:
