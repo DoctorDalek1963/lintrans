@@ -127,7 +127,7 @@ class Compiler:
         </plist>
         '''[1:])
 
-        with open(os.path.join(self.filename + '.app','Contents', 'Info.plist'), 'w', encoding='utf-8') as f:
+        with open(os.path.join(self.filename + '.app', 'Contents', 'Info.plist'), 'w', encoding='utf-8') as f:
             f.write(new_info_plist)
 
     def _get_pyi_args(self) -> list[str]:
@@ -194,7 +194,11 @@ class Compiler:
 
 def main() -> None:
     """Run any pre-compilation, and then compile."""
-    parser = argparse.ArgumentParser(description='Compile this version of lintrans for your operating system', add_help=True)
+    parser = argparse.ArgumentParser(
+        description='Compile this version of lintrans for your operating system',
+        add_help=True
+    )
+
     parser.add_argument(
         '-f', '--filename',
         type=str,
