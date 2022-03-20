@@ -113,15 +113,17 @@ jobs:
           name: Linux-binary
           path: dist/
 
-      - name: Check for alpha
-        id: checkalpha
+      - name: Check for dev tag
+        id: checkprerelease
+        # We used to just check for -alpha on the end but now we check for any tag on the end
+        # This allows for -beta, -dev, -rc1, etc. If it ends in -anything, the it's a pre-release
         run: |
-          isalpha=$(if [ -n "$(echo $GITHUB_REF | grep -o -- 'alpha')" ]; then echo 1; else echo 0; fi)
-          echo "::set-output name=isalpha::$isalpha"
+          isprerelease=$(if [ -n "$(echo $GITHUB_REF | grep -Po -- '(v?\d+\.\d+\.\d+)-[^ ]+')" ]; then echo 1; else echo 0; fi)
+          echo "::set-output name=isprerelease::$isprerelease"
 
-      # This is practically the same step twice just to allow for prereleases
+      # This is practically the same step twice just to allow for pre-releases
       - name: Upload binaries (normal release)
-        if: steps.checkalpha.outputs.isalpha == 0
+        if: steps.checkprerelease.outputs.isprerelease == 0
         uses: softprops/action-gh-release@v1
         with:
           fail_on_unmatched_files: true
@@ -138,7 +140,7 @@ jobs:
           files: dist/lintrans*
 
       - name: Upload binaries (pre-release)
-        if: steps.checkalpha.outputs.isalpha == 1
+        if: steps.checkprerelease.outputs.isprerelease == 1
         uses: softprops/action-gh-release@v1
         with:
           fail_on_unmatched_files: true

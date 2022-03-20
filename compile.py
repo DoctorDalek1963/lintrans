@@ -36,13 +36,13 @@ class Compiler:
 
     def _windows_generate_version_info(self) -> None:
         """Generate version_info.txt for Windows."""
-        if (m := re.match(r'v(\d+)\.(\d+)\.(\d+)(-alpha)?', self.version_name)) is not None:
-            major, minor, patch, alpha = m.groups()
+        if (m := re.match(r'v(\d+)\.(\d+)\.(\d+)(-[^ ]+)?', self.version_name)) is not None:
+            major, minor, patch, dev_part = m.groups()
 
         else:
             raise ValueError('Tag name must match format')
 
-        if alpha is not None:
+        if dev_part is not None:
             flags = '0x2'
         else:
             flags = '0x0'
@@ -93,11 +93,8 @@ class Compiler:
         """Replace the Info.plist file in the macOS app."""
         short_version_name = self.version_name
 
-        if short_version_name.startswith('v'):
-            short_version_name = short_version_name[1:]
-
-        if short_version_name.endswith('-alpha'):
-            short_version_name = short_version_name[:-6]
+        if (m := re.match(r'v?(\d+\.\d+\.\d+)(-[^ ]+)?', short_version_name)) is not None:
+            short_version_name = m.group(1)
 
         new_info_plist = dedent(f'''
         <?xml version="1.0" encoding="UTF-8"?>
