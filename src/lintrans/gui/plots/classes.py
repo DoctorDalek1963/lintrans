@@ -36,6 +36,7 @@ class BackgroundPlot(QWidget):
     """
 
     default_grid_spacing: int = 85
+    minimum_grid_spacing: int = 5
 
     def __init__(self, *args, **kwargs):
         """Create the widget and setup backend stuff for rendering.
@@ -156,7 +157,10 @@ class BackgroundPlot(QWidget):
         degrees = event.angleDelta() / 8
 
         if degrees is not None:
-            self.grid_spacing = max(1, self.grid_spacing + degrees.y())
+            new_spacing = max(1, self.grid_spacing + degrees.y())
+
+            if new_spacing >= self.minimum_grid_spacing:
+                self.grid_spacing = new_spacing
 
         event.accept()
         self.update()
