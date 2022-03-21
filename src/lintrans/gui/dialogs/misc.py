@@ -17,7 +17,19 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout
 import lintrans
 
 
-class AboutDialog(QDialog):
+class FixedSizeDialog(QDialog):
+    """A simple superclass to create modal dialog boxes with fixed size.
+
+    We override the :meth:`open` method to set the fixed size as soon as the dialog is opened modally.
+    """
+
+    def open(self) -> None:
+        """Override :meth:`QDialog.open` to set the dialog to a fixed size."""
+        super().open()
+        self.setFixedSize(self.size())
+
+
+class AboutDialog(FixedSizeDialog):
     """A simple dialog class to display information about the app to the user.
 
     It only has an :meth:`__init__` method because it only has label widgets, so no other methods are necessary here.
@@ -81,5 +93,3 @@ class AboutDialog(QDialog):
         vlay.addWidget(label_copyright)
 
         self.setLayout(vlay)
-
-        self.setFixedSize(self.baseSize())

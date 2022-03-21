@@ -14,8 +14,9 @@ from numpy import array
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QDoubleValidator, QKeySequence
-from PyQt5.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
+from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
+from lintrans.gui.dialogs.misc import FixedSizeDialog
 from lintrans.gui.plots import DefineVisuallyWidget
 from lintrans.gui.validate import MatrixExpressionValidator
 from lintrans.matrices import MatrixWrapper
@@ -64,7 +65,7 @@ def round_float(num: float, precision: int = 5) -> str:
         return string
 
 
-class DefineDialog(QDialog):
+class DefineDialog(FixedSizeDialog):
     """An abstract superclass for definitions dialogs.
 
     .. warning:: This class should never be directly instantiated, only subclassed.

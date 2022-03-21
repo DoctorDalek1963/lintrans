@@ -16,6 +16,7 @@ QWidget      py:class 1 qwidget.html      -
 # === Methods
 
 QPainter.drawLine:iiii py:method 1 qpainter.html#drawLine-2 QPainter.drawLine()
+QDialog.open           py:method 1 qdialog.html#open        QDialog.open()
 
 # === Signals
 

@@ -12,12 +12,13 @@ import abc
 
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIntValidator, QKeyEvent, QKeySequence
-from PyQt5.QtWidgets import QCheckBox, QDialog, QGroupBox, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
+from PyQt5.QtWidgets import QCheckBox, QGroupBox, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
+from lintrans.gui.dialogs.misc import FixedSizeDialog
 from lintrans.gui.settings import DisplaySettings
 
 
-class SettingsDialog(QDialog):
+class SettingsDialog(FixedSizeDialog):
     """An abstract superclass for other simple dialogs."""
 
     def __init__(self, *args, **kwargs):
