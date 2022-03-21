@@ -139,7 +139,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.define_new_matrix.DefineDialog">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lintrans.gui.dialogs.define_new_matrix.</span></span><span class="sig-name descname"><span class="pre">DefineDialog</span></span><a class="headerlink" href="#lintrans.gui.dialogs.define_new_matrix.DefineDialog" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://doc.qt.io/qt-5/qdialog.html" title="(in PyQt5 v5.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#lintrans.gui.dialogs.misc.FixedSizeDialog" title="lintrans.gui.dialogs.misc.FixedSizeDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">lintrans.gui.dialogs.misc.FixedSizeDialog</span></code></a></p>
 <p>An abstract superclass for definitions dialogs.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -314,13 +314,45 @@ so it’s got an empty body. It’s only here because we need to implement the a
 </dd></dl>
 
 </section>
+<section id="module-lintrans.gui.dialogs.misc">
+<span id="lintrans-gui-dialogs-misc-module"></span><h2>lintrans.gui.dialogs.misc module<a class="headerlink" href="#module-lintrans.gui.dialogs.misc" title="Permalink to this headline"></a></h2>
+<p>This module provides miscellaneous dialog classes like <a class="reference internal" href="#lintrans.gui.dialogs.misc.AboutDialog" title="lintrans.gui.dialogs.misc.AboutDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">AboutDialog</span></code></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="lintrans.gui.dialogs.misc.FixedSizeDialog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lintrans.gui.dialogs.misc.</span></span><span class="sig-name descname"><span class="pre">FixedSizeDialog</span></span><a class="headerlink" href="#lintrans.gui.dialogs.misc.FixedSizeDialog" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://doc.qt.io/qt-5/qdialog.html" title="(in PyQt5 v5.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></a></p>
+<p>A simple superclass to create modal dialog boxes with fixed size.</p>
+<p>We override the <a class="reference internal" href="#lintrans.gui.dialogs.misc.FixedSizeDialog.open" title="lintrans.gui.dialogs.misc.FixedSizeDialog.open"><code class="xref py py-meth docutils literal notranslate"><span class="pre">open()</span></code></a> method to set the fixed size as soon as the dialog is opened modally.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.dialogs.misc.FixedSizeDialog.open">
+<span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#lintrans.gui.dialogs.misc.FixedSizeDialog.open" title="Permalink to this definition"></a></dt>
+<dd><p>Override <a class="reference external" href="https://doc.qt.io/qt-5/qdialog.html#open" title="(in PyQt5 v5.15)"><code class="docutils literal notranslate"><span class="pre">QDialog.open()</span></code></a> to set the dialog to a fixed size.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lintrans.gui.dialogs.misc.AboutDialog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lintrans.gui.dialogs.misc.</span></span><span class="sig-name descname"><span class="pre">AboutDialog</span></span><a class="headerlink" href="#lintrans.gui.dialogs.misc.AboutDialog" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lintrans.gui.dialogs.misc.FixedSizeDialog" title="lintrans.gui.dialogs.misc.FixedSizeDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">lintrans.gui.dialogs.misc.FixedSizeDialog</span></code></a></p>
+<p>A simple dialog class to display information about the app to the user.</p>
+<p>It only has an <a class="reference internal" href="#lintrans.gui.dialogs.misc.AboutDialog.__init__" title="lintrans.gui.dialogs.misc.AboutDialog.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__init__()</span></code></a> method because it only has label widgets, so no other methods are necessary here.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lintrans.gui.dialogs.misc.AboutDialog.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lintrans.gui.dialogs.misc.AboutDialog.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Create an <a class="reference internal" href="#lintrans.gui.dialogs.misc.AboutDialog" title="lintrans.gui.dialogs.misc.AboutDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">AboutDialog</span></code></a> object with all the label widgets.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 <section id="module-lintrans.gui.dialogs.settings">
 <span id="lintrans-gui-dialogs-settings-module"></span><h2>lintrans.gui.dialogs.settings module<a class="headerlink" href="#module-lintrans.gui.dialogs.settings" title="Permalink to this headline"></a></h2>
 <p>This module provides dialogs to edit settings within the app.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.settings.SettingsDialog">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lintrans.gui.dialogs.settings.</span></span><span class="sig-name descname"><span class="pre">SettingsDialog</span></span><a class="headerlink" href="#lintrans.gui.dialogs.settings.SettingsDialog" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference external" href="https://doc.qt.io/qt-5/qdialog.html" title="(in PyQt5 v5.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#lintrans.gui.dialogs.misc.FixedSizeDialog" title="lintrans.gui.dialogs.misc.FixedSizeDialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">lintrans.gui.dialogs.misc.FixedSizeDialog</span></code></a></p>
 <p>An abstract superclass for other simple dialogs.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.gui.dialogs.settings.SettingsDialog.__init__">
