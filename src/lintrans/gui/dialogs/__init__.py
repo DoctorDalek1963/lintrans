@@ -10,7 +10,8 @@ These dialogs are for defining new matrices in different ways and editing settin
 """
 
 from .define_new_matrix import DefineAsAnExpressionDialog, DefineDialog, DefineNumericallyDialog, DefineVisuallyDialog
+from .misc import AboutDialog
 from .settings import DisplaySettingsDialog
 
-__all__ = ['DefineAsAnExpressionDialog', 'DefineDialog', 'DefineNumericallyDialog',
-           'DefineVisuallyDialog', 'DisplaySettingsDialog']
+__all__ = ['DefineAsAnExpressionDialog', 'DefineDialog', 'DefineNumericallyDialog', 'DefineVisuallyDialog',
+           'AboutDialog', 'DisplaySettingsDialog']

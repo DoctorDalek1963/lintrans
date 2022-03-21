@@ -25,6 +25,7 @@ from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox
 from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.typing_ import MatrixType
+from . import dialogs
 from .dialogs import DefineAsAnExpressionDialog, DefineDialog, DefineNumericallyDialog, DefineVisuallyDialog
 from .dialogs.settings import DisplaySettingsDialog
 from .plots import VisualizeTransformationWidget
@@ -95,7 +96,7 @@ class LintransMainWindow(QMainWindow):
 
         self.action_about = QtWidgets.QAction(self)
         self.action_about.setText('&About')
-        self.action_about.triggered.connect(lambda: print('about'))
+        self.action_about.triggered.connect(lambda: dialogs.AboutDialog(self).open())
 
         # TODO: Implement these actions and enable them
         self.action_new.setEnabled(False)
@@ -103,18 +104,17 @@ class LintransMainWindow(QMainWindow):
         self.action_save.setEnabled(False)
         self.action_save_as.setEnabled(False)
         self.action_tutorial.setEnabled(False)
-        self.action_about.setEnabled(False)
 
         self.menu_file.addAction(self.action_new)
         self.menu_file.addAction(self.action_open)
         self.menu_file.addSeparator()
         self.menu_file.addAction(self.action_save)
         self.menu_file.addAction(self.action_save_as)
-        self.menu_file.addSeparator()
-        self.menu_file.addAction(self.action_about)
 
         self.menu_help.addAction(self.action_tutorial)
         self.menu_help.addAction(self.action_docs)
+        self.menu_help.addSeparator()
+        self.menu_help.addAction(self.action_about)
 
         self.menubar.addAction(self.menu_file.menuAction())
         self.menubar.addAction(self.menu_help.menuAction())
