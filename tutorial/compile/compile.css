@@ -1,0 +1,54 @@
+/*
+lintrans - The linear transformation visualizer
+Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
+
+This program is licensed under GNU GPLv3, available here:
+<https://www.gnu.org/licenses/gpl-3.0.html>
+*/
+
+hr {
+	width: 90%;
+	margin: auto;
+}
+
+h1.compilation-guide-header {
+	font-family: 'Hack', Courier, monospace;
+	font-weight: normal;
+	margin: 0.5em auto;
+
+	width: 80%;
+}
+
+div.compilation-guide-step {
+	margin: 2em auto;
+
+	width: 80%;
+}
+
+div.compilation-guide-step h3 {
+	font-family: 'Hack', Courier, monospace;
+
+	width: 80%;
+	margin: auto;
+	margin-bottom: 0.5em;
+}
+
+div.compilation-guide-step p {
+	margin: 0.8em auto;
+	font-size: 0.9em;
+}
+
+code {
+	padding: 0.2em 0.4em;
+	background-color: #474747;
+	border-radius: 6px;
+}
+
+a {
+	color: #539bf5;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}

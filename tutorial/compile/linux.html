@@ -1,0 +1,78 @@
+<!--
+lintrans - The linear transformation visualizer
+Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
+
+This program is licensed under GNU GPLv3, available here:
+<hcodeps://www.gnu.org/licenses/gpl-3.0.html>
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="../../main.css" type="text/css">
+	<link rel="stylesheet" href="compile.css" type="text/css">
+	<link rel="stylesheet" href="hcodeps://cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack-subset.css">
+
+	<title>lintrans compilation guide - Linux</title>
+</head>
+<body>
+	<div class="compilation-guide-wrapper">
+		<h1 class="compilation-guide-header">lintrans compilation guide - Linux</h1>
+
+		<hr>
+
+		<div class="compilation-guide-step">
+			<h3>Install Python 3.10</h3>
+
+			<p>Download and install Python 3.10 or newer. Version 3.10.3 can be found <a href="https://www.python.org/downloads/release/python-3103/" target="_blank">here</a> but any version 3.10 or higher should also suffice.</p>
+
+			<p>On Linux, you need to install Python from source. You'll need to open a terminal and extract the Python source code zip somewhere and <code>cd</code> into that directory.</p>
+
+			<p>I highly recommend adding <code>~/.local/bin/</code> to the start of your <code>$PATH</code> if it's not already there. This can be done with the command <code>echo 'PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc</code> followed by <code>. ~/.bashrc</code>. If you use a different shell, then replace <code>~/.bashrc</code> with that shell's config file (<code>~/.zshrc</code> in the case of zsh, for example) in both commands.</p>
+
+			<p>Then configure Python with the <code>./configure --prefix=~/.local/ --enable-optimizations</code> command and install it with <code>make && make altinstall</code> rather than <code>make && sudo make install</code> as recommended.</p>
+
+			<p>Doing it this way will avoid tampering with the system-wide Python installation or any other user's Python installation.</p>
+
+			<p>For this tutorial, I will be assuming <code>python</code> refers to Python 3.10. You might need to use <code>python3</code> or <code>python3.10</code> instead. Use <code>python -V</code> to check the version and use whichever one says 3.10. If it says something like 3.10.2 or 3.10.3, that's fine.</p>
+		</div>
+
+		<hr>
+
+		<div class="compilation-guide-step">
+			<h3>Get the lintrans source code</h3>
+
+			<p>If you've got <code>git</code> and know how to use it, then you can run <code>git clone https://github.com/DoctorDalek1963/lintrans.git</code> and use that.</p>
+
+			<p>Otherwise, download the <a href="https://github.com/DoctorDalek1963/lintrans/archive/refs/heads/main.zip">source code zip file</a> and run <code>cd ~/Downloads</code> in your terminal. Unzip the file with <code>unzip lintrans-main.zip</code> or with your GUI zip file manager, and then run <code>cd lintrans-main</code>.</p>
+		</div>
+
+		<hr>
+
+		<div class="compilation-guide-step">
+			<h3>Create a virtual environment and install dependencies</h3>
+
+			<p>Using whichever version of Python is 3.10 for you, run <code>python -m venv venv</code> and then <code>. venv/bin/activate</code>. If you use <code>csh</code> or <code>fish</code>, then run <code>. venv/bin/activate.csh</code> or <code>. venv/bin/activate.fish</code> respectively.</p>
+
+			<p>Now run the command <code>pip install -U pip PyInstaller -e .</code> and wait for everything to install.</p>
+		</div>
+
+		<hr>
+
+		<div class="compilation-guide-step">
+			<h3>Compile the program</h3>
+
+			<p>We're now ready to compile the program. Simply run <code>python compile.py</code> and wait for it to finish compiling.</p>
+
+			<p>You should now have an executable file called <code>lintrans</code> in the current directory. I would recommend moving this file somewhere else, perhaps to a directory on your <code>$PATH</code> and then deleting the working directory. You can also run <code>deactivate</code> to deactivate the virtual environment.</p>
+
+			<p>You could also create a <code>.desktop</code> file in GNOME, or the equivalent in other desktop environments, but this is not necessary.</p>
+
+			<p>Thank you for installing lintrans! If you had any issues with the installation or have any questions about the app, don't hesitate to contact me through <a href="https://github.com/DoctorDalek1963/lintrans.git" target="_blank">my GitHub</a> or via email at <a href="mailto:dyson.dyson@icloud.com">dyson.dyson@icloud.com</a>.</p>
+		</div>
+	</div>
+</body>
+</html>
