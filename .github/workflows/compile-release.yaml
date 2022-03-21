@@ -131,9 +131,9 @@ jobs:
           draft: true
           body: "DESCRIPTION
 
-          The Linux binary should work fine, but on Windows, you will get a warning that the program may be unsafe. This is expected and you can just ignore it. There's no binary for macOS.
+          The Linux binary should work fine, but on Windows, you will get a warning that the program may be unsafe. This is expected and you can just ignore it. There's no binary for macOS due to Apple code signing issues.
 
-          If you're running macOS, then you will need to build the program from source. This is also an option on Linux and Windows. Instructions can be found [here](https://doctordalek1963.github.io/lintrans/tutorial/install.html).
+          If you're running macOS, then you will need to compile the program from source. This is also an option on Linux and Windows. Instructions can be found [here](https://doctordalek1963.github.io/lintrans/tutorial/compile/).
 
           ### Changelog
           - ITEM"
@@ -148,9 +148,9 @@ jobs:
           draft: true
           body: "DESCRIPTION
 
-          The Linux binary should work fine, but on Windows, you will get a warning that the program may be unsafe. This is expected and you can just ignore it. There's no binary for macOS.
+          The Linux binary should work fine, but on Windows, you will get a warning that the program may be unsafe. This is expected and you can just ignore it. There's no binary for macOS due to Apple code signing issues.
 
-          If you're running macOS, then you will need to build the program from source. This is also an option on Linux and Windows. Instructions can be found [here](https://doctordalek1963.github.io/lintrans/tutorial/install.html).
+          If you're running macOS, then you will need to compile the program from source. This is also an option on Linux and Windows. Instructions can be found [here](https://doctordalek1963.github.io/lintrans/tutorial/compile/).
 
           ### Changelog
           - ITEM"
