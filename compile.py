@@ -6,7 +6,7 @@
 # This program is licensed under GNU GPLv3, available here:
 # <https://www.gnu.org/licenses/gpl-3.0.html>
 
-"""A simple pre-compile script for the automated GitHub page compilation action."""
+"""A simple compile script for users to compile lintrans themselves, also used by the GitHub action."""
 
 import argparse
 import os
