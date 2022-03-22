@@ -121,6 +121,9 @@ jobs:
           isprerelease=$(if [ -n "$(echo $GITHUB_REF | grep -Po -- '(v?\d+\.\d+\.\d+)-[^ ]+')" ]; then echo 1; else echo 0; fi)
           echo "::set-output name=isprerelease::$isprerelease"
 
+      - name: Generate release notes
+        run: python generate_release_notes.py $GITHUB_REF_NAME
+
       # This is practically the same step twice just to allow for pre-releases
       - name: Upload binaries (normal release)
         if: steps.checkprerelease.outputs.isprerelease == 0
@@ -129,14 +132,7 @@ jobs:
           fail_on_unmatched_files: true
           prerelease: false
           draft: true
-          body: "DESCRIPTION
-
-          The Linux binary should work fine, but on Windows, you will get a warning that the program may be unsafe. This is expected and you can just ignore it. There's no binary for macOS due to Apple code signing issues.
-
-          If you're running macOS, then you will need to compile the program from source. This is also an option on Linux and Windows. Instructions can be found [here](https://doctordalek1963.github.io/lintrans/tutorial/compile/).
-
-          ### Changelog
-          - ITEM"
+          body_path: release_notes.md
           files: dist/lintrans*
 
       - name: Upload binaries (pre-release)
@@ -146,12 +142,5 @@ jobs:
           fail_on_unmatched_files: true
           prerelease: true
           draft: true
-          body: "DESCRIPTION
-
-          The Linux binary should work fine, but on Windows, you will get a warning that the program may be unsafe. This is expected and you can just ignore it. There's no binary for macOS due to Apple code signing issues.
-
-          If you're running macOS, then you will need to compile the program from source. This is also an option on Linux and Windows. Instructions can be found [here](https://doctordalek1963.github.io/lintrans/tutorial/compile/).
-
-          ### Changelog
-          - ITEM"
+          body_path: release_notes.md
           files: dist/lintrans*
