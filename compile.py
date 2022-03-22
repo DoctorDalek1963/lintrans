@@ -20,19 +20,33 @@ from PyInstaller.__main__ import run as run_pyi
 import lintrans
 
 
+OS_NAME_DICT = {
+    'darwin': 'macOS',
+    'linux': 'Linux',
+    'win32': 'Windows'
+}
+
+
 class Compiler:
     """A simple class to encapsulate compilation logic."""
 
     def __init__(
             self, *,
-            filename: str,
-            version_name: str,
-            platform: str | None = None
+            fullname: bool,
+            version_name: str
     ):
         """Create a Compiler object."""
-        self.filename = filename
         self.version_name = version_name
-        self.platform = platform if platform else sys.platform
+        self.platform = sys.platform
+
+        if fullname:
+            self.filename = f'lintrans-{OS_NAME_DICT[self.platform]}-{self.version_name}'
+
+        print(f'Created {self!r}')
+
+    def __repr__(self) -> str:
+        """Return a simple repr of the object."""
+        return f'Compiler(filename={self.filename}, version_name={self.version_name}, platform={self.platform})'
 
     def _windows_generate_version_info(self) -> None:
         """Generate version_info.txt for Windows."""
@@ -48,6 +62,8 @@ class Compiler:
             flags = '0x0'
 
         version_tuple = f'{major}, {minor}, {patch}, 0'
+
+        print(f'Generating Windows version file with tuple=({version_tuple}) and dev_part={dev_part}')
 
         version_info = dedent(f'''
         VSVersionInfo(
@@ -96,6 +112,8 @@ class Compiler:
         if (m := re.match(r'v?(\d+\.\d+\.\d+)(-[^ ]+)?', short_version_name)) is not None:
             short_version_name = m.group(1)
 
+        print(f'Generating macOS Info.plist with short_version_name={short_version_name}')
+
         new_info_plist = dedent(f'''
         <?xml version="1.0" encoding="UTF-8"?>
         <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"
@@ -129,6 +147,8 @@ class Compiler:
 
         with open(os.path.join(self.filename + '.app', 'Contents', 'Info.plist'), 'w', encoding='utf-8') as f:
             f.write(new_info_plist)
+
+        print(f'Info.plist replaced in {self.filename}.app')
 
     def _get_pyi_args(self) -> list[str]:
         """Return the common args for PyInstaller."""
@@ -175,6 +195,7 @@ class Compiler:
 
     def compile(self) -> None:
         """Compile for the appropriate operating system."""
+        print(f'Compiling for platform={self.platform}')
         if self.platform == 'darwin':
             self._compile_macos()
 
@@ -187,9 +208,13 @@ class Compiler:
         else:
             raise ValueError(f'Unsupported operating system "{self.platform}"')
 
+        print('Compilation finished')
+
         shutil.rmtree('dist')
         shutil.rmtree('build')
         os.remove(self.filename + '.spec')
+
+        print('Auxiliary files cleaned up')
 
 
 def main() -> None:
@@ -200,23 +225,16 @@ def main() -> None:
     )
 
     parser.add_argument(
-        '-f', '--filename',
-        type=str,
+        '-f', '--fullname',
         required=False,
-        default='lintrans',
-        help='the filename (without extension)'
-    )
-    parser.add_argument(
-        '-v', '--version',
-        type=str,
-        required=False,
-        default='v' + lintrans.__version__,
-        help='the version name in the format v1.2.3'
+        default=False,
+        action='store_true',
+        help='whether to use the fullname for compilation (lintrans-platform-version) or the short name (lintrans)'
     )
 
     args = parser.parse_args()
 
-    compiler = Compiler(filename=args.filename, version_name=args.version)
+    compiler = Compiler(fullname=True, version_name=lintrans.__version__)
     compiler.compile()
 
 
