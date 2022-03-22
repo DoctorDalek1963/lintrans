@@ -24,6 +24,17 @@ If you're running macOS, then you will need to compile the program from source. 
 CHANGELOG
 '''
 
+# This RegEx is complicated because of the newlines
+# It requires the current tag to have a header like
+# ## [0.2.1] - 2022-03-22
+# And all other tags to have similar headers
+# It also won't work on the first tag, but that's fine
+RE_PATTERN = r'''(?<=## \[TAG_NAME\] - \d{4}-\d{2}-\d{2}
+
+).*?(?=
+
+## \[\d+\.\d+\.\d+(-[\S]+)?\] - \d{4}-\d{2}-\d{2})'''
+
 
 def main(args: list[str]) -> None:
     """Generate the release notes for this release and write them to `release_notes.md`."""
@@ -37,19 +48,11 @@ def main(args: list[str]) -> None:
     with open('CHANGELOG.md', 'r', encoding='utf-8') as f:
         changelog_text = f.read()
 
-    # This RegEx is complicated because of the newlines
-    # It requires the current tag to have a header like
-    # ## [v0.2.1] - 2022-03-22
-    # And all other tags to have similar headers
-    # It also won't work on the first tag, but that's fine
-    if (
-        m := re.search(
-            r'(?m)(?<=## \[' + re.escape(tag_name)[1:] + r'\]'
-            r' - \d{4}-\d{2}-\d{2}' '\n\n)[\n' r'\S\s]*(?=' '\n\n'
-            r'## \[\d+\.\d+\.\d+(-[\S])+\] - \d{4}-\d{2}-\d{2})',
-            changelog_text
-        )
-    ) is not None:
+    if (m := re.search(
+        RE_PATTERN.replace('TAG_NAME', re.escape(tag_name[1:])),
+        changelog_text,
+        flags=re.S
+    )) is not None:
         text = TEXT.replace('CHANGELOG', m.group(0))
 
     else:
