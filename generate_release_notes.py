@@ -43,9 +43,12 @@ def main(args: list[str]) -> None:
     # And all other tags to have similar headers
     # It also won't work on the first tag, but that's fine
     if (
-        m := re.search(r'(?m)(?<=## \[' + re.escape(tag_name).replace("v", "") + r'\]'
-                       r' - \d{4}-\d{2}-\d{2}' '\n\n)[\n' r'\S\s]*(?=' '\n\n'
-                       r'## \[\d+\.\d+\.\d+\] - \d{4}-\d{2}-\d{2})', changelog_text)
+        m := re.search(
+            r'(?m)(?<=## \[' + re.escape(tag_name)[1:] + r'\]'
+            r' - \d{4}-\d{2}-\d{2}' '\n\n)[\n' r'\S\s]*(?=' '\n\n'
+            r'## \[\d+\.\d+\.\d+(-[\S])+\] - \d{4}-\d{2}-\d{2})',
+            changelog_text
+        )
     ) is not None:
         text = TEXT.replace('CHANGELOG', m.group(0))
 

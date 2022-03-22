@@ -50,7 +50,7 @@ class Compiler:
 
     def _windows_generate_version_info(self) -> None:
         """Generate version_info.txt for Windows."""
-        if (m := re.match(r'v(\d+)\.(\d+)\.(\d+)(-[^ ]+)?', self.version_name)) is not None:
+        if (m := re.match(r'v?(\d+)\.(\d+)\.(\d+)(-[^ ]+)?', self.version_name)) is not None:
             major, minor, patch, dev_part = m.groups()
 
         else:
