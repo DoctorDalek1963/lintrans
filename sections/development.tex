@@ -67,4 +67,27 @@ I then implemented several tests for this parsing.
 
 These test lots of simple expressions, but don't test any more complicated expressions, nor do they test any validation, mostly because validation doesn't really exist at this point. \texttt{'A++B'} is still a valid expression and is equivalent to \texttt{'A+B'}.
 
+\subsubsection{Simple matrix expression validation}
+
+My next major step was to implement proper parsing, but I procrastinated for a while and first implemented proper validation.
+
+%: 39b918651f60bc72bc19d2018075b24a6fc3af17
+%: src/lintrans/_parse/matrices.py:9-55
+
+Here, I'm using a BNF schema to programmatically generate a regular expression. I use a function to generate this pattern and assign it to a variable when the module is initialized. This is because the pattern compilation is expensive and it's more efficient to compile the pattern once and then just use it in the \texttt{validate\_matrix\_expression()} function.
+
+I also created a method \texttt{is\_valid\_expression()} in \texttt{MatrixWrapper}, which just validates a given expression. It uses the aforementioned \texttt{validate\_matrix\_expression()} and also checks that every matrix referenced in the expression is defined in the wrapper.
+
+%: 39b918651f60bc72bc19d2018075b24a6fc3af17
+%: src/lintrans/matrices/wrapper.py:99-117
+
+I then implemented some simple tests to make sure the function works with valid and invalid expressions.
+
+%: a0fb029f7da995803c24ee36e7e8078e5621f676
+%: tests/_parse/test_parse_and_validate_expression.py
+
+Here, we test some valid data, some definitely invalid data, and some edge cases. At this stage, \texttt{'A--1B'} was considered a valid expression. This was a quirk of the validator at the time, but I fixed it later. This should obviously be an invalid expression, especially since \texttt{'A--B'} is considered invalid, but \texttt{'A--1B'} is valid.
+
+The \mintinline{python}{@pytest.mark.parametrize} decorator on line 35 means that \texttt{pytest} will run one test for valid inputs, and then another test for invalid inputs, and these will count as different tests. This makes it easier to see which tests failed and then debug the app.
+
 \end{document}
