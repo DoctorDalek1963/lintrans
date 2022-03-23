@@ -15,6 +15,7 @@ Please note, throughout this section, every code snippet will have two comments 
 \subsubsection{\texttt{MatrixWrapper} class}
 
 The first real part of development was creating the \texttt{MatrixWrapper} class. It needs a simple instance dictionary to be created in the constructor, and it needs a way of accessing the matrices. I decided to use Python's \texttt{\_\_getitem\_\_} and \texttt{\_\_setitem\_\_} special methods\cite{python-3-special-methods} to allow indexing into a \texttt{MatrixWrapper} object like \texttt{wrapper['M']}. This simplifies using the class.
+
 %: 29ec1fedbf307e3b7ca731c4a381535fec899b0b
 %: src/lintrans/matrices/wrapper.py
 
@@ -23,6 +24,7 @@ This code is very simple. The constructor (\texttt{\_\_init\_\_}) creates a dict
 I could make this class subclass \texttt{dict}, since it's basically just a dictionary at this point, but I want to extend it with much more functionality later, so I chose to handle the dictionary stuff myself.
 
 I then had to write unit tests for this class, and I chose to do all my unit tests using a framework called \texttt{pytest}.
+
 %: 29ec1fedbf307e3b7ca731c4a381535fec899b0b
 %: tests/test_matrix_wrapper.py
 
