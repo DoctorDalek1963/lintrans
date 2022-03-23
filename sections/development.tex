@@ -32,4 +32,39 @@ These tests are quite simple and just ensure that the expected behaviour works t
 
 The function decorated with \mintinline{python}{@pytest.fixture} allows functions to use a parameter called \texttt{wrapper} and \texttt{pytest} will automatically call this function and pass it as that parameter. It just saves on code repetition.
 
+\subsubsection{Rudimentary parsing and evaluating}
+
+This first thing I did here was improve the \texttt{\_\_setitem\_\_} and \texttt{\_\_getitem\_\_} methods to validate input and easily get transposes and simple rotation matrices.
+
+%: f89fc9fd8d5917d07557fc50df3331123b55ad6b
+%: src/lintrans/matrices/wrapper.py:60-81
+
+In this method, I'm now casting all the values to floats. This is very simple validation, since this cast will raise \mintinline{python}{ValueError} if it fails to cast the value to a float. I should've declared \texttt{:raises ValueError:} in the docstring, but this was an oversight at the time.
+
+%: f89fc9fd8d5917d07557fc50df3331123b55ad6b
+%: src/lintrans/matrices/wrapper.py:27-59
+
+This \texttt{\_\_getitem\_\_} method now allows for easily accessing transposes and rotation matrices by checking input with regular expressions. This makes getting matrices easier and thus makes evaluating full expressions simpler.
+
+The \texttt{create\_rotation\_matrix()} method is also defined in this file and just uses the $\begin{psmallmatrix}\cos\theta & -\sin\theta\\\sin\theta & \cos\theta\end{psmallmatrix}$ formula from before:
+
+%: f89fc9fd8d5917d07557fc50df3331123b55ad6b
+%: src/lintrans/matrices/wrapper.py:158-168
+
+At this stage, I also implemented a simple parser and evaluator using regular expressions. It's not great and it's not very flexible, but it can evaluate simple expressions.
+
+%: f89fc9fd8d5917d07557fc50df3331123b55ad6b
+%: src/lintrans/matrices/wrapper.py:83-155
+
+I think the comments in the code speak for themselves, but we basically split the expression up into groups to be added, and then for each group, we multiply every matrix in that group to get its value, and then add all these values together at the end.
+
+This code is objectively bad. At the time of writing, it's now quite old, so I can say that. This code has no real error handling, and line 48 introduces the glaring error that \texttt{'A++B'} is now a valid expression because we disregard empty strings. Not to mention the fact that the method is called \texttt{parse\_expression} but actually evaluates an expression. All these issues will be fixed in the future, but this was the first implementation of matrix evaluation, and it does the job decently well.
+
+I then implemented several tests for this parsing.
+
+%: 60e0c713b244e097bab8ee0f71142b709fde1a8b
+%: tests/test_matrix_wrapper_parse_expression.py
+
+These test lots of simple expressions, but don't test any more complicated expressions, nor do they test any validation, mostly because validation doesn't really exist at this point. \texttt{'A++B'} is still a valid expression and is equivalent to \texttt{'A+B'}.
+
 \end{document}
