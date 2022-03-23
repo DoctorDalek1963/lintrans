@@ -10,9 +10,9 @@
 
 Please note, throughout this section, every code snippet will have two comments at the top. The first is the git commit hash that the snippet was taken from\footnote{A history of all commits can be found in the GitHub repository\cite{lintrans-github}}. The second comment is the file name and line numbers. If the line numbers are omitted, then the snippet is the whole file. After a certain point, I introduced copyright comments at the top of every file. These are always omitted here.
 
-\subsection{Matrices backend\label{subsection:development:matrices-backend}}
+\subsection{Matrices backend\label{development:matrices-backend}}
 
-\subsubsection{\texttt{MatrixWrapper} class\label{subsubsection:development:matrices-backend:MatrixWrapper-class}}
+\subsubsection{\texttt{MatrixWrapper} class\label{development:matrices-backend:MatrixWrapper-class}}
 
 The first real part of development was creating the \texttt{MatrixWrapper} class. It needs a simple instance dictionary to be created in the constructor, and it needs a way of accessing the matrices. I decided to use Python's \texttt{\_\_getitem\_\_} and \texttt{\_\_setitem\_\_} special methods\cite{python-3-special-methods} to allow indexing into a \texttt{MatrixWrapper} object like \texttt{wrapper['M']}. This simplifies using the class.
 
@@ -32,7 +32,7 @@ These tests are quite simple and just ensure that the expected behaviour works t
 
 The function decorated with \mintinline{python}{@pytest.fixture} allows functions to use a parameter called \texttt{wrapper} and \texttt{pytest} will automatically call this function and pass it as that parameter. It just saves on code repetition.
 
-\subsubsection{Rudimentary parsing and evaluating\label{subsubsection:development:matrices-backend:rudimentary-parsing-and-evaluating}}
+\subsubsection{Rudimentary parsing and evaluating\label{development:matrices-backend:rudimentary-parsing-and-evaluating}}
 
 This first thing I did here was improve the \texttt{\_\_setitem\_\_} and \texttt{\_\_getitem\_\_} methods to validate input and easily get transposes and simple rotation matrices.
 
@@ -67,7 +67,7 @@ I then implemented several tests for this parsing.
 
 These test lots of simple expressions, but don't test any more complicated expressions, nor do they test any validation, mostly because validation doesn't really exist at this point. \texttt{'A++B'} is still a valid expression and is equivalent to \texttt{'A+B'}.
 
-\subsubsection{Simple matrix expression validation\label{subsubsection:development:matrices-backend:simple-matrix-expression-validation}}
+\subsubsection{Simple matrix expression validation\label{development:matrices-backend:simple-matrix-expression-validation}}
 
 My next major step was to implement proper parsing, but I procrastinated for a while and first implemented proper validation.
 
@@ -90,7 +90,7 @@ Here, we test some valid data, some definitely invalid data, and some edge cases
 
 The \mintinline{python}{@pytest.mark.parametrize} decorator on line 35 means that \texttt{pytest} will run one test for valid inputs, and then another test for invalid inputs, and these will count as different tests. This makes it easier to see which tests failed and then debug the app.
 
-\subsubsection{Parsing matrix expressions\label{subsubsection:development:matrices-backend:parsing-matrix-expressions}}
+\subsubsection{Parsing matrix expressions\label{development:matrices-backend:parsing-matrix-expressions}}
 
 Parsing is quite an interesting problem and something I didn't feel able to tackle head-on, so I wrote the unit tests first. I had a basic idea of what I wanted the parser to return, but no real idea of how to implement that. My unit tests looked like this:
 
@@ -121,7 +121,7 @@ Then once I'd fixed the validation, I could implement the parser itself.
 %: fd80d8d3b0e975e92dcc7c10f1f0f1276879f408
 %: src/lintrans/_parse/matrices.py:86-128
 
-It works similarly to the old \texttt{MatrixWrapper.parse\_expression()} method in \S\ref{subsubsection:development:matrices-backend:rudimentary-parsing-and-evaluating} but with a powerful list comprehension at the end. It splits the expression up into groups and then uses some RegEx magic to find all the matrices in these groups as a tuple.
+It works similarly to the old \texttt{MatrixWrapper.parse\_expression()} method in \S\ref{development:matrices-backend:rudimentary-parsing-and-evaluating} but with a powerful list comprehension at the end. It splits the expression up into groups and then uses some RegEx magic to find all the matrices in these groups as a tuple.
 
 This method passes all the unit tests, as expected.
 

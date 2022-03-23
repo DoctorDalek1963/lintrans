@@ -8,7 +8,7 @@
 
 \begin{document}
 
-\subsection{Problem decomposition\label{subsection:design:problem-decomposition}}
+\subsection{Problem decomposition\label{design:problem-decomposition}}
 
 I have decomposed the problem of visualization as follows:
 \begin{center}
@@ -41,9 +41,9 @@ Rendering and animating will likely be the largest part in reality, but I've onl
 
 I have deliberately broken this problem down into parts that can be easily translated into modules in my eventual coded solution. This is simply to ease the design and development process, since now I already know my basic project structure. This problem could've been broken down into the parts that the user will directly interact with, but that would be less useful to me when actually starting development, since I would then have to decompose the problem differently to write the actual code.
 
-\subsection{Structure of the solution\label{subsection:design:structure-of-the-solution}}
+\subsection{Structure of the solution\label{design:structure-of-the-solution}}
 
-\subsubsection{The main project\label{subsubsection:design:the-main-project}}
+\subsubsection{The main project\label{design:structure-of-the-solution:the-main-project}}
 
 I have decomposed my solution like so:
 
@@ -83,7 +83,7 @@ The \texttt{settings} module will contain a \texttt{DisplaySettings} dataclass\f
 
 The \texttt{settings} module will also have a \texttt{GlobalSettings} class, which will represent the global settings for the application, such as the logging level, where to save the logs, whether to ask the user if they want to be prompted with a tutorial whenever they open the app, etc. This class will have defaults for everything, but the constructor will try to read these settings from a config file if possible. This allows for persistent settings between sessions. This config file will be \texttt{\textasciitilde/.config/lintrans.conf} on Unix-like systems, including macOS, and \texttt{C:{\textbackslash}Users{\textbackslash}\%USER\%{\textbackslash}AppData{\textbackslash}Roaming{\textbackslash}lintrans{\textbackslash}config.txt} on Windows. This difference is to remain consistent with operating system conventions\footnote{And also to avoid confusing Windows users with a \texttt{.conf} file}.
 
-\subsubsection{The \texttt{gui} subpackages\label{subsubsection:design:the-gui-subpackages}}
+\subsubsection{The \texttt{gui} subpackages\label{design:structure-of-the-solution:the-gui-subpackages}}
 
 \begin{center}
 \begin{tikzpicture}[
@@ -116,13 +116,13 @@ The \texttt{plots} subpackage will also contain a \texttt{widgets} module, which
 
 It's also worth noting here that I don't currently know how I'm going to implement the transformation of arbitrary polygons. It will likely consist of an attribute in \texttt{VisualizeTransformationWidget} which is a list of points, and these points can be dragged around with mouse event handlers and then the transformed versions can be rendered, but I'm not yet sure about how I'm going to implement it.
 
-\subsection{Algorithm design\label{subsection:design:algorithm-design}}
+\subsection{Algorithm design\label{design:algorithm-design}}
 
 % TODO: Write pseudocode and/or create flowcharts for this shit
 
 This section will be completed later.
 
-\subsection{Usability features\label{subsection:design:usability-features}}
+\subsection{Usability features\label{design:usability-features}}
 
 My main concern in terms of usability is colour. In the 3blue1brown videos on linear algebra, red and green are used for the basis vectors, but these colours are often hard to distinguish in most common forms of colour blindness. The most common form is deuteranopia\cite{types-of-color-blindness}, which makes red and green look incredibly similar. I will use blue and red for my basis vectors. These colours are easy to distinguish for people with deuteranopia and protanopia - the two most common forms of colour blindness. Tritanopia makes it harder to distinguish blue and yellow, but my colour scheme is still be accessible for people with tritanopia, as red and blue are very distinct in this form of colour blindness.
 
@@ -134,7 +134,7 @@ The layout of my app will be self-consistent and follow standard conventions. I 
 
 I will also have hotkeys for everything that can have hotkeys - buttons, checkboxes, etc. This makes my life easier, since I'm used to having hotkeys for everything, and thus makes the app faster to test because I don't need to click everything. This also makes things easier for other people like me, who prefer to stay at the keyboard and not use the mouse. Obviously a mouse will be required for things like dragging basis vectors and polygon vertices, but hotkeys will be available wherever possible to help people who don't like using the mouse or find it difficult.
 
-\subsection{Variables and validation\label{subsection:design:variables-and-validation}}
+\subsection{Variables and validation\label{design:variables-and-validation}}
 
 This project won't actually have many variables. The main ones will be instance attributes on the \texttt{LintransMainWindow} class. It will have a \texttt{MatrixWrapper} instance, a \texttt{DisplaySettings} instance, and a \texttt{GlobalSettings} instance. These will handle the matrices and various settings respectively. Having these as instance attributes allows them to be referenced from any method in the class, and Qt5 uses lots of slots (basically callback methods) and handlers, so it's good to be able to access the attributes I need right there rather than having to pass them around from method to method.
 
@@ -150,7 +150,7 @@ Additionally, the buttons to render and animate the current matrix expression wi
 
 I will also apply this matrix expression validation to the textbox in the dialog which allows the user to define a matrix as an expression involving other matrices, and I will validate the input in the numeric definition dialog to make sure that all the inputs are floats. Again, this is to prevent crashes, since a matrix with non-number values in it will likely crash the program.
 
-\subsection{Iterative test data\label{subsection:design:iterative-test-data}}
+\subsection{Iterative test data\label{design:iterative-test-data}}
 
 % TODO: Improve this
 
@@ -219,7 +219,7 @@ Any invalid expression will also raise a parse error, so I will check every inva
 
 Again, this section is brief to save space and time. All unit tests are included in appendix \ref{appendix:testing-code}.
 
-\subsection{Post-development test data\label{subsection:design:post-development-test-data}}
+\subsection{Post-development test data\label{design:post-development-test-data}}
 
 % TODO: Finish this
 
