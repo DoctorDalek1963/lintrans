@@ -6,17 +6,19 @@ This program is licensed under GNU GPLv3, available here:
 <https://www.gnu.org/licenses/gpl-3.0.html>
 */
 
-hr {
-	width: 90%;
-	margin: auto;
+a {
+	color: #539bf5;
+	text-decoration: none;
 }
 
-h1.compilation-guide-header {
-	font-family: 'Hack', Courier, monospace;
-	font-weight: normal;
-	margin: 0.5em auto;
+a:hover {
+	text-decoration: underline;
+}
 
-	width: 80%;
+code {
+	padding: 0.2em 0.4em;
+	background-color: #474747;
+	border-radius: 6px;
 }
 
 div.compilation-guide-step {
@@ -38,17 +40,15 @@ div.compilation-guide-step p {
 	font-size: 0.9em;
 }
 
-code {
-	padding: 0.2em 0.4em;
-	background-color: #474747;
-	border-radius: 6px;
+h1.compilation-guide-header {
+	font-family: 'Hack', Courier, monospace;
+	font-weight: normal;
+	margin: 0.5em auto;
+
+	width: 80%;
 }
 
-a {
-	color: #539bf5;
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
+hr {
+	width: 90%;
+	margin: auto;
 }
