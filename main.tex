@@ -23,7 +23,7 @@
 	fontsize=\normalsize
 }
 
-% Make the line numbers in the appendices look better
+% Make the line numbers in minted code snippets look better
 \renewcommand{\theFancyVerbLine}{\ttfamily
 	\textcolor[rgb]{0.5,0.5,1}{\footnotesize
 		\oldstylenums{\arabic{FancyVerbLine}}}}
@@ -55,7 +55,6 @@
 }
 
 \usepackage{fancyhdr}  % Set up nice headers and footers
-\usepackage{lastpage}  % A reference to the last page in the document for page numbering
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -85,7 +84,7 @@
 	\vfill
 \end{center}
 
-\large{
+{\large
 \begin{tabular}{ll}
 Centre Name:& The Duston School\\
 Centre Number:& 123456\\
