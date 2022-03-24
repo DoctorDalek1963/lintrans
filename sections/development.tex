@@ -125,4 +125,11 @@ It works similarly to the old \texttt{MatrixWrapper.parse\_expression()} method 
 
 This method passes all the unit tests, as expected.
 
+My next step was then to rewrite the evaluation to use this new parser, like so (method name and docstring removed):
+
+%: a453774bcdf824676461f9b9b441d7b94969ea55
+%: src/lintrans/matrices/wrapper.py:168-191
+
+Here, we go through the list of tuples and evaluate the matrix represented by each tuple, putting this together in a list as we go. Then at the end, we simply reduce the sublists and then reduce these new matrices using a list comprehension in the \texttt{reduce()} call using \texttt{add} and \texttt{matmul} from the \texttt{operator} library. It's written in a functional programming style, and it works well.
+
 \end{document}
