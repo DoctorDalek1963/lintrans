@@ -225,9 +225,9 @@ class MatrixWrapper:
         for group in parsed_result:
             f_group: list[MatrixType] = []
 
-            for matrix in group:
-                if matrix[2] == 'T':
-                    m = self[matrix[1]]
+            for multiplier, identifier, index in group:
+                if index == 'T':
+                    m = self[identifier]
 
                     # This assertion is just so mypy doesn't complain
                     # We know this won't be None, because we know that this matrix is defined in this wrapper
@@ -235,10 +235,9 @@ class MatrixWrapper:
                     matrix_value = m.T
 
                 else:
-                    matrix_value = np.linalg.matrix_power(self[matrix[1]],
-                                                          1 if (index := matrix[2]) == '' else int(index))
+                    matrix_value = np.linalg.matrix_power(self[identifier], 1 if index == '' else int(index))
 
-                matrix_value *= 1 if (multiplier := matrix[0]) == '' else float(multiplier)
+                matrix_value *= 1 if multiplier == '' else float(multiplier)
                 f_group.append(matrix_value)
 
             final_groups.append(f_group)
