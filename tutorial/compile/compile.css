@@ -61,3 +61,13 @@ hr {
 	width: 90%;
 	margin: auto;
 }
+
+img {
+	max-width: 90%;
+}
+
+p.note {
+	padding: 1em;
+	border-style: solid;
+	border-color: aqua;
+}

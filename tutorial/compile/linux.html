@@ -49,17 +49,23 @@ This program is licensed under GNU GPLv3, available here:
 
 			<p>If you've already got Python 3.10 or higher, then you just to find out whether you use <code>python</code> or <code>python3</code> in the shell (use <code>python -V</code> to check). We'll need that for later.</p>
 
-			<p>Download and install Python 3.10 or newer. Version 3.10.3 can be found <a href="https://www.python.org/downloads/release/python-3103/" target="_blank">here</a> but any version 3.10 or higher should also suffice.</p>
+			<p>If you don't have Python 3.10 or higher, then you'll need to download it. Version 3.10.3 can be found <a href="https://www.python.org/downloads/release/python-3103/" target="_blank">here</a>.</p>
 
-			<p>On Linux, you need to install Python from source. You'll need to open a terminal and extract the Python source code zip somewhere and <code>cd</code> into that directory.</p>
+			<p>On Linux, you need to install Python from source. You'll need to open a terminal and extract the Python source code somewhere and <code>cd</code> into that directory.</p>
 
 			<p>I highly recommend adding <code>~/.local/bin/</code> to the start of your <code>$PATH</code> if it's not already there. This can be done with the command <code>echo 'PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc</code> followed by <code>. ~/.bashrc</code>. If you use a different shell, then replace <code>~/.bashrc</code> with that shell's config file (<code>~/.zshrc</code> in the case of zsh, for example) in both commands.</p>
 
-			<p>Then configure Python with the <code>./configure --prefix=~/.local/ --enable-optimizations</code> command and install it with <code>make && make altinstall</code> rather than <code>make && sudo make install</code> as recommended.</p>
+			<img src="images/linux/add-local-bin.png"/>
 
-			<p>Doing it this way will avoid tampering with the system-wide Python installation or any other user's Python installation.</p>
+			<p>You may need to install some dependencies first. I highly recommend reading the <a href="https://devguide.python.org/setup/#install-dependencies" target="_blank">Python devguide</a> and installing all the dependencies listed there.</p>
 
-			<p>For this tutorial, I will be assuming <code>python</code> refers to Python 3.10. You might need to use <code>python3</code> or <code>python3.10</code> instead. Use <code>python -V</code> to check the version and use whichever one says 3.10. If it says something like 3.10.2 or 3.10.3, that's fine.</p>
+			<p>Then configure Python with the <code>./configure --prefix=$HOME/.local/ --enable-optimizations --enable-shared</code> command and install it with <code>make && make altinstall</code> rather than <code>make && sudo make install</code> as recommended.</p>
+
+			<img src="images/linux/python-install-command.png"/>
+
+			<p>Doing it this way will avoid tampering with the system-wide Python installation or any other user's Python installation. The <code>--enable-shared</code> flag is necessary for compilation of the program later.</p>
+
+			<p>You now need to run <code>echo 'export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$HOME/.local/lib"' >> ~/.bashrc</code> and then <code>. ~/.bashrc</code>(or <code>~/.zshrc</code> or whatever) to make the shared libraries actually work.</p>
 		</div>
 
 		<hr>
@@ -67,11 +73,11 @@ This program is licensed under GNU GPLv3, available here:
 		<div class="compilation-guide-step">
 			<h3>Get the lintrans source code</h3>
 
-			<p>If you've got <code>git</code> and know how to use it, then you can run <code>git clone https://github.com/DoctorDalek1963/lintrans.git</code> and use that.</p>
-
-			<p>Otherwise, download the source code <a href="#" id="latest-release-zip">zip file</a> or <a href="#" id="latest-release-tarball">tarball</a> for the latest release from GitHub (use the source code download on the specific release page if you want a specific release) and run <code>cd ~/Downloads</code> in your terminal.</p>
+			<p>Download the source code <a href="#" id="latest-release-zip">zip file</a> or <a href="#" id="latest-release-tarball">tarball</a> for the latest release from GitHub (use the source code download on the specific release page if you want a specific release) and run <code>cd ~/Downloads</code> in your terminal.</p>
 
 			<p>Unzip the file with <code>unzip lintrans-&lt;version&gt;.zip</code> or <code>tar xzf lintrans-&lt;version&gt;.tar.gz</code> or with your GUI archive manager, and then run <code>cd lintrans-&lt;version&gt;</code> where <code>&lt;version&gt;</code> is the version you downloaded.</p>
+
+			<img src="images/linux/tar-xzf.png"/>
 		</div>
 
 		<hr>
@@ -79,9 +85,11 @@ This program is licensed under GNU GPLv3, available here:
 		<div class="compilation-guide-step">
 			<h3>Create a virtual environment and install dependencies</h3>
 
-			<p>Using whichever version of Python is 3.10 for you, run <code>python -m venv venv</code> and then <code>. venv/bin/activate</code>. If you use <code>csh</code> or <code>fish</code>, then run <code>. venv/bin/activate.csh</code> or <code>. venv/bin/activate.fish</code> respectively.</p>
+			<p>Run <code>python3.10 -m venv venv</code> and then <code>. venv/bin/activate</code>. If you use <code>csh</code> or <code>fish</code>, then run <code>. venv/bin/activate.csh</code> or <code>. venv/bin/activate.fish</code> respectively.</p>
 
 			<p>Now run the command <code>pip install -U pip PyInstaller -e .</code> and wait for everything to install.</p>
+
+			<img src="images/linux/venv-command.png"/>
 		</div>
 
 		<hr>
@@ -91,9 +99,11 @@ This program is licensed under GNU GPLv3, available here:
 
 			<p>We're now ready to compile the program. Simply run <code>python compile.py</code> and wait for it to finish compiling.</p>
 
-			<p>You should now have an executable file called <code>lintrans</code> in the current directory. I would recommend moving this file somewhere else, perhaps to a directory on your <code>$PATH</code> and then deleting the working directory. You can also run <code>deactivate</code> to deactivate the virtual environment.</p>
+			<p>You should now have an executable file called <code>lintrans</code> in the current directory. I would recommend moving this file somewhere else, perhaps to a directory on your <code>$PATH</code> and then deleting the working directory. You can run <code>deactivate</code> to deactivate the virtual environment.</p>
 
 			<p>You could also create a <code>.desktop</code> file in GNOME, or the equivalent in other desktop environments, but this is not necessary.</p>
+
+			<p class="note" style="margin-top: 2em;">You may need to install some dependencies to get Qt5 working properly. On Ubuntu, you should be able to just run <code>sudo apt install qt5-default</code> and it should work. You may need different packages on different systems.</p>
 		</div>
 
 		<hr>
