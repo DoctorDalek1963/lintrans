@@ -57,7 +57,7 @@ class VisualizeTransformationWidget(VectorGridPlot):
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setBrush(Qt.NoBrush)
 
-        self.draw_background(painter)
+        self.draw_background(painter, self.display_settings.draw_background_grid)
         self.draw_transformed_grid(painter)
         self.draw_basis_vectors(painter)
 

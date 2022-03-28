@@ -84,6 +84,15 @@ class DisplaySettingsDialog(SettingsDialog):
 
         # === Create the widgets
 
+        # Basic stuff
+
+        self.checkbox_draw_background_grid = QCheckBox(self)
+        self.checkbox_draw_background_grid.setText('Draw &background grid')
+        self.checkbox_draw_background_grid.setToolTip(
+            'Draw the background grid (axes are always drawn)'
+        )
+        self.dict_checkboxes['b'] = self.checkbox_draw_background_grid
+
         # Animations
 
         self.checkbox_smoothen_determinant = QCheckBox(self)
@@ -139,6 +148,15 @@ class DisplaySettingsDialog(SettingsDialog):
 
         # === Arrange the widgets in QGroupBoxes
 
+        # Basic stuff
+
+        self.vlay_groupbox_basic_stuff = QVBoxLayout()
+        self.vlay_groupbox_basic_stuff.setSpacing(20)
+        self.vlay_groupbox_basic_stuff.addWidget(self.checkbox_draw_background_grid)
+
+        self.groupbox_basic_stuff = QGroupBox('Basic stuff', self)
+        self.groupbox_basic_stuff.setLayout(self.vlay_groupbox_basic_stuff)
+
         # Animations
 
         self.hlay_animation_pause_length = QHBoxLayout()
@@ -166,6 +184,8 @@ class DisplaySettingsDialog(SettingsDialog):
         self.groupbox_matrix_info = QGroupBox('Matrix info', self)
         self.groupbox_matrix_info.setLayout(self.vlay_groupbox_matrix_info)
 
+        # Now arrange the groupboxes
+        self.vlay_options.addWidget(self.groupbox_basic_stuff)
         self.vlay_options.addWidget(self.groupbox_animations)
         self.vlay_options.addWidget(self.groupbox_matrix_info)
 
@@ -175,6 +195,9 @@ class DisplaySettingsDialog(SettingsDialog):
 
     def load_settings(self) -> None:
         """Load the current display settings into the widgets."""
+        # Basic stuff
+        self.checkbox_draw_background_grid.setChecked(self.display_settings.draw_background_grid)
+
         # Animations
         self.checkbox_smoothen_determinant.setChecked(self.display_settings.smoothen_determinant)
         self.checkbox_applicative_animation.setChecked(self.display_settings.applicative_animation)
@@ -188,6 +211,9 @@ class DisplaySettingsDialog(SettingsDialog):
 
     def confirm_settings(self) -> None:
         """Build a :class:`lintrans.gui.settings.DisplaySettings` object and assign it."""
+        # Basic stuff
+        self.display_settings.draw_background_grid = self.checkbox_draw_background_grid.isChecked()
+
         # Animations
         self.display_settings.smoothen_determinant = self.checkbox_smoothen_determinant.isChecked()
         self.display_settings.applicative_animation = self.checkbox_applicative_animation.isChecked()

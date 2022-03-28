@@ -15,6 +15,16 @@ from dataclasses import dataclass
 class DisplaySettings:
     """This class simply holds some attributes to configure display."""
 
+    # === Basic stuff
+
+    draw_background_grid: bool = True
+    """This controls whether we want to draw the background grid.
+
+    The background axes will always be drawn. This makes it easy to identify the center of the space.
+    """
+
+    # === Animations
+
     smoothen_determinant: bool = True
     """This controls whether we want the determinant to change smoothly during the animation.
 
@@ -34,6 +44,8 @@ class DisplaySettings:
 
     animation_pause_length: int = 400
     """This is the number of milliseconds that we wait between animations when using comma syntax."""
+
+    # === Matrix info
 
     draw_determinant_parallelogram: bool = False
     """This controls whether or not we should shade the parallelogram representing the determinant of the matrix."""

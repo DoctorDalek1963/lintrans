@@ -126,25 +126,27 @@ class BackgroundPlot(QWidget):
         .. note:: This method is abstract and must be overridden by all subclasses.
         """
 
-    def draw_background(self, painter: QPainter) -> None:
+    def draw_background(self, painter: QPainter, draw_grid: bool) -> None:
         """Draw the background grid.
 
         .. note:: This method is just a utility method for subclasses to use to render the background grid.
 
         :param QPainter painter: The painter to draw the background with
+        :param bool draw_grid: Whether to draw the grid lines
         """
-        # Draw the grid
-        painter.setPen(QPen(self.colour_background_grid, self.width_background_grid))
+        if draw_grid:
+            painter.setPen(QPen(self.colour_background_grid, self.width_background_grid))
 
-        # We draw the background grid, centered in the middle
-        # We deliberately exclude the axes - these are drawn separately
-        for x in range(self.width() // 2 + self.grid_spacing, self.width(), self.grid_spacing):
-            painter.drawLine(x, 0, x, self.height())
-            painter.drawLine(self.width() - x, 0, self.width() - x, self.height())
+            # Draw equally spaced vertical lines, starting in the middle and going out
+            # We loop up to half of the width. This is because we draw a line on each side in each iteration
+            for x in range(self.width() // 2 + self.grid_spacing, self.width(), self.grid_spacing):
+                painter.drawLine(x, 0, x, self.height())
+                painter.drawLine(self.width() - x, 0, self.width() - x, self.height())
 
-        for y in range(self.height() // 2 + self.grid_spacing, self.height(), self.grid_spacing):
-            painter.drawLine(0, y, self.width(), y)
-            painter.drawLine(0, self.height() - y, self.width(), self.height() - y)
+            # Same with the horizontal lines
+            for y in range(self.height() // 2 + self.grid_spacing, self.height(), self.grid_spacing):
+                painter.drawLine(0, y, self.width(), y)
+                painter.drawLine(0, self.height() - y, self.width(), self.height() - y)
 
         # Now draw the axes
         painter.setPen(QPen(self.colour_background_axes, self.width_background_grid))
