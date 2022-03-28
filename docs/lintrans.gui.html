@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>lintrans.gui package &mdash; lintrans 0.2.1 documentation</title>
+  <title>lintrans.gui package &mdash; lintrans 0.2.2-alpha documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
     <link rel="shortcut icon" href="_static/favicon.png"/>
@@ -244,7 +244,7 @@ connected to the <a class="reference external" href="https://doc.qt.io/qt-5/qdia
 <dd><p>Run the GUI by creating and showing an instance of <a class="reference internal" href="#lintrans.gui.main_window.LintransMainWindow" title="lintrans.gui.main_window.LintransMainWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">LintransMainWindow</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>]</em>) – The args to pass to <a class="reference external" href="https://doc.qt.io/qt-5/qapplication.html" title="(in PyQt5 v5.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QApplication</span></code></a> (normally <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code>)</p>
+<dd class="field-odd"><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>]</em>) – The args to pass to <a class="reference external" href="https://doc.qt.io/qt-5/qapplication.html" title="(in PyQt5 v5.15)"><code class="xref py py-class docutils literal notranslate"><span class="pre">QApplication</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -258,6 +258,25 @@ connected to the <a class="reference external" href="https://doc.qt.io/qt-5/qdia
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lintrans.gui.settings.</span></span><span class="sig-name descname"><span class="pre">DisplaySettings</span></span><a class="headerlink" href="#lintrans.gui.settings.DisplaySettings" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>This class simply holds some attributes to configure display.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lintrans.gui.settings.DisplaySettings.draw_background_grid">
+<span class="sig-name descname"><span class="pre">draw_background_grid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#lintrans.gui.settings.DisplaySettings.draw_background_grid" title="Permalink to this definition"></a></dt>
+<dd><p>This controls whether we want to draw the background grid.</p>
+<p>The background axes will always be drawn. This makes it easy to identify the center of the space.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lintrans.gui.settings.DisplaySettings.draw_transformed_grid">
+<span class="sig-name descname"><span class="pre">draw_transformed_grid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#lintrans.gui.settings.DisplaySettings.draw_transformed_grid" title="Permalink to this definition"></a></dt>
+<dd><p>This controls whether we want to draw the transformed grid. Vectors are handled separately.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lintrans.gui.settings.DisplaySettings.draw_basis_vectors">
+<span class="sig-name descname"><span class="pre">draw_basis_vectors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#lintrans.gui.settings.DisplaySettings.draw_basis_vectors" title="Permalink to this definition"></a></dt>
+<dd><p>This controls whether we want to draw the transformed basis vectors.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="lintrans.gui.settings.DisplaySettings.smoothen_determinant">
 <span class="sig-name descname"><span class="pre">smoothen_determinant</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#lintrans.gui.settings.DisplaySettings.smoothen_determinant" title="Permalink to this definition"></a></dt>
