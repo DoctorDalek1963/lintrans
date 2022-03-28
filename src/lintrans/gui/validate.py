@@ -16,7 +16,7 @@ from lintrans.matrices import parse
 
 
 class MatrixExpressionValidator(QValidator):
-    """This class validates matrix expressions in an Qt input box."""
+    """This class validates matrix expressions in a Qt input box."""
 
     def validate(self, text: str, pos: int) -> tuple[QValidator.State, str, int]:
         """Validate the given text according to the rules defined in the :mod:`lintrans.matrices` module."""

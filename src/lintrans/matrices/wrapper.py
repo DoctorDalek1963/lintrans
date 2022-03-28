@@ -42,7 +42,7 @@ class MatrixWrapper:
     """
 
     def __init__(self):
-        """Initialise a :class:`MatrixWrapper` object with a dictionary of matrices which can be accessed."""
+        """Initialize a :class:`MatrixWrapper` object with a dictionary of matrices which can be accessed."""
         self._matrices: dict[str, Optional[Union[MatrixType, str]]] = {
             'A': None, 'B': None, 'C': None, 'D': None,
             'E': None, 'F': None, 'G': None, 'H': None,
@@ -108,7 +108,7 @@ class MatrixWrapper:
            If you want the expression itself, use :meth:`get_expression`.
 
         :param str name: The name of the matrix to get
-        :returns Optional[MatrixType]: The value of the matrix (may be None)
+        :returns Optional[MatrixType]: The value of the matrix (could be None)
 
         :raises NameError: If there is no matrix with the given name
         """
@@ -134,7 +134,7 @@ class MatrixWrapper:
         expression in terms of other, previously defined matrices.
 
         :param str name: The name of the matrix to set the value of
-        :param Optional[Union[MatrixType, str]] new_matrix: The value of the new matrix (may be None)
+        :param Optional[Union[MatrixType, str]] new_matrix: The value of the new matrix (could be None)
 
         :raises NameError: If the name isn't a legal matrix name
         :raises TypeError: If the matrix isn't a valid 2x2 NumPy array or expression in terms of other defined matrices

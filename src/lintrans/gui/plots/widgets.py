@@ -20,7 +20,7 @@ class VisualizeTransformationWidget(VectorGridPlot):
     """This class is the widget that is used in the main window to visualize transformations.
 
     It handles all the rendering itself, and the only method that the user needs to
-    worry about is :meth:`visualize_matrix_transformation`, which allows you to visualise
+    worry about is :meth:`visualize_matrix_transformation`, which allows you to visualize
     the given matrix transformation.
     """
 

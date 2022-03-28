@@ -392,7 +392,7 @@ class LintransMainWindow(QMainWindow):
             matrix_a = matrix_start + proportion * (matrix_target - matrix_start)
 
             if self.plot.display_settings.smoothen_determinant and det_start * det_target > 0:
-                # To fix the determinant problem, we get the determinant of matrix_a and use it to normalise
+                # To fix the determinant problem, we get the determinant of matrix_a and use it to normalize
                 det_a = linalg.det(matrix_a)
 
                 # For a 2x2 matrix A and a scalar c, we know that det(cA) = c^2 det(A)

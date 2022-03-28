@@ -120,7 +120,7 @@ jobs:
       - name: Check for dev tag
         id: checkprerelease
         # We used to just check for -alpha on the end but now we check for any tag on the end
-        # This allows for -beta, -dev, -rc1, etc. If it ends in -anything, the it's a pre-release
+        # This allows for -beta, -dev, -rc1, etc. If it ends in -anything, then it's a pre-release
         run: |
           isprerelease=$(if [ -n "$(echo $GITHUB_REF | grep -Po -- '(v?\d+\.\d+\.\d+)-[^ ]+')" ]; then echo 1; else echo 0; fi)
           echo "::set-output name=isprerelease::$isprerelease"

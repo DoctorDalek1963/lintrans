@@ -41,6 +41,8 @@ class Compiler:
 
         if fullname:
             self.filename = f'lintrans-{OS_NAME_DICT[self.platform]}-{self.version_name}'
+        else:
+            self.filename = f'lintrans'
 
         print(f'Created {self!r}')
 
@@ -234,7 +236,7 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    compiler = Compiler(fullname=True, version_name=lintrans.__version__)
+    compiler = Compiler(fullname=args.fullname, version_name=lintrans.__version__)
     compiler.compile()
 
 

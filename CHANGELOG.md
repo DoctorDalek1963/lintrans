@@ -32,7 +32,7 @@ Nothing here yet...
 
 There were alpha tags before this, but I wasn't properly adhering to semantic versioning, so I'll start the changelog here.
 
-If I'd been using semantic versioning from the start, there would much more changelog here, but instead, I'll just summarise the features.
+If I'd been using semantic versioning from the start, there would much more changelog here, but instead, I'll just summarize the features.
 
 ### Added
 

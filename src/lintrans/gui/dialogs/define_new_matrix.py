@@ -72,7 +72,7 @@ class DefineDialog(FixedSizeDialog):
 
     .. note::
        I would make this class have ``metaclass=abc.ABCMeta``, but I can't because it subclasses :class:`QDialog`,
-       and a every superclass of a class must have the same metaclass, and :class:`QDialog` is not an abstract class.
+       and every superclass of a class must have the same metaclass, and :class:`QDialog` is not an abstract class.
     """
 
     def __init__(self, matrix_wrapper: MatrixWrapper, *args, **kwargs):

@@ -6,7 +6,7 @@
 # This program is licensed under GNU GPLv3, available here:
 # <https://www.gnu.org/licenses/gpl-3.0.html>
 
-"""A simple script to convert my manually curated text file to an invetory file that intersphinx can use.
+"""A simple script to convert my manually curated text file to an inventory file that intersphinx can use.
 
 .. note:: The URIs in the text file must not have .html suffices
 """

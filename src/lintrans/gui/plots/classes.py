@@ -32,7 +32,7 @@ class BackgroundPlot(QWidget):
 
     .. note::
        I would make this class have ``metaclass=abc.ABCMeta``, but I can't because it subclasses :class:`QWidget`,
-       and a every superclass of a class must have the same metaclass, and :class:`QWidget` is not an abstract class.
+       and every superclass of a class must have the same metaclass, and :class:`QWidget` is not an abstract class.
     """
 
     default_grid_spacing: int = 85

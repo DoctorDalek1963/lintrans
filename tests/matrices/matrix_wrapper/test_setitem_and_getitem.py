@@ -132,7 +132,7 @@ def test_recursive_dynamic_evaluation(test_wrapper: MatrixWrapper) -> None:
 
 
 def test_set_identity_error(new_wrapper: MatrixWrapper) -> None:
-    """Test that MatrixWrapper().__setitem__() raises a NameError when trying to assign to I."""
+    """Test that MatrixWrapper().__setitem__() raises a NameError when trying to assign to the identity matrix."""
     with pytest.raises(NameError):
         new_wrapper['I'] = test_matrix
 

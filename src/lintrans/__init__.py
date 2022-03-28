@@ -8,6 +8,6 @@
 
 from . import gui, matrices, typing_
 
-__all__ = ['gui', 'matrices', 'typing_']
-
 __version__ = '0.2.1'
+
+__all__ = ['gui', 'matrices', 'typing_', '__version__']
