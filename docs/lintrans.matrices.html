@@ -239,7 +239,7 @@ in a wrapper. For an aware version of this function, use the
 <dl class="py method">
 <dt class="sig sig-object py" id="lintrans.matrices.wrapper.MatrixWrapper.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lintrans.matrices.wrapper.MatrixWrapper.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>Initialise a <a class="reference internal" href="#lintrans.matrices.wrapper.MatrixWrapper" title="lintrans.matrices.wrapper.MatrixWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatrixWrapper</span></code></a> object with a dictionary of matrices which can be accessed.</p>
+<dd><p>Initialize a <a class="reference internal" href="#lintrans.matrices.wrapper.MatrixWrapper" title="lintrans.matrices.wrapper.MatrixWrapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">MatrixWrapper</span></code></a> object with a dictionary of matrices which can be accessed.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -281,7 +281,7 @@ If you want the expression itself, use <a class="reference internal" href="#lint
 <dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the matrix to get</p>
 </dd>
 <dt class="field-even">Returns Optional[MatrixType]</dt>
-<dd class="field-even"><p>The value of the matrix (may be None)</p>
+<dd class="field-even"><p>The value of the matrix (could be None)</p>
 </dd>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NameError" title="(in Python v3.10)"><strong>NameError</strong></a> – If there is no matrix with the given name</p>
@@ -299,7 +299,7 @@ expression in terms of other, previously defined matrices.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of the matrix to set the value of</p></li>
-<li><p><strong>new_matrix</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>MatrixType</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>]</em><em>]</em>) – The value of the new matrix (may be None)</p></li>
+<li><p><strong>new_matrix</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>MatrixType</em><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>]</em><em>]</em>) – The value of the new matrix (could be None)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
