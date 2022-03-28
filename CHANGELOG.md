@@ -13,6 +13,10 @@ Nothing here yet...
 
 - Add options to hide background grid, transformed grid, and basis vectors
 
+### Fixed
+
+- Improve command line argument handling
+
 ## [0.2.1] - 2022-03-22
 
 ### Added 

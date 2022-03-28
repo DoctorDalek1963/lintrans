@@ -531,7 +531,7 @@ class LintransMainWindow(QMainWindow):
 def main(args: list[str]) -> None:
     """Run the GUI by creating and showing an instance of :class:`LintransMainWindow`.
 
-    :param list[str] args: The args to pass to :class:`QApplication` (normally ``sys.argv``)
+    :param list[str] args: The args to pass to :class:`QApplication`
     """
     app = QApplication(args)
     window = LintransMainWindow()
