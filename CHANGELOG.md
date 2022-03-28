@@ -11,7 +11,7 @@ Nothing here yet...
 
 ### Added
 
-- Add options to hide background grid and transformed grid
+- Add options to hide background grid, transformed grid, and basis vectors
 
 ## [0.2.1] - 2022-03-22
 

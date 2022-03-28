@@ -26,6 +26,9 @@ class DisplaySettings:
     draw_transformed_grid: bool = True
     """This controls whether we want to draw the transformed grid. Vectors are handled separately."""
 
+    draw_basis_vectors: bool = True
+    """This controls whether we want to draw the transformed basis vectors."""
+
     # === Animations
 
     smoothen_determinant: bool = True
