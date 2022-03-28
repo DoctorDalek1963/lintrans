@@ -23,6 +23,9 @@ class DisplaySettings:
     The background axes will always be drawn. This makes it easy to identify the center of the space.
     """
 
+    draw_transformed_grid: bool = True
+    """This controls whether we want to draw the transformed grid. Vectors are handled separately."""
+
     # === Animations
 
     smoothen_determinant: bool = True

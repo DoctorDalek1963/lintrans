@@ -93,6 +93,13 @@ class DisplaySettingsDialog(SettingsDialog):
         )
         self.dict_checkboxes['b'] = self.checkbox_draw_background_grid
 
+        self.checkbox_draw_transformed_grid = QCheckBox(self)
+        self.checkbox_draw_transformed_grid.setText('Draw t&ransformed grid')
+        self.checkbox_draw_transformed_grid.setToolTip(
+            'Draw the transformed grid (vectors are handled separately)'
+        )
+        self.dict_checkboxes['r'] = self.checkbox_draw_transformed_grid
+
         # Animations
 
         self.checkbox_smoothen_determinant = QCheckBox(self)
@@ -153,6 +160,7 @@ class DisplaySettingsDialog(SettingsDialog):
         self.vlay_groupbox_basic_stuff = QVBoxLayout()
         self.vlay_groupbox_basic_stuff.setSpacing(20)
         self.vlay_groupbox_basic_stuff.addWidget(self.checkbox_draw_background_grid)
+        self.vlay_groupbox_basic_stuff.addWidget(self.checkbox_draw_transformed_grid)
 
         self.groupbox_basic_stuff = QGroupBox('Basic stuff', self)
         self.groupbox_basic_stuff.setLayout(self.vlay_groupbox_basic_stuff)
@@ -197,6 +205,7 @@ class DisplaySettingsDialog(SettingsDialog):
         """Load the current display settings into the widgets."""
         # Basic stuff
         self.checkbox_draw_background_grid.setChecked(self.display_settings.draw_background_grid)
+        self.checkbox_draw_transformed_grid.setChecked(self.display_settings.draw_transformed_grid)
 
         # Animations
         self.checkbox_smoothen_determinant.setChecked(self.display_settings.smoothen_determinant)
@@ -213,6 +222,7 @@ class DisplaySettingsDialog(SettingsDialog):
         """Build a :class:`lintrans.gui.settings.DisplaySettings` object and assign it."""
         # Basic stuff
         self.display_settings.draw_background_grid = self.checkbox_draw_background_grid.isChecked()
+        self.display_settings.draw_transformed_grid = self.checkbox_draw_transformed_grid.isChecked()
 
         # Animations
         self.display_settings.smoothen_determinant = self.checkbox_smoothen_determinant.isChecked()

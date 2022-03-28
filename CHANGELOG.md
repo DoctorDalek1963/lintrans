@@ -11,7 +11,7 @@ Nothing here yet...
 
 ### Added
 
-- Add option to hide background grid
+- Add options to hide background grid and transformed grid
 
 ## [0.2.1] - 2022-03-22
 
