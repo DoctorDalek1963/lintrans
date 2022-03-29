@@ -460,6 +460,8 @@ class LintransMainWindow(QMainWindow):
         """
         # We create a dialog with a deepcopy of the current matrix_wrapper
         # This avoids the dialog mutating this one
+        dialog: DefineDialog
+
         if dialog_class == DefineVisuallyDialog:
             dialog = DefineVisuallyDialog(
                 self,
