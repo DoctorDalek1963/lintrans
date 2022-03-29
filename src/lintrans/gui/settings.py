@@ -56,7 +56,7 @@ class DisplaySettings:
     draw_determinant_parallelogram: bool = False
     """This controls whether or not we should shade the parallelogram representing the determinant of the matrix."""
 
-    draw_determinant_text: bool = True
+    show_determinant_value: bool = True
     """This controls whether we should write the text value of the determinant inside the parallelogram.
 
     The text only gets draw if :attr:`draw_determinant_parallelogram` is also True.

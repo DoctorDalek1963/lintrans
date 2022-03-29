@@ -143,12 +143,12 @@ class DisplaySettingsDialog(SettingsDialog):
         self.checkbox_draw_determinant_parallelogram.clicked.connect(self.update_gui)
         self.dict_checkboxes['d'] = self.checkbox_draw_determinant_parallelogram
 
-        self.checkbox_draw_determinant_text = QCheckBox(self)
-        self.checkbox_draw_determinant_text.setText('Draw determinant &text')
-        self.checkbox_draw_determinant_text.setToolTip(
-            'Write the text value of the determinant inside the parallelogram'
+        self.checkbox_show_determinant_value = QCheckBox(self)
+        self.checkbox_show_determinant_value.setText('Show de&terminant value')
+        self.checkbox_show_determinant_value.setToolTip(
+            'Show the value of the determinant inside the parallelogram'
         )
-        self.dict_checkboxes['t'] = self.checkbox_draw_determinant_text
+        self.dict_checkboxes['t'] = self.checkbox_show_determinant_value
 
         self.checkbox_draw_eigenvectors = QCheckBox(self)
         self.checkbox_draw_eigenvectors.setText('Draw &eigenvectors')
@@ -193,7 +193,7 @@ class DisplaySettingsDialog(SettingsDialog):
         self.vlay_groupbox_matrix_info = QVBoxLayout()
         self.vlay_groupbox_matrix_info.setSpacing(20)
         self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_determinant_parallelogram)
-        self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_determinant_text)
+        self.vlay_groupbox_matrix_info.addWidget(self.checkbox_show_determinant_value)
         self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_eigenvectors)
         self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_eigenlines)
 
@@ -223,7 +223,7 @@ class DisplaySettingsDialog(SettingsDialog):
 
         # Matrix info
         self.checkbox_draw_determinant_parallelogram.setChecked(self.display_settings.draw_determinant_parallelogram)
-        self.checkbox_draw_determinant_text.setChecked(self.display_settings.draw_determinant_text)
+        self.checkbox_show_determinant_value.setChecked(self.display_settings.show_determinant_value)
         self.checkbox_draw_eigenvectors.setChecked(self.display_settings.draw_eigenvectors)
         self.checkbox_draw_eigenlines.setChecked(self.display_settings.draw_eigenlines)
 
@@ -241,7 +241,7 @@ class DisplaySettingsDialog(SettingsDialog):
 
         # Matrix info
         self.display_settings.draw_determinant_parallelogram = self.checkbox_draw_determinant_parallelogram.isChecked()
-        self.display_settings.draw_determinant_text = self.checkbox_draw_determinant_text.isChecked()
+        self.display_settings.show_determinant_value = self.checkbox_show_determinant_value.isChecked()
         self.display_settings.draw_eigenvectors = self.checkbox_draw_eigenvectors.isChecked()
         self.display_settings.draw_eigenlines = self.checkbox_draw_eigenlines.isChecked()
 
@@ -252,7 +252,7 @@ class DisplaySettingsDialog(SettingsDialog):
 
         For example, this method updates which checkboxes are enabled based on the values of other checkboxes.
         """
-        self.checkbox_draw_determinant_text.setEnabled(self.checkbox_draw_determinant_parallelogram.isChecked())
+        self.checkbox_show_determinant_value.setEnabled(self.checkbox_draw_determinant_parallelogram.isChecked())
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         """Handle a :class:`QKeyEvent` by manually activating toggling checkboxes.
