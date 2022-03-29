@@ -1,6 +1,6 @@
 expression        ::=  [ "-" ] matrices { ( "+" | "-" ) matrices };
 matrices          ::=  matrix { matrix };
-matrix            ::=  [ real_number ] matrix_identifier [ index ];
+matrix            ::=  [ real_number ] matrix_identifier [ index ] | "(" expression ")";
 matrix_identifier ::=  "A" .. "Z" | "rot(" [ "-" ] real_number ")";
 index             ::=  "^{" index_content "}" | "^" index_content;
 index_content     ::=  [ "-" ] integer_not_zero | "T";

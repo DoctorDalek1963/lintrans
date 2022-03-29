@@ -13,12 +13,14 @@ from typing import Pattern
 
 from lintrans.typing_ import MatrixParseList
 
+NAIVE_CHARACTER_CLASS = r'[-+\sA-Z0-9.rot()^{}]'
+
 
 class MatrixParseError(Exception):
     """A simple exception to be raised when an error is found when parsing."""
 
 
-def compile_valid_expression_pattern() -> Pattern[str]:
+def compile_naive_expression_pattern() -> Pattern[str]:
     """Compile the single RegEx pattern that will match a valid matrix expression."""
     digit_no_zero = '[123456789]'
     digits = '\\d+'
@@ -27,7 +29,7 @@ def compile_valid_expression_pattern() -> Pattern[str]:
 
     index_content = f'(-?{integer_no_zero}|T)'
     index = f'(\\^{{{index_content}}}|\\^{index_content})'
-    matrix_identifier = f'([A-Z]|rot\\(-?{real_number}\\))'
+    matrix_identifier = f'([A-Z]|rot\\(-?{real_number}\\)|\\({NAIVE_CHARACTER_CLASS}+\\))'
     matrix = '(' + real_number + '?' + matrix_identifier + index + '?)'
     expression = f'^-?{matrix}+((\\+|-){matrix}+)*$'
 
@@ -35,7 +37,51 @@ def compile_valid_expression_pattern() -> Pattern[str]:
 
 
 # This is an expensive pattern to compile, so we compile it when this module is initialized
-valid_expression_pattern = compile_valid_expression_pattern()
+naive_expression_pattern = compile_naive_expression_pattern()
+
+
+def find_sub_expressions(expression: str) -> list[str]:
+    """Find all the sub-expressions in the given expression.
+
+    This function only goes one level deep, so may return strings like ``'A(BC)D'``.
+
+    :raises MatrixParseError: If there are unbalanced parentheses
+    """
+    sub_expressions: list[str] = []
+    string = ''
+    paren_depth = 0
+    pointer = 0
+
+    while True:
+        char = expression[pointer]
+
+        if char == '(' and expression[pointer - 3:pointer] != 'rot':
+            paren_depth += 1
+
+            # This is a bit of a manual bodge, but it eliminates extraneous parens
+            if paren_depth == 1:
+                pointer += 1
+                continue
+
+        elif char == ')' and re.match(f'{NAIVE_CHARACTER_CLASS}*?rot\\([-\\d.]+$', expression[:pointer]) is None:
+            paren_depth -= 1
+
+        if paren_depth > 0:
+            string += char
+
+        if paren_depth == 0 and string:
+            sub_expressions.append(string)
+            string = ''
+
+        pointer += 1
+
+        if pointer >= len(expression):
+            break
+
+    if paren_depth != 0:
+        raise MatrixParseError('Unbalanced parentheses in expression')
+
+    return sub_expressions
 
 
 def validate_matrix_expression(expression: str) -> bool:
@@ -52,13 +98,24 @@ def validate_matrix_expression(expression: str) -> bool:
     # Remove all whitespace
     expression = re.sub(r'\s', '', expression)
 
-    match = valid_expression_pattern.match(expression)
+    match = naive_expression_pattern.match(expression)
 
     if match is None:
         return False
 
-    # Check if the whole expression was matched against
-    return expression == match.group(0)
+    # Check that the whole expression was matched against
+    if expression != match.group(0):
+        return False
+
+    try:
+        sub_expressions = find_sub_expressions(expression)
+    except MatrixParseError:
+        return False
+
+    if not sub_expressions:
+        return True
+
+    return all(validate_matrix_expression(m) for m in sub_expressions)
 
 
 def parse_matrix_expression(expression: str) -> MatrixParseList:
