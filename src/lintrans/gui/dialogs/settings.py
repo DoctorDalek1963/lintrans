@@ -70,7 +70,7 @@ class SettingsDialog(FixedSizeDialog):
 class DisplaySettingsDialog(SettingsDialog):
     """The dialog to allow the user to edit the display settings."""
 
-    def __init__(self, display_settings: DisplaySettings, *args, **kwargs):
+    def __init__(self, *args, display_settings: DisplaySettings, **kwargs):
         """Create the widgets and layout of the dialog.
 
         :param DisplaySettings display_settings: The :class:`lintrans.gui.settings.DisplaySettings` object to mutate

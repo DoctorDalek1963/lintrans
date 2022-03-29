@@ -125,7 +125,7 @@ class LintransMainWindow(QMainWindow):
 
         # Left layout: the plot and input box
 
-        self.plot = VisualizeTransformationWidget(DisplaySettings(), self)
+        self.plot = VisualizeTransformationWidget(self, display_settings=DisplaySettings())
 
         self.lineedit_expression_box = QtWidgets.QLineEdit(self)
         self.lineedit_expression_box.setPlaceholderText('Enter matrix expression...')
@@ -460,7 +460,14 @@ class LintransMainWindow(QMainWindow):
         """
         # We create a dialog with a deepcopy of the current matrix_wrapper
         # This avoids the dialog mutating this one
-        dialog = dialog_class(deepcopy(self.matrix_wrapper), self)
+        if dialog_class == DefineVisuallyDialog:
+            dialog = DefineVisuallyDialog(
+                self,
+                matrix_wrapper=deepcopy(self.matrix_wrapper),
+                display_settings=self.plot.display_settings
+            )
+        else:
+            dialog = dialog_class(self, matrix_wrapper=deepcopy(self.matrix_wrapper))
 
         # .open() is asynchronous and doesn't spawn a new event loop, but the dialog is still modal (blocking)
         dialog.open()
@@ -478,7 +485,7 @@ class LintransMainWindow(QMainWindow):
     @pyqtSlot()
     def dialog_change_display_settings(self) -> None:
         """Open the dialog to change the display settings."""
-        dialog = DisplaySettingsDialog(self.plot.display_settings, self)
+        dialog = DisplaySettingsDialog(self, display_settings=self.plot.display_settings)
         dialog.open()
         dialog.accepted.connect(lambda: self.assign_display_settings(dialog.display_settings))
 

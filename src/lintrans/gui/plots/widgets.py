@@ -24,7 +24,7 @@ class VisualizeTransformationWidget(VectorGridPlot):
     the given matrix transformation.
     """
 
-    def __init__(self, display_settings: DisplaySettings, *args, **kwargs):
+    def __init__(self, *args, display_settings: DisplaySettings, **kwargs):
         """Create the widget and assign its display settings, passing ``*args`` and ``**kwargs`` to super."""
         super().__init__(*args, **kwargs)
 
@@ -88,33 +88,14 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
     :class:`lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog`.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, display_settings: DisplaySettings, **kwargs):
         """Create the widget and enable mouse tracking. ``*args`` and ``**kwargs`` are passed to ``super()``."""
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, display_settings=display_settings, **kwargs)
 
         self.dragged_point: tuple[float, float] | None = None
 
         # This is the distance that the cursor needs to be from the point to drag it
         self.epsilon: int = 5
-
-    def paintEvent(self, event: QPaintEvent) -> None:
-        """Handle a :class:`QPaintEvent` by drawing the background grid and the transformed grid.
-
-        The transformed grid is defined by the basis vectors i and j,
-        which can be dragged around in the widget.
-        """
-        painter = QPainter()
-        painter.begin(self)
-
-        painter.setRenderHint(QPainter.Antialiasing)
-        painter.setBrush(Qt.NoBrush)
-
-        self.draw_background(painter, True)
-        self.draw_transformed_grid(painter)
-        self.draw_basis_vectors(painter)
-
-        painter.end()
-        event.accept()
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         """Handle a QMouseEvent when the user pressed a button."""

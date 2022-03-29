@@ -18,6 +18,7 @@ from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QShortcut, QSizePolicy, QS
 
 from lintrans.gui.dialogs.misc import FixedSizeDialog
 from lintrans.gui.plots import DefineVisuallyWidget
+from lintrans.gui.settings import DisplaySettings
 from lintrans.gui.validate import MatrixExpressionValidator
 from lintrans.matrices import MatrixWrapper
 from lintrans.typing_ import MatrixType
@@ -75,7 +76,7 @@ class DefineDialog(FixedSizeDialog):
        and every superclass of a class must have the same metaclass, and :class:`QDialog` is not an abstract class.
     """
 
-    def __init__(self, matrix_wrapper: MatrixWrapper, *args, **kwargs):
+    def __init__(self, *args, matrix_wrapper: MatrixWrapper, **kwargs):
         """Create the widgets and layout of the dialog.
 
         .. note:: ``*args`` and ``**kwargs`` are passed to the super constructor (:class:`QDialog`).
@@ -165,18 +166,18 @@ class DefineDialog(FixedSizeDialog):
 class DefineVisuallyDialog(DefineDialog):
     """The dialog class that allows the user to define a matrix visually."""
 
-    def __init__(self, matrix_wrapper: MatrixWrapper, *args, **kwargs):
+    def __init__(self, *args, matrix_wrapper: MatrixWrapper, display_settings: DisplaySettings, **kwargs):
         """Create the widgets and layout of the dialog.
 
         :param MatrixWrapper matrix_wrapper: The MatrixWrapper that this dialog will mutate
         """
-        super().__init__(matrix_wrapper, *args, **kwargs)
+        super().__init__(*args, matrix_wrapper=matrix_wrapper, **kwargs)
 
         self.setMinimumSize(700, 550)
 
         # === Create the widgets
 
-        self.plot = DefineVisuallyWidget(self)
+        self.plot = DefineVisuallyWidget(self, display_settings=display_settings)
 
         # === Arrange the widgets
 
@@ -227,12 +228,12 @@ class DefineVisuallyDialog(DefineDialog):
 class DefineNumericallyDialog(DefineDialog):
     """The dialog class that allows the user to define a new matrix numerically."""
 
-    def __init__(self, matrix_wrapper: MatrixWrapper, *args, **kwargs):
+    def __init__(self, *args, matrix_wrapper: MatrixWrapper, **kwargs):
         """Create the widgets and layout of the dialog.
 
         :param MatrixWrapper matrix_wrapper: The MatrixWrapper that this dialog will mutate
         """
-        super().__init__(matrix_wrapper, *args, **kwargs)
+        super().__init__(*args, matrix_wrapper=matrix_wrapper, **kwargs)
 
         # === Create the widgets
 
@@ -318,12 +319,12 @@ class DefineNumericallyDialog(DefineDialog):
 class DefineAsAnExpressionDialog(DefineDialog):
     """The dialog class that allows the user to define a matrix as an expression of other matrices."""
 
-    def __init__(self, matrix_wrapper: MatrixWrapper, *args, **kwargs):
+    def __init__(self, *args, matrix_wrapper: MatrixWrapper, **kwargs):
         """Create the widgets and layout of the dialog.
 
         :param MatrixWrapper matrix_wrapper: The MatrixWrapper that this dialog will mutate
         """
-        super().__init__(matrix_wrapper, *args, **kwargs)
+        super().__init__(*args, matrix_wrapper=matrix_wrapper, **kwargs)
 
         self.setMinimumWidth(450)
 
