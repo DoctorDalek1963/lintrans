@@ -59,7 +59,7 @@ def create_rotation_matrix(angle: float, *, degrees: bool = True) -> MatrixType:
     :param bool degrees: Whether to interpret the angle as degrees (True) or radians (False)
     :returns MatrixType: The resultant matrix
     """
-    rad = np.deg2rad(angle) if degrees else angle
+    rad = np.deg2rad(angle % 360) if degrees else angle % (2 * np.pi)
     return np.array([
         [np.cos(rad), -1 * np.sin(rad)],
         [np.sin(rad), np.cos(rad)]
