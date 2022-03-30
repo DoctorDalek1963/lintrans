@@ -8,9 +8,36 @@
 
 from __future__ import annotations
 
+import math
+
 import numpy as np
 
 from lintrans.typing_ import MatrixType
+
+
+def polar_coords(x: float, y: float, *, degrees: bool = False) -> tuple[float, float]:
+    """Return the polar coordinates of a given (x, y) Cartesian coordinate.
+
+    .. note:: We're returning the angle in the range [0, 2pi)
+    """
+    radius = math.hypot(x, y)
+
+    # PyCharm complains about np.angle taking a complex argument even though that's what it's designed for
+    # noinspection PyTypeChecker
+    angle = float(np.angle(x + y * 1j, degrees))
+
+    if angle < 0:
+        angle += 2 * np.pi
+
+    return radius, angle
+
+
+def rect_coords(radius: float, angle: float, *, degrees: bool = False) -> tuple[float, float]:
+    """Return the rectilinear coordinates of a given polar coordinate."""
+    if degrees:
+        angle = np.radians(angle)
+
+    return radius * np.cos(angle), radius * np.sin(angle)
 
 
 def create_rotation_matrix(angle: float, *, degrees: bool = True) -> MatrixType:

@@ -24,6 +24,7 @@ from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox
 
 from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
+from lintrans.matrices.utility import polar_coords, rect_coords
 from lintrans.typing_ import MatrixType
 from . import dialogs
 from .dialogs import DefineAsAnExpressionDialog, DefineDialog, DefineNumericallyDialog, DefineVisuallyDialog
@@ -392,8 +393,36 @@ class LintransMainWindow(QMainWindow):
         matrix_application = target @ linalg.inv(start)
 
         if linalg.det(matrix_application) > 0 and abs(np.dot(matrix_application.T[0], matrix_application.T[1])) < 0.1:
-            # TODO: Use logarithmic spiral here and return
-            pass
+            # Get the columns of the matrices
+            # We're going to move i and then move j
+            i_vectors = (start.T[0], target.T[0])
+            j_vectors = (start.T[1], target.T[1])
+
+            matrix_list: list[tuple[float, float]] = []
+
+            for start_vector, end_vector in [i_vectors, j_vectors]:
+                # We want the points in polar coordinates
+                s_length, s_angle = polar_coords(start_vector[0], start_vector[1])
+                e_length, e_angle = polar_coords(end_vector[0], end_vector[1])
+
+                # We're using the standard formula for a logarithmic spiral,
+                # but we want to connect two specific points
+                # This base is just the base that we raise the angle to in the formula
+                base = (e_length / s_length) ** (-1 / (s_angle - e_angle))
+
+                angle = s_angle + proportion * (e_angle - s_angle)
+
+                # Logarithmic spiral equation
+                radius = s_length * base ** (angle - s_angle)
+
+                matrix_list.append(rect_coords(radius, angle))
+
+            return np.array(
+                [
+                    [matrix_list[0][0], matrix_list[1][0]],
+                    [matrix_list[0][1], matrix_list[1][1]]
+                ]
+            )
 
         # matrix_a is the start matrix plus some part of the target, scaled by the proportion
         # If we just used matrix_a, then things would animate, but the determinants would be weird
