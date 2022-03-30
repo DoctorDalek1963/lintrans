@@ -46,6 +46,11 @@ lintrans.matrices.parse module
 
 .. automodule:: lintrans.matrices.parse
 
+lintrans.matrices.utility module
+--------------------------------
+
+.. automodule:: lintrans.matrices.utility
+
 lintrans.matrices.wrapper module
 --------------------------------
 
