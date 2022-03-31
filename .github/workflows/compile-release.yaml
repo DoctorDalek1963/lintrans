@@ -1,3 +1,7 @@
+# We test and compile on macOS to make sure it works, but we don't publish it
+# This is because Apple code signing means the binary won't run when the user downloads it
+# They'll need to compile it from source but we need to make sure that works on macOS
+
 name: Compile and release
 
 on:
@@ -36,7 +40,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-20.04, windows-2019]
+        os: [macos-10.15, ubuntu-20.04, windows-2019]
 
     steps:
       - uses: actions/checkout@v2
@@ -63,9 +67,6 @@ jobs:
 
     strategy:
       matrix:
-        # We compile on macOS to make sure it works, but we don't publish it
-        # This is because Apple code signing means the binary won't run when the user downloads it
-        # They'll need to compile it from source but we need to make sure that works on macOS
         os: [macos-10.15, ubuntu-20.04, windows-2019]
 
     steps:
