@@ -392,7 +392,10 @@ class LintransMainWindow(QMainWindow):
         # We want to check if it's rotation-like
         matrix_application = target @ linalg.inv(start)
 
-        if linalg.det(matrix_application) > 0 and abs(np.dot(matrix_application.T[0], matrix_application.T[1])) < 0.1:
+        if self.plot.display_settings.smoothen_determinant and \
+                linalg.det(matrix_application) > 0 and \
+                abs(np.dot(matrix_application.T[0], matrix_application.T[1])) < 0.1 and \
+                not (matrix_application / linalg.det(matrix_application) - np.eye(2) < 1e-5).all():
             # Get the columns of the matrices
             # We're going to move i and then move j
             i_vectors = (start.T[0], target.T[0])
@@ -447,8 +450,7 @@ class LintransMainWindow(QMainWindow):
         matrix_b = c * matrix_a
         det_b = linalg.det(matrix_b)
 
-        # matrix_to_render is the final matrix that we then render for this frame
-        # It's B, but we scale it over time to have the target determinant
+        # We want to return B, but we have to scale it over time to have the target determinant
 
         # We want some C = dB such that det(C) is some target determinant T
         # det(dB) = d^2 det(B) = T => d = sqrt(abs(T / det(B))
