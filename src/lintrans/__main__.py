@@ -8,8 +8,8 @@
 
 """This module provides a :func:`main` function to interpret command line arguments and run the program."""
 
-from argparse import ArgumentParser
 import sys
+from argparse import ArgumentParser
 from textwrap import dedent
 
 from lintrans import __version__
