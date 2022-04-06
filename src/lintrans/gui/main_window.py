@@ -392,10 +392,10 @@ class LintransMainWindow(QMainWindow):
         # We want to check if it's rotation-like
         matrix_application = target @ linalg.inv(start)
 
-        if self.plot.display_settings.smoothen_determinant and \
-                linalg.det(matrix_application) > 0 and \
-                abs(np.dot(matrix_application.T[0], matrix_application.T[1])) < 0.1 and \
-                not (matrix_application / linalg.det(matrix_application) - np.eye(2) < 1e-5).all():
+        if self.plot.display_settings.smoothen_determinant \
+                and linalg.det(matrix_application) > 0 \
+                and abs(np.dot(matrix_application.T[0], matrix_application.T[1])) < 0.1 \
+                and not (matrix_application / linalg.det(matrix_application) - np.eye(2) < 1e-5).all():
             # Get the columns of the matrices
             # We're going to move i and then move j
             i_vectors = (start.T[0], target.T[0])
