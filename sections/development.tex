@@ -147,6 +147,7 @@ After implementing most of the backend and testing it thoroughly, I wanted to st
 	\includegraphics[width=\linewidth]{development/93ce763f7b993439fc0da89fad39456d8cc4b52c/gui.png}
 	\caption{The first version of the GUI}
 	\label{fig:development:93ce763f7b993439fc0da89fad39456d8cc4b52c:gui.png}
+	\vspace{-4em}
 \end{wrapfigure}
 
 A lot of the methods here don't have implementations yet, but they will. This version is just a very early prototype to get a rough draft of the GUI.
@@ -154,5 +155,32 @@ A lot of the methods here don't have implementations yet, but they will. This ve
 I create the widgets and layouts in the constructor as well as configuring all of them. The most important non-constructor method is \texttt{update\_render\_buttons}. It gets called whenever the text in \texttt{text\_input\_expression} is changed. This happens because we connect it to the \texttt{textChanged} signal on line 35.
 
 The big white box here will eventually be replaced with an actual viewport. This is just a prototype.
+
+\subsubsection{Numerical definition dialog\label{development:gui:numerical-definition-dialog}}
+
+My next major addition was a dialog that would allow the user to define a matrix numerically.
+
+%: cedbd3ed126a1183f197c27adf6dabb4e5d301c7
+%: src/lintrans/gui/dialogs/define_new_matrix.py
+
+\begin{wrapfigure}{L}{0.5\linewidth}
+	\vspace{-1em}
+	\centering
+	\includegraphics[width=\linewidth]{development/cedbd3ed126a1183f197c27adf6dabb4e5d301c7/define_numerically_dialog.png}
+	\caption{The first version of the numerical definition dialog}
+	\label{fig:development:cedbd3ed126a1183f197c27adf6dabb4e5d301c7:define_numerically_dialog.png}
+	\vspace{-4em}
+\end{wrapfigure}
+
+When I add more definition dialogs, I will factor out a superclass, but this is just a prototype to make sure it all works as intended.
+
+Hopefully the methods are relatively self explanatory, but they're just utility methods to update the GUI when things are changed. We connect the \texttt{QLineEdit} widgets to the \texttt{update\_confirm\_button} slot to make sure the confirm button is always up to date.
+
+The \texttt{confirm\_matrix} method just updates the instance's matrix wrapper with the new matrix. We pass a reference to the \texttt{LintransMainWindow} instance's matrix wrapper when we open the dialog, so we're just updating the referenced object directly.
+
+In the \texttt{LintransMainWindow} class, we're just connecting a lambda slot to the button so that it opens the dialog, as seen here:
+
+%: cedbd3ed126a1183f197c27adf6dabb4e5d301c7
+%: src/lintrans/gui/main_window.py:66-68 strip
 
 \end{document}
