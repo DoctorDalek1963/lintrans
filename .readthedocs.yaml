@@ -1,0 +1,28 @@
+version: 2
+
+build:
+  os: ubuntu-20.04
+  tools:
+    python: "3.10"
+  apt_packages:
+    - graphviz
+
+  jobs:
+    pre_build:
+      - cd docs/ && $(pwd | sed "s/checkouts\(\/[^/]\+\)\/docs\$/envs\1/")/bin/python create_objects_inv.py
+      - $(pwd | sed "s/checkouts\(\/[^/]\+\)\$/envs\1/")/bin/python -m pylint --rcfile=/dev/null --exit-zero --reports=y --disable=all --enable=imports,RP0402 --int-import-graph=docs/source/int-imports.png $(find ./src/lintrans/ -name "*.py" | tr "\n" " ")
+      - mkdir -p docs/source/_static
+      - $(pwd | sed "s/checkouts\(\/[^/]\+\)\$/envs\1/")/bin/python -m pip install -e .
+      - $(pwd | sed "s/checkouts\(\/[^/]\+\)\$/envs\1/")/bin/python -c "import lintrans" && echo success || echo fail
+
+sphinx:
+  builder: html
+  configuration: docs/source/conf.py
+  fail_on_warning: true
+
+python:
+  install:
+    - requirements: requirements.txt
+    - requirements: docs/docs_requirements.txt
+
+  system_packages: false
