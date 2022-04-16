@@ -25,9 +25,12 @@ QDialog.accepted    py:method 1 qdialog.html#accepted    -
 
 # These are in full form so that autodoc can reference base classes and param types
 
-PyQt5.QtGui.QKeyEvent   py:class 1 qkeyevent.html   -
-PyQt5.QtGui.QPainter    py:class 1 qpainter.html    -
-PyQt5.QtGui.QPaintEvent py:class 1 qpaintevent.html -
-PyQt5.QtGui.QWheelEvent py:class 1 qwheelevent.html -
-PyQt5.QtWidgets.QDialog py:class 1 qdialog.html     -
-PyQt5.QtWidgets.QWidget py:class 1 qwidget.html     -
+PyQt5.QtGui.QKeyEvent        py:class 1 qkeyevent.html             -
+PyQt5.QtGui.QPainter         py:class 1 qpainter.html              -
+PyQt5.QtGui.QPaintEvent      py:class 1 qpaintevent.html           -
+PyQt5.QtGui.QValidator       py:class 1 qvalidator.html            -
+PyQt5.QtGui.QValidator.State py:class 1 qvalidator.html#State-enum -
+PyQt5.QtGui.QWheelEvent      py:class 1 qwheelevent.html           -
+PyQt5.QtWidgets.QDialog      py:class 1 qdialog.html               -
+PyQt5.QtWidgets.QMainWindow  py:class 1 qmainwindow.html           -
+PyQt5.QtWidgets.QWidget      py:class 1 qwidget.html               -
