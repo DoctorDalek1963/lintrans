@@ -8,7 +8,7 @@
 
 .. note::
    This package is called ``typing_`` and not ``typing`` to avoid name collisions with the
-   builtin :external:mod:`typing`. I don't quite know how this collision occurs, but renaming
+   builtin :mod:`typing`. I don't quite know how this collision occurs, but renaming
    this module fixed the problem.
 """
 
