@@ -1,7 +1,7 @@
-flake8>=4.0
-mypy>=0.9
-pycodestyle>=2.8
-pydocstyle>=6.1
-pytest>=6.2
-pyqt5-stubs>=5.15
-toml>=0.10
+flake8==4.0.1
+mypy==0.942
+pycodestyle==2.8.0
+pydocstyle==6.1.1
+pytest==6.2.5
+pyqt5-stubs==5.15.2.0
+toml==0.10.2
