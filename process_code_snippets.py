@@ -57,9 +57,11 @@ def process_snippets(filename: str) -> None:
         if lines:
             first, last = [int(x) for x in lines[1:].split('-')]
             snippet = '\n'.join(snippet_file_text.splitlines()[first - 1:last])
+            first_number = f'[firstnumber={first}]'
 
         else:
             snippet = snippet_file_text
+            first_number = ''
 
         snippet = snippet.replace(COPYRIGHT_COMMENT, '')
 
@@ -70,10 +72,12 @@ def process_snippets(filename: str) -> None:
             snippet = dedent(snippet)
 
         # Wrap the snippet from the file in the necessary stuff for LaTeX
-        snippet = f'''\\begin{{minted}}{{python}}
+        snippet = f'''\\begin{{minted}}[linenos=false]{{python}}
 # {commit_hash}
 # {snippet_file_name}{lines}
-
+\\end{{minted}}
+\\vspace{{-20pt}}
+\\begin{{minted}}{first_number}{{python}}
 {snippet}
 \\end{{minted}}'''
 
