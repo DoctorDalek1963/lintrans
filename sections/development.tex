@@ -132,9 +132,9 @@ My next step was then to rewrite the evaluation to use this new parser, like so 
 
 Here, we go through the list of tuples and evaluate the matrix represented by each tuple, putting this together in a list as we go. Then at the end, we simply reduce the sublists and then reduce these new matrices using a list comprehension in the \texttt{reduce()} call using \texttt{add} and \texttt{matmul} from the \texttt{operator} library. It's written in a functional programming style, and it passes all the previous tests.
 
-\subsection{GUI\label{development:gui}}
+\subsection{Initial GUI\label{development:initial-gui}}
 
-\subsubsection{First basic GUI\label{development:gui:first-basic-gui}}
+\subsubsection{First basic GUI\label{development:initial-gui:first-basic-gui}}
 
 After implementing most of the backend and testing it thoroughly, I wanted to start work on the actual GUI. The discrepancy in all the GUI code between \texttt{snake\_case} and \texttt{camelCase} is because Qt5 was originally a C++ framework that was adapted into PyQt5 for Python.
 
@@ -156,7 +156,7 @@ I create the widgets and layouts in the constructor as well as configuring all o
 
 The big white box here will eventually be replaced with an actual viewport. This is just a prototype.
 
-\subsubsection{Numerical definition dialog\label{development:gui:numerical-definition-dialog}}
+\subsubsection{Numerical definition dialog\label{development:initial-gui:numerical-definition-dialog}}
 
 My next major addition was a dialog that would allow the user to define a matrix numerically.
 
@@ -182,5 +182,42 @@ In the \texttt{LintransMainWindow} class, we're just connecting a lambda slot to
 
 %: cedbd3ed126a1183f197c27adf6dabb4e5d301c7
 %: src/lintrans/gui/main_window.py:66-68 strip
+
+\subsubsection{More definition dialogs\label{development:initial-gui:more-definition-dialogs}}
+
+I then factored out the constructor into a \texttt{DefineDialog} superclass so that I could easily create other definition dialogs.
+
+%: 5d04fb7233a03d0cd8fa0768f6387c6678da9df3
+%: src/lintrans/gui/dialogs/define_new_matrix.py:22-60
+
+This superclass just has a constructor that subclasses can use. When I added the \texttt{DefineAsARotationDialog} class, I also moved the cancel and confirm buttons into the constructor and added abstract methods that all dialog subclasses must implement.
+
+%: 0d534c35c6a4451e317d41a0d2b3ecb17827b45f
+%: src/lintrans/gui/dialogs/define_new_matrix.py:61-89
+
+I then added the class for the rotation definition dialog.
+
+%: 0d534c35c6a4451e317d41a0d2b3ecb17827b45f
+%: src/lintrans/gui/dialogs/define_new_matrix.py:182-234
+
+\begin{wrapfigure}{R}{0.5\linewidth}
+	\vspace{-1em}
+	\centering
+	\includegraphics[width=\linewidth]{development/0d534c35c6a4451e317d41a0d2b3ecb17827b45f/define_as_a_rotation_dialog.png}
+	\caption{The first version of the rotation definition dialog}
+	\label{fig:development:0d534c35c6a4451e317d41a0d2b3ecb17827b45f:define_as_a_rotation_dialog.png}
+	\vspace{-3em}
+\end{wrapfigure}
+
+This dialog class just overrides the abstract methods of the superclass with its own implementations. This will be the pattern that all of the definition dialogs will follow.
+
+It has a checkbox for radians, since this is supported in \texttt{create\_rotation\_matrix}, but the textbox only supports numbers, so the user would have to calculate some multiple of $\pi$ and paste in several decimal places. I expect people to only use degrees, because these are easier to use.
+
+I also then implemented a simple \texttt{DefineAsAnExpressionDialog}, which evaluates a given expression in the current \texttt{MatrixWrapper} context and assigns the result to the given matrix name.
+
+%: d5f930e15c3c8798d4990486532da46e926a6cb9
+%: src/lintrans/gui/dialogs/define_new_matrix.py:241-277
+
+My next dialog that I wanted to implement was a visual definition dialog, which would allow the user to drag around the basis vectors to define a transformation. However, I would first need to create the \texttt{lintrans.gui.plots} package to allow for actually visualizing matrices and transformations.
 
 \end{document}
