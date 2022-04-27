@@ -31,6 +31,22 @@ COPYRIGHT_COMMENT = '''# lintrans - The linear transformation visualizer
 
 '''
 
+LINE_NUMBER_HACK = r'''\renewcommand\theFancyVerbLine{
+    \ttfamily
+    \textcolor[rgb]{0.5,0.5,1}{
+        \footnotesize
+        \oldstylenums{
+            \ifnum\value{FancyVerbLine}=-3\else
+            \ifnum\value{FancyVerbLine}=-2\else
+            \ifnum\value{FancyVerbLine}=-1
+                \setcounter{FancyVerbLine}{NUM}
+            \else
+            \arabic{FancyVerbLine}
+            \fi\fi\fi
+        }
+    }
+}'''
+
 
 def process_snippets(filename: str) -> None:
     """Process code snippets in the given file."""
@@ -57,11 +73,10 @@ def process_snippets(filename: str) -> None:
         if lines:
             first, last = [int(x) for x in lines[1:].split('-')]
             snippet = '\n'.join(snippet_file_text.splitlines()[first - 1:last])
-            first_number = f'[firstnumber={first}]'
 
         else:
+            first = 1
             snippet = snippet_file_text
-            first_number = ''
 
         snippet = snippet.replace(COPYRIGHT_COMMENT, '')
 
@@ -72,14 +87,15 @@ def process_snippets(filename: str) -> None:
             snippet = dedent(snippet)
 
         # Wrap the snippet from the file in the necessary stuff for LaTeX
-        snippet = f'''\\begin{{minted}}[linenos=false]{{python}}
+        snippet = f'''{{
+{LINE_NUMBER_HACK.replace('NUM', str(first - 1))}
+\\begin{{minted}}[firstnumber=-3]{{python}}
 # {commit_hash}
-# {snippet_file_name}{lines}
-\\end{{minted}}
-\\vspace{{-20pt}}
-\\begin{{minted}}{first_number}{{python}}
+# {snippet_file_name}
+
 {snippet}
-\\end{{minted}}'''
+\\end{{minted}}
+}}'''
 
         # Then replace the comments with the actual snippet
         full_text = full_text.replace(

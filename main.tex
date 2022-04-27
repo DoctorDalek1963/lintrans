@@ -24,9 +24,15 @@
 }
 
 % Make the line numbers in minted code snippets look better
-\renewcommand{\theFancyVerbLine}{\ttfamily
-	\textcolor[rgb]{0.5,0.5,1}{\footnotesize
-		\oldstylenums{\arabic{FancyVerbLine}}}}
+\renewcommand{\theFancyVerbLine}{
+	\ttfamily
+	\textcolor[rgb]{0.5,0.5,1}{
+		\footnotesize
+		\oldstylenums{
+			\arabic{FancyVerbLine}
+		}
+	}
+}
 
 \usepackage{csquotes}  % Context-sensitive quotes
 \usepackage{amsmath, amssymb, mathtools}  % Mathematical stuff
