@@ -14,12 +14,12 @@ Please note, throughout this section, every code snippet will have two comments 
 
 \subsubsection{\texttt{MatrixWrapper} class\label{development:matrices-backend:MatrixWrapper-class}}
 
-The first real part of development was creating the \texttt{MatrixWrapper} class. It needs a simple instance dictionary to be created in the constructor, and it needs a way of accessing the matrices. I decided to use Python's \texttt{\_\_getitem\_\_} and \texttt{\_\_setitem\_\_} special methods\cite{python-3-special-methods} to allow indexing into a \texttt{MatrixWrapper} object like \texttt{wrapper['M']}. This simplifies using the class.
+The first real part of development was creating the \texttt{MatrixWrapper} class. It needs a simple instance dictionary to be created in the constructor, and it needs a way of accessing the matrices. I decided to use Python's \texttt{\_\_getitem\_\_()} and \texttt{\_\_setitem\_\_()} special methods\cite{python-3-special-methods} to allow indexing into a \texttt{MatrixWrapper} object like \texttt{wrapper['M']}. This simplifies using the class.
 
 %: 29ec1fedbf307e3b7ca731c4a381535fec899b0b
 %: src/lintrans/matrices/wrapper.py
 
-This code is very simple. The constructor (\texttt{\_\_init\_\_}) creates a dictionary of matrices which all start out as having no value, except the identity matrix \textbf{I}. The \texttt{\_\_getitem\_\_} and \texttt{\_\_setitem\_\_} methods allow the user to easily get and set matrices just like a dictionary, and \texttt{\_\_setitem\_\_} will raise an error if the name is invalid. This is a very early prototype, so it doesn't validate the type of whatever the user is trying to assign it to yet. This validation will come later.
+This code is very simple. The constructor (\texttt{\_\_init\_\_()}) creates a dictionary of matrices which all start out as having no value, except the identity matrix \textbf{I}. The \texttt{\_\_getitem\_\_()} and \texttt{\_\_setitem\_\_()} methods allow the user to easily get and set matrices just like a dictionary, and \texttt{\_\_setitem\_\_()} will raise an error if the name is invalid. This is a very early prototype, so it doesn't validate the type of whatever the user is trying to assign it to yet. This validation will come later.
 
 I could make this class subclass \texttt{dict}, since it's basically just a dictionary at this point, but I want to extend it with much more functionality later, so I chose to handle the dictionary stuff myself.
 
@@ -34,7 +34,7 @@ The function decorated with \mintinline{python}{@pytest.fixture} allows function
 
 \subsubsection{Rudimentary parsing and evaluating\label{development:matrices-backend:rudimentary-parsing-and-evaluating}}
 
-This first thing I did here was improve the \texttt{\_\_setitem\_\_} and \texttt{\_\_getitem\_\_} methods to validate input and easily get transposes and simple rotation matrices.
+This first thing I did here was improve the \texttt{\_\_setitem\_\_()} and \texttt{\_\_getitem\_\_()} methods to validate input and easily get transposes and simple rotation matrices.
 
 %: f89fc9fd8d5917d07557fc50df3331123b55ad6b
 %: src/lintrans/matrices/wrapper.py:60-81
@@ -44,7 +44,7 @@ In this method, I'm now casting all the values to floats. This is very simple va
 %: f89fc9fd8d5917d07557fc50df3331123b55ad6b
 %: src/lintrans/matrices/wrapper.py:27-59
 
-This \texttt{\_\_getitem\_\_} method now allows for easily accessing transposes and rotation matrices by checking input with regular expressions. This makes getting matrices easier and thus makes evaluating full expressions simpler.
+This \texttt{\_\_getitem\_\_()} method now allows for easily accessing transposes and rotation matrices by checking input with regular expressions. This makes getting matrices easier and thus makes evaluating full expressions simpler.
 
 The \texttt{create\_rotation\_matrix()} method is also defined in this file and just uses the $\begin{psmallmatrix}\cos\theta & -\sin\theta\\\sin\theta & \cos\theta\end{psmallmatrix}$ formula from before:
 
@@ -58,7 +58,7 @@ At this stage, I also implemented a simple parser and evaluator using regular ex
 
 I think the comments in the code speak for themselves, but we basically split the expression up into groups to be added, and then for each group, we multiply every matrix in that group to get its value, and then add all these values together at the end.
 
-This code is objectively bad. At the time of writing, it's now quite old, so I can say that. This code has no real error handling, and line 48 introduces the glaring error that \texttt{'A++B'} is now a valid expression because we disregard empty strings. Not to mention the fact that the method is called \texttt{parse\_expression} but actually evaluates an expression. All these issues will be fixed in the future, but this was the first implementation of matrix evaluation, and it does the job decently well.
+This code is objectively bad. At the time of writing, it's now quite old, so I can say that. This code has no real error handling, and line 48 introduces the glaring error that \texttt{'A++B'} is now a valid expression because we disregard empty strings. Not to mention the fact that the method is called \texttt{parse\_expression()} but actually evaluates an expression. All these issues will be fixed in the future, but this was the first implementation of matrix evaluation, and it does the job decently well.
 
 I then implemented several tests for this parsing.
 
@@ -152,7 +152,7 @@ After implementing most of the backend and testing it thoroughly, I wanted to st
 
 A lot of the methods here don't have implementations yet, but they will. This version is just a very early prototype to get a rough draft of the GUI.
 
-I create the widgets and layouts in the constructor as well as configuring all of them. The most important non-constructor method is \texttt{update\_render\_buttons}. It gets called whenever the text in \texttt{text\_input\_expression} is changed. This happens because we connect it to the \texttt{textChanged} signal on line 35.
+I create the widgets and layouts in the constructor as well as configuring all of them. The most important non-constructor method is \texttt{update\_render\_buttons()}. It gets called whenever the text in \texttt{text\_input\_expression} is changed. This happens because we connect it to the \texttt{textChanged} signal on line 35.
 
 The big white box here will eventually be replaced with an actual viewport. This is just a prototype.
 
@@ -174,9 +174,9 @@ My next major addition was a dialog that would allow the user to define a matrix
 
 When I add more definition dialogs, I will factor out a superclass, but this is just a prototype to make sure it all works as intended.
 
-Hopefully the methods are relatively self explanatory, but they're just utility methods to update the GUI when things are changed. We connect the \texttt{QLineEdit} widgets to the \texttt{update\_confirm\_button} slot to make sure the confirm button is always up to date.
+Hopefully the methods are relatively self explanatory, but they're just utility methods to update the GUI when things are changed. We connect the \texttt{QLineEdit} widgets to the \texttt{update\_confirm\_button()} slot to make sure the confirm button is always up to date.
 
-The \texttt{confirm\_matrix} method just updates the instance's matrix wrapper with the new matrix. We pass a reference to the \texttt{LintransMainWindow} instance's matrix wrapper when we open the dialog, so we're just updating the referenced object directly.
+The \texttt{confirm\_matrix()} method just updates the instance's matrix wrapper with the new matrix. We pass a reference to the \texttt{LintransMainWindow} instance's matrix wrapper when we open the dialog, so we're just updating the referenced object directly.
 
 In the \texttt{LintransMainWindow} class, we're just connecting a lambda slot to the button so that it opens the dialog, as seen here:
 
@@ -211,7 +211,7 @@ I then added the class for the rotation definition dialog.
 
 This dialog class just overrides the abstract methods of the superclass with its own implementations. This will be the pattern that all of the definition dialogs will follow.
 
-It has a checkbox for radians, since this is supported in \texttt{create\_rotation\_matrix}, but the textbox only supports numbers, so the user would have to calculate some multiple of $\pi$ and paste in several decimal places. I expect people to only use degrees, because these are easier to use.
+It has a checkbox for radians, since this is supported in \texttt{create\_rotation\_matrix()}, but the textbox only supports numbers, so the user would have to calculate some multiple of $\pi$ and paste in several decimal places. I expect people to only use degrees, because these are easier to use.
 
 I also then implemented a simple \texttt{DefineAsAnExpressionDialog}, which evaluates a given expression in the current \texttt{MatrixWrapper} context and assigns the result to the given matrix name.
 
