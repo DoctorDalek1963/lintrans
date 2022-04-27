@@ -235,9 +235,44 @@ Initially, the \texttt{lintrans.gui.plots} package just has some classes for wid
 	\includegraphics[width=\linewidth]{development/4af63072b383dc9cef9adbb8900323aa007e7f26/gui.png}
 	\caption{The GUI with background axes}
 	\label{fig:development:4af63072b383dc9cef9adbb8900323aa007e7f26:gui.png}
-	\vspace{-4em}
+	\vspace{-7em}
 \end{wrapfigure}
 
 The meat of this class is the \texttt{draw\_widget()} method. Right now, this method only draws the background axes. My next step is to implement basis vector attributes and draw them in \texttt{draw\_widget()}. After changing the the \texttt{plot} attribute in \texttt{LintransMainWindow} to an instance of \texttt{ViewTransformationWidget}, the plot was visible in the GUI.
+
+I then refactored the code slightly to rename \texttt{draw\_widget()} to \texttt{draw\_background()} and then call it from the \texttt{paintEvent()} method in \texttt{ViewTransformationWidget}.
+
+\vspace{3em}
+
+\subsubsection{Implementing basis vectors\label{development:visualizing-matrices:implementing-basis-vectors}}
+
+My first step in implementing basis vectors was to add some utility methods to convert between coordinate systems. The matrices are using Cartesian coordinates with $(0, 0)$ in the middle, positive $x$ going to the right, and positive $y$ going up. However, \texttt{Qt5} is using standard computer graphics coordinates, with $(0, 0)$ in the top left, positive $x$ going to the right, and positive $y$ going down. I needed a way to convert Cartesian \enquote{grid} coordinates to \texttt{Qt5} \enquote{canvas} coordinates, so I wrote some little utility methods.
+
+%: 1fa7e1c61d61cb6aeff773b9698541f82fee39ea
+%: src/lintrans/gui/plots/plot_widget.py:45-60
+
+Once I had a way to convert coordinates, I could add the basis vectors themselves. I did this by creating attributes for the points in the constructor and creating a \texttt{transform\_by\_matrix()} method to change these point attributes accordingly.
+
+%: 37e7c208a33d7cbbc8e0bb6c94cd889e2918c605
+%: src/lintrans/gui/plots/plot_widget.py:92-112
+
+I also created a \texttt{draw\_transformed\_grid()} method which gets called in \texttt{paintEvent()}.
+
+%: 37e7c208a33d7cbbc8e0bb6c94cd889e2918c605
+%: src/lintrans/gui/plots/plot_widget.py:122-128
+
+I then changed the \texttt{render\_expression()} method in \texttt{LintransMainWindow} to call this new \texttt{transform\_by\_matrix()} method.
+
+%: 37e7c208a33d7cbbc8e0bb6c94cd889e2918c605
+%: src/lintrans/gui/main_window.py:229-235
+
+Testing this new code shows that it works well.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{development/37e7c208a33d7cbbc8e0bb6c94cd889e2918c605/gui.png}
+	\caption{The basis vectors drawn on the plot}
+	\label{fig:development:37e7c208a33d7cbbc8e0bb6c94cd889e2918c605:gui.png}
+\end{figure}
 
 \end{document}
