@@ -220,4 +220,24 @@ I also then implemented a simple \texttt{DefineAsAnExpressionDialog}, which eval
 
 My next dialog that I wanted to implement was a visual definition dialog, which would allow the user to drag around the basis vectors to define a transformation. However, I would first need to create the \texttt{lintrans.gui.plots} package to allow for actually visualizing matrices and transformations.
 
+\subsection{Visualizing matrices\label{development:visualizing-matrices}}
+
+\subsubsection{Creating the plots package\label{development:visualizing-matrices:creating-the-plots-package}}
+
+Initially, the \texttt{lintrans.gui.plots} package just has some classes for widgets. \texttt{TransformationPlotWidget} acts as a base class and then \texttt{ViewTransformationWidget} acts as a wrapper. I will expand this class in the future.
+
+%: 4af63072b383dc9cef9adbb8900323aa007e7f26
+%: src/lintrans/gui/plots/plot_widget.py
+
+\begin{wrapfigure}{L}{0.5\linewidth}
+	\vspace{-1em}
+	\centering
+	\includegraphics[width=\linewidth]{development/4af63072b383dc9cef9adbb8900323aa007e7f26/gui.png}
+	\caption{The GUI with background axes}
+	\label{fig:development:4af63072b383dc9cef9adbb8900323aa007e7f26:gui.png}
+	\vspace{-4em}
+\end{wrapfigure}
+
+The meat of this class is the \texttt{draw\_widget()} method. Right now, this method only draws the background axes. My next step is to implement basis vector attributes and draw them in \texttt{draw\_widget()}. After changing the the \texttt{plot} attribute in \texttt{LintransMainWindow} to an instance of \texttt{ViewTransformationWidget}, the plot was visible in the GUI.
+
 \end{document}
