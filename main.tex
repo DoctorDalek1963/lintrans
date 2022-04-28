@@ -41,7 +41,51 @@
 \usetikzlibrary{trees}
 
 \usepackage{graphicx}
-\graphicspath{{./images/}}
+\graphicspath{{./images}}
+
+\newcommand{\setspacing}{\setlength{\parindent}{0em}\setlength{\parskip}{1em}}
+
+\usepackage{luacode}
+
+\begin{luacode}
+function myreplace(s,a,b)
+	x = string.gsub(s,a,b)
+	tex.sprint(x)
+end
+\end{luacode}
+
+\newcommand\replace[3]{\directlua{
+	myreplace(\luastring{#1}, \luastring{#2}, \luastring{#3})
+}}
+
+% Figure side-by-side left and right commands
+\newcommand{\fsbsl}[3]{
+\begin{figure}[H]
+	\begin{minipage}{0.45\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{#1}
+		\caption{#2}
+		\label{fig:\replace{#1}{/}{:}}
+	\end{minipage}\hfill
+	\begin{minipage}{0.5\linewidth}\setspacing
+#3
+	\end{minipage}
+\end{figure}
+}
+
+\newcommand{\fsbsr}[3]{
+\begin{figure}[H]
+	\begin{minipage}{0.5\linewidth}\setspacing
+#3
+	\end{minipage}\hfill
+	\begin{minipage}{0.45\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{#1}
+		\caption{#2}
+		\label{fig:\replace{#1}{/}{:}}
+	\end{minipage}
+\end{figure}
+}
 
 \usepackage{wrapfig}  % Allow for wrapping text around figures
 \usepackage[bottom]{footmisc}  % Force footnotes to bottom of page
@@ -120,8 +164,7 @@ Candidate Number:& 123456
 
 % No indents, but nice spacing between paragraphs
 % This is just a personal style preference
-\setlength{\parindent}{0em}
-\setlength{\parskip}{1em}
+\setspacing
 
 \pagenumbering{arabic}
 

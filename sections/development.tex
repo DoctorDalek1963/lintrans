@@ -141,20 +141,7 @@ After implementing most of the backend and testing it thoroughly, I wanted to st
 %: 93ce763f7b993439fc0da89fad39456d8cc4b52c
 %: src/lintrans/gui/main_window.py
 
-\begin{wrapfigure}{L}{0.5\linewidth}
-	\vspace{-1em}
-	\centering
-	\includegraphics[width=\linewidth]{development/93ce763f7b993439fc0da89fad39456d8cc4b52c/gui.png}
-	\caption{The first version of the GUI}
-	\label{fig:development:93ce763f7b993439fc0da89fad39456d8cc4b52c:gui.png}
-	\vspace{-4em}
-\end{wrapfigure}
-
-A lot of the methods here don't have implementations yet, but they will. This version is just a very early prototype to get a rough draft of the GUI.
-
-I create the widgets and layouts in the constructor as well as configuring all of them. The most important non-constructor method is \texttt{update\_render\_buttons()}. It gets called whenever the text in \texttt{text\_input\_expression} is changed. This happens because we connect it to the \texttt{textChanged} signal on line 35.
-
-The big white box here will eventually be replaced with an actual viewport. This is just a prototype.
+\fsbsl{development/93ce763f7b993439fc0da89fad39456d8cc4b52c/gui.png}{The first version of the GUI}{A lot of the methods here don't have implementations yet, but they will. This version is just a very early prototype to get a rough draft of the GUI.\par I create the widgets and layouts in the constructor as well as configuring all of them. The most important non-constructor method is \texttt{update\_render\_buttons()}. It gets called whenever the text in \texttt{text\_input\_expression} is changed. This happens because we connect it to the \texttt{textChanged} signal on line 35.\par The big white box here will eventually be replaced with an actual viewport. This is just a prototype.}
 
 \subsubsection{Numerical definition dialog\label{development:initial-gui:numerical-definition-dialog}}
 
@@ -163,18 +150,7 @@ My next major addition was a dialog that would allow the user to define a matrix
 %: cedbd3ed126a1183f197c27adf6dabb4e5d301c7
 %: src/lintrans/gui/dialogs/define_new_matrix.py
 
-\begin{wrapfigure}{L}{0.5\linewidth}
-	\vspace{-1em}
-	\centering
-	\includegraphics[width=\linewidth]{development/cedbd3ed126a1183f197c27adf6dabb4e5d301c7/define_numerically_dialog.png}
-	\caption{The first version of the numerical definition dialog}
-	\label{fig:development:cedbd3ed126a1183f197c27adf6dabb4e5d301c7:define_numerically_dialog.png}
-	\vspace{-4em}
-\end{wrapfigure}
-
-When I add more definition dialogs, I will factor out a superclass, but this is just a prototype to make sure it all works as intended.
-
-Hopefully the methods are relatively self explanatory, but they're just utility methods to update the GUI when things are changed. We connect the \texttt{QLineEdit} widgets to the \texttt{update\_confirm\_button()} slot to make sure the confirm button is always up to date.
+\fsbsl{development/cedbd3ed126a1183f197c27adf6dabb4e5d301c7/define-numerically-dialog.png}{The first version of the numerical definition dialog}{When I add more definition dialogs, I will factor out a superclass, but this is just a prototype to make sure it all works as intended.\par Hopefully the methods are relatively self explanatory, but they're just utility methods to update the GUI when things are changed. We connect the \texttt{QLineEdit} widgets to the \texttt{update\_confirm\_button()} slot to make sure the confirm button is always up to date.}
 
 The \texttt{confirm\_matrix()} method just updates the instance's matrix wrapper with the new matrix. We pass a reference to the \texttt{LintransMainWindow} instance's matrix wrapper when we open the dialog, so we're just updating the referenced object directly.
 
@@ -200,18 +176,7 @@ I then added the class for the rotation definition dialog.
 %: 0d534c35c6a4451e317d41a0d2b3ecb17827b45f
 %: src/lintrans/gui/dialogs/define_new_matrix.py:182-234
 
-\begin{wrapfigure}{R}{0.5\linewidth}
-	\vspace{-1em}
-	\centering
-	\includegraphics[width=\linewidth]{development/0d534c35c6a4451e317d41a0d2b3ecb17827b45f/define_as_a_rotation_dialog.png}
-	\caption{The first version of the rotation definition dialog}
-	\label{fig:development:0d534c35c6a4451e317d41a0d2b3ecb17827b45f:define_as_a_rotation_dialog.png}
-	\vspace{-3em}
-\end{wrapfigure}
-
-This dialog class just overrides the abstract methods of the superclass with its own implementations. This will be the pattern that all of the definition dialogs will follow.
-
-It has a checkbox for radians, since this is supported in \texttt{create\_rotation\_matrix()}, but the textbox only supports numbers, so the user would have to calculate some multiple of $\pi$ and paste in several decimal places. I expect people to only use degrees, because these are easier to use.
+\fsbsr{development/0d534c35c6a4451e317d41a0d2b3ecb17827b45f/define-as-a-rotation-dialog.png}{The first version of the rotation definition dialog}{This dialog class just overrides the abstract methods of the superclass with its own implementations. This will be the pattern that all of the definition dialogs will follow.\par It has a checkbox for radians, since this is supported in \texttt{create\_rotation\_matrix()}, but the textbox only supports numbers, so the user would have to calculate some multiple of $\pi$ and paste in several decimal places. I expect people to only use degrees, because these are easier to use.}
 
 I also then implemented a simple \texttt{DefineAsAnExpressionDialog}, which evaluates a given expression in the current \texttt{MatrixWrapper} context and assigns the result to the given matrix name.
 
@@ -229,24 +194,11 @@ Initially, the \texttt{lintrans.gui.plots} package just has some classes for wid
 %: 4af63072b383dc9cef9adbb8900323aa007e7f26
 %: src/lintrans/gui/plots/plot_widget.py
 
-\begin{wrapfigure}{L}{0.5\linewidth}
-	\vspace{-1em}
-	\centering
-	\includegraphics[width=\linewidth]{development/4af63072b383dc9cef9adbb8900323aa007e7f26/gui.png}
-	\caption{The GUI with background axes}
-	\label{fig:development:4af63072b383dc9cef9adbb8900323aa007e7f26:gui.png}
-	\vspace{-7em}
-\end{wrapfigure}
-
-The meat of this class is the \texttt{draw\_widget()} method. Right now, this method only draws the background axes. My next step is to implement basis vector attributes and draw them in \texttt{draw\_widget()}. After changing the the \texttt{plot} attribute in \texttt{LintransMainWindow} to an instance of \texttt{ViewTransformationWidget}, the plot was visible in the GUI.
-
-I then refactored the code slightly to rename \texttt{draw\_widget()} to \texttt{draw\_background()} and then call it from the \texttt{paintEvent()} method in \texttt{ViewTransformationWidget}.
-
-\vspace{3em}
+\fsbsl{development/4af63072b383dc9cef9adbb8900323aa007e7f26/gui.png}{The GUI with background axes}{The meat of this class is the \texttt{draw\_widget()} method. Right now, this method only draws the background axes. My next step is to implement basis vector attributes and draw them in \texttt{draw\_widget()}. After changing the the \texttt{plot} attribute in \texttt{LintransMainWindow} to an instance of \texttt{ViewTransformationWidget}, the plot was visible in the GUI.\par I then refactored the code slightly to rename \texttt{draw\_widget()} to \texttt{draw\_background()} and then call it from the \texttt{paintEvent()} method in \texttt{ViewTransformationWidget}.}
 
 \subsubsection{Implementing basis vectors\label{development:visualizing-matrices:implementing-basis-vectors}}
 
-My first step in implementing basis vectors was to add some utility methods to convert between coordinate systems. The matrices are using Cartesian coordinates with $(0, 0)$ in the middle, positive $x$ going to the right, and positive $y$ going up. However, \texttt{Qt5} is using standard computer graphics coordinates, with $(0, 0)$ in the top left, positive $x$ going to the right, and positive $y$ going down. I needed a way to convert Cartesian \enquote{grid} coordinates to \texttt{Qt5} \enquote{canvas} coordinates, so I wrote some little utility methods.
+My first step in implementing basis vectors was to add some utility methods to convert between coordinate systems. The matrices are using Cartesian coordinates with $(0, 0)$ in the middle, positive $x$ going to the right, and positive $y$ going up. However, Qt5 is using standard computer graphics coordinates, with $(0, 0)$ in the top left, positive $x$ going to the right, and positive $y$ going down. I needed a way to convert Cartesian \enquote{grid} coordinates to Qt5 \enquote{canvas} coordinates, so I wrote some little utility methods.
 
 %: 1fa7e1c61d61cb6aeff773b9698541f82fee39ea
 %: src/lintrans/gui/plots/plot_widget.py:45-60
