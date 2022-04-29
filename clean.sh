@@ -25,4 +25,7 @@ rm -f *.fdb_latexmk
 rm -f *.fls
 rm -f *.run.xml
 rm -f *.synctex.gz
+
 rm -f sections/processed_*.tex
+
+rm -rf _minted-main/
