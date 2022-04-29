@@ -27,7 +27,7 @@ from textwrap import dedent
 
 import git
 
-COMMENT_PATTERN = re.compile(r'%: ([0-9a-f]+)\n%: ([^\s:]+)(:\d+-\d+)?( strip)?')
+COMMENT_PATTERN = re.compile(r'(?<=\n)%: ([0-9a-f]+)\n%: ([^\s:]+)(:\d+-\d+)?( strip)?')
 
 COPYRIGHT_COMMENT = '''# lintrans - The linear transformation visualizer
 # Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
@@ -42,8 +42,8 @@ LINE_NUMBER_HACK = r'''\renewcommand\theFancyVerbLine{
     \textcolor[rgb]{0.5,0.5,1}{
         \footnotesize
         \oldstylenums{
-            \ifnum\value{FancyVerbLine}=-3\else
-            \ifnum\value{FancyVerbLine}=-2\else
+            \ifnum\value{FancyVerbLine}=-3 \else
+            \ifnum\value{FancyVerbLine}=-2 \else
             \ifnum\value{FancyVerbLine}=-1
                 \setcounter{FancyVerbLine}{NUM}
             \else
@@ -51,7 +51,7 @@ LINE_NUMBER_HACK = r'''\renewcommand\theFancyVerbLine{
             \fi\fi\fi
         }
     }
-}'''
+}'''.replace('    ', '\t')
 
 
 def process_snippets(filename: str) -> None:
