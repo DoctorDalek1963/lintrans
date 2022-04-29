@@ -6,24 +6,23 @@
 # This program is licensed under GNU GPLv3, available here:
 # <https://www.gnu.org/licenses/gpl-3.0.html>
 
-rm *.log 2> /dev/null
-rm *.aux 2> /dev/null
-rm *.dvi 2> /dev/null
-rm *.lof 2> /dev/null
-rm *.lot 2> /dev/null
-rm *.bit 2> /dev/null
-rm *.idx 2> /dev/null
-rm *.glo 2> /dev/null
-rm *.bbl 2> /dev/null
-rm *.bcf 2> /dev/null
-rm *.ilg 2> /dev/null
-rm *.toc 2> /dev/null
-rm *.ind 2> /dev/null
-rm *.out 2> /dev/null
-rm *.blg 2> /dev/null
-rm *.fdb_latexmk 2> /dev/null
-rm *.fls 2> /dev/null
-rm *.run.xml 2> /dev/null
-rm *.synctex.gz 2> /dev/null
-
-exit 0
+rm -f *.log
+rm -f *.aux
+rm -f *.dvi
+rm -f *.lof
+rm -f *.lot
+rm -f *.bit
+rm -f *.idx
+rm -f *.glo
+rm -f *.bbl
+rm -f *.bcf
+rm -f *.ilg
+rm -f *.toc
+rm -f *.ind
+rm -f *.out
+rm -f *.blg
+rm -f *.fdb_latexmk
+rm -f *.fls
+rm -f *.run.xml
+rm -f *.synctex.gz
+rm -f sections/processed_*.tex
