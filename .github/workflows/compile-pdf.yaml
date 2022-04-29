@@ -46,7 +46,6 @@ jobs:
 
       - name: Put pdf in correct directory
         run: |
-          sh clean.sh
           mkdir -p pdf_dir
           mv main.pdf pdf_dir/lintrans.pdf
 
