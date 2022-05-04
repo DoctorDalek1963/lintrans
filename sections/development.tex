@@ -136,7 +136,7 @@ Here, we go through the list of tuples and evaluate the matrix represented by ea
 
 \subsubsection{First basic GUI\label{development:initial-gui:first-basic-gui}}
 
-After implementing most of the backend and testing it thoroughly, I wanted to start work on the actual GUI. The discrepancy in all the GUI code between \texttt{snake\_case} and \texttt{camelCase} is because Qt5 was originally a C++ framework that was adapted into PyQt5 for Python.
+The discrepancy in all the GUI code between \texttt{snake\_case} and \texttt{camelCase} is because Qt5 was originally a C++ framework that was adapted into PyQt5 for Python. All the Qt API is in \texttt{camelCase}, but my Python code is in \texttt{snake\_case}.
 
 %: 93ce763f7b993439fc0da89fad39456d8cc4b52c
 %: src/lintrans/gui/main_window.py
@@ -186,6 +186,20 @@ I also then implemented a simple \texttt{DefineAsAnExpressionDialog}, which eval
 My next dialog that I wanted to implement was a visual definition dialog, which would allow the user to drag around the basis vectors to define a transformation. However, I would first need to create the \texttt{lintrans.gui.plots} package to allow for actually visualizing matrices and transformations.
 
 \subsection{Visualizing matrices\label{development:visualizing-matrices}}
+
+\subsubsection{Asking strangers on the internet for help\label{development:visualizing-matrices:asking-strangers-on-the-internet-for-help}}
+
+After creating most of the GUI skeleton, I wanted to build the viewport. Unfortunately, I had no idea what I was doing.
+
+While looking through the PyQt5 docs, I found a pretty comprehensive explanation of the Qt5 \enquote{Graphics View Framework}\cite{pyqt5-graphics-view-framework}, which seemed pretty good, but not really what I was looking for. I wanted a way to easily draw lots of straight, parallel lines. This framework seemed more focussed on manipulating objects on a canvas, almost like sprites. I knew of a different Python library called \texttt{matplotlib}, which has various backends available. I learned that it could be embedded in a standard PyQt5 GUI, so I started doing some research.
+
+I didn't get very far with \texttt{matplotlib}. I hadn't used it much before and it's designed for visualizing data. It can draw manually defined straight lines on a canvas, but that's not what it's designed for and it's not very good at it. Thankfully, my horrific \texttt{matplotlib} code has been lost to time. I used the \texttt{Qt5Agg} backend from \texttt{matplotlib} to create a custom PyQt5 widget for the GUI and I could graph randomly generated data with it after following a tutorial\cite{matplotlib-pyqt5-tutorial}.
+
+I realised that I wasn't going to get very far with \texttt{matplotlib}, but I didn't know what else to do. I couldn't find any relevant examples on the internet, so I decided to post a question on a forum myself. I'd had experience with StackOverflow and its unfriendly community before, so I decided to ask the \texttt{r/learnpython} subreddit\cite{reddit-framework-question}.
+
+I only got one response, but it was incredibly helpful. The person told me that if I couldn't find an easy way to do what I wanted, I could write a custom PyQt5 widget. I knew this was possible with a class that just inherited from \texttt{QWidget}, but had no idea how to actually make something useful. Thankfully, this person provided a link to a GitLab repository of theirs, where they had multiple examples of custom widgets with PyQt5\cite{gitlab-custom-widgets}.
+
+When looking through this repo, I found out how to draw on a widget like a simple canvas. All I have to do is override the \texttt{paintEvent()} method and use a \texttt{QPainter} object to draw on the widget. I used this knowledge to start creating the actual viewport for the GUI, starting with the background axes.
 
 \subsubsection{Creating the plots package\label{development:visualizing-matrices:creating-the-plots-package}}
 
