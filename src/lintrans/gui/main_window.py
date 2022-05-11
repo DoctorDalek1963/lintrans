@@ -390,33 +390,37 @@ class LintransMainWindow(QMainWindow):
 
         # This is the matrix that we're applying to get from start to target
         # We want to check if it's rotation-like
-        matrix_application = target @ linalg.inv(start)
+        if linalg.det(start) == 0:
+            matrix_application = None
+        else:
+            matrix_application = target @ linalg.inv(start)
 
-        if self.plot.display_settings.smoothen_determinant \
+        if matrix_application is not None \
+                and self.plot.display_settings.smoothen_determinant \
                 and linalg.det(matrix_application) > 0 \
-                and abs(np.dot(matrix_application.T[0], matrix_application.T[1])) < 0.1 \
-                and not (matrix_application / linalg.det(matrix_application) - np.eye(2) < 1e-5).all():
+                and abs(np.dot(matrix_application.T[0], matrix_application.T[1])) < 0.1:
             # Get the columns of the matrices
             # We're going to move i and then move j
             i_vectors = (start.T[0], target.T[0])
             j_vectors = (start.T[1], target.T[1])
 
             matrix_list: list[tuple[float, float]] = []
+            TWO_PI = 2 * np.pi
 
             for start_vector, end_vector in [i_vectors, j_vectors]:
                 # We want the points in polar coordinates
                 s_length, s_angle = polar_coords(start_vector[0], start_vector[1])
                 e_length, e_angle = polar_coords(end_vector[0], end_vector[1])
 
-                # We're using the standard formula for a logarithmic spiral,
-                # but we want to connect two specific points
-                # This base is just the base that we raise the angle to in the formula
-                base = (e_length / s_length) ** (-1 / (s_angle - e_angle))
+                angle_difference = e_angle - s_angle % TWO_PI
 
-                angle = s_angle + proportion * (e_angle - s_angle)
+                if angle_difference > np.pi + 0.01:  # Extra 0.01 accounts for floating point error
+                    angle = s_angle + proportion * (TWO_PI - angle_difference)
+                else:
+                    angle = s_angle + proportion * angle_difference
 
-                # Logarithmic spiral equation
-                radius = s_length * base ** (angle - s_angle)
+                radius = s_length + proportion * (e_length - s_length)
+                # angle = s_angle % TWO_PI + proportion * angle_difference
 
                 matrix_list.append(rect_coords(radius, angle))
 
