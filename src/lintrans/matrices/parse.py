@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 from typing import Pattern
 
 from lintrans.typing_ import MatrixParseList
@@ -118,6 +119,218 @@ def validate_matrix_expression(expression: str) -> bool:
     return all(validate_matrix_expression(m) for m in sub_expressions)
 
 
+@dataclass
+class MatrixToken:
+    """A simple dataclass to hold information about a matrix token being parsed."""
+
+    multiplier: str = ''
+    identifier: str = ''
+    exponent: str = ''
+
+    @property
+    def tuple(self) -> tuple[str, str, str]:
+        """Create a tuple of the token for parsing."""
+        return self.multiplier, self.identifier, self.exponent
+
+
+class ExpressionParser:
+    """A class to hold state during parsing."""
+
+    def __init__(self, expression: str):
+        """Create an instance of the parser with the given expression."""
+        # Remove all whitespace
+        expression = re.sub(r'\s', '', expression)
+
+        # Check if it's valid
+        if not validate_matrix_expression(expression):
+            raise MatrixParseError('Invalid expression')
+
+        # Wrap all exponents and transposition powers with {}
+        expression = re.sub(r'(?<=\^)(-?\d+|T)(?=[^}]|$)', r'{\g<0>}', expression)
+
+        # Remove any standalone minuses
+        expression = re.sub(r'-(?=[A-Z])', '-1', expression)
+
+        # Replace subtractions with additions
+        expression = re.sub(r'-(?=\d+\.?\d*([A-Z]|rot))', '+-', expression)
+
+        # Get rid of a potential leading + introduced by the last step
+        expression = re.sub(r'^\+', '', expression)
+
+        self.expression = expression
+        self.pointer: int = 0
+
+        self.current_token: MatrixToken = MatrixToken()
+        self.current_group: list[tuple[str, str, str]] = []
+
+        self.final_list: MatrixParseList = []
+
+    def __repr__(self) -> str:
+        """Return a simple repr."""
+        return f'{self.__class__.__module__}.{self.__class__.__name__}("{self.expression}")'
+
+    @property
+    def char(self) -> str:
+        """Return the char pointed to by the pointer."""
+        return self.expression[self.pointer]
+
+    def parse(self) -> MatrixParseList:
+        """Parse the instance's matrix expression and return the MatrixParseList.
+
+        :returns MatrixParseList: The parsed expression
+        """
+        self._parse_multiplication_group()
+
+        while self.pointer < len(self.expression):
+            if self.expression[self.pointer] != '+':
+                raise MatrixParseError('Expected "+" between multiplication groups')
+
+            self.pointer += 1
+            self._parse_multiplication_group()
+
+        return self.final_list
+
+    def _parse_multiplication_group(self) -> None:
+        """Parse a group of matrices to be multiplied.
+
+        :returns bool: Success or failure
+        """
+        while self._parse_matrix():
+            if self.pointer >= len(self.expression) or self.char == '+':
+                self.final_list.append(self.current_group)
+                self.current_group = []
+                self.pointer += 1
+
+    def _parse_matrix(self) -> bool:
+        """Parse a full matrix using :meth:`_parse_matrix_part`.
+
+        :returns bool: Success or failure
+        """
+        self.current_token = MatrixToken()
+
+        while self._parse_matrix_part():
+            pass  # The actual execution is taken care of in the loop condition
+
+        if self.current_token.identifier == '':
+            return False
+
+        self.current_group.append(self.current_token.tuple)
+        return True
+
+    def _parse_matrix_part(self) -> bool:
+        """Parse part of a matrix (multiplier, identifier, or exponent) from the expression and pointer.
+
+        .. note:: This method mutates ``self.current_token``.
+
+        :returns bool: Success or failure
+        :raises MatrixParseError: If we fail to parse this part of the token
+        """
+        if self.pointer >= len(self.expression):
+            return False
+
+        if self.char.isdigit() or self.char == '-':
+            if self.current_token.multiplier != '':
+                return False
+
+            self._parse_multiplier()
+
+        elif self.char.isalpha() and self.char.isupper():
+            if self.current_token.identifier != '':
+                return False
+
+            self.current_token.identifier = self.char
+            self.pointer += 1
+
+        elif self.char == 'r':
+            if self.current_token.identifier != '':
+                return False
+
+            self._parse_rot_identifier()
+
+        elif self.char == '(':
+            if self.current_token.identifier != '':
+                return False
+
+            self._parse_sub_expression()
+
+        elif self.char == '^':
+            if self.current_token.exponent != '':
+                return False
+
+            self._parse_exponent()
+
+        elif self.char == '+':
+            return False
+
+        else:
+            raise MatrixParseError(f'Unrecognised character "{self.char}" in matrix expression')
+
+        return True
+
+    def _parse_multiplier(self) -> None:
+        """Parse a multiplier from the expression and pointer.
+
+        .. note:: This method mutates ``self.current_token.multiplier``.
+
+        :raises MatrixParseError: If we fail to parse this part of the token
+        """
+        self.current_token.multiplier = ''
+        multiplier = ''
+
+        while self.char.isdigit() or self.char in ('.', '-'):
+            multiplier += self.char
+            self.pointer += 1
+
+        # There can only be one dot in the multiplier
+        if len(multiplier.split('.')) > 2:
+            raise MatrixParseError(f'Multiplier "{multiplier}" has more than one dot')
+
+        if '-' in multiplier and '-' in multiplier[1:]:
+            raise MatrixParseError('Character "-" can only occur at the start of a multiplier')
+
+        self.current_token.multiplier = multiplier
+
+    def _parse_rot_identifier(self) -> None:
+        """Parse a ``rot()``-style identifier from the expression and pointer.
+
+        .. note:: this method mutates ``self.current_token.identifier``.
+
+        :raises MatrixParseError: If we fail to parse this part of the token
+        """
+        self.current_token.identifier = ''
+
+        if match := re.match(r'rot\([^()]+\)', self.expression[self.pointer:]):
+            self.current_token.identifier = match.group(0)
+            self.pointer += len(match.group(0))
+        else:
+            raise MatrixParseError(f'Invalid rot-identifier "{self.expression[self.pointer:self.pointer + 15]}..."')
+
+    def _parse_sub_expression(self) -> None:
+        """Parse a parenthesized sub-expression as the identifier, from the expression and pointer.
+
+        .. note:: this method mutates ``self.current_token.identifier``.
+
+        :raises MatrixParseError: If we fail to parse this part of the token
+        """
+        # TODO
+        raise MatrixParseError('Sub-expressions are currently not supported as identifiers')
+
+    def _parse_exponent(self) -> None:
+        """Parse a matrix exponent from the expression and pointer.
+
+        .. note:: this method mutates ``self.current_token.exponent``.
+
+        :raises MatrixParseError: If we fail to parse this part of the token
+        """
+        self.current_token.exponent = ''
+
+        if match := re.match(r'\^\{(-?\d+|T)\}', self.expression[self.pointer:]):
+            self.current_token.exponent = match.group(1)
+            self.pointer += len(match.group(0))
+        else:
+            raise MatrixParseError(f'Invalid exponent "{self.expression[self.pointer:self.pointer + 10]}..."')
+
+
 def parse_matrix_expression(expression: str) -> MatrixParseList:
     """Parse the matrix expression and return a :data:`lintrans.typing_.MatrixParseList`.
 
@@ -140,32 +353,4 @@ def parse_matrix_expression(expression: str) -> MatrixParseList:
     :returns: A list of parsed components
     :rtype: :data:`lintrans.typing_.MatrixParseList`
     """
-    # Remove all whitespace
-    expression = re.sub(r'\s', '', expression)
-
-    # Check if it's valid
-    if not validate_matrix_expression(expression):
-        raise MatrixParseError('Invalid expression')
-
-    # Wrap all exponents and transposition powers with {}
-    expression = re.sub(r'(?<=\^)(-?\d+|T)(?=[^}]|$)', r'{\g<0>}', expression)
-
-    # Remove any standalone minuses
-    expression = re.sub(r'-(?=[A-Z])', '-1', expression)
-
-    # Replace subtractions with additions
-    expression = re.sub(r'-(?=\d+\.?\d*([A-Z]|rot))', '+-', expression)
-
-    # Get rid of a potential leading + introduced by the last step
-    expression = re.sub(r'^\+', '', expression)
-
-    return [
-        [
-            # The tuple returned by re.findall is (multiplier, matrix identifier, full index, stripped index),
-            # so we have to remove the full index, which contains the {}
-            (t[0], t[1], t[3])
-            for t in re.findall(r'(-?\d*\.?\d*)?([A-Z]|rot\(-?\d+\.?\d*\))(\^{(-?\d+|T)})?', group)
-        ]
-        # We just split the expression by '+' to have separate groups
-        for group in expression.split('+')
-    ]
+    return ExpressionParser(expression).parse()
