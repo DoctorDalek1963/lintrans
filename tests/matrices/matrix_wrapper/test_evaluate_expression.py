@@ -9,6 +9,7 @@
 import numpy as np
 from numpy import linalg as la
 import pytest
+from pytest import approx
 
 from lintrans.matrices import MatrixWrapper, create_rotation_matrix
 from lintrans.typing_ import MatrixType
@@ -51,6 +52,11 @@ def test_simple_two_matrix_multiplication(test_wrapper: MatrixWrapper) -> None:
     assert (test_wrapper.evaluate_expression('GA') == test_wrapper['G'] @ test_wrapper['A']).all()
     assert (test_wrapper.evaluate_expression('CF') == test_wrapper['C'] @ test_wrapper['F']).all()
     assert (test_wrapper.evaluate_expression('AG') == test_wrapper['A'] @ test_wrapper['G']).all()
+
+    assert test_wrapper.evaluate_expression('A2B') == approx(test_wrapper['A'] @ (2 * test_wrapper['B']))
+    assert test_wrapper.evaluate_expression('2AB') == approx((2 * test_wrapper['A']) @ test_wrapper['B'])
+    assert test_wrapper.evaluate_expression('C3D') == approx(test_wrapper['C'] @ (3 * test_wrapper['D']))
+    assert test_wrapper.evaluate_expression('4.2E1.2A') == approx((4.2 * test_wrapper['E']) @ (1.2 * test_wrapper['A']))
 
     assert test_wrapper == get_test_wrapper()
 
