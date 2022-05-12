@@ -274,7 +274,6 @@ class ExpressionParser:
 
         :raises MatrixParseError: If we fail to parse this part of the token
         """
-        self.current_token.multiplier = ''
         multiplier = ''
 
         while self.char.isdigit() or self.char in ('.', '-'):
@@ -297,8 +296,6 @@ class ExpressionParser:
 
         :raises MatrixParseError: If we fail to parse this part of the token
         """
-        self.current_token.identifier = ''
-
         if match := re.match(r'rot\([^()]+\)', self.expression[self.pointer:]):
             self.current_token.identifier = match.group(0)
             self.pointer += len(match.group(0))
@@ -322,8 +319,6 @@ class ExpressionParser:
 
         :raises MatrixParseError: If we fail to parse this part of the token
         """
-        self.current_token.exponent = ''
-
         if match := re.match(r'\^\{(-?\d+|T)\}', self.expression[self.pointer:]):
             self.current_token.exponent = match.group(1)
             self.pointer += len(match.group(0))
