@@ -363,6 +363,8 @@ def parse_matrix_expression(expression: str) -> MatrixParseList:
     [[('-3', 'A', '-1'), ('3', 'B', 'T')], [('-45', 'M', '2')]]
     >>> parse_matrix_expression('5.3A^{4} 2.6B^{-2} + 4.6D^T 8.9E^{-1}')
     [[('5.3', 'A', '4'), ('2.6', 'B', '-2')], [('4.6', 'D', 'T'), ('8.9', 'E', '-1')]]
+    >>> parse_matrix_expression('2(A+B^TC)^2D')
+    [[('2', 'A+B^{T}C', '2'), ('', 'D', '')]]
 
     :param str expression: The expression to be parsed
     :returns: A list of parsed components
