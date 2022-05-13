@@ -111,7 +111,6 @@ expressions_and_parsed_expressions: list[tuple[str, MatrixParseList]] = [
 ]
 
 
-@pytest.mark.xfail
 def test_parse_matrix_expression() -> None:
     """Test the parse_matrix_expression() function."""
     for expression, parsed_expression in expressions_and_parsed_expressions:

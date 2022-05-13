@@ -229,7 +229,8 @@ class ExpressionParser:
             return False
 
         if self.char.isdigit() or self.char == '-':
-            if self.current_token.multiplier != '':
+            if self.current_token.multiplier != '' \
+                    or (self.current_token.multiplier == '' and self.current_token.identifier != ''):
                 return False
 
             self._parse_multiplier()
