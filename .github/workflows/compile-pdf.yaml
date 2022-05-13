@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - write-up
+  workflow_dispatch:
 
 jobs:
   compile-latex:
