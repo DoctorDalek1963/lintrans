@@ -4,16 +4,35 @@
 # This program is licensed under GNU GPLv3, available here:
 # <https://www.gnu.org/licenses/gpl-3.0.html>
 
-"""Test the matrices.parse module validation and parsing."""
+"""Test the :mod:`matrices.parse` module validation and parsing."""
 
 import pytest
 
-from lintrans.matrices.parse import MatrixParseError, parse_matrix_expression, validate_matrix_expression
+from lintrans.matrices.parse import (
+    MatrixParseError, find_sub_expressions, parse_matrix_expression, validate_matrix_expression
+)
 from lintrans.typing_ import MatrixParseList
+
+expected_sub_expressions: list[tuple[str, list[str]]] = [
+    ('2(AB)^-1', ['AB']),
+    ('-3(A+B)^2-C(B^TA)^-1', ['A+B', 'B^TA']),
+    ('rot(45)', []),
+    ('()', []),
+    ('(())', ['()']),
+    ('2.3A^-1(AB)^-1+(BC)^2', ['AB', 'BC']),
+    ('(2.3A^-1(AB)^-1+(BC)^2)', ['2.3A^-1(AB)^-1+(BC)^2']),
+]
+
+
+def test_find_sub_expressions() -> None:
+    """Test the :func:`lintrans.matrices.parse.find_sub_expressions` function."""
+    for inp, output in expected_sub_expressions:
+        assert find_sub_expressions(inp) == output
+
 
 valid_inputs: list[str] = [
     'A', 'AB', '3A', '1.2A', '-3.4A', 'A^2', 'A^-1', 'A^{-1}',
-    'A^12', 'A^T', 'A^{5}', 'A^{T}', '4.3A^7', '9.2A^{18}', '.1A'
+    'A^12', 'A^T', 'A^{5}', 'A^{T}', '4.3A^7', '9.2A^{18}', '0.1A'
 
     'rot(45)', 'rot(12.5)', '3rot(90)',
     'rot(135)^3', 'rot(51)^T', 'rot(-34)^-1',
@@ -26,12 +45,16 @@ valid_inputs: list[str] = [
     '2A^{3}4B^5', '4rot(90)^3', 'rot(45)rot(13)',
     'Arot(90)', 'AB^2', 'A^2B^2', '8.36A^T3.4B^12',
 
-    '3.5A^{4}5.6rot(19.2)^T-B^{-1}4.1C^5'
+    '3.5A^{4}5.6rot(19.2)^T-B^{-1}4.1C^5',
+
+    '(A)', '(AB)^-1', '2.3(3B^TA)^2', '-3.4(9D^{2}3F^-1)^T+C', '(AB)(C)',
+    '3(rot(34)^-7A)^-1+B', '3A^2B+4A(B+C)^-1D^T-A(C(D+E)B)'
 ]
 
 invalid_inputs: list[str] = [
     '', 'rot()', 'A^', 'A^1.2', 'A^{3.4}', '1,2A', 'ro(12)', '5', '12^2', '^T', '^{12}',
-    'A^{13', 'A^3}', 'A^A', '^2', 'A--B', '--A', '+A', '--1A', 'A--B', 'A--1B', '.A', '1.A'
+    'A^{13', 'A^3}', 'A^A', '^2', 'A--B', '--A', '+A', '--1A', 'A--B', 'A--1B', '.A', '1.A',
+    '2.3AB)^T', '(AB+)', '-4.6(9A', '-2(3.4A^{-1}-C^)^2', '9.2)', '3A^2B+4A(B+C)^-1D^T-A(C(D+EB)',
 
     'This is 100% a valid matrix expression, I swear'
 ]
@@ -52,12 +75,12 @@ expressions_and_parsed_expressions: list[tuple[str, MatrixParseList]] = [
     ('3A', [[('3', 'A', '')]]),
     ('1.4A^3', [[('1.4', 'A', '3')]]),
     ('0.1A', [[('0.1', 'A', '')]]),
-    ('.1A', [[('.1', 'A', '')]]),
+    ('0.1A', [[('0.1', 'A', '')]]),
     ('A^12', [[('', 'A', '12')]]),
     ('A^234', [[('', 'A', '234')]]),
 
     # Multiplications
-    ('A .1B', [[('', 'A', ''), ('.1', 'B', '')]]),
+    ('A 0.1B', [[('', 'A', ''), ('0.1', 'B', '')]]),
     ('A^2 3B', [[('', 'A', '23'), ('', 'B', '')]]),
     ('4A^{3} 6B^2', [[('4', 'A', '3'), ('6', 'B', '2')]]),
     ('4.2A^{T} 6.1B^-1', [[('4.2', 'A', 'T'), ('6.1', 'B', '-1')]]),
@@ -68,7 +91,7 @@ expressions_and_parsed_expressions: list[tuple[str, MatrixParseList]] = [
     # Additions
     ('A + B', [[('', 'A', '')], [('', 'B', '')]]),
     ('A + B - C', [[('', 'A', '')], [('', 'B', '')], [('-1', 'C', '')]]),
-    ('A^2 + .5B', [[('', 'A', '2')], [('.5', 'B', '')]]),
+    ('A^2 + 0.5B', [[('', 'A', '2')], [('0.5', 'B', '')]]),
     ('2A^3 + 8B^T - 3C^-1', [[('2', 'A', '3')], [('8', 'B', 'T')], [('-3', 'C', '-1')]]),
     ('4.9A^2 - 3rot(134.2)^-1 + 7.6B^8', [[('4.9', 'A', '2')], [('-3', 'rot(134.2)', '-1')], [('7.6', 'B', '8')]]),
 
@@ -78,6 +101,13 @@ expressions_and_parsed_expressions: list[tuple[str, MatrixParseList]] = [
     ('2.14A^{3} 4.5rot(14.5)^-1 + 8.5B^T 5.97C^14 - 3.14D^{-1} 6.7E^T',
      [[('2.14', 'A', '3'), ('4.5', 'rot(14.5)', '-1')], [('8.5', 'B', 'T'), ('5.97', 'C', '14')],
       [('-3.14', 'D', '-1'), ('6.7', 'E', 'T')]]),
+
+    # Parenthesized expressions
+    ('(AB)^-1', [[('', 'AB', '-1')]]),
+    ('-3(A+B)^2-C(B^TA)^-1', [[('-3', 'A+B', '2')], [('-1', 'C', ''), ('', 'B^{T}A', '-1')]]),
+    ('2.3(3B^TA)^2', [[('2.3', '3B^{T}A', '2')]]),
+    ('-3.4(9D^{2}3F^-1)^T+C', [[('-3.4', '9D^{2}3F^{-1}', 'T')], [('', 'C', '')]]),
+    ('2.39(3.1A^{-1}2.3B(CD)^-1)^T + (AB^T)^-1', [[('2.39', '3.1A^{-1}2.3B(CD)^{-1}', 'T')], [('', 'AB^{T}', '-1')]])
 ]
 
 

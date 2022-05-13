@@ -9,6 +9,7 @@
 import numpy as np
 from numpy import linalg as la
 import pytest
+from pytest import approx
 
 from lintrans.matrices import MatrixWrapper, create_rotation_matrix
 from lintrans.typing_ import MatrixType
@@ -51,6 +52,11 @@ def test_simple_two_matrix_multiplication(test_wrapper: MatrixWrapper) -> None:
     assert (test_wrapper.evaluate_expression('GA') == test_wrapper['G'] @ test_wrapper['A']).all()
     assert (test_wrapper.evaluate_expression('CF') == test_wrapper['C'] @ test_wrapper['F']).all()
     assert (test_wrapper.evaluate_expression('AG') == test_wrapper['A'] @ test_wrapper['G']).all()
+
+    assert test_wrapper.evaluate_expression('A2B') == approx(test_wrapper['A'] @ (2 * test_wrapper['B']))
+    assert test_wrapper.evaluate_expression('2AB') == approx((2 * test_wrapper['A']) @ test_wrapper['B'])
+    assert test_wrapper.evaluate_expression('C3D') == approx(test_wrapper['C'] @ (3 * test_wrapper['D']))
+    assert test_wrapper.evaluate_expression('4.2E1.2A') == approx((4.2 * test_wrapper['E']) @ (1.2 * test_wrapper['A']))
 
     assert test_wrapper == get_test_wrapper()
 
@@ -218,6 +224,37 @@ def test_complicated_expressions(test_wrapper: MatrixWrapper) -> None:
             + la.matrix_power(test_wrapper['A'], 3) @ la.inv(test_wrapper['B'])).all()
 
     assert test_wrapper == get_test_wrapper()
+
+
+def test_parenthesized_expressions(test_wrapper: MatrixWrapper) -> None:
+    """Test evaluation of parenthesized expressions."""
+    assert test_wrapper['A'] is not None and test_wrapper['B'] is not None and test_wrapper['C'] is not None and \
+           test_wrapper['D'] is not None and test_wrapper['E'] is not None and test_wrapper['F'] is not None and \
+           test_wrapper['G'] is not None
+
+    assert (test_wrapper.evaluate_expression('(A^T)^2') == la.matrix_power(test_wrapper['A'].T, 2)).all()
+    assert (test_wrapper.evaluate_expression('(B^T)^3') == la.matrix_power(test_wrapper['B'].T, 3)).all()
+    assert (test_wrapper.evaluate_expression('(C^T)^4') == la.matrix_power(test_wrapper['C'].T, 4)).all()
+    assert (test_wrapper.evaluate_expression('(D^T)^5') == la.matrix_power(test_wrapper['D'].T, 5)).all()
+    assert (test_wrapper.evaluate_expression('(E^T)^6') == la.matrix_power(test_wrapper['E'].T, 6)).all()
+    assert (test_wrapper.evaluate_expression('(F^T)^7') == la.matrix_power(test_wrapper['F'].T, 7)).all()
+    assert (test_wrapper.evaluate_expression('(G^T)^8') == la.matrix_power(test_wrapper['G'].T, 8)).all()
+
+    assert (test_wrapper.evaluate_expression('D^3(A+6.2F-0.397G^TE)^-2+A') ==
+            la.matrix_power(test_wrapper['D'], 3) @ la.matrix_power(
+                test_wrapper['A'] + 6.2 * test_wrapper['F'] - 0.397 * test_wrapper['G'].T @ test_wrapper['E'],
+                -2
+            ) + test_wrapper['A']).all()
+
+    assert (test_wrapper.evaluate_expression('-1.2F^{3}4.9D^T(A^2(B+3E^TF)^-1)^2') ==
+            -1.2 * la.matrix_power(test_wrapper['F'], 3) @ (4.9 * test_wrapper['D'].T) @
+            la.matrix_power(
+                la.matrix_power(test_wrapper['A'], 2) @ la.matrix_power(
+                    test_wrapper['B'] + 3 * test_wrapper['E'].T @ test_wrapper['F'],
+                    -1
+                ),
+                2
+            )).all()
 
 
 def test_value_errors(test_wrapper: MatrixWrapper) -> None:

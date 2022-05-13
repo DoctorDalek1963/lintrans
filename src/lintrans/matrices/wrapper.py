@@ -117,6 +117,9 @@ class MatrixWrapper:
             return create_rotation_matrix(float(match.group(1)))
 
         if name not in self._matrices:
+            if validate_matrix_expression(name):
+                return self.evaluate_expression(name)
+
             raise NameError(f'Unrecognised matrix name "{name}"')
 
         # We copy the matrix before we return it so the user can't accidentally mutate the matrix

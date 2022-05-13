@@ -20,7 +20,7 @@ class MatrixExpressionValidator(QValidator):
 
     def validate(self, text: str, pos: int) -> tuple[QValidator.State, str, int]:
         """Validate the given text according to the rules defined in the :mod:`lintrans.matrices` module."""
-        clean_text = re.sub(r'[\sA-Z\d.rot()^{},+-]', '', text)
+        clean_text = re.sub(parse.NAIVE_CHARACTER_CLASS[:-1] + ',]', '', text)
 
         if clean_text == '':
             if parse.validate_matrix_expression(clean_text):
