@@ -26,13 +26,13 @@ def compile_naive_expression_pattern() -> Pattern[str]:
     digit_no_zero = '[123456789]'
     digits = '\\d+'
     integer_no_zero = digit_no_zero + '(' + digits + ')?'
-    real_number = f'({integer_no_zero}(\\.{digits})?|0?\\.{digits})'
+    real_number = f'({integer_no_zero}(\\.{digits})?|0\\.{digits})'
 
     index_content = f'(-?{integer_no_zero}|T)'
     index = f'(\\^{{{index_content}}}|\\^{index_content})'
     matrix_identifier = f'([A-Z]|rot\\(-?{real_number}\\)|\\({NAIVE_CHARACTER_CLASS}+\\))'
     matrix = '(' + real_number + '?' + matrix_identifier + index + '?)'
-    expression = f'^-?{matrix}+((\\+|-){matrix}+)*$'
+    expression = f'^-?{matrix}+((\\+-?|-){matrix}+)*$'
 
     return re.compile(expression)
 
