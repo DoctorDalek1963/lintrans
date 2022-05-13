@@ -309,8 +309,27 @@ class ExpressionParser:
 
         :raises MatrixParseError: If we fail to parse this part of the token
         """
-        # TODO
-        raise MatrixParseError('Sub-expressions are currently not supported as identifiers')
+        if self.char != '(':
+            raise MatrixParseError('Sub-expression must start with "("')
+
+        self.pointer += 1
+        paren_depth = 1
+        identifier = ''
+
+        while paren_depth > 0:
+            if self.char == '(':
+                paren_depth += 1
+            elif self.char == ')':
+                paren_depth -= 1
+
+            if paren_depth == 0:
+                self.pointer += 1
+                break
+
+            identifier += self.char
+            self.pointer += 1
+
+        self.current_token.identifier = identifier
 
     def _parse_exponent(self) -> None:
         """Parse a matrix exponent from the expression and pointer.
