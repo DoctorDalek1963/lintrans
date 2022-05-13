@@ -13,6 +13,7 @@ Nothing here yet...
 
 - Add options to hide background grid, transformed grid, and basis vectors
 - Fully respect display settings in visual definition widget
+- Support parenthesized sub-expressions as matrix identifiers
 
 ### Fixed
 
