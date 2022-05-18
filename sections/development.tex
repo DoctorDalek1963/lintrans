@@ -276,4 +276,42 @@ Now that I had a very crude renderer, I could create a method to animate a matri
 
 This code creates the \texttt{matrix\_move} variable and adds scaled versions of it to the identity matrix and renders that each frame. It's simple, but it works well for this simple use case. Unfortunately, it's very hard to show off an animation in a PDF, since all these images are static. The git commit hashes are included in the code snippets if you want to clone the repo\cite{lintrans-github}, checkout this commit, and run it yourself if you want.
 
+\subsubsection{Preserving determinants\label{development:visualizing-matrices:preserving-determinants}}
+
+Ignoring the obvious flaw with not being able to render transformations with a more than $90\degree$ rotation, the animations don't respect determinants. When rotating $90\degree$, the determinant changes during the animation, even though we're going from a determinant 1 matrix (the identity) to another determinant 1 matrix. This is because we're just moving each vector to its new position in a straight line. I want to animate in a way that smoothly transitions the determinant.
+
+\begin{figure}[H]
+	\hspace{0.005\linewidth}
+	\centering
+	\begin{minipage}{0.48\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{development/3fa1bdee4a106cb32a55d1364d606f75365f6fd1/gui-expected.png}
+		\caption{What we would expect halfway through a $90\degree$ rotation}
+		\label{fig:development:3fa1bdee4a106cb32a55d1364d606f75365f6fd1:gui-expected.png}
+	\end{minipage}\hspace{0.015\linewidth}
+	\begin{minipage}{0.48\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{development/3fa1bdee4a106cb32a55d1364d606f75365f6fd1/gui-reality.png}
+		\caption{What we actually get halfway through a $90\degree$ rotation}
+		\label{fig:development:3fa1bdee4a106cb32a55d1364d606f75365f6fd1:gui-reality.png}
+	\end{minipage}
+	\hspace{0.005\linewidth}
+	\vspace{-1em}
+\end{figure}
+
+In order to smoothly animate the determinant, I had to do some maths. I first defined the matrix $\mathbf{A}$ to be equivalent to the \texttt{matrix\_move} variable from before - the target matrix minus the identity, scaled by the proportion. I then wanted to normalize $\mathbf{A}$ so that it had a determinant of 1 so that I could scale it up with the \texttt{proportion} variable through the animation.
+
+I think I first tried just multiplying $\mathbf{A}$ by $\dfrac{1}{\det(\mathbf{A})}$ but that didn't work, so I googled it. I found a post\cite{researchgate-normalize-determinant} on ResearchGate about the topic, and thanks to a very helpful comment from Jeffrey~L~Stuart, I learned that for a $2 \times 2$ matrix $\mathbf{A}$ and a scalar $c$, $\det(c \mathbf{A}) = c^2 \det(\mathbf{A})$.
+
+I wanted a $c$ such that $\det(c \mathbf{A}) = 1$. Therefore $c = \dfrac{1}{\sqrt{|\det(\mathbf{A})|}}$. I then defined matrix $\mathbf{B}$ to be $c\mathbf{A}$.
+
+Then I wanted to scale this normalized matrix $\mathbf{B}$ to have the same determinant as the target matrix $\mathbf{T}$ using some scalar $d$. We know that $\det(d \mathbf{B}) = d^2 \det(\mathbf{B}) = \det(\mathbf{T})$. We can just rearrange to find $d$ and get $d = \sqrt{\left|\dfrac{\det(\mathbf{T})}{\det(\mathbf{B})}\right|}$. But $\mathbf{B}$ is defined so that $\det(\mathbf{B}) = 1$, so we can get $d = \sqrt{|\det(\mathbf{T})|}$.
+
+However, we want to scale this over time with our \texttt{proportion} variable $p$, so our final scalar $s = 1 + p \left(\sqrt{|\det(\mathbf{T})|} - 1\right)$. We define a matrix $\mathbf{C} = s \mathbf{B}$ and render $\mathbf{C}$ each frame. When in code form, this is the following:
+
+%: 6ff49450d8438ea2b2e7d2a97125dc518e648bc5
+%: src/lintrans/gui/main_window.py:245-290
+
+Unfortunately, the system I use to render matrices is still quite bad at its job. This makes it hard to test properly. But, transformations like \texttt{2rot(90)} work exactly as expected, which is very good.
+
 \end{document}
