@@ -38,7 +38,7 @@ jobs:
           python generate_appendices.py
           python process_code_snippets.py
 
-      - name: Compile Main.tex
+      - name: Compile main.tex
         uses: xu-cheng/latex-action@v2
         with:
           root_file: main.tex
