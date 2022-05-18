@@ -265,6 +265,15 @@ I then called this method from \texttt{draw\_transformed\_grid()}.
 
 This code checks if $x$ or $y$ is zero\footnote{We actually check if they're less than $10^{-12}$ to allow for floating point errors} and if they're not, then we have to use the standard straight line equation $y = mx + c$ to create parallel lines. We find our value of $m$ and then iterate through all the values of $c$ that keep the line within the bounding box.
 
-\fsbsl{development/7dfe1e24729562501e2fd88a839dca6b653a3375/gui.png}{An example of a $20\degree$ rotation}{There are some serious logical errors in this code. It works fine for things like \texttt{3rot(45)} or \texttt{0.5rot(20)}, but something like \texttt{rot(115)} will leave the program hanging indefinitely.\par In fact, this code only works for rotations between $0\degree$ and $90\degree$, and will hang forever when given a matrix like $\begin{psmallmatrix}12 & 4 \\ -2 & 3\end{psmallmatrix}$, because it's just not very good.\par I will fix these issues in the future, but it works somewhat decently, so I decided to do animation next, because that sounded more fun}
+\fsbsl{development/7dfe1e24729562501e2fd88a839dca6b653a3375/gui.png}{An example of a $20\degree$ rotation}{There are some serious logical errors in this code. It works fine for things like \texttt{3rot(45)} or \texttt{0.5rot(20)}, but something like \texttt{rot(115)} will leave the program hanging indefinitely.\par In fact, this code only works for rotations between $0\degree$ and $90\degree$, and will hang forever when given a matrix like $\begin{psmallmatrix}12 & 4 \\ -2 & 3\end{psmallmatrix}$, because it's just not very good.\par I will fix these issues in the future, but it works somewhat decently, so I decided to do animation next, because that sounded more fun.}
+
+\subsubsection{Implementing animation\label{development:visualizing-matrices:implementing-animation}}
+
+Now that I had a very crude renderer, I could create a method to animate a matrix. Eventually I want to be able to apply a given matrix to the currently rendered scene and animate between them. However, I wanted to start simple by animating from the identity to the given matrix.
+
+%: 829a130af5aee9819bf0269c03ecfb20bec1a108
+%: src/lintrans/gui/main_window.py:238-258
+
+This code creates the \texttt{matrix\_move} variable and adds scaled versions of it to the identity matrix and renders that each frame. It's simple, but it works well for this simple use case. Unfortunately, it's very hard to show off an animation in a PDF, since all these images are static. The git commit hashes are included in the code snippets if you want to clone the repo\cite{lintrans-github}, checkout this commit, and run it yourself if you want.
 
 \end{document}
