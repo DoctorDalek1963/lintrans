@@ -332,52 +332,67 @@ This separation of functionality made designing and debugging this part of the s
 
 To illustrate what this code is doing, I'll use a diagram.
 
-\begin{center}
-\begin{tikzpicture}[
-	% Style code taken from https://tex.stackexchange.com/questions/123760/draw-crosses-in-tikz#124064
-	cross/.style={
-		cross out, draw,
-		minimum size=2*(#1-\pgflinewidth),
-		inner sep=0pt, outer sep=0pt
-	},
-	cross/.default={5pt}
-]
-	% Draw the grid
-	\draw [step=1cm,gray,very thin] (-4.9,-4.9) grid (4.9,4.9);
-	\draw (-5,0) -- (5,0);
-	\draw (0,-5) -- (0,5);
+\begin{figure}[H]
+	\hspace{0.005\linewidth}
+	\centering
+	\begin{minipage}{0.48\linewidth}
+		\centering
+		\begin{figure}[H]
+			\centering
+			\resizebox{\linewidth}{!}{%
+				\begin{tikzpicture}[
+					% Style code taken from https://tex.stackexchange.com/questions/123760/draw-crosses-in-tikz#124064
+					cross/.style={
+						cross out, draw,
+						minimum size=2*(#1-\pgflinewidth),
+						inner sep=0pt, outer sep=0pt
+					},
+					cross/.default={5pt}
+				]
+					% Draw the grid
+					\draw [step=1cm,gray,very thin] (-4.9,-4.9) grid (4.9,4.9);
+					\draw (-5,0) -- (5,0);
+					\draw (0,-5) -- (0,5);
 
-	% Draw the box with dashed extensions
-	\draw [dashed] (-4.9,2.8) -- (4.9,2.8);
-	\draw [dashed] (-4.9,-2.8) -- (4.9,-2.8);
-	\draw [dashed] (-3.2,-4.9) -- (-3.2,4.9);
-	\draw [dashed] (3.2,-4.9) -- (3.2,4.9);
+					% Draw the box with dashed extensions
+					\draw [dashed] (-4.9,2.8) -- (4.9,2.8);
+					\draw [dashed] (-4.9,-2.8) -- (4.9,-2.8);
+					\draw [dashed] (-3.2,-4.9) -- (-3.2,4.9);
+					\draw [dashed] (3.2,-4.9) -- (3.2,4.9);
 
-	\draw [red,thick] (-3.2,2.8) rectangle (3.2,-2.8);
+					\draw [red,thick] (-3.2,2.8) rectangle (3.2,-2.8);
 
-	% Draw the oblique lines
-	\draw [blue,thick] (-1.6,4.9) -- (4.9,3.2);
-	\draw [green,thick] (2.1,4.9) -- (-3.3,-4.9);
+					% Draw the oblique lines
+					\draw [blue,thick] (-1.6,4.9) -- (4.9,3.2);
+					\draw [green,thick] (2.1,4.9) -- (-3.3,-4.9);
 
-	% Mark the intersection points
-	\draw (0.94286,2.8) node [cross] {};
-	\draw (-2.14286,-2.8) node [cross] {};
-\end{tikzpicture}
-\end{center}
+					% Mark the intersection points
+					\draw (0.94286,2.8) node [cross] {};
+					\draw (-2.14286,-2.8) node [cross] {};
+				\end{tikzpicture}
+			}
+			\caption{Two example lines and the viewport box}
+			\label{tikz:development:cf05e09e5ebb6ea7a96db8660d0d8de6b946490a:lines-and-viewport}
+		\end{figure}
+	\end{minipage}%
+	\hspace{0.015\linewidth}
+	\begin{minipage}{0.48\linewidth}
+		\centering
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=\linewidth]{development/cf05e09e5ebb6ea7a96db8660d0d8de6b946490a/gui.png}
+			\caption{A demonstration of the new oblique lines system.}
+			\label{fig:development:cf05e09e5ebb6ea7a96db8660d0d8de6b946490a:gui.png}
+		\end{figure}
+	\end{minipage}
+	\hspace{0.005\linewidth}
+	\vspace{-1em}
+\end{figure}
 
-The red box represents the viewport of the GUI. The dashed lines represent the extensions of the red box. For a given line we want to draw, we first want to find where it intersects these dashed lines. Any oblique line will intersect each of these lines exactly once. This is what the \texttt{myi}, \texttt{mmyi}, \texttt{mxi}, and \texttt{mmxi} variables represent. The value of \texttt{myi} is the $x$ value where the line intersects the maximum $y$ line, for example.
+The red box represents the viewport of the GUI. The dashed lines represent the extensions of the red box. For a given line we want to draw, we first want to find where it intersects these orthogonal lines. Any oblique line will intersect each of these lines exactly once. This is what the \texttt{myi}, \texttt{mmyi}, \texttt{mxi}, and \texttt{mmxi} variables represent. The value of \texttt{myi} is the $x$ value where the line intersects the maximum $y$ line, for example.
 
 In the case of the blue line, all 4 intersection points are outside the bounds of the box, whereas the green line intersects with the box, as shown with the crosses. We use a list comprehension over a list of ternaries to get the \texttt{points} list. This list contains 0 or 2 coordinates, and we may or may not draw a line accordingly.
 
 That's how the \texttt{draw\_oblique\_line()} method works, and the \texttt{draw\_pair\_of\_oblique\_lines()} method just calls it with positive and negative values of $c$.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.8\linewidth]{development/cf05e09e5ebb6ea7a96db8660d0d8de6b946490a/gui.png}
-	\caption{An example of the new oblique lines system.}
-	\label{fig:development:cf05e09e5ebb6ea7a96db8660d0d8de6b946490a:gui.png}
-\end{figure}
-
-Just to prove that this new system works, figure~\ref{fig:development:cf05e09e5ebb6ea7a96db8660d0d8de6b946490a:gui.png} shows \texttt{2rot(200)} being rendered.
 
 \end{document}
