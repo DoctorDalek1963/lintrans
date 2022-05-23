@@ -134,7 +134,17 @@ class MatrixToken:
 
 
 class ExpressionParser:
-    """A class to hold state during parsing."""
+    """A class to hold state during parsing.
+
+    Most of the methods in this class are class-internal and should not be used from outside.
+
+    This class should be used like this:
+
+    >>> ExpressionParser('3A^-1B').parse()
+    [[('3', 'A', '-1'), ('', 'B', '')]]
+    >>> ExpressionParser('4(M^TA^2)^-2').parse()
+    [[('4', 'M^{T}A^{2}', '-2')]]
+    """
 
     def __init__(self, expression: str):
         """Create an instance of the parser with the given expression."""
@@ -175,9 +185,10 @@ class ExpressionParser:
         return self.expression[self.pointer]
 
     def parse(self) -> MatrixParseList:
-        """Parse the instance's matrix expression and return the MatrixParseList.
+        """Parse the instance's matrix expression and return the :attr:`lintrans.typing_.MatrixParseList`.
 
-        :returns MatrixParseList: The parsed expression
+        :returns: The parsed expression
+        :rtype: MatrixParseList
         """
         self._parse_multiplication_group()
 
@@ -293,7 +304,7 @@ class ExpressionParser:
     def _parse_rot_identifier(self) -> None:
         """Parse a ``rot()``-style identifier from the expression and pointer.
 
-        .. note:: this method mutates ``self.current_token.identifier``.
+        .. note:: This method mutates ``self.current_token.identifier``.
 
         :raises MatrixParseError: If we fail to parse this part of the token
         """
@@ -306,7 +317,7 @@ class ExpressionParser:
     def _parse_sub_expression(self) -> None:
         """Parse a parenthesized sub-expression as the identifier, from the expression and pointer.
 
-        .. note:: this method mutates ``self.current_token.identifier``.
+        .. note:: This method mutates ``self.current_token.identifier``.
 
         :raises MatrixParseError: If we fail to parse this part of the token
         """
@@ -335,7 +346,7 @@ class ExpressionParser:
     def _parse_exponent(self) -> None:
         """Parse a matrix exponent from the expression and pointer.
 
-        .. note:: this method mutates ``self.current_token.exponent``.
+        .. note:: This method mutates ``self.current_token.exponent``.
 
         :raises MatrixParseError: If we fail to parse this part of the token
         """

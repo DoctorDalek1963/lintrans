@@ -29,7 +29,7 @@ lintrans.gui.settings module
 .. automodule:: lintrans.gui.settings
    :exclude-members: DisplaySettings
 
-   .. autoclass:: lintrans.gui.settings.DisplaySettings
+   .. autoclass:: DisplaySettings
       :no-special-members:
       :no-undoc-members:
       :exclude-members: __init__

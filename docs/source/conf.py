@@ -55,14 +55,15 @@ html_favicon = 'favicon.png'
 
 autodoc_default_options: dict[str, bool | str] = {
     'members': True,
-    'member-order': 'bysource',
+    'member-order': 'alphabetical',
     'undoc-members': True,
-    'private-members': False,
+    'private-members': True,
     'special-members': True,
     'inherited-members': False,
     'show-inheritance': True,
     'ignore-module-all': False,
-    'exclude-members': '__module__, __weakref__, __dict__, __annotations__'
+    'exclude-members': '__module__, __weakref__, __dict__, __annotations__, '
+                       '__dataclass_fields__, __dataclass_params__, __match_args__'
 }
 
 autodoc_type_aliases: dict[str, str] = {
