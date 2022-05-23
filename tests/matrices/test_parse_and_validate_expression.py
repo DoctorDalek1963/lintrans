@@ -55,6 +55,7 @@ invalid_inputs: list[str] = [
     '', 'rot()', 'A^', 'A^1.2', 'A^{3.4}', '1,2A', 'ro(12)', '5', '12^2', '^T', '^{12}', '.1A',
     'A^{13', 'A^3}', 'A^A', '^2', 'A--B', '--A', '+A', '--1A', 'A--B', 'A--1B', '.A', '1.A',
     '2.3AB)^T', '(AB+)', '-4.6(9A', '-2(3.4A^{-1}-C^)^2', '9.2)', '3A^2B+4A(B+C)^-1D^T-A(C(D+EB)',
+    '3()^2', '4(your mum)^T', 'rot()', 'rot(10.1.1)', 'rot(--2)',
 
     'This is 100% a valid matrix expression, I swear'
 ]

@@ -170,7 +170,7 @@ class ExpressionParser:
         self.expression = expression
         self.pointer: int = 0
 
-        self.current_token: MatrixToken = MatrixToken()
+        self.current_token = MatrixToken()
         self.current_group: list[tuple[str, str, str]] = []
 
         self.final_list: MatrixParseList = []
@@ -292,12 +292,10 @@ class ExpressionParser:
             multiplier += self.char
             self.pointer += 1
 
-        # There can only be one dot in the multiplier
-        if len(multiplier.split('.')) > 2:
-            raise MatrixParseError(f'Multiplier "{multiplier}" has more than one dot')
-
-        if '-' in multiplier and '-' in multiplier[1:]:
-            raise MatrixParseError('Character "-" can only occur at the start of a multiplier')
+        try:
+            float(multiplier)
+        except ValueError as e:
+            raise MatrixParseError(f'Invalid multiplier "{multiplier}"') from e
 
         self.current_token.multiplier = multiplier
 
@@ -308,7 +306,13 @@ class ExpressionParser:
 
         :raises MatrixParseError: If we fail to parse this part of the token
         """
-        if match := re.match(r'rot\([^()]+\)', self.expression[self.pointer:]):
+        if match := re.match(r'rot\(([\d.-]+)\)', self.expression[self.pointer:]):
+            # Ensure that the number in brackets is a valid float
+            try:
+                float(match.group(1))
+            except ValueError as e:
+                raise MatrixParseError(f'Invalid angle number "{match.group(1)}" in rot-identifier') from e
+
             self.current_token.identifier = match.group(0)
             self.pointer += len(match.group(0))
         else:
@@ -341,6 +345,9 @@ class ExpressionParser:
             identifier += self.char
             self.pointer += 1
 
+        if not validate_matrix_expression(identifier):
+            raise MatrixParseError(f'Invalid sub-expression identifier "{identifier}"')
+
         self.current_token.identifier = identifier
 
     def _parse_exponent(self) -> None:
@@ -351,7 +358,15 @@ class ExpressionParser:
         :raises MatrixParseError: If we fail to parse this part of the token
         """
         if match := re.match(r'\^\{(-?\d+|T)\}', self.expression[self.pointer:]):
-            self.current_token.exponent = match.group(1)
+            exponent = match.group(1)
+
+            try:
+                if exponent != 'T':
+                    int(exponent)
+            except ValueError as e:
+                raise MatrixParseError(f'Invalid exponent "{match.group(1)}"') from e
+
+            self.current_token.exponent = exponent
             self.pointer += len(match.group(0))
         else:
             raise MatrixParseError(f'Invalid exponent "{self.expression[self.pointer:self.pointer + 10]}..."')
