@@ -147,7 +147,7 @@ class ExpressionParser:
     """
 
     def __init__(self, expression: str):
-        """Create an instance of the parser with the given expression."""
+        """Create an instance of the parser with the given expression and initialise variables to use during parsing."""
         # Remove all whitespace
         expression = re.sub(r'\s', '', expression)
 
@@ -176,7 +176,7 @@ class ExpressionParser:
         self.final_list: MatrixParseList = []
 
     def __repr__(self) -> str:
-        """Return a simple repr."""
+        """Return a simple repr containing the expression."""
         return f'{self.__class__.__module__}.{self.__class__.__name__}("{self.expression}")'
 
     @property
@@ -185,10 +185,13 @@ class ExpressionParser:
         return self.expression[self.pointer]
 
     def parse(self) -> MatrixParseList:
-        """Parse the instance's matrix expression and return the :attr:`lintrans.typing_.MatrixParseList`.
+        """Fully parse the instance's matrix expression and return the :attr:`lintrans.typing_.MatrixParseList`.
+
+        This method uses all the private methods of this class to parse the
+        expression in parts. All private methods mutate the instance variables.
 
         :returns: The parsed expression
-        :rtype: MatrixParseList
+        :rtype: :attr:`lintrans.typing_.MatrixParseList`
         """
         self._parse_multiplication_group()
 
@@ -202,11 +205,13 @@ class ExpressionParser:
         return self.final_list
 
     def _parse_multiplication_group(self) -> None:
-        """Parse a group of matrices to be multiplied.
+        """Parse a group of matrices to be multiplied together.
 
-        :returns bool: Success or failure
+        This method just parses matrices until we get to a ``+``.
         """
+        # This loop continues to parse matrices until we fail to do so
         while self._parse_matrix():
+            # Once we get to the end of the multiplication group, we add it the final list and reset the group list
             if self.pointer >= len(self.expression) or self.char == '+':
                 self.final_list.append(self.current_group)
                 self.current_group = []
@@ -214,6 +219,10 @@ class ExpressionParser:
 
     def _parse_matrix(self) -> bool:
         """Parse a full matrix using :meth:`_parse_matrix_part`.
+
+        This method will parse an optional multiplier, an identifier, and an optional exponent. If we
+        do this successfully, we return True. If we fail to parse a matrix (maybe we've reached the
+        end of the current multiplication group and the next char is ``+``), then we return False.
 
         :returns bool: Success or failure
         """
@@ -229,12 +238,15 @@ class ExpressionParser:
         return True
 
     def _parse_matrix_part(self) -> bool:
-        """Parse part of a matrix (multiplier, identifier, or exponent) from the expression and pointer.
+        """Parse part of a matrix (multiplier, identifier, or exponent).
 
-        .. note:: This method mutates ``self.current_token``.
+        Which part of the matrix we parse is dependent on the current value of the pointer and the expression.
+        This method will parse whichever part of matrix token that it can. If it can't parse a part of a matrix,
+        or it's reached the next matrix, then we just return False. If we succeeded to parse a matrix part, then
+        we return True.
 
         :returns bool: Success or failure
-        :raises MatrixParseError: If we fail to parse this part of the token
+        :raises MatrixParseError: If we fail to parse this part of the matrix
         """
         if self.pointer >= len(self.expression):
             return False
@@ -282,9 +294,10 @@ class ExpressionParser:
     def _parse_multiplier(self) -> None:
         """Parse a multiplier from the expression and pointer.
 
-        .. note:: This method mutates ``self.current_token.multiplier``.
+        This method just parses a numerical multiplier, which can include
+        zero or one ``.`` character and optionally a ``-`` at the start.
 
-        :raises MatrixParseError: If we fail to parse this part of the token
+        :raises MatrixParseError: If we fail to parse this part of the matrix
         """
         multiplier = ''
 
@@ -302,9 +315,9 @@ class ExpressionParser:
     def _parse_rot_identifier(self) -> None:
         """Parse a ``rot()``-style identifier from the expression and pointer.
 
-        .. note:: This method mutates ``self.current_token.identifier``.
+        This method will just parse something like ``rot(12.5)``. The angle number must be a real number.
 
-        :raises MatrixParseError: If we fail to parse this part of the token
+        :raises MatrixParseError: If we fail to parse this part of the matrix
         """
         if match := re.match(r'rot\(([\d.-]+)\)', self.expression[self.pointer:]):
             # Ensure that the number in brackets is a valid float
@@ -319,11 +332,11 @@ class ExpressionParser:
             raise MatrixParseError(f'Invalid rot-identifier "{self.expression[self.pointer:self.pointer + 15]}..."')
 
     def _parse_sub_expression(self) -> None:
-        """Parse a parenthesized sub-expression as the identifier, from the expression and pointer.
+        """Parse a parenthesized sub-expression as the identifier.
 
-        .. note:: This method mutates ``self.current_token.identifier``.
+        This method will also validate the expression in the parentheses.
 
-        :raises MatrixParseError: If we fail to parse this part of the token
+        :raises MatrixParseError: If we fail to parse this part of the matrix
         """
         if self.char != '(':
             raise MatrixParseError('Sub-expression must start with "("')
@@ -353,7 +366,7 @@ class ExpressionParser:
     def _parse_exponent(self) -> None:
         """Parse a matrix exponent from the expression and pointer.
 
-        .. note:: This method mutates ``self.current_token.exponent``.
+        The exponent must be an integer or ``T`` for transpose.
 
         :raises MatrixParseError: If we fail to parse this part of the token
         """
