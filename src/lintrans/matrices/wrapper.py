@@ -113,7 +113,7 @@ class MatrixWrapper:
         :raises NameError: If there is no matrix with the given name
         """
         # Return a new rotation matrix
-        if (match := re.match(r'rot\((-?\d*\.?\d*)\)', name)) is not None:
+        if (match := re.match(r'^rot\((-?\d*\.?\d*)\)$', name)) is not None:
             return create_rotation_matrix(float(match.group(1)))
 
         if name not in self._matrices:

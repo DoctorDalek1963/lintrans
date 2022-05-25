@@ -18,6 +18,7 @@ Nothing here yet...
 ### Fixed
 
 - Improve command line argument handling
+- Fixed bug with premature rot evaluation in sub-expressions
 
 ## [0.2.1] - 2022-03-22
 
