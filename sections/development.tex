@@ -395,4 +395,58 @@ In the case of the blue line, all 4 intersection points are outside the bounds o
 
 That's how the \texttt{draw\_oblique\_line()} method works, and the \texttt{draw\_pair\_of\_oblique\_lines()} method just calls it with positive and negative values of $c$.
 
+\subsubsection{Adding vector arrowheads\label{development:improving-the-gui:adding-vector-arrowheads}}
+
+\begin{figure}[H]
+	\hspace{0.005\linewidth}
+	\centering
+	\begin{minipage}{0.40\linewidth}
+		\centering
+		\begin{figure}[H]
+			\centering
+			\resizebox{\linewidth}{!}{%
+				\begin{tikzpicture}
+					% Draw the grid
+					\draw [step=1cm,gray,very thin] (-0.4,-0.4) grid (3.9,3.9);
+					\draw (-0.5,0) -- (4,0);
+					\draw (0,-0.5) -- (0,4);
+
+					% Draw the line
+					\draw [thick] (0,0) -- (30:3);
+
+					% Draw the arrowheads
+					\draw [green,blue] (30:3) -- +(165:0.5);
+					\draw [green,blue] (30:3) -- +(255:0.5);
+				\end{tikzpicture}
+			}
+			\caption{An example of a vector with the arrowheads highlighted in green}
+			\label{tikz:development:improving-the-gui:adding-vector-arrowheads}
+		\end{figure}
+	\end{minipage}%
+	\hspace{0.015\linewidth}
+	\begin{minipage}{0.56\linewidth}\setspacing
+		Now that I had a good renderer, I wanted to add arrowheads to the vectors to make them easier to see. They were already thicker than the gridlines, but adding arrowheads like in the 3blue1brown series would make them much easier to see. Unfortunately, I couldn't work out how to do this.
+
+		I wanted a function that would take a coordinate, treat it as a unit vector, and draw lines at $45\degree$ angles at the tip. This wasn't how I was conceptualising the problem at the time and because of that, I couldn't work out how to solve this problem. I could create this $45\degree$ lines in the top right quadrant, but none of my possible solutions worked for any arbitrary point.
+
+		So I started googling and found a very nice algorithm on \texttt{csharphelper.com}\cite{csharphelper-arrowheads}\footnotemark, which I adapted for Python.
+	\end{minipage}
+	\hspace{0.005\linewidth}
+	\vspace{-1em}
+\end{figure}
+
+\footnotetext{This website is currently being rewritten and this arrowheads tutorial is listed as \enquote{not rebuilt} on \url{http://csharphelper.com}}
+
+%: 5373b1ad8040f6726147cccea523c0570251cf67
+%: src/lintrans/gui/plots/widgets.py:52-86
+
+As the comments suggest, we get the $x$ and $y$ components of the normalised vector, and then do some magic with a chosen length and get some distance values, and then draw those lines. I don't really understand how this code works, but I'm happy that it does. All we have to do is call \texttt{draw\_vector\_arrowheads()} from \texttt{paintEvent()}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{development/5373b1ad8040f6726147cccea523c0570251cf67/gui.png}
+	\caption{An example of the $i$ and $j$ vectors with arrowheads}
+	\label{fig:development:5373b1ad8040f6726147cccea523c0570251cf67:gui.png}
+\end{figure}
+
 \end{document}
