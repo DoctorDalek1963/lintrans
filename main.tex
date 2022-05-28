@@ -60,15 +60,8 @@
 
 \usepackage{luacode}
 
-\begin{luacode}
-function myreplace(s,a,b)
-	x = string.gsub(s,a,b)
-	tex.sprint(x)
-end
-\end{luacode}
-
 \newcommand\replace[3]{\directlua{
-	myreplace(\luastring{#1}, \luastring{#2}, \luastring{#3})
+	tex.sprint(string.gsub(\luastring{#1}, \luastring{#2}, \luastring{#3}))
 }}
 
 % Figure side-by-side left and right commands
