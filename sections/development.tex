@@ -449,4 +449,61 @@ As the comments suggest, we get the $x$ and $y$ components of the normalised vec
 	\label{fig:development:5373b1ad8040f6726147cccea523c0570251cf67:gui.png}
 \end{figure}
 
+\subsubsection{Implementing zoom\label{development:improving-the-gui:implementing-zoom}}
+
+The next thing I wanted to do was add the ability to zoom in and out of the viewport, and I wanted a button to reset the zoom level as well. I added a \texttt{default\_grid\_spacing} class attribute in \texttt{BackgroundPlot} and used that as the \texttt{grid\_spacing} instance attribute in \texttt{\_\_init\_\_()}.
+
+%: d944e86e1d0fdc2c4be4d63479bc6bc3a31568ef
+%: src/lintrans/gui/plots/classes.py:27-47
+
+The reset button in \texttt{LintransMainWindow} simply sets \texttt{plot.grid\_spacing} to the default.
+
+To actually allow for zooming, I had to implement the \texttt{wheelEvent()} method in \texttt{BackgroundPlot} to listen for mouse wheel events. After reading through the docs for the \texttt{QWheelEvent} class\cite{qt5-docs-qwheelevent}, I learned how to handle this event.
+
+%: d944e86e1d0fdc2c4be4d63479bc6bc3a31568ef
+%: src/lintrans/gui/plots/classes.py:119-128
+
+All we do is get the amount that the user scrolled and add that to the current spacing, taking the max with 1, which acts as a minimum grid spacing. We need to use \texttt{degrees.y()} on line 125 because Qt5 allows for mice that can scroll in the $x$ and $y$ directions, and we only want the $y$ component. Line 127 marks the event as accepted so that the parent widget doesn't try to act on it.
+
+\begin{figure}[H]
+	\hspace{0.005\linewidth}
+	\centering
+	\begin{minipage}{0.48\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{development/d944e86e1d0fdc2c4be4d63479bc6bc3a31568ef/zoomed-in.png}
+		\caption{The GUI zoomed in a bit}
+		\label{fig:development:d944e86e1d0fdc2c4be4d63479bc6bc3a31568ef:zoomed-in.png}
+	\end{minipage}\hspace{0.015\linewidth}
+	\begin{minipage}{0.48\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{development/d944e86e1d0fdc2c4be4d63479bc6bc3a31568ef/max-zoomed-out.png}
+		\caption{The GUI zoomed out as far as possible}
+		\label{fig:development:d944e86e1d0fdc2c4be4d63479bc6bc3a31568ef:max-zoomed-out.png}
+	\end{minipage}
+	\hspace{0.005\linewidth}
+	\vspace{-1em}
+\end{figure}
+
+There are two things I don't like here. Firstly, the minimum grid spacing is too small. The user can zoom out too far. Secondly, the arrowheads are too big in figure~\ref{fig:development:d944e86e1d0fdc2c4be4d63479bc6bc3a31568ef:zoomed-in.png}.
+
+The first problem is minor and won't be fixed for quite a while, but I fixed the second problem quite quickly.
+
+We want the arrowhead length to not just be 0.15, but to scale with the zoom level (the ratio between default grid spacing and current spacing).
+
+This creates a slight issue when zoomed out all the way, because the arrowheads are then far larger than the vectors themselves, so we take the minimum of the scaled length and the vector length.
+
+I factored out the default arrowhead length into the \texttt{arrowhead\_length} instance attribute and initialize it in \texttt{\_\_init\_\_()}.
+
+%: 3d19a003368ae992ebb60049685bb04fde0836b5
+%: src/lintrans/gui/plots/widgets.py:68-76
+
+This code results in arrowheads that stay the same length unless the user is zoomed out basically as far as possible.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{development/3d19a003368ae992ebb60049685bb04fde0836b5/gui.png}
+	\caption{The arrowheads adjusted for zoom level}
+	\label{fig:development:3d19a003368ae992ebb60049685bb04fde0836b5:gui.png}
+\end{figure}
+
 \end{document}
