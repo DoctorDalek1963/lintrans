@@ -58,7 +58,7 @@ At this stage, I also implemented a simple parser and evaluator using regular ex
 
 I think the comments in the code speak for themselves, but we basically split the expression up into groups to be added, and then for each group, we multiply every matrix in that group to get its value, and then add all these values together at the end.
 
-This code is objectively bad. At the time of writing, it's now quite old, so I can say that. This code has no real error handling, and line 48 introduces the glaring error that \texttt{'A++B'} is now a valid expression because we disregard empty strings. Not to mention the fact that the method is called \texttt{parse\_expression()} but actually evaluates an expression. All these issues will be fixed in the future, but this was the first implementation of matrix evaluation, and it does the job decently well.
+This code is objectively bad. At the time of writing, it's now quite old, so I can say that. This code has no real error handling, and line 127 introduces the glaring error that \texttt{'A++B'} is now a valid expression because we disregard empty strings. Not to mention the fact that the method is called \texttt{parse\_expression()} but actually evaluates an expression. All these issues will be fixed in the future, but this was the first implementation of matrix evaluation, and it does the job decently well.
 
 I then implemented several tests for this parsing.
 
@@ -88,7 +88,7 @@ I then implemented some simple tests to make sure the function works with valid 
 
 Here, we test some valid data, some definitely invalid data, and some edge cases. At this stage, \texttt{'A--1B'} was considered a valid expression. This was a quirk of the validator at the time, but I fixed it later. This should obviously be an invalid expression, especially since \texttt{'A--B'} is considered invalid, but \texttt{'A--1B'} is valid.
 
-The \mintinline{python}{@pytest.mark.parametrize} decorator on line 35 means that \texttt{pytest} will run one test for valid inputs, and then another test for invalid inputs, and these will count as different tests. This makes it easier to see which tests failed and then debug the app.
+The \mintinline{python}{@pytest.mark.parametrize} decorator on line 32 means that \texttt{pytest} will run one test for valid inputs, and then another test for invalid inputs, and these will count as different tests. This makes it easier to see which tests failed and then debug the app.
 
 \subsubsection{Parsing matrix expressions\label{development:matrices-backend:parsing-matrix-expressions}}
 
@@ -97,7 +97,7 @@ Parsing is quite an interesting problem and something I didn't feel able to tack
 %: e9f7a81892278fe70684562052f330fb3a02bf9b
 %: tests/_parse/test_parse_and_validate_expression.py:40-75
 
-I just had example inputs and what I expected as output. I also wanted the parser to ignore whitespace. The decorator on line 33 just skips the test because the parser wasn't implemented yet.
+I just had example inputs and what I expected as output. I also wanted the parser to ignore whitespace. The decorator on line 69 just skips the test because the parser wasn't implemented yet.
 
 When implementing the parser, I first had to tighten up validation to remove anomalies like \texttt{'A--1B'} being valid. I did this by factoring out the optional minus signs from being part of a number, to being optionally in front of a number. This eliminated this kind of repetition and made \texttt{'A--1B'} invalid, as it should be.
 
@@ -141,7 +141,7 @@ The discrepancy in all the GUI code between \texttt{snake\_case} and \texttt{cam
 %: 93ce763f7b993439fc0da89fad39456d8cc4b52c
 %: src/lintrans/gui/main_window.py
 
-\fsbsl{development/93ce763f7b993439fc0da89fad39456d8cc4b52c/gui.png}{The first version of the GUI}{A lot of the methods here don't have implementations yet, but they will. This version is just a very early prototype to get a rough draft of the GUI.\par I create the widgets and layouts in the constructor as well as configuring all of them. The most important non-constructor method is \texttt{update\_render\_buttons()}. It gets called whenever the text in \texttt{text\_input\_expression} is changed. This happens because we connect it to the \texttt{textChanged} signal on line 35.\par The big white box here will eventually be replaced with an actual viewport. This is just a prototype.}
+\fsbsl{development/93ce763f7b993439fc0da89fad39456d8cc4b52c/gui.png}{The first version of the GUI}{A lot of the methods here don't have implementations yet, but they will. This version is just a very early prototype to get a rough draft of the GUI.\par I create the widgets and layouts in the constructor as well as configuring all of them. The most important non-constructor method is \texttt{update\_render\_buttons()}. It gets called whenever the text in \texttt{text\_input\_expression} is changed. This happens because we connect it to the \texttt{textChanged} signal on line 32.\par The big white box here will eventually be replaced with an actual viewport. This is just a prototype.}
 
 \subsubsection{Numerical definition dialog\label{development:initial-gui:numerical-definition-dialog}}
 
