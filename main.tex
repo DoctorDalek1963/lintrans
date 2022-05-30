@@ -49,6 +49,13 @@
 \usepackage{gensymb} % General symbols
 \usepackage{amsmath, amssymb, mathtools}  % Mathematical stuff
 
+% Number figures and equations based on sections
+\usepackage{etoolbox}
+\numberwithin{figure}{section}
+\numberwithin{equation}{section}
+\AtBeginEnvironment{figure}{\stepcounter{equation}}
+\AtBeginEnvironment{equation}{\stepcounter{figure}}
+
 \usepackage{tikz}
 \usetikzlibrary{trees}
 \usetikzlibrary{shapes.misc}
