@@ -506,4 +506,12 @@ This code results in arrowheads that stay the same length unless the user is zoo
 	\label{fig:development:3d19a003368ae992ebb60049685bb04fde0836b5:gui.png}
 \end{figure}
 
+\subsubsection{Animation blocks zooming\label{development:improving-the-gui:animation-blocks-zooming}}
+
+The biggest problem with this new zoom feature is that when animating between matrices, the user is unable to zoom. This is because when \texttt{LintransMainWindow.animate\_expression()} is called, it uses Python's standard library \texttt{time.sleep()} function to delay each frame, which prevents Qt from handling user interaction while we're animating. This was a problem.
+
+I did some googling and found a helpful post on StackOverflow\cite{so-update-window-in-pyqt5} that gave me a nice solution. The user \texttt{ekhumoro} used the functions \texttt{QApplication.processEvents()} and \texttt{QThread.msleep()} to solve the problem, and I used these functions in my own app, with much success.
+
+After reading \enquote{The Event System} in the Qt5 documentation\cite{qt5-docs-event-system}, I learned that Qt5 uses an event loop, a lot like JavaScript. This means that events are scheduled to be executed on the next pass of the event loop. I also read the documentation for the \texttt{repaint()} and \texttt{update()} methods on the \texttt{QWidget} class\cite{qt5-docs-qwidget-repaint,qt5-docs-qwidget-update} and decided that it would be better to just queue a repaint by calling \texttt{update()} on the plot rather than immediately repaint with \texttt{repaint()}, and then call \texttt{QApplication.processEvents()} to process the pending events on the main thread. This is a nicer way of repainting, which reduces potential flickering issues, and using \texttt{QThread.msleep()} allows for asynchronous processing and therefore non-blocking animation.
+
 \end{document}
