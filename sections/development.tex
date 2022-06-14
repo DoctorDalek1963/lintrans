@@ -514,4 +514,20 @@ I did some googling and found a helpful post on StackOverflow\cite{so-update-win
 
 After reading \enquote{The Event System} in the Qt5 documentation\cite{qt5-docs-event-system}, I learned that Qt5 uses an event loop, a lot like JavaScript. This means that events are scheduled to be executed on the next pass of the event loop. I also read the documentation for the \texttt{repaint()} and \texttt{update()} methods on the \texttt{QWidget} class\cite{qt5-docs-qwidget-repaint,qt5-docs-qwidget-update} and decided that it would be better to just queue a repaint by calling \texttt{update()} on the plot rather than immediately repaint with \texttt{repaint()}, and then call \texttt{QApplication.processEvents()} to process the pending events on the main thread. This is a nicer way of repainting, which reduces potential flickering issues, and using \texttt{QThread.msleep()} allows for asynchronous processing and therefore non-blocking animation.
 
+\subsubsection{Rank 1 transformations\label{development:improving-the-gui:rank-1-transformations}}
+
+The rank of a matrix is the dimension of its column space. This is the dimension of the span of its columns, which is to say the dimension of the output space. The rank of a matrix must be less than or equal to the dimension of the matrix, so we only need to worry about ranks 0, 1, and 2. There is only one rank 0 matrix, which is the $\mathbf{0}$ matrix itself. I've already covered this case by just not drawing any transformed grid lines.
+
+Rank 2 matrices encompass most 2D matrices, and I've already covered this case in \S\ref{development:visualizing-matrices:drawing-the-transformed-grid} and \S\ref{development:improving-the-gui:fixing-rendering}. A rank 1 matrix collapses all of 2D space onto a single line, so for this type of matrix, we should just draw this line.
+
+This code is in \texttt{VectorGridPlot.draw\_parallel\_lines()}. We assemble the matrix $\begin{pmatrix}\text{\texttt{vector\_x}} & \text{\texttt{point\_x}}\\ \text{\texttt{vector\_y}} & \text{\texttt{point\_y}}\end{pmatrix}$ (which is actually the matrix used to create the transformation we're trying to render lines for) and use this matrix to check determinant and rank.
+
+%: 677b38c87bb6722b16aaf35058cf3cef66e43c21
+%: src/lintrans/gui/plots/classes.py:177-192
+
+Additionally, there was a bug with animating these determinant 0 matrices, since we try to scale the determinant through the animation, as documented in \S\ref{development:visualizing-matrices:preserving-determinants}, but when the determinant is 0, this causes issues. To fix this, we just check the \texttt{det\_target} variable in \texttt{LintransMainWindow.animate\_expression} and if it's 0, we use the non-scaled version of the matrix.
+
+%: b889b686d997c2b64124bee786bccba3fc4f6b08
+%: src/lintrans/gui/main_window.py:307-315
+
 \end{document}
