@@ -178,6 +178,11 @@ I then added the class for the rotation definition dialog.
 
 \fsbsr{development/0d534c35c6a4451e317d41a0d2b3ecb17827b45f/define-as-a-rotation-dialog.png}{The first version of the rotation definition dialog}{This dialog class just overrides the abstract methods of the superclass with its own implementations. This will be the pattern that all of the definition dialogs will follow.\par It has a checkbox for radians, since this is supported in \texttt{create\_rotation\_matrix()}, but the textbox only supports numbers, so the user would have to calculate some multiple of $\pi$ and paste in several decimal places. I expect people to only use degrees, because these are easier to use.}
 
+Additionally, I created a helper method in \texttt{LintransMainWindow}. Rather than connecting the \texttt{clicked} signal of the buttons to lambdas that instantiate an instance of the \texttt{DefineDialog} subclass and call \texttt{.exec()} on it, I now connect the \texttt{clicked} signal of the buttons to lambdas that call \texttt{self.dialog\_define\_matrix()} with the specific subclass.
+
+%: 6269e04d453df7be2d2f9c7ee176e83406ccc139
+%: src/lintrans/gui/main_window.py:170-205
+
 I also then implemented a simple \texttt{DefineAsAnExpressionDialog}, which evaluates a given expression in the current \texttt{MatrixWrapper} context and assigns the result to the given matrix name.
 
 %: d5f930e15c3c8798d4990486532da46e926a6cb9
