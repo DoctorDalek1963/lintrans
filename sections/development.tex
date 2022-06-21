@@ -535,4 +535,20 @@ Additionally, there was a bug with animating these determinant 0 matrices, since
 %: b889b686d997c2b64124bee786bccba3fc4f6b08
 %: src/lintrans/gui/main_window.py:307-315
 
+\subsubsection{Matrices that are too big\label{development:improving-the-gui:matrices-that-are-too-big}}
+
+One of my friends was playing around with the prototype and she discovered a bug. When trying to render really big matrices, we can get errors like \enquote{\mintinline{python}{OverflowError}\texttt{: argument 3 overflowed: value must be in the range -2147483648 to 2147483647}} because PyQt5 is a wrapper over Qt5, which is a C++ library that uses the C++ \mintinline{C++}{int} type for the \texttt{painter.drawLine()} call. This type is a 32-bit integer. Python can store integers of arbitrary precision, but when PyQt5 calls the underlying C++ library code, this gets cast to a C++ \mintinline{C++}{int} and we can get an \mintinline{python}{OverflowError}.
+
+This isn't a problem with the gridlines, because we only draw them inside the viewport, as discussed in \S\ref{development:improving-the-gui:fixing-rendering}, and these calculations all happen in Python, so integer precision is not a concern. However, when drawing the basis vectors, we just draw them directly, so we'll have to check that they're within the limit.
+
+I'd previously created a \texttt{LintransMainWindow.show\_error\_message()} method for telling the user when they try to take the inverse of a singular matrix\footnote{This commit didn't get a standalone section in this write-up because it was so small}.
+
+%: 0f699dd95b6431e95b2311dcb03e7af49c19613f
+%: src/lintrans/gui/main_window.py:378-396
+
+I then created the \texttt{is\_matrix\_too\_big()} method to just check that the elements of the matrix are within the desired bounds. If it returns \mintinline{python}{True} when we try to render or animate, then we call \texttt{show\_error\_message()}.
+
+%: 4682a7b225747cfd77aca0fe3abcdd1397b7c5dd
+%: src/lintrans/gui/main_window.py:407-421
+
 \end{document}
