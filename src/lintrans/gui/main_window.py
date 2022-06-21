@@ -526,7 +526,7 @@ class LintransMainWindow(QMainWindow):
         Convert the elements of the matrix to canvas coords and make sure they fit within Qt's 32-bit integer limit.
 
         :param MatrixType matrix: The matrix to check
-        :returns bool: Whether the matrix fits on the canvas
+        :returns bool: Whether the matrix is too big to fit on the canvas
         """
         coords: list[tuple[int, int]] = [self.plot.canvas_coords(*vector) for vector in matrix.T]
 
