@@ -25,7 +25,7 @@ from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox
 from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.matrices.utility import polar_coords, rect_coords
-from lintrans.typing_ import MatrixType
+from lintrans.typing_ import MatrixType, VectorType
 from . import dialogs
 from .dialogs import DefineAsAnExpressionDialog, DefineDialog, DefineNumericallyDialog, DefineVisuallyDialog
 from .dialogs.settings import DisplaySettingsDialog
@@ -401,26 +401,26 @@ class LintransMainWindow(QMainWindow):
                 and abs(np.dot(matrix_application.T[0], matrix_application.T[1])) < 0.1:
             # Get the columns of the matrices
             # We're going to move i and then move j
-            i_vectors = (start.T[0], target.T[0])
-            j_vectors = (start.T[1], target.T[1])
+            i_vectors: tuple[VectorType, VectorType] = (start.T[0], target.T[0])
+            j_vectors: tuple[VectorType, VectorType] = (start.T[1], target.T[1])
 
             matrix_list: list[tuple[float, float]] = []
-            TWO_PI = 2 * np.pi
+            two_pi = 2 * np.pi
 
             for start_vector, end_vector in [i_vectors, j_vectors]:
                 # We want the points in polar coordinates
                 s_length, s_angle = polar_coords(start_vector[0], start_vector[1])
                 e_length, e_angle = polar_coords(end_vector[0], end_vector[1])
 
-                angle_difference = e_angle - s_angle % TWO_PI
+                angle_difference = e_angle - s_angle % two_pi
 
                 if angle_difference > np.pi + 0.01:  # Extra 0.01 accounts for floating point error
-                    angle = s_angle + proportion * (TWO_PI - angle_difference)
+                    angle = s_angle + proportion * (two_pi - angle_difference)
                 else:
                     angle = s_angle + proportion * angle_difference
 
                 radius = s_length + proportion * (e_length - s_length)
-                # angle = s_angle % TWO_PI + proportion * angle_difference
+                # angle = s_angle % two_pi + proportion * angle_difference
 
                 matrix_list.append(rect_coords(radius, angle))
 
