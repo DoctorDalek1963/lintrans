@@ -462,9 +462,13 @@ class LintransMainWindow(QMainWindow):
         scalar = 1 + proportion * (np.sqrt(abs(det_target / det_b)) - 1)
         return scalar * matrix_b
 
-    def animate_between_matrices(self, matrix_start: MatrixType, matrix_target: MatrixType, steps: int = 100) -> None:
+    def animate_between_matrices(self, matrix_start: MatrixType, matrix_target: MatrixType) -> None:
         """Animate from the start matrix to the target matrix."""
         self.animating = True
+
+        # Making steps depend on animation_time ensures a smooth animation without
+        # massive overheads for small animation times
+        steps = self.plot.display_settings.animation_time // 10
 
         for i in range(0, steps + 1):
             if not self.animating:
@@ -484,7 +488,7 @@ class LintransMainWindow(QMainWindow):
             # This allows for other events to be processed while animating, like zooming in and out
             self.plot.update()
             QApplication.processEvents()
-            QThread.msleep(1000 // steps)
+            QThread.msleep(self.plot.display_settings.animation_time // steps)
 
         self.animating = False
 

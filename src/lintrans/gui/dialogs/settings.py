@@ -124,6 +124,15 @@ class DisplaySettingsDialog(SettingsDialog):
         )
         self.dict_checkboxes['a'] = self.checkbox_applicative_animation
 
+        self.label_animation_time = QtWidgets.QLabel(self)
+        self.label_animation_time.setText('Total animation length (ms)')
+        self.label_animation_time.setToolTip(
+            'How long it takes for an animation to complete'
+        )
+
+        self.lineedit_animation_time = QtWidgets.QLineEdit(self)
+        self.lineedit_animation_time.setValidator(QIntValidator(1, 9999, self))
+
         self.label_animation_pause_length = QtWidgets.QLabel(self)
         self.label_animation_pause_length.setText('Animation pause length (ms)')
         self.label_animation_pause_length.setToolTip(
@@ -175,6 +184,10 @@ class DisplaySettingsDialog(SettingsDialog):
 
         # Animations
 
+        self.hlay_animation_time = QHBoxLayout()
+        self.hlay_animation_time.addWidget(self.label_animation_time)
+        self.hlay_animation_time.addWidget(self.lineedit_animation_time)
+
         self.hlay_animation_pause_length = QHBoxLayout()
         self.hlay_animation_pause_length.addWidget(self.label_animation_pause_length)
         self.hlay_animation_pause_length.addWidget(self.lineedit_animation_pause_length)
@@ -183,6 +196,7 @@ class DisplaySettingsDialog(SettingsDialog):
         self.vlay_groupbox_animations.setSpacing(20)
         self.vlay_groupbox_animations.addWidget(self.checkbox_smoothen_determinant)
         self.vlay_groupbox_animations.addWidget(self.checkbox_applicative_animation)
+        self.vlay_groupbox_animations.addLayout(self.hlay_animation_time)
         self.vlay_groupbox_animations.addLayout(self.hlay_animation_pause_length)
 
         self.groupbox_animations = QGroupBox('Animations', self)
@@ -219,6 +233,7 @@ class DisplaySettingsDialog(SettingsDialog):
         # Animations
         self.checkbox_smoothen_determinant.setChecked(self.display_settings.smoothen_determinant)
         self.checkbox_applicative_animation.setChecked(self.display_settings.applicative_animation)
+        self.lineedit_animation_time.setText(str(self.display_settings.animation_time))
         self.lineedit_animation_pause_length.setText(str(self.display_settings.animation_pause_length))
 
         # Matrix info
@@ -237,6 +252,7 @@ class DisplaySettingsDialog(SettingsDialog):
         # Animations
         self.display_settings.smoothen_determinant = self.checkbox_smoothen_determinant.isChecked()
         self.display_settings.applicative_animation = self.checkbox_applicative_animation.isChecked()
+        self.display_settings.animation_time = int(self.lineedit_animation_time.text())
         self.display_settings.animation_pause_length = int(self.lineedit_animation_pause_length.text())
 
         # Matrix info

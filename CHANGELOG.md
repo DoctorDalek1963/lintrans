@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fully respect display settings in visual definition widget
 - Support parenthesized sub-expressions as matrix identifiers
 - Add proper rotation animation that rotates at constant speed
+- Allow animation time to be varied
 
 ### Fixed
 

@@ -48,6 +48,9 @@ class DisplaySettings:
     and applicative animation means that we animate from ``C`` to ``TC``, so we apply ``T`` to ``C``.
     """
 
+    animation_time: int = 1200
+    """This is the number of milliseconds that an animation takes."""
+
     animation_pause_length: int = 400
     """This is the number of milliseconds that we wait between animations when using comma syntax."""
 
