@@ -24,7 +24,7 @@ from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox
 
 from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
-from lintrans.matrices.utility import polar_coords, rect_coords
+from lintrans.matrices.utility import polar_coords, rotate_coord
 from lintrans.typing_ import MatrixType, VectorType
 from . import dialogs
 from .dialogs import DefineAsAnExpressionDialog, DefineDialog, DefineNumericallyDialog, DefineVisuallyDialog
@@ -399,35 +399,27 @@ class LintransMainWindow(QMainWindow):
                 and self.plot.display_settings.smoothen_determinant \
                 and linalg.det(matrix_application) > 0 \
                 and abs(np.dot(matrix_application.T[0], matrix_application.T[1])) < 0.1:
-            # Get the columns of the matrices
-            # We're going to move i and then move j
-            i_vectors: tuple[VectorType, VectorType] = (start.T[0], target.T[0])
-            j_vectors: tuple[VectorType, VectorType] = (start.T[1], target.T[1])
+            rotation_vector: VectorType = matrix_application.T[0]  # Take the i column
+            radius, angle = polar_coords(*rotation_vector)
 
-            matrix_list: list[tuple[float, float]] = []
-            two_pi = 2 * np.pi
+            # We want the angle to be in [-pi, pi), so we have to subtract 2pi from it if it's too big
+            if angle > np.pi:
+                angle -= 2 * np.pi
 
-            for start_vector, end_vector in [i_vectors, j_vectors]:
-                # We want the points in polar coordinates
-                s_length, s_angle = polar_coords(start_vector[0], start_vector[1])
-                e_length, e_angle = polar_coords(end_vector[0], end_vector[1])
+            i: VectorType = start.T[0]
+            j: VectorType = start.T[1]
 
-                angle_difference = e_angle - s_angle % two_pi
-
-                if angle_difference > np.pi + 0.01:  # Extra 0.01 accounts for floating point error
-                    angle = s_angle + proportion * (two_pi - angle_difference)
-                else:
-                    angle = s_angle + proportion * angle_difference
-
-                radius = s_length + proportion * (e_length - s_length)
-                # angle = s_angle % two_pi + proportion * angle_difference
-
-                matrix_list.append(rect_coords(radius, angle))
+            # Scale the coords with a list comprehension
+            # It's a bit janky, but rotate_coords() will always return a 2-tuple,
+            # so new_i and new_j will always be lists of length 2
+            scale = (radius - 1) * proportion + 1
+            new_i = [scale * c for c in rotate_coord(i[0], i[1], angle * proportion)]
+            new_j = [scale * c for c in rotate_coord(j[0], j[1], angle * proportion)]
 
             return np.array(
                 [
-                    [matrix_list[0][0], matrix_list[1][0]],
-                    [matrix_list[0][1], matrix_list[1][1]]
+                    [new_i[0], new_j[0]],
+                    [new_i[1], new_j[1]]
                 ]
             )
 

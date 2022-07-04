@@ -40,6 +40,17 @@ def rect_coords(radius: float, angle: float, *, degrees: bool = False) -> tuple[
     return radius * np.cos(angle), radius * np.sin(angle)
 
 
+def rotate_coord(x: float, y: float, angle: float, *, degrees: bool = False) -> tuple[float, float]:
+    """Rotate a rectilinear coordinate by the given angle."""
+    if degrees:
+        angle = np.radians(angle)
+
+    r, theta = polar_coords(x, y, degrees=degrees)
+    theta = (theta + angle) % (2 * np.pi)
+
+    return rect_coords(r, theta, degrees=degrees)
+
+
 def create_rotation_matrix(angle: float, *, degrees: bool = True) -> MatrixType:
     """Create a matrix representing a rotation (anticlockwise) by the given angle.
 
