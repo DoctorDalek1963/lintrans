@@ -79,3 +79,8 @@ def test_create_rotation_matrix() -> None:
 
         assert create_rotation_matrix(-1 * degrees, degrees=True) == pytest.approx(np.linalg.inv(matrix))
         assert create_rotation_matrix(-1 * radians, degrees=False) == pytest.approx(np.linalg.inv(matrix))
+
+    assert (create_rotation_matrix(-90, degrees=True) ==
+            create_rotation_matrix(270, degrees=True)).all()
+    assert (create_rotation_matrix(-0.5 * np.pi, degrees=False) ==
+            create_rotation_matrix(1.5 * np.pi, degrees=False)).all()

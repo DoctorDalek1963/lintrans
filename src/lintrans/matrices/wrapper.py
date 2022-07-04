@@ -17,6 +17,7 @@ from typing import Any, Optional, Union
 import numpy as np
 
 from .parse import parse_matrix_expression, validate_matrix_expression
+from .utility import create_rotation_matrix
 from lintrans.typing_ import is_matrix_type, MatrixType
 
 
@@ -246,29 +247,3 @@ class MatrixWrapper:
             final_groups.append(f_group)
 
         return reduce(add, [reduce(matmul, group) for group in final_groups])
-
-
-def create_rotation_matrix(angle: float, *, degrees: bool = True) -> MatrixType:
-    """Create a matrix representing a rotation (anticlockwise) by the given angle.
-
-    :Example:
-
-    >>> create_rotation_matrix(30)
-    array([[ 0.8660254, -0.5      ],
-           [ 0.5      ,  0.8660254]])
-    >>> create_rotation_matrix(45)
-    array([[ 0.70710678, -0.70710678],
-           [ 0.70710678,  0.70710678]])
-    >>> create_rotation_matrix(np.pi / 3, degrees=False)
-    array([[ 0.5      , -0.8660254],
-           [ 0.8660254,  0.5      ]])
-
-    :param float angle: The angle to rotate anticlockwise by
-    :param bool degrees: Whether to interpret the angle as degrees (True) or radians (False)
-    :returns MatrixType: The resultant matrix
-    """
-    rad = np.deg2rad(angle) if degrees else angle
-    return np.array([
-        [np.cos(rad), -1 * np.sin(rad)],
-        [np.sin(rad), np.cos(rad)]
-    ])

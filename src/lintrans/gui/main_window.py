@@ -24,7 +24,8 @@ from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox
 
 from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
-from lintrans.typing_ import MatrixType
+from lintrans.matrices.utility import polar_coords, rotate_coord
+from lintrans.typing_ import MatrixType, VectorType
 from . import dialogs
 from .dialogs import DefineAsAnExpressionDialog, DefineDialog, DefineNumericallyDialog, DefineVisuallyDialog
 from .dialogs.settings import DisplaySettingsDialog
@@ -373,64 +374,107 @@ class LintransMainWindow(QMainWindow):
 
         self.update_render_buttons()
 
+    def _get_animation_frame(self, start: MatrixType, target: MatrixType, proportion: float) -> MatrixType:
+        """Get the matrix to render for this frame of the animation.
+
+        This method will smoothen the determinant if that setting in enabled and if the determinant is positive.
+        It also animates rotation-like matrices using a logarithmic spiral to rotate around and scale continuously.
+        Essentially, it just makes things look good when animating.
+
+        :param MatrixType start: The starting matrix
+        :param MatrixType start: The target matrix
+        :param float proportion: How far we are through the loop
+        """
+        det_target = linalg.det(target)
+        det_start = linalg.det(start)
+
+        # This is the matrix that we're applying to get from start to target
+        # We want to check if it's rotation-like
+        if linalg.det(start) == 0:
+            matrix_application = None
+        else:
+            matrix_application = target @ linalg.inv(start)
+
+        if matrix_application is not None \
+                and self.plot.display_settings.smoothen_determinant \
+                and linalg.det(matrix_application) > 0 \
+                and abs(np.dot(matrix_application.T[0], matrix_application.T[1])) < 0.1:
+            rotation_vector: VectorType = matrix_application.T[0]  # Take the i column
+            radius, angle = polar_coords(*rotation_vector)
+
+            # We want the angle to be in [-pi, pi), so we have to subtract 2pi from it if it's too big
+            if angle > np.pi:
+                angle -= 2 * np.pi
+
+            i: VectorType = start.T[0]
+            j: VectorType = start.T[1]
+
+            # Scale the coords with a list comprehension
+            # It's a bit janky, but rotate_coords() will always return a 2-tuple,
+            # so new_i and new_j will always be lists of length 2
+            scale = (radius - 1) * proportion + 1
+            new_i = [scale * c for c in rotate_coord(i[0], i[1], angle * proportion)]
+            new_j = [scale * c for c in rotate_coord(j[0], j[1], angle * proportion)]
+
+            return np.array(
+                [
+                    [new_i[0], new_j[0]],
+                    [new_i[1], new_j[1]]
+                ]
+            )
+
+        # matrix_a is the start matrix plus some part of the target, scaled by the proportion
+        # If we just used matrix_a, then things would animate, but the determinants would be weird
+        matrix_a = start + proportion * (target - start)
+
+        if not self.plot.display_settings.smoothen_determinant or det_start * det_target <= 0:
+            return matrix_a
+
+        # To fix the determinant problem, we get the determinant of matrix_a and use it to normalize
+        det_a = linalg.det(matrix_a)
+
+        # For a 2x2 matrix A and a scalar c, we know that det(cA) = c^2 det(A)
+        # We want B = cA such that det(B) = det(S), where S is the start matrix,
+        # so then we can scale it with the animation, so we get
+        # det(cA) = c^2 det(A) = det(S) => c = sqrt(abs(det(S) / det(A)))
+        # Then we scale A to get the determinant we want, and call that matrix_b
+        if det_a == 0:
+            c = 0
+        else:
+            c = np.sqrt(abs(det_start / det_a))
+
+        matrix_b = c * matrix_a
+        det_b = linalg.det(matrix_b)
+
+        # We want to return B, but we have to scale it over time to have the target determinant
+
+        # We want some C = dB such that det(C) is some target determinant T
+        # det(dB) = d^2 det(B) = T => d = sqrt(abs(T / det(B))
+
+        # We're also subtracting 1 and multiplying by the proportion and then adding one
+        # This just scales the determinant along with the animation
+
+        # That is all of course, if we can do that
+        # We'll crash if we try to do this with det(B) == 0
+        if det_b == 0:
+            return matrix_a
+
+        scalar = 1 + proportion * (np.sqrt(abs(det_target / det_b)) - 1)
+        return scalar * matrix_b
+
     def animate_between_matrices(self, matrix_start: MatrixType, matrix_target: MatrixType, steps: int = 100) -> None:
         """Animate from the start matrix to the target matrix."""
-        det_target = linalg.det(matrix_target)
-        det_start = linalg.det(matrix_start)
-
         self.animating = True
 
         for i in range(0, steps + 1):
             if not self.animating:
                 break
 
-            # This proportion is how far we are through the loop
-            proportion = i / steps
-
-            # matrix_a is the start matrix plus some part of the target, scaled by the proportion
-            # If we just used matrix_a, then things would animate, but the determinants would be weird
-            matrix_a = matrix_start + proportion * (matrix_target - matrix_start)
-
-            if self.plot.display_settings.smoothen_determinant and det_start * det_target > 0:
-                # To fix the determinant problem, we get the determinant of matrix_a and use it to normalize
-                det_a = linalg.det(matrix_a)
-
-                # For a 2x2 matrix A and a scalar c, we know that det(cA) = c^2 det(A)
-                # We want B = cA such that det(B) = det(S), where S is the start matrix,
-                # so then we can scale it with the animation, so we get
-                # det(cA) = c^2 det(A) = det(S) => c = sqrt(abs(det(S) / det(A)))
-                # Then we scale A to get the determinant we want, and call that matrix_b
-                if det_a == 0:
-                    c = 0
-                else:
-                    c = np.sqrt(abs(det_start / det_a))
-
-                matrix_b = c * matrix_a
-                det_b = linalg.det(matrix_b)
-
-                # matrix_to_render is the final matrix that we then render for this frame
-                # It's B, but we scale it over time to have the target determinant
-
-                # We want some C = dB such that det(C) is some target determinant T
-                # det(dB) = d^2 det(B) = T => d = sqrt(abs(T / det(B))
-
-                # We're also subtracting 1 and multiplying by the proportion and then adding one
-                # This just scales the determinant along with the animation
-
-                # That is all of course, if we can do that
-                # We'll crash if we try to do this with det(B) == 0
-                if det_b != 0:
-                    scalar = 1 + proportion * (np.sqrt(abs(det_target / det_b)) - 1)
-                    matrix_to_render = scalar * matrix_b
-
-                else:
-                    matrix_to_render = matrix_a
-
-            else:
-                matrix_to_render = matrix_a
+            matrix_to_render = self._get_animation_frame(matrix_start, matrix_target, i / steps)
 
             if self.is_matrix_too_big(matrix_to_render):
                 self.show_error_message('Matrix too big', "This matrix doesn't fit on the canvas")
+                self.animating = False
                 return
 
             self.plot.visualize_matrix_transformation(matrix_to_render)

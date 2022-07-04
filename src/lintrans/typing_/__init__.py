@@ -19,10 +19,13 @@ from typing import Any, TypeGuard
 from numpy import ndarray
 from nptyping import NDArray, Float
 
-__all__ = ['is_matrix_type', 'MatrixType', 'MatrixParseList']
+__all__ = ['is_matrix_type', 'MatrixType', 'MatrixParseList', 'VectorType']
 
 MatrixType = NDArray[(2, 2), Float]
 """This type represents a 2x2 matrix as a NumPy array."""
+
+VectorType = NDArray[(2,), Float]
+"""This type represents a 2D vector as a NumPy array, for use with :attr:`MatrixType`."""
 
 MatrixParseList = list[list[tuple[str, str, str]]]
 """This is a list containing lists of tuples. Each tuple represents a matrix and is ``(multiplier,

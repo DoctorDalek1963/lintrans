@@ -7,13 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Nothing here yet...
-
 ### Added
 
 - Add options to hide background grid, transformed grid, and basis vectors
 - Fully respect display settings in visual definition widget
 - Support parenthesized sub-expressions as matrix identifiers
+- Add proper rotation animation that rotates at constant speed
 
 ### Fixed
 
