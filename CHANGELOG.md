@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add Qt and PyQt5 version numbers to the *About* dialog box
+
 ### Fixed
 
 - Make program compatible with Python 3.8 and above

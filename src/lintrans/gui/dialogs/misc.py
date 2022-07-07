@@ -11,7 +11,7 @@ from __future__ import annotations
 import platform
 
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR, Qt
 from PyQt5.QtWidgets import QDialog, QVBoxLayout
 
 import lintrans
@@ -54,6 +54,7 @@ class AboutDialog(FixedSizeDialog):
         label_version_info = QtWidgets.QLabel(self)
         label_version_info.setText(
             f'With Python version {platform.python_version()}\n'
+            f'Qt version {QT_VERSION_STR} and PyQt5 version {PYQT_VERSION_STR}\n'
             f'Running on {platform.platform()}'
         )
         label_version_info.setAlignment(Qt.AlignCenter)
