@@ -14,10 +14,15 @@
 
 from __future__ import annotations
 
-from typing import Any, TypeGuard
+from sys import version_info
 
 from numpy import ndarray
 from nptyping import NDArray, Float
+
+from typing import Any
+
+if version_info >= (3, 10):
+    from typing import TypeGuard
 
 __all__ = ['is_matrix_type', 'MatrixType', 'MatrixParseList', 'VectorType']
 

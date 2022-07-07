@@ -23,6 +23,3 @@ jobs:
 
     - name: Run pydocstyle
       run: pydocstyle src/ tests/
-
-    - name: Run doctests
-      run: pytest --doctest-modules src/
