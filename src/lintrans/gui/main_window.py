@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+import re
 import sys
 import webbrowser
 from copy import deepcopy
@@ -22,6 +23,7 @@ from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox,
                              QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout)
 
+import lintrans
 from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.matrices.utility import polar_coords, rotate_coord
@@ -91,8 +93,18 @@ class LintransMainWindow(QMainWindow):
 
         self.action_docs = QtWidgets.QAction(self)
         self.action_docs.setText('&Docs')
+
+        # If this is an old release, use the docs for this release. Else, use the latest docs
+        # We use the latest because most use cases for non-stable releases will be in development and testing
+        docs_link = 'https://lintrans.readthedocs.io/en/'
+
+        if re.match(r'^\d+\.\d+\.\d+$', lintrans.__version__):
+            docs_link += 'v' + lintrans.__version__
+        else:
+            docs_link += 'latest'
+
         self.action_docs.triggered.connect(
-            lambda: webbrowser.open_new_tab('https://doctordalek1963.github.io/lintrans/docs/index.html')
+            lambda: webbrowser.open_new_tab(docs_link)
         )
 
         self.action_about = QtWidgets.QAction(self)

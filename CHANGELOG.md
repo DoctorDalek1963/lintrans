@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Make program compatible with Python 3.8 and above
+- Make link to documentation in help menu actually link properly
 
 ## [0.2.2] - 2022-07-04
 
