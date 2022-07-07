@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from typing import Pattern
+from typing import List, Pattern, Tuple
 
 from lintrans.typing_ import MatrixParseList
 
@@ -41,14 +41,14 @@ def compile_naive_expression_pattern() -> Pattern[str]:
 naive_expression_pattern = compile_naive_expression_pattern()
 
 
-def find_sub_expressions(expression: str) -> list[str]:
+def find_sub_expressions(expression: str) -> List[str]:
     """Find all the sub-expressions in the given expression.
 
     This function only goes one level deep, so may return strings like ``'A(BC)D'``.
 
     :raises MatrixParseError: If there are unbalanced parentheses
     """
-    sub_expressions: list[str] = []
+    sub_expressions: List[str] = []
     string = ''
     paren_depth = 0
     pointer = 0
@@ -128,7 +128,7 @@ class MatrixToken:
     exponent: str = ''
 
     @property
-    def tuple(self) -> tuple[str, str, str]:
+    def tuple(self) -> Tuple[str, str, str]:
         """Create a tuple of the token for parsing."""
         return self.multiplier, self.identifier, self.exponent
 
@@ -171,7 +171,7 @@ class ExpressionParser:
         self.pointer: int = 0
 
         self.current_token = MatrixToken()
-        self.current_group: list[tuple[str, str, str]] = []
+        self.current_group: List[Tuple[str, str, str]] = []
 
         self.final_list: MatrixParseList = []
 

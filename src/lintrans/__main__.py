@@ -11,18 +11,19 @@
 import sys
 from argparse import ArgumentParser
 from textwrap import dedent
+from typing import List
 
 from lintrans import __version__
 from lintrans.gui import main_window
 
 
-def main(args: list[str]) -> None:
+def main(args: List[str]) -> None:
     """Interpret program-specific command line arguments and run the main window in most cases.
 
     If the user supplies --help or --version, then we simply respond to that and then return.
     If they don't supply either of these, then we run :func:`lintrans.gui.main_window.main`.
 
-    :param list[str] args: The full argument list (including program name)
+    :param List[str] args: The full argument list (including program name)
     """
     parser = ArgumentParser(add_help=False)
 
