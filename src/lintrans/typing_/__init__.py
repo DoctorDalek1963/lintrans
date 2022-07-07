@@ -19,7 +19,7 @@ from sys import version_info
 from numpy import ndarray
 from nptyping import NDArray, Float
 
-from typing import Any
+from typing import Any, List, Tuple
 
 if version_info >= (3, 10):
     from typing import TypeGuard
@@ -32,7 +32,7 @@ MatrixType = NDArray[(2, 2), Float]
 VectorType = NDArray[(2,), Float]
 """This type represents a 2D vector as a NumPy array, for use with :attr:`MatrixType`."""
 
-MatrixParseList = list[list[tuple[str, str, str]]]
+MatrixParseList = List[List[Tuple[str, str, str]]]
 """This is a list containing lists of tuples. Each tuple represents a matrix and is ``(multiplier,
 matrix_identifier, index)`` where all of them are strings. These matrix-representing tuples are
 contained in lists which represent multiplication groups. Every matrix in the group should be

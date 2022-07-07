@@ -6,10 +6,11 @@
 
 """Test the MatrixWrapper __setitem__() and __getitem__() methods."""
 
+from typing import Any, List
+
 import numpy as np
-from numpy import linalg as la
 import pytest
-from typing import Any
+from numpy import linalg as la
 
 from lintrans.matrices import MatrixWrapper
 from lintrans.typing_ import MatrixType
@@ -146,7 +147,7 @@ def test_set_name_error(new_wrapper: MatrixWrapper) -> None:
 
 def test_set_type_error(new_wrapper: MatrixWrapper) -> None:
     """Test that MatrixWrapper().__setitem__() raises a TypeError when trying to set a non-matrix."""
-    invalid_values: list[Any] = [
+    invalid_values: List[Any] = [
                                  12,
                                  [1, 2, 3, 4, 5],
                                  [[1, 2], [3, 4]],

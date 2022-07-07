@@ -12,7 +12,7 @@ import re
 from copy import copy
 from functools import reduce
 from operator import add, matmul
-from typing import Any, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 
@@ -44,7 +44,7 @@ class MatrixWrapper:
 
     def __init__(self):
         """Initialize a :class:`MatrixWrapper` object with a dictionary of matrices which can be accessed."""
-        self._matrices: dict[str, Optional[Union[MatrixType, str]]] = {
+        self._matrices: Dict[str, Optional[Union[MatrixType, str]]] = {
             'A': None, 'B': None, 'C': None, 'D': None,
             'E': None, 'F': None, 'G': None, 'H': None,
             'I': np.eye(2),  # I is always defined as the identity matrix
@@ -224,10 +224,10 @@ class MatrixWrapper:
             raise ValueError('The expression is invalid')
 
         parsed_result = parse_matrix_expression(expression)
-        final_groups: list[list[MatrixType]] = []
+        final_groups: List[List[MatrixType]] = []
 
         for group in parsed_result:
-            f_group: list[MatrixType] = []
+            f_group: List[MatrixType] = []
 
             for multiplier, identifier, index in group:
                 if index == 'T':

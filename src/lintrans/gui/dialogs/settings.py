@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import abc
+from typing import Dict
 
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIntValidator, QKeyEvent, QKeySequence
@@ -80,7 +81,7 @@ class DisplaySettingsDialog(SettingsDialog):
         self.display_settings = display_settings
         self.setWindowTitle('Change display settings')
 
-        self.dict_checkboxes: dict[str, QCheckBox] = dict()
+        self.dict_checkboxes: Dict[str, QCheckBox] = dict()
 
         # === Create the widgets
 

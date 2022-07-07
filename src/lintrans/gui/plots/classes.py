@@ -9,7 +9,7 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import Iterable
+from typing import Iterable, List, Tuple
 
 import numpy as np
 from nptyping import Float, NDArray
@@ -60,7 +60,7 @@ class BackgroundPlot(QWidget):
         self.width_background_grid: float = 0.3
 
     @property
-    def canvas_origin(self) -> tuple[int, int]:
+    def canvas_origin(self) -> Tuple[int, int]:
         """Return the canvas coords of the grid origin.
 
         The return value is intended to be unpacked and passed to a :meth:`QPainter.drawLine:iiii` call.
@@ -68,7 +68,7 @@ class BackgroundPlot(QWidget):
         See :meth:`canvas_coords`.
 
         :returns: The canvas coordinates of the grid origin
-        :rtype: tuple[int, int]
+        :rtype: Tuple[int, int]
         """
         return self.width() // 2, self.height() // 2
 
@@ -80,7 +80,7 @@ class BackgroundPlot(QWidget):
         """Convert a y coordinate from grid coords to canvas coords."""
         return int(self.canvas_origin[1] - y * self.grid_spacing)
 
-    def canvas_coords(self, x: float, y: float) -> tuple[int, int]:
+    def canvas_coords(self, x: float, y: float) -> Tuple[int, int]:
         """Convert a coordinate from grid coords to canvas coords.
 
         This method is intended to be used like
@@ -100,21 +100,21 @@ class BackgroundPlot(QWidget):
         :param float x: The x component of the grid coordinate
         :param float y: The y component of the grid coordinate
         :returns: The resultant canvas coordinates
-        :rtype: tuple[int, int]
+        :rtype: Tuple[int, int]
         """
         return self.canvas_x(x), self.canvas_y(y)
 
-    def grid_corner(self) -> tuple[float, float]:
+    def grid_corner(self) -> Tuple[float, float]:
         """Return the grid coords of the top right corner."""
         return self.width() / (2 * self.grid_spacing), self.height() / (2 * self.grid_spacing)
 
-    def grid_coords(self, x: int, y: int) -> tuple[float, float]:
+    def grid_coords(self, x: int, y: int) -> Tuple[float, float]:
         """Convert a coordinate from canvas coords to grid coords.
 
         :param int x: The x component of the canvas coordinate
         :param int y: The y component of the canvas coordinate
         :returns: The resultant grid coordinates
-        :rtype: tuple[float, float]
+        :rtype: Tuple[float, float]
         """
         # We get the maximum grid coords and convert them into canvas coords
         return (x - self.canvas_origin[0]) / self.grid_spacing, (-y + self.canvas_origin[1]) / self.grid_spacing
@@ -184,8 +184,8 @@ class VectorGridPlot(BackgroundPlot):
         """
         super().__init__(*args, **kwargs)
 
-        self.point_i: tuple[float, float] = (1., 0.)
-        self.point_j: tuple[float, float] = (0., 1.)
+        self.point_i: Tuple[float, float] = (1., 0.)
+        self.point_j: Tuple[float, float] = (0., 1.)
 
         self.colour_i = QColor('#0808d8')
         self.colour_j = QColor('#e90000')
@@ -213,10 +213,10 @@ class VectorGridPlot(BackgroundPlot):
         return float(np.linalg.det(self.matrix))
 
     @property
-    def eigs(self) -> Iterable[tuple[float, NDArray[(1, 2), Float]]]:
+    def eigs(self) -> Iterable[Tuple[float, NDArray[(1, 2), Float]]]:
         """Return the eigenvalues and eigenvectors zipped together to be iterated over.
 
-        :rtype: Iterable[tuple[float, NDArray[(1, 2), Float]]]
+        :rtype: Iterable[Tuple[float, NDArray[(1, 2), Float]]]
         """
         values, vectors = np.linalg.eig(self.matrix)
         return zip(values, vectors.T)
@@ -228,14 +228,14 @@ class VectorGridPlot(BackgroundPlot):
         .. note:: This method is abstract and must be overridden by all subclasses.
         """
 
-    def draw_parallel_lines(self, painter: QPainter, vector: tuple[float, float], point: tuple[float, float]) -> None:
+    def draw_parallel_lines(self, painter: QPainter, vector: Tuple[float, float], point: Tuple[float, float]) -> None:
         """Draw a set of evenly spaced grid lines parallel to ``vector`` intersecting ``point``.
 
         :param QPainter painter: The painter to draw the lines with
         :param vector: The vector to draw the grid lines parallel to
-        :type vector: tuple[float, float]
+        :type vector: Tuple[float, float]
         :param point: The point for the lines to intersect with
-        :type point: tuple[float, float]
+        :type point: Tuple[float, float]
         """
         max_x, max_y = self.grid_corner()
         vector_x, vector_y = vector
@@ -356,7 +356,7 @@ class VectorGridPlot(BackgroundPlot):
         # If an intersection fits within the bounds, then we keep its coord,
         # else it is None, and then gets discarded from the points list
         # By the end, points is a list of two coords, or an empty list
-        points: list[tuple[float, float]] = [
+        points: List[Tuple[float, float]] = [
             x for x in [
                 (myi, max_y) if -max_x < myi < max_x else None,
                 (mmyi, -max_y) if -max_x < mmyi < max_x else None,
@@ -390,12 +390,12 @@ class VectorGridPlot(BackgroundPlot):
         painter.setPen(QPen(self.colour_j, self.width_transformed_grid))
         self.draw_parallel_lines(painter, self.point_j, self.point_i)
 
-    def draw_arrowhead_away_from_origin(self, painter: QPainter, point: tuple[float, float]) -> None:
+    def draw_arrowhead_away_from_origin(self, painter: QPainter, point: Tuple[float, float]) -> None:
         """Draw an arrowhead at ``point``, pointing away from the origin.
 
         :param QPainter painter: The painter to draw the arrowhead with
         :param point: The point to draw the arrowhead at, given in grid coords
-        :type point: tuple[float, float]
+        :type point: Tuple[float, float]
         """
         # This algorithm was adapted from a C# algorithm found at
         # http://csharphelper.com/blog/2014/12/draw-lines-with-arrowheads-in-c/
@@ -424,12 +424,12 @@ class VectorGridPlot(BackgroundPlot):
         painter.drawLine(*self.canvas_coords(x, y), *self.canvas_coords(x + dx, y + dy))
         painter.drawLine(*self.canvas_coords(x, y), *self.canvas_coords(x - dy, y + dx))
 
-    def draw_position_vector(self, painter: QPainter, point: tuple[float, float], colour: QColor) -> None:
+    def draw_position_vector(self, painter: QPainter, point: Tuple[float, float], colour: QColor) -> None:
         """Draw a vector from the origin to the given point.
 
         :param QPainter painter: The painter to draw the position vector with
         :param point: The tip of the position vector in grid coords
-        :type point: tuple[float, float]
+        :type point: Tuple[float, float]
         :param QColor colour: The colour to draw the position vector in
         """
         painter.setPen(QPen(colour, self.width_vector_line))
@@ -472,7 +472,7 @@ class VectorGridPlot(BackgroundPlot):
 
         # We're building a QRect that encloses the determinant parallelogram
         # Then we can center the text in this QRect
-        coords: list[tuple[float, float]] = [
+        coords: List[Tuple[float, float]] = [
             (0, 0),
             self.point_i,
             self.point_j,

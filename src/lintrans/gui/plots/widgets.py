@@ -8,6 +8,8 @@
 
 from __future__ import annotations
 
+from typing import Tuple
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMouseEvent, QPainter, QPaintEvent
 
@@ -92,7 +94,7 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
         """Create the widget and enable mouse tracking. ``*args`` and ``**kwargs`` are passed to ``super()``."""
         super().__init__(*args, display_settings=display_settings, **kwargs)
 
-        self.dragged_point: tuple[float, float] | None = None
+        self.dragged_point: Tuple[float, float] | None = None
 
         # This is the distance that the cursor needs to be from the point to drag it
         self.epsilon: int = 5

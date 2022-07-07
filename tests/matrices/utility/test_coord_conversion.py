@@ -6,12 +6,14 @@
 
 """Test conversion between polar and rectilinear coordinates in :mod:`lintrans.matrices.utility`."""
 
+from typing import List, Tuple
+
 from numpy import pi, sqrt
 from pytest import approx
 
 from lintrans.matrices.utility import polar_coords, rect_coords
 
-expected_coords: list[tuple[tuple[float, float], tuple[float, float]]] = [
+expected_coords: List[Tuple[Tuple[float, float], Tuple[float, float]]] = [
     ((0, 0), (0, 0)),
     ((1, 1), (sqrt(2), pi / 4)),
     ((0, 1), (1, pi / 2)),

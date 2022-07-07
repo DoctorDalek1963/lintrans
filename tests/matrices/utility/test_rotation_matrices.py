@@ -6,13 +6,15 @@
 
 """Test functions for rotation matrices."""
 
+from typing import List, Tuple
+
 import numpy as np
 import pytest
 
 from lintrans.matrices import create_rotation_matrix
 from lintrans.typing_ import MatrixType
 
-angles_and_matrices: list[tuple[float, float, MatrixType]] = [
+angles_and_matrices: List[Tuple[float, float, MatrixType]] = [
     (0, 0, np.array([[1, 0], [0, 1]])),
     (90, np.pi / 2, np.array([[0, -1], [1, 0]])),
     (180, np.pi, np.array([[-1, 0], [0, -1]])),

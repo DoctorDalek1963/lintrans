@@ -6,6 +6,8 @@
 
 """Test the :mod:`matrices.parse` module validation and parsing."""
 
+from typing import List, Tuple
+
 import pytest
 
 from lintrans.matrices.parse import (
@@ -13,7 +15,7 @@ from lintrans.matrices.parse import (
 )
 from lintrans.typing_ import MatrixParseList
 
-expected_sub_expressions: list[tuple[str, list[str]]] = [
+expected_sub_expressions: List[Tuple[str, List[str]]] = [
     ('2(AB)^-1', ['AB']),
     ('-3(A+B)^2-C(B^TA)^-1', ['A+B', 'B^TA']),
     ('rot(45)', []),
@@ -30,7 +32,7 @@ def test_find_sub_expressions() -> None:
         assert find_sub_expressions(inp) == output
 
 
-valid_inputs: list[str] = [
+valid_inputs: List[str] = [
     'A', 'AB', '3A', '1.2A', '-3.4A', 'A^2', 'A^-1', 'A^{-1}',
     'A^12', 'A^T', 'A^{5}', 'A^{T}', '4.3A^7', '9.2A^{18}', '0.1A'
 
@@ -51,7 +53,7 @@ valid_inputs: list[str] = [
     '3(rot(34)^-7A)^-1+B', '3A^2B+4A(B+C)^-1D^T-A(C(D+E)B)'
 ]
 
-invalid_inputs: list[str] = [
+invalid_inputs: List[str] = [
     '', 'rot()', 'A^', 'A^1.2', 'A^{3.4}', '1,2A', 'ro(12)', '5', '12^2', '^T', '^{12}', '.1A',
     'A^{13', 'A^3}', 'A^A', '^2', 'A--B', '--A', '+A', '--1A', 'A--B', 'A--1B', '.A', '1.A',
     '2.3AB)^T', '(AB+)', '-4.6(9A', '-2(3.4A^{-1}-C^)^2', '9.2)', '3A^2B+4A(B+C)^-1D^T-A(C(D+EB)',
@@ -62,13 +64,13 @@ invalid_inputs: list[str] = [
 
 
 @pytest.mark.parametrize('inputs,output', [(valid_inputs, True), (invalid_inputs, False)])
-def test_validate_matrix_expression(inputs: list[str], output: bool) -> None:
+def test_validate_matrix_expression(inputs: List[str], output: bool) -> None:
     """Test the validate_matrix_expression() function."""
     for inp in inputs:
         assert validate_matrix_expression(inp) == output
 
 
-expressions_and_parsed_expressions: list[tuple[str, MatrixParseList]] = [
+expressions_and_parsed_expressions: List[Tuple[str, MatrixParseList]] = [
     # Simple expressions
     ('A', [[('', 'A', '')]]),
     ('A^2', [[('', 'A', '2')]]),

@@ -11,7 +11,7 @@ from __future__ import annotations
 import sys
 import webbrowser
 from copy import deepcopy
-from typing import Type
+from typing import List, Tuple, Type
 
 import numpy as np
 from numpy import linalg
@@ -576,7 +576,7 @@ class LintransMainWindow(QMainWindow):
         :param MatrixType matrix: The matrix to check
         :returns bool: Whether the matrix is too big to fit on the canvas
         """
-        coords: list[tuple[int, int]] = [self.plot.canvas_coords(*vector) for vector in matrix.T]
+        coords: List[Tuple[int, int]] = [self.plot.canvas_coords(*vector) for vector in matrix.T]
 
         for x, y in coords:
             if not (-2147483648 <= x <= 2147483647 and -2147483648 <= y <= 2147483647):
@@ -585,10 +585,10 @@ class LintransMainWindow(QMainWindow):
         return False
 
 
-def main(args: list[str]) -> None:
+def main(args: List[str]) -> None:
     """Run the GUI by creating and showing an instance of :class:`LintransMainWindow`.
 
-    :param list[str] args: The args to pass to :class:`QApplication`
+    :param List[str] args: The args to pass to :class:`QApplication`
     """
     app = QApplication(args)
     window = LintransMainWindow()

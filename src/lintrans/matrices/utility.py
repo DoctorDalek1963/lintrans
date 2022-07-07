@@ -9,13 +9,14 @@
 from __future__ import annotations
 
 import math
+from typing import Tuple
 
 import numpy as np
 
 from lintrans.typing_ import MatrixType
 
 
-def polar_coords(x: float, y: float, *, degrees: bool = False) -> tuple[float, float]:
+def polar_coords(x: float, y: float, *, degrees: bool = False) -> Tuple[float, float]:
     """Return the polar coordinates of a given (x, y) Cartesian coordinate.
 
     .. note:: We're returning the angle in the range [0, 2pi)
@@ -32,7 +33,7 @@ def polar_coords(x: float, y: float, *, degrees: bool = False) -> tuple[float, f
     return radius, angle
 
 
-def rect_coords(radius: float, angle: float, *, degrees: bool = False) -> tuple[float, float]:
+def rect_coords(radius: float, angle: float, *, degrees: bool = False) -> Tuple[float, float]:
     """Return the rectilinear coordinates of a given polar coordinate."""
     if degrees:
         angle = np.radians(angle)
@@ -40,7 +41,7 @@ def rect_coords(radius: float, angle: float, *, degrees: bool = False) -> tuple[
     return radius * np.cos(angle), radius * np.sin(angle)
 
 
-def rotate_coord(x: float, y: float, angle: float, *, degrees: bool = False) -> tuple[float, float]:
+def rotate_coord(x: float, y: float, angle: float, *, degrees: bool = False) -> Tuple[float, float]:
     """Rotate a rectilinear coordinate by the given angle."""
     if degrees:
         angle = np.radians(angle)
