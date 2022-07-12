@@ -1,0 +1,67 @@
+% lintrans - The linear transformation visualizer
+% Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
+
+% This program is licensed under GNU GPLv3, available here:
+% <https://www.gnu.org/licenses/gpl-3.0.html>
+
+\documentclass[../development.tex]{subfiles}
+
+\begin{document}
+
+\subsubsection{First basic GUI\label{development:initial-gui:first-basic-gui}}
+
+The discrepancy in all the GUI code between \texttt{snake\_case} and \texttt{camelCase} is because Qt5 was originally a C++ framework that was adapted into PyQt5 for Python. All the Qt API is in \texttt{camelCase}, but my Python code is in \texttt{snake\_case}.
+
+%: 93ce763f7b993439fc0da89fad39456d8cc4b52c
+%: src/lintrans/gui/main_window.py
+
+\fsbsl{development/93ce763f7b993439fc0da89fad39456d8cc4b52c/gui.png}{The first version of the GUI}{A lot of the methods here don't have implementations yet, but they will. This version is just a very early prototype to get a rough draft of the GUI.\par I create the widgets and layouts in the constructor as well as configuring all of them. The most important non-constructor method is \texttt{update\_render\_buttons()}. It gets called whenever the text in \texttt{text\_input\_expression} is changed. This happens because we connect it to the \texttt{textChanged} signal on line 32.\par The big white box here will eventually be replaced with an actual viewport. This is just a prototype.}
+
+\subsubsection{Numerical definition dialog\label{development:initial-gui:numerical-definition-dialog}}
+
+My next major addition was a dialog that would allow the user to define a matrix numerically.
+
+%: cedbd3ed126a1183f197c27adf6dabb4e5d301c7
+%: src/lintrans/gui/dialogs/define_new_matrix.py
+
+\fsbsl{development/cedbd3ed126a1183f197c27adf6dabb4e5d301c7/define-numerically-dialog.png}{The first version of the numerical definition dialog}{When I add more definition dialogs, I will factor out a superclass, but this is just a prototype to make sure it all works as intended.\par Hopefully the methods are relatively self explanatory, but they're just utility methods to update the GUI when things are changed. We connect the \texttt{QLineEdit} widgets to the \texttt{update\_confirm\_button()} slot to make sure the confirm button is always up to date.}
+
+The \texttt{confirm\_matrix()} method just updates the instance's matrix wrapper with the new matrix. We pass a reference to the \texttt{LintransMainWindow} instance's matrix wrapper when we open the dialog, so we're just updating the referenced object directly.
+
+In the \texttt{LintransMainWindow} class, we're just connecting a lambda slot to the button so that it opens the dialog, as seen here:
+
+%: cedbd3ed126a1183f197c27adf6dabb4e5d301c7
+%: src/lintrans/gui/main_window.py:66-68 strip
+
+\subsubsection{More definition dialogs\label{development:initial-gui:more-definition-dialogs}}
+
+I then factored out the constructor into a \texttt{DefineDialog} superclass so that I could easily create other definition dialogs.
+
+%: 5d04fb7233a03d0cd8fa0768f6387c6678da9df3
+%: src/lintrans/gui/dialogs/define_new_matrix.py:22-60
+
+This superclass just has a constructor that subclasses can use. When I added the \texttt{DefineAsARotationDialog} class, I also moved the cancel and confirm buttons into the constructor and added abstract methods that all dialog subclasses must implement.
+
+%: 0d534c35c6a4451e317d41a0d2b3ecb17827b45f
+%: src/lintrans/gui/dialogs/define_new_matrix.py:61-89
+
+I then added the class for the rotation definition dialog.
+
+%: 0d534c35c6a4451e317d41a0d2b3ecb17827b45f
+%: src/lintrans/gui/dialogs/define_new_matrix.py:182-234
+
+\fsbsr{development/0d534c35c6a4451e317d41a0d2b3ecb17827b45f/define-as-a-rotation-dialog.png}{The first version of the rotation definition dialog}{This dialog class just overrides the abstract methods of the superclass with its own implementations. This will be the pattern that all of the definition dialogs will follow.\par It has a checkbox for radians, since this is supported in \texttt{create\_rotation\_matrix()}, but the textbox only supports numbers, so the user would have to calculate some multiple of $\pi$ and paste in several decimal places. I expect people to only use degrees, because these are easier to use.}
+
+Additionally, I created a helper method in \texttt{LintransMainWindow}. Rather than connecting the \texttt{clicked} signal of the buttons to lambdas that instantiate an instance of the \texttt{DefineDialog} subclass and call \texttt{.exec()} on it, I now connect the \texttt{clicked} signal of the buttons to lambdas that call \texttt{self.dialog\_define\_matrix()} with the specific subclass.
+
+%: 6269e04d453df7be2d2f9c7ee176e83406ccc139
+%: src/lintrans/gui/main_window.py:170-205
+
+I also then implemented a simple \texttt{DefineAsAnExpressionDialog}, which evaluates a given expression in the current \texttt{MatrixWrapper} context and assigns the result to the given matrix name.
+
+%: d5f930e15c3c8798d4990486532da46e926a6cb9
+%: src/lintrans/gui/dialogs/define_new_matrix.py:241-277
+
+My next dialog that I wanted to implement was a visual definition dialog, which would allow the user to drag around the basis vectors to define a transformation. However, I would first need to create the \texttt{lintrans.gui.plots} package to allow for actually visualizing matrices and transformations.
+
+\end{document}

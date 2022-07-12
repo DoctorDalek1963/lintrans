@@ -116,4 +116,5 @@ def process_snippets(filename: str) -> None:
 
 
 if __name__ == '__main__':
-    process_snippets('sections/development.tex')
+    for file in os.listdir('sections/development'):
+        process_snippets(f'sections/development/{file}')

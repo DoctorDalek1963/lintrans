@@ -27,5 +27,6 @@ rm -f *.run.xml
 rm -f *.synctex.gz
 
 rm -f sections/processed_*.tex
+rm -f sections/development/processed_*.tex
 
 rm -rf _minted-main/

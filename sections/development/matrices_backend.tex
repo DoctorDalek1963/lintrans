@@ -1,0 +1,131 @@
+% lintrans - The linear transformation visualizer
+% Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
+
+% This program is licensed under GNU GPLv3, available here:
+% <https://www.gnu.org/licenses/gpl-3.0.html>
+
+\documentclass[../development.tex]{subfiles}
+
+\begin{document}
+
+\subsubsection{\texttt{MatrixWrapper} class\label{development:matrices-backend:MatrixWrapper-class}}
+
+The first real part of development was creating the \texttt{MatrixWrapper} class. It needs a simple instance dictionary to be created in the constructor, and it needs a way of accessing the matrices. I decided to use Python's \texttt{\_\_getitem\_\_()} and \texttt{\_\_setitem\_\_()} special methods\cite{python-3-special-methods} to allow indexing into a \texttt{MatrixWrapper} object like \pyinline{wrapper['M']}. This simplifies using the class.
+
+%: 29ec1fedbf307e3b7ca731c4a381535fec899b0b
+%: src/lintrans/matrices/wrapper.py
+
+This code is very simple. The constructor (\texttt{\_\_init\_\_()}) creates a dictionary of matrices which all start out as having no value, except the identity matrix \textbf{I}. The \texttt{\_\_getitem\_\_()} and \texttt{\_\_setitem\_\_()} methods allow the user to easily get and set matrices just like a dictionary, and \texttt{\_\_setitem\_\_()} will raise an error if the name is invalid. This is a very early prototype, so it doesn't validate the type of whatever the user is trying to assign it to yet. This validation will come later.
+
+I could make this class subclass \pyinline{dict}, since it's basically just a dictionary at this point, but I want to extend it with much more functionality later, so I chose to handle the dictionary stuff myself.
+
+I then had to write unit tests for this class, and I chose to do all my unit tests using a framework called \texttt{pytest}.
+
+%: 29ec1fedbf307e3b7ca731c4a381535fec899b0b
+%: tests/test_matrix_wrapper.py
+
+These tests are quite simple and just ensure that the expected behaviour works the way it should, and that the correct errors are raised when they should be. It verifies that matrices can be assigned, that every valid name works, and that the identity matrix \textbf{I} cannot be assigned to.
+
+The function decorated with \pyinline{@pytest.fixture} allows functions to use a parameter called \texttt{wrapper} and \texttt{pytest} will automatically call this function and pass it as that parameter. It just saves on code repetition.
+
+\subsubsection{Rudimentary parsing and evaluating\label{development:matrices-backend:rudimentary-parsing-and-evaluating}}
+
+This first thing I did here was improve the \texttt{\_\_setitem\_\_()} and \texttt{\_\_getitem\_\_()} methods to validate input and easily get transposes and simple rotation matrices.
+
+%: f89fc9fd8d5917d07557fc50df3331123b55ad6b
+%: src/lintrans/matrices/wrapper.py:60-81
+
+In this method, I'm now casting all the values to floats. This is very simple validation, since this cast will raise \pyinline{ValueError} if it fails to cast the value to a float. I should've declared \texttt{:raises ValueError:} in the docstring, but this was an oversight at the time.
+
+%: f89fc9fd8d5917d07557fc50df3331123b55ad6b
+%: src/lintrans/matrices/wrapper.py:27-59
+
+This \texttt{\_\_getitem\_\_()} method now allows for easily accessing transposes and rotation matrices by checking input with regular expressions. This makes getting matrices easier and thus makes evaluating full expressions simpler.
+
+The \texttt{create\_rotation\_matrix()} method is also defined in this file and just uses the $\begin{psmallmatrix}\cos\theta & -\sin\theta\\\sin\theta & \cos\theta\end{psmallmatrix}$ formula from before:
+
+%: f89fc9fd8d5917d07557fc50df3331123b55ad6b
+%: src/lintrans/matrices/wrapper.py:158-168
+
+At this stage, I also implemented a simple parser and evaluator using regular expressions. It's not great and it's not very flexible, but it can evaluate simple expressions.
+
+%: f89fc9fd8d5917d07557fc50df3331123b55ad6b
+%: src/lintrans/matrices/wrapper.py:83-155
+
+I think the comments in the code speak for themselves, but we basically split the expression up into groups to be added, and then for each group, we multiply every matrix in that group to get its value, and then add all these values together at the end.
+
+This code is objectively bad. At the time of writing, it's now quite old, so I can say that. This code has no real error handling, and line 127 introduces the glaring error that \pyinline{'A++B'} is now a valid expression because we disregard empty strings. Not to mention the fact that the method is called \texttt{parse\_expression()} but actually evaluates an expression. All these issues will be fixed in the future, but this was the first implementation of matrix evaluation, and it does the job decently well.
+
+I then implemented several tests for this parsing.
+
+%: 60e0c713b244e097bab8ee0f71142b709fde1a8b
+%: tests/test_matrix_wrapper_parse_expression.py
+
+These test lots of simple expressions, but don't test any more complicated expressions, nor do they test any validation, mostly because validation doesn't really exist at this point. \pyinline{'A++B'} is still a valid expression and is equivalent to \pyinline{'A+B'}.
+
+\subsubsection{Simple matrix expression validation\label{development:matrices-backend:simple-matrix-expression-validation}}
+
+My next major step was to implement proper parsing, but I procrastinated for a while and first implemented proper validation.
+
+%: 39b918651f60bc72bc19d2018075b24a6fc3af17
+%: src/lintrans/_parse/matrices.py:9-55
+
+Here, I'm using a BNF schema to programmatically generate a regular expression. I use a function to generate this pattern and assign it to a variable when the module is initialized. This is because the pattern compilation is expensive and it's more efficient to compile the pattern once and then just use it in the \texttt{validate\_matrix\_expression()} function.
+
+I also created a method \texttt{is\_valid\_expression()} in \texttt{MatrixWrapper}, which just validates a given expression. It uses the aforementioned \texttt{validate\_matrix\_expression()} and also checks that every matrix referenced in the expression is defined in the wrapper.
+
+%: 39b918651f60bc72bc19d2018075b24a6fc3af17
+%: src/lintrans/matrices/wrapper.py:99-117
+
+I then implemented some simple tests to make sure the function works with valid and invalid expressions.
+
+%: a0fb029f7da995803c24ee36e7e8078e5621f676
+%: tests/_parse/test_parse_and_validate_expression.py
+
+Here, we test some valid data, some definitely invalid data, and some edge cases. At this stage, \pyinline{'A--1B'} was considered a valid expression. This was a quirk of the validator at the time, but I fixed it later. This should obviously be an invalid expression, especially since \pyinline{'A--B'} is considered invalid, but \pyinline{'A--1B'} is valid.
+
+The \pyinline{@pytest.mark.parametrize} decorator on line 32 means that \texttt{pytest} will run one test for valid inputs, and then another test for invalid inputs, and these will count as different tests. This makes it easier to see which tests failed and then debug the app.
+
+\subsubsection{Parsing matrix expressions\label{development:matrices-backend:parsing-matrix-expressions}}
+
+Parsing is quite an interesting problem and something I didn't feel able to tackle head-on, so I wrote the unit tests first. I had a basic idea of what I wanted the parser to return, but no real idea of how to implement that. My unit tests looked like this:
+
+%: e9f7a81892278fe70684562052f330fb3a02bf9b
+%: tests/_parse/test_parse_and_validate_expression.py:40-75
+
+I just had example inputs and what I expected as output. I also wanted the parser to ignore whitespace. The decorator on line 69 just skips the test because the parser wasn't implemented yet.
+
+When implementing the parser, I first had to tighten up validation to remove anomalies like \pyinline{'A--1B'} being valid. I did this by factoring out the optional minus signs from being part of a number, to being optionally in front of a number. This eliminated this kind of repetition and made \pyinline{'A--1B'} invalid, as it should be.
+
+%: fd80d8d3b0e975e92dcc7c10f1f0f1276879f408
+%: src/lintrans/_parse/matrices.py:32-45
+
+The code can be a bit hard to read with all the RegEx stuff, but the BNF illustrates these changes nicely.
+
+Compare the old version:
+
+%: 39b918651f60bc72bc19d2018075b24a6fc3af17
+%: src/lintrans/_parse/matrices.py:38-49 strip
+
+to the new version:
+
+%: fd80d8d3b0e975e92dcc7c10f1f0f1276879f408
+%: src/lintrans/_parse/matrices.py:61-72 strip
+
+Then once I'd fixed the validation, I could implement the parser itself.
+
+%: fd80d8d3b0e975e92dcc7c10f1f0f1276879f408
+%: src/lintrans/_parse/matrices.py:86-128
+
+It works similarly to the old \texttt{MatrixWrapper.parse\_expression()} method in \S\ref{development:matrices-backend:rudimentary-parsing-and-evaluating} but with a powerful list comprehension at the end. It splits the expression up into groups and then uses some RegEx magic to find all the matrices in these groups as a tuple.
+
+This method passes all the unit tests, as expected.
+
+My next step was then to rewrite the evaluation to use this new parser, like so (method name and docstring removed):
+
+%: a453774bcdf824676461f9b9b441d7b94969ea55
+%: src/lintrans/matrices/wrapper.py:168-191
+
+Here, we go through the list of tuples and evaluate the matrix represented by each tuple, putting this together in a list as we go. Then at the end, we simply reduce the sublists and then reduce these new matrices using a list comprehension in the \texttt{reduce()} call using \texttt{add} and \texttt{matmul} from the \texttt{operator} library. It's written in a functional programming style, and it passes all the previous tests.
+
+\end{document}
