@@ -19,6 +19,7 @@
 *.fls
 *.run.xml
 *.synctex*
+*.pyg
 
 # We want to ignore the PDF itself to allow me to keep a local build
 *.pdf
