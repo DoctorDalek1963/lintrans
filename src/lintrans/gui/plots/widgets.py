@@ -100,7 +100,7 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
         self.epsilon: int = 5
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
-        """Handle a QMouseEvent when the user pressed a button."""
+        """Handle a :class:`QMouseEvent` when the user presses a button."""
         mx = event.x()
         my = event.y()
         button = event.button()
@@ -117,7 +117,7 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
         event.accept()
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
-        """Handle a QMouseEvent when the user release a button."""
+        """Handle a :class:`QMouseEvent` when the user releases a button."""
         if event.button() == Qt.LeftButton:
             self.dragged_point = None
             event.accept()

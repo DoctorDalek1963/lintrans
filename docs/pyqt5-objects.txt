@@ -8,6 +8,7 @@
 QApplication py:class 1 qapplication.html -
 QDialog      py:class 1 qdialog.html      -
 QKeyEvent    py:class 1 qkeyevent.html    -
+QMouseEvent  py:class 1 qmouseevent.html  -
 QPainter     py:class 1 qpainter.html     -
 QPaintEvent  py:class 1 qpaintevent.html  -
 QWheelEvent  py:class 1 qwheelevent.html  -
@@ -26,6 +27,7 @@ QDialog.accepted    py:method 1 qdialog.html#accepted    -
 # These are in full form so that autodoc can reference base classes and param types
 
 PyQt5.QtGui.QKeyEvent        py:class 1 qkeyevent.html             -
+PyQt5.QtGui.QMouseEvent      py:class 1 qmouseevent.html           -
 PyQt5.QtGui.QPainter         py:class 1 qpainter.html              -
 PyQt5.QtGui.QPaintEvent      py:class 1 qpaintevent.html           -
 PyQt5.QtGui.QValidator       py:class 1 qvalidator.html            -
