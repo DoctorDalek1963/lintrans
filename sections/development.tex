@@ -551,4 +551,25 @@ I then created the \texttt{is\_matrix\_too\_big()} method to just check that the
 %: 4682a7b225747cfd77aca0fe3abcdd1397b7c5dd
 %: src/lintrans/gui/main_window.py:407-421
 
+\subsubsection{Creating the \texttt{DefineVisuallyDialog}\label{development:improving-the-gui:creating-the-DefineVisuallyDialog}}
+
+Next, I wanted to allow the user to define a matrix visually by dragging the basis vectors. To do this, I obviously needed a new \texttt{DefineDialog} subclass for it.
+
+%: 16ca0229aab73b3f4a8fe752dee3608f3ed6ead5
+%: src/lintrans/gui/dialogs/define_new_matrix.py:135-189
+
+This \texttt{DefineVisuallyDialog} class just implements the normal methods needed for a \texttt{DefineDialog} and has a \texttt{plot} attribute to handle drawing graphics and handling mouse movement. After creating the \texttt{DefineVisuallyWidget} as a skeleton and doing some more research in the Qt5 docs\cite{qt5-docs-qwidget-mousemoveevent}, I renamed the \texttt{trans\_coords()} methods to \texttt{canvas\_coords()} to make the intent more clear, and created a \texttt{grid\_coords()} method.
+
+%: 417aea6555029b049c470faff18df29f064f6101
+%: src/lintrans/gui/plots/classes.py:85-94
+
+I then needed to implement the methods to handle mouse movement in the \texttt{DefineVisuallyWidget} class. Thankfully, Ross Wilson, the person who helped me learn about the \texttt{QWidget.paintEvent()} method in \S\ref{development:visualizing-matrices:asking-strangers-on-the-internet-for-help}, also wrote an example of draggable points\cite{gitlab-custom-widgets-ijvectors.py}. In my post, I had explained that I needed draggable points on my canvas, and Ross was helpful enough to create an example in their own time. I probably could've worked it out myself eventually, but this example allowed me to learn a lot quicker.
+
+%: 417aea6555029b049c470faff18df29f064f6101
+%: src/lintrans/gui/plots/widgets.py:56-121
+
+This snippet has the line \enquote{\pyinline{self.setMouseTracking(True)}} commented out. This line was in the example, but it turns out that I don't want it. Mouse tracking means that a widget will receive a \texttt{QMouseEvent} every time the mouse moves. But if it's disabled (the default), then the widget will only receive a \texttt{QMouseEvent} for mouse movement when a button is held down at the same time.
+
+I've also left in some print statements on lines 116 and 117. These small oversights are there because I just forgot to remove them before I committed these changes. They were removed 3 commits later.
+
 \end{document}
