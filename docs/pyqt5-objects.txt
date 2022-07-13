@@ -5,20 +5,24 @@
 
 # === Classes
 
-QApplication py:class 1 qapplication.html -
-QCloseEvent  py:class 1 qcloseevent.html  -
-QDialog      py:class 1 qdialog.html      -
-QKeyEvent    py:class 1 qkeyevent.html    -
-QMouseEvent  py:class 1 qmouseevent.html  -
-QPainter     py:class 1 qpainter.html     -
-QPaintEvent  py:class 1 qpaintevent.html  -
-QWheelEvent  py:class 1 qwheelevent.html  -
-QWidget      py:class 1 qwidget.html      -
+QApplication py:class 1 qapplication.html      -
+QCloseEvent  py:class 1 qcloseevent.html       -
+QDialog      py:class 1 qdialog.html           -
+QKeyEvent    py:class 1 qkeyevent.html         -
+QMouseEvent  py:class 1 qmouseevent.html       -
+QPainter     py:class 1 qpainter.html          -
+QPaintEvent  py:class 1 qpaintevent.html       -
+QWheelEvent  py:class 1 qwheelevent.html       -
+QWidget      py:class 1 qwidget.html           -
+
+# This is technically a pointer to a class instance, but I want it formatted as a class
+qApp         py:class 1 qapplication.html#qApp -
 
 # === Methods
 
-QPainter.drawLine:iiii py:method 1 qpainter.html#drawLine-2 QPainter.drawLine()
-QDialog.open           py:method 1 qdialog.html#open        QDialog.open()
+QCoreApplication.instance py:method 1 qcoreapplication.html#instance QCoreApplication.instance()
+QPainter.drawLine:iiii    py:method 1 qpainter.html#drawLine-2       QPainter.drawLine()
+QDialog.open              py:method 1 qdialog.html#open              QDialog.open()
 
 # === Signals
 
@@ -27,14 +31,15 @@ QDialog.accepted    py:method 1 qdialog.html#accepted    -
 
 # These are in full form so that autodoc can reference base classes and param types
 
-PyQt5.QtGui.QCloseEvent      py:class 1 qcloseevent.html           -
-PyQt5.QtGui.QKeyEvent        py:class 1 qkeyevent.html             -
-PyQt5.QtGui.QMouseEvent      py:class 1 qmouseevent.html           -
-PyQt5.QtGui.QPainter         py:class 1 qpainter.html              -
-PyQt5.QtGui.QPaintEvent      py:class 1 qpaintevent.html           -
-PyQt5.QtGui.QValidator       py:class 1 qvalidator.html            -
-PyQt5.QtGui.QValidator.State py:class 1 qvalidator.html#State-enum -
-PyQt5.QtGui.QWheelEvent      py:class 1 qwheelevent.html           -
-PyQt5.QtWidgets.QDialog      py:class 1 qdialog.html               -
-PyQt5.QtWidgets.QMainWindow  py:class 1 qmainwindow.html           -
-PyQt5.QtWidgets.QWidget      py:class 1 qwidget.html               -
+PyQt5.QtCore.QCoreApplication py:class 1 qcoreapplication.html      -
+PyQt5.QtGui.QCloseEvent       py:class 1 qcloseevent.html           -
+PyQt5.QtGui.QKeyEvent         py:class 1 qkeyevent.html             -
+PyQt5.QtGui.QMouseEvent       py:class 1 qmouseevent.html           -
+PyQt5.QtGui.QPainter          py:class 1 qpainter.html              -
+PyQt5.QtGui.QPaintEvent       py:class 1 qpaintevent.html           -
+PyQt5.QtGui.QValidator        py:class 1 qvalidator.html            -
+PyQt5.QtGui.QValidator.State  py:class 1 qvalidator.html#State-enum -
+PyQt5.QtGui.QWheelEvent       py:class 1 qwheelevent.html           -
+PyQt5.QtWidgets.QDialog       py:class 1 qdialog.html               -
+PyQt5.QtWidgets.QMainWindow   py:class 1 qmainwindow.html           -
+PyQt5.QtWidgets.QWidget       py:class 1 qwidget.html               -

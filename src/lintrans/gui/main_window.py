@@ -18,10 +18,10 @@ import numpy as np
 from numpy import linalg
 from numpy.linalg import LinAlgError
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import pyqtSlot, QThread
+from PyQt5.QtCore import pyqtSlot, QCoreApplication, QThread
 from PyQt5.QtGui import QCloseEvent, QKeySequence
 from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox,
-                             QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout)
+                             QShortcut, QSizePolicy, QSpacerItem, QStyleFactory, QVBoxLayout)
 
 import lintrans
 from lintrans.matrices import MatrixWrapper
@@ -606,12 +606,26 @@ class LintransMainWindow(QMainWindow):
         return False
 
 
+def qapp() -> QCoreApplication:
+    """Return the equivalent of the global :class:`qApp` pointer.
+
+    :raises RuntimeError: If :meth:`QCoreApplication.instance` returns ``None``
+    """
+    instance = QCoreApplication.instance()
+
+    if instance is None:
+        raise RuntimeError('qApp undefined')
+
+    return instance
+
+
 def main(args: List[str]) -> None:
     """Run the GUI by creating and showing an instance of :class:`LintransMainWindow`.
 
     :param List[str] args: The args to pass to :class:`QApplication`
     """
     app = QApplication(args)
+    qapp().setStyle(QStyleFactory.create('fusion'))
     window = LintransMainWindow()
     window.show()
     sys.exit(app.exec_())
