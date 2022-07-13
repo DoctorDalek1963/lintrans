@@ -598,7 +598,7 @@ class LintransMainWindow(QMainWindow):
 
 
 def qapp() -> QCoreApplication:
-    """Return the equivalent of the global ``qApp`` pointer.
+    """Return the equivalent of the global :class:`qApp` pointer.
 
     :raises RuntimeError: If :meth:`QCoreApplication.instance` returns ``None``
     """

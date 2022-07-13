@@ -5,13 +5,16 @@
 
 # === Classes
 
-QApplication py:class 1 qapplication.html -
-QDialog      py:class 1 qdialog.html      -
-QKeyEvent    py:class 1 qkeyevent.html    -
-QPainter     py:class 1 qpainter.html     -
-QPaintEvent  py:class 1 qpaintevent.html  -
-QWheelEvent  py:class 1 qwheelevent.html  -
-QWidget      py:class 1 qwidget.html      -
+QApplication py:class 1 qapplication.html      -
+QDialog      py:class 1 qdialog.html           -
+QKeyEvent    py:class 1 qkeyevent.html         -
+QPainter     py:class 1 qpainter.html          -
+QPaintEvent  py:class 1 qpaintevent.html       -
+QWheelEvent  py:class 1 qwheelevent.html       -
+QWidget      py:class 1 qwidget.html           -
+
+# This is technically a pointer to a class instance, but I want it formatted as a class
+qApp         py:class 1 qapplication.html#qApp -
 
 # === Methods
 
