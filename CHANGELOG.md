@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add Qt and PyQt5 version numbers to the *About* dialog box
+- Basis vectors now snap to integer coordinates in the visual definition dialog
 
 ### Fixed
 

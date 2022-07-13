@@ -8,7 +8,8 @@
 
 from __future__ import annotations
 
-from typing import Tuple
+from math import ceil, dist, floor
+from typing import List, Tuple
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMouseEvent, QPainter, QPaintEvent
@@ -129,19 +130,36 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
         mx = event.x()
         my = event.y()
 
-        if self.dragged_point is not None:
-            x, y = self.grid_coords(mx, my)
+        if self.dragged_point is None:
+            event.ignore()
+            return
 
-            if self.dragged_point == self.point_i:
-                self.point_i = x, y
+        x, y = self.grid_coords(mx, my)
 
-            elif self.dragged_point == self.point_j:
-                self.point_j = x, y
+        possible_snaps: List[Tuple[int, int]] = [
+            (floor(x), floor(y)),
+            (floor(x), ceil(y)),
+            (ceil(x), floor(y)),
+            (ceil(x), ceil(y))
+        ]
 
-            self.dragged_point = x, y
+        snap_distances: List[Tuple[float, Tuple[int, int]]] = [
+            (dist((x, y), coord), coord)
+            for coord in possible_snaps
+        ]
 
-            self.update()
+        for snap_dist, coord in snap_distances:
+            if snap_dist < 0.1:
+                x, y = coord
 
-            event.accept()
+        if self.dragged_point == self.point_i:
+            self.point_i = x, y
 
-        event.ignore()
+        elif self.dragged_point == self.point_j:
+            self.point_j = x, y
+
+        self.dragged_point = x, y
+
+        self.update()
+
+        event.accept()
