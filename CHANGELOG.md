@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Make program compatible with Python 3.8 and above
 - Make link to documentation in help menu actually link properly
+- Fix bug with stretches being detected as rotations
+- Cancel animation before closing to prevent the app hanging in the background
 
 ## [0.2.2] - 2022-07-04
 

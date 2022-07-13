@@ -19,7 +19,7 @@ from numpy import linalg
 from numpy.linalg import LinAlgError
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot, QThread
-from PyQt5.QtGui import QKeySequence
+from PyQt5.QtGui import QCloseEvent, QKeySequence
 from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox,
                              QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout)
 
@@ -258,6 +258,11 @@ class LintransMainWindow(QMainWindow):
         self.central_widget.setContentsMargins(10, 10, 10, 10)
 
         self.setCentralWidget(self.central_widget)
+
+    def closeEvent(self, event: QCloseEvent) -> None:
+        """Handle a :class:`QCloseEvent` by cancelling animation first."""
+        self.animating = False
+        event.accept()
 
     def update_render_buttons(self) -> None:
         """Enable or disable the render and animate buttons according to whether the matrix expression is valid."""
