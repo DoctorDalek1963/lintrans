@@ -407,10 +407,14 @@ class LintransMainWindow(QMainWindow):
         else:
             matrix_application = target @ linalg.inv(start)
 
+        # For a matrix to represent a rotation, it must have a positive determinant,
+        # its vectors must be perpendicular, and its vectors must be the same length
+        # The checks for 'abs(value) < 1e-10' are to account for floating point error
         if matrix_application is not None \
                 and self.plot.display_settings.smoothen_determinant \
                 and linalg.det(matrix_application) > 0 \
-                and abs(np.dot(matrix_application.T[0], matrix_application.T[1])) < 0.1:
+                and abs(np.dot(matrix_application.T[0], matrix_application.T[1])) < 1e-10 \
+                and abs(np.hypot(*matrix_application.T[0]) - np.hypot(*matrix_application.T[1])) < 1e-10:
             rotation_vector: VectorType = matrix_application.T[0]  # Take the i column
             radius, angle = polar_coords(*rotation_vector)
 
