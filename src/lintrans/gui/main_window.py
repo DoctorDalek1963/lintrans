@@ -597,17 +597,17 @@ class LintransMainWindow(QMainWindow):
         return False
 
 
-def get_global_qapp() -> QCoreApplication:
+def qapp() -> QCoreApplication:
     """Return the equivalent of the global ``qApp`` pointer.
 
     :raises RuntimeError: If :meth:`QCoreApplication.instance` returns ``None``
     """
-    qapp = QCoreApplication.instance()
+    instance = QCoreApplication.instance()
 
-    if qapp is None:
+    if instance is None:
         raise RuntimeError('qApp undefined')
 
-    return qapp
+    return instance
 
 
 def main(args: List[str]) -> None:
@@ -616,7 +616,7 @@ def main(args: List[str]) -> None:
     :param List[str] args: The args to pass to :class:`QApplication`
     """
     app = QApplication(args)
-    get_global_qapp().setStyle(QStyleFactory.create('fusion'))
+    qapp().setStyle(QStyleFactory.create('fusion'))
     window = LintransMainWindow()
     window.show()
     sys.exit(app.exec_())
