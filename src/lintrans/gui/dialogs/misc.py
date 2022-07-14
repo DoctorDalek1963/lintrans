@@ -15,6 +15,7 @@ from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR, Qt
 from PyQt5.QtWidgets import QDialog, QVBoxLayout
 
 import lintrans
+from lintrans.matrices import MatrixWrapper
 
 
 class FixedSizeDialog(QDialog):
@@ -94,3 +95,16 @@ class AboutDialog(FixedSizeDialog):
         vlay.addWidget(label_copyright)
 
         self.setLayout(vlay)
+
+
+class InfoPanelDialog(FixedSizeDialog):
+    """A simple dialog class to display an info panel that shows all currently defined matrices."""
+
+    def __init__(self, matrix_wrapper: MatrixWrapper, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.wrapper = matrix_wrapper
+
+        self.setWindowTitle('Defined matrices')
+
+        for name, value in self.wrapper.get_defined_matrices():
+            print(name, value)
