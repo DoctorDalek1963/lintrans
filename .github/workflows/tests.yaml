@@ -29,8 +29,14 @@ jobs:
           pip install -r requirements.txt -r dev_requirements.txt
           pip install -e .
 
-      - name: Run pytest
-        run: pytest
+      - name: Run pytest (no GUI)
+        run: pytest tests/matrices/
+
+      - name: Run pytest (with GUI)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt install xvfb
+          pytest tests/gui/
 
       - name: Run doctests
         run: pytest --doctest-modules src/
