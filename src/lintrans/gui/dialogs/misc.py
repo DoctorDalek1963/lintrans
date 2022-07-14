@@ -12,7 +12,7 @@ import platform
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR, Qt
-from PyQt5.QtWidgets import QDialog, QVBoxLayout
+from PyQt5.QtWidgets import QDialog, QLabel, QVBoxLayout
 
 import lintrans
 from lintrans.matrices import MatrixWrapper
@@ -44,7 +44,7 @@ class AboutDialog(FixedSizeDialog):
 
         # === Create the widgets
 
-        label_title = QtWidgets.QLabel(self)
+        label_title = QLabel(self)
         label_title.setText(f'lintrans (version {lintrans.__version__})')
         label_title.setAlignment(Qt.AlignCenter)
 
@@ -52,7 +52,7 @@ class AboutDialog(FixedSizeDialog):
         font_title.setPointSize(font_title.pointSize() * 2)
         label_title.setFont(font_title)
 
-        label_version_info = QtWidgets.QLabel(self)
+        label_version_info = QLabel(self)
         label_version_info.setText(
             f'With Python version {platform.python_version()}\n'
             f'Qt version {QT_VERSION_STR} and PyQt5 version {PYQT_VERSION_STR}\n'
@@ -60,7 +60,7 @@ class AboutDialog(FixedSizeDialog):
         )
         label_version_info.setAlignment(Qt.AlignCenter)
 
-        label_info = QtWidgets.QLabel(self)
+        label_info = QLabel(self)
         label_info.setText(
             'lintrans is a program designed to help visualise<br>'
             '2D linear transformations represented with matrices.<br><br>'
@@ -73,7 +73,7 @@ class AboutDialog(FixedSizeDialog):
         label_info.setTextFormat(Qt.RichText)
         label_info.setOpenExternalLinks(True)
 
-        label_copyright = QtWidgets.QLabel(self)
+        label_copyright = QLabel(self)
         label_copyright.setText(
             'This program is free software.<br>Copyright 2021-2022 D. Dyson (DoctorDalek1963).<br>'
             'This program is licensed under GPLv3, which can be found '
