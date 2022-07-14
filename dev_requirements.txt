@@ -2,6 +2,8 @@ flake8==4.0.1
 mypy==0.942
 pycodestyle==2.8.0
 pydocstyle==6.1.1
-pytest==6.2.5
+pytest==7.1.2
+pytest-qt==4.1.0
+pytest-xvfb==2.0.0
 pyqt5-stubs==5.15.2.0
 toml==0.10.2
