@@ -21,49 +21,10 @@ from lintrans.gui.plots import DefineVisuallyWidget
 from lintrans.gui.settings import DisplaySettings
 from lintrans.gui.validate import MatrixExpressionValidator
 from lintrans.matrices import MatrixWrapper
+from lintrans.matrices.utility import is_valid_float, round_float
 from lintrans.typing_ import MatrixType
 
 ALPHABET_NO_I = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
-
-
-def is_valid_float(string: str) -> bool:
-    """Check if the string is a valid float (or anything that can be cast to a float, such as an int).
-
-    This function simply checks that ``float(string)`` doesn't raise an error.
-
-    .. note:: An empty string is not a valid float, so will return False.
-
-    :param str string: The string to check
-    :returns bool: Whether the string is a valid float
-    """
-    try:
-        float(string)
-        return True
-    except ValueError:
-        return False
-
-
-def round_float(num: float, precision: int = 5) -> str:
-    """Round a floating point number to a given number of decimal places for pretty printing.
-
-    :param float num: The number to round
-    :param int precision: The number of decimal places to round to
-    :returns str: The rounded number for pretty printing
-    """
-    # Round to ``precision`` number of decimal places
-    string = str(round(num, precision))
-
-    # Cut off the potential final zero
-    if string.endswith('.0'):
-        return string[:-2]
-
-    elif 'e' in string:  # Scientific notation
-        split = string.split('e')
-        # The leading 0 only happens when the exponent is negative, so we know there'll be a minus sign
-        return split[0] + 'e-' + split[1][1:].lstrip('0')
-
-    else:
-        return string
 
 
 class DefineDialog(FixedSizeDialog):

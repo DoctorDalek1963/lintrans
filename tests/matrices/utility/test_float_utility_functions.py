@@ -11,7 +11,7 @@ from typing import List, Tuple
 import numpy as np
 import pytest
 
-from lintrans.gui.dialogs.define_new_matrix import is_valid_float, round_float
+from lintrans.matrices.utility import is_valid_float, round_float
 
 valid_floats: List[str] = [
     '0', '1', '3', '-2', '123', '-208', '1.2', '-3.5', '4.252634', '-42362.352325',

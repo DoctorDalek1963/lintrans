@@ -9,13 +9,15 @@
 from __future__ import annotations
 
 import platform
+from typing import Union
 
-from PyQt5 import QtWidgets
 from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR, Qt
-from PyQt5.QtWidgets import QDialog, QLabel, QVBoxLayout
+from PyQt5.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
 import lintrans
+from lintrans.matrices.utility import round_float
 from lintrans.matrices import MatrixWrapper
+from lintrans.typing_ import is_matrix_type, MatrixType
 
 
 class FixedSizeDialog(QDialog):
@@ -101,10 +103,81 @@ class InfoPanelDialog(FixedSizeDialog):
     """A simple dialog class to display an info panel that shows all currently defined matrices."""
 
     def __init__(self, matrix_wrapper: MatrixWrapper, *args, **kwargs):
+        """Create the dialog box with all the widgets needed to show the information."""
         super().__init__(*args, **kwargs)
         self.wrapper = matrix_wrapper
 
         self.setWindowTitle('Defined matrices')
 
+        vlay_main = QVBoxLayout()
+        vlay_main.setSpacing(20)
+
         for name, value in self.wrapper.get_defined_matrices():
-            print(name, value)
+            label_name = QLabel(self)
+            label_name.setText(name)
+            label_name.setAlignment(Qt.AlignLeft)
+
+            label_equals = QLabel(self)
+            label_equals.setText('=')
+            label_equals.setAlignment(Qt.AlignLeft)
+
+            widget_matrix = self._get_matrix_widget(value)
+
+            hlay_matrix = QHBoxLayout()
+            hlay_matrix.setSpacing(20)
+            hlay_matrix.addWidget(label_name)
+            hlay_matrix.addWidget(label_equals)
+            hlay_matrix.addWidget(widget_matrix)
+
+            vlay_main.addLayout(hlay_matrix)
+
+        self.setContentsMargins(10, 10, 10, 10)
+        self.setLayout(vlay_main)
+
+    def _get_matrix_widget(self, matrix: Union[MatrixType, str]) -> QWidget:
+        """Return a :class:`QWidget` containing the value of the matrix.
+
+        If the matrix is defined as an expression, it will be a simple :class:`QLabel`.
+        If the matrix is defined as a matrix, it will be a :class:`QWidget` container
+        with multiple :class:`QLabel` objects in it.
+        """
+        if isinstance(matrix, str):
+            label = QLabel(self)
+            label.setText(matrix)
+            return label
+
+        elif is_matrix_type(matrix):
+            container = QWidget(self)
+            grid_layout = QGridLayout()
+
+            # tl = top left, br = bottom right, etc.
+            label_tl = QLabel(self)
+            label_tl.setText(round_float(matrix[0][0]))
+
+            label_tr = QLabel(self)
+            label_tr.setText(round_float(matrix[0][1]))
+
+            label_bl = QLabel(self)
+            label_bl.setText(round_float(matrix[1][0]))
+
+            label_br = QLabel(self)
+            label_br.setText(round_float(matrix[1][1]))
+
+            label_paren_left = QLabel(self)
+            label_paren_left.setText('(')
+
+            label_paren_right = QLabel(self)
+            label_paren_right.setText(')')
+
+            grid_layout.addWidget(label_paren_left, 0, 0, 2, 0)
+            grid_layout.addWidget(label_tl, 0, 1)
+            grid_layout.addWidget(label_tr, 0, 2)
+            grid_layout.addWidget(label_bl, 1, 1)
+            grid_layout.addWidget(label_br, 1, 2)
+            grid_layout.addWidget(label_paren_right, 0, 3, 2, 0)
+
+            container.setLayout(grid_layout)
+
+            return container
+
+        raise ValueError('Matrix was not MatrixType or str')

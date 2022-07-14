@@ -9,6 +9,7 @@ QApplication py:class 1 qapplication.html      -
 QCloseEvent  py:class 1 qcloseevent.html       -
 QDialog      py:class 1 qdialog.html           -
 QKeyEvent    py:class 1 qkeyevent.html         -
+QLabel       py:class 1 qlabel.html            -
 QMouseEvent  py:class 1 qmouseevent.html       -
 QPainter     py:class 1 qpainter.html          -
 QPaintEvent  py:class 1 qpaintevent.html       -
