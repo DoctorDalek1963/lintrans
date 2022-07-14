@@ -15,11 +15,10 @@
 from __future__ import annotations
 
 from sys import version_info
+from typing import Any, List, Tuple
 
 from numpy import ndarray
 from nptyping import NDArray, Float
-
-from typing import Any, List, Tuple
 
 if version_info >= (3, 10):
     from typing import TypeGuard

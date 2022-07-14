@@ -14,9 +14,9 @@ from typing import List, Tuple
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMouseEvent, QPainter, QPaintEvent
 
-from .classes import VectorGridPlot
 from lintrans.typing_ import MatrixType
 from lintrans.gui.settings import DisplaySettings
+from .classes import VectorGridPlot
 
 
 class VisualizeTransformationWidget(VectorGridPlot):
