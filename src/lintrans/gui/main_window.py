@@ -28,8 +28,8 @@ from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.matrices.utility import polar_coords, rotate_coord
 from lintrans.typing_ import MatrixType, VectorType
-from . import dialogs
-from .dialogs import DefineAsAnExpressionDialog, DefineDialog, DefineNumericallyDialog, DefineVisuallyDialog
+from .dialogs import (AboutDialog, DefineAsAnExpressionDialog, DefineDialog,
+                      DefineNumericallyDialog, DefineVisuallyDialog)
 from .dialogs.settings import DisplaySettingsDialog
 from .plots import VisualizeTransformationWidget
 from .settings import DisplaySettings
@@ -45,7 +45,8 @@ class LintransMainWindow(QMainWindow):
     def __init__(self):
         """Create the main window object, and create and arrange every widget in it.
 
-        This doesn't show the window, it just constructs it. Use :func:`lintrans.gui.main_window.main` to show the GUI.
+        This doesn't show the window, it just constructs it.
+        Use :func:`lintrans.gui.main_window.main` to show the GUI.
         """
         super().__init__()
 
@@ -109,7 +110,7 @@ class LintransMainWindow(QMainWindow):
 
         self.action_about = QtWidgets.QAction(self)
         self.action_about.setText('&About')
-        self.action_about.triggered.connect(lambda: dialogs.AboutDialog(self).open())
+        self.action_about.triggered.connect(lambda: AboutDialog(self).open())
 
         # TODO: Implement these actions and enable them
         self.action_new.setEnabled(False)

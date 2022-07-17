@@ -13,8 +13,7 @@ from argparse import ArgumentParser
 from textwrap import dedent
 from typing import List
 
-from lintrans import __version__
-from lintrans.gui import main_window
+from lintrans import __version__, gui
 
 
 def main(args: List[str]) -> None:
@@ -69,7 +68,7 @@ def main(args: List[str]) -> None:
     for arg in unparsed_args:
         print(f'Passing "{arg}" to QApplication. See --help for recognised args')
 
-    main_window.main(args[:1] + unparsed_args)
+    gui.main(args[:1] + unparsed_args)
 
 
 if __name__ == '__main__':

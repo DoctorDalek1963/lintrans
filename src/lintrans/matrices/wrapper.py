@@ -16,9 +16,9 @@ from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 
+from lintrans.typing_ import is_matrix_type, MatrixType
 from .parse import parse_matrix_expression, validate_matrix_expression
 from .utility import create_rotation_matrix
-from lintrans.typing_ import is_matrix_type, MatrixType
 
 
 class MatrixWrapper:
