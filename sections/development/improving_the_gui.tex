@@ -266,4 +266,23 @@ When drawing the rank line for a determinant 0, rank 1 matrix, we can encounter 
 %: 40bee6461d477a5c767ed132359cd511c0051e3b
 %: src/lintrans/gui/plots/classes.py:196-207
 
+\subsubsection{Implementing transitional animation\label{development:improving-the-gui:implementing-transitional-animation}}
+
+Currently, all animation animates from $\mathbf{I}$ to the target matrix $\mathbf{T}$. This means it resets the plot at the start. I eventually want an applicative animation system, where the matrix in the box is applied to the current scene. But I also want an option for a transitional animation, where the program animates from the start matrix $\mathbf{S}$ to the target matrix $\mathbf{T}$, and this seems easier to implement, so I'll do it first.
+
+In \texttt{LintransMainWindow}, I created a new method called \texttt{animate\_between\_matrices()} and I call it from \texttt{animate\_expression()}. The maths for smoothening determinants in \S\ref{development:visualizing-matrices:preserving-determinants} assumed the starting matrix had a determinant of 1, but when using transitional animation, this may not always be true.
+
+If we let $\mathbf{S}$ be the starting matrix, and $\mathbf{A}$ be the matrix from the first stage of calculation as specified in \S\ref{development:visualizing-matrices:preserving-determinants}, then we want a $c$ such that $\det(c\mathbf{A}) = \det(\mathbf{S})$, so we get $c = \sqrt{\left|\dfrac{\det(\mathbf{S})}{\det(\mathbf{A})}\right|}$ by the identity $\det(c\mathbf{A}) = c^2 \det(\mathbf{A})$.
+
+Following the same logic as in \S\ref{development:visualizing-matrices:preserving-determinants}, we can let $\mathbf{B} = c\mathbf{A}$ and then scale it by $d$ to get the same determinant as the target matrix $\mathbf{T}$ and find that $d = \sqrt{\left|\dfrac{\det(\mathbf{T})}{\det(\mathbf{B})}\right|}$. Unlike previously, $\det(\mathbf{B})$ could be any scalar, so we can't simplify our expression for $d$.
+
+We then scale this with our \texttt{proportion} variable $p$ to get a scalar $s = 1 + p\left(\sqrt{\left|\dfrac{\det(\mathbf{T})}{\det(\mathbf{B})}\right|} - 1\right)$ and render $\mathbf{C} = s\mathbf{B}$ on each frame.
+
+In code, that looks like this:
+
+%: 4017b84fbce67d8e041bc9ce84cefcb0b6e65e1f
+%: src/lintrans/gui/main_window.py:275-356
+
+This change results in an animation system that will transition from the current matrix to whatever the user types into the input box.
+
 \end{document}
