@@ -259,4 +259,11 @@ This snippet has the line \enquote{\pyinline{self.setMouseTracking(True)}} comme
 
 I've also left in some print statements on lines 116 and 117. These small oversights are there because I just forgot to remove them before I committed these changes. They were removed 3 commits later.
 
+\subsubsection{Fixing a division by zero bug\label{development:improving-the-gui:fixing-a-division-by-zero-bug}}
+
+When drawing the rank line for a determinant 0, rank 1 matrix, we can encounter a division by zero error. I'm sure this originally manifested in a crash with a \pyinline{ZeroDivisionError} at runtime, but now I can only get a \pyinline{RuntimeWarning} when running the old code from commit \texttt{16ca0229aab73b3f4a8fe752dee3608f3ed6ead5}. Whether it crashes or just warns the user, there is a division by zero bug when trying to render $\begin{pmatrix}k & 0\\ 0 & 0\end{pmatrix}$ or $\begin{pmatrix}0 & 0\\ 0 & k\end{pmatrix}$. To fix this, I just handled those cases separately in \pyinline{VectorGridPlot.draw_parallel_lines()}.
+
+%: 40bee6461d477a5c767ed132359cd511c0051e3b
+%: src/lintrans/gui/plots/classes.py:196-207
+
 \end{document}
