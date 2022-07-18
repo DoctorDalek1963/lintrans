@@ -23,6 +23,11 @@ class FixedSizeDialog(QDialog):
     We override the :meth:`open` method to set the fixed size as soon as the dialog is opened modally.
     """
 
+    def __init__(self, *args, **kwargs) -> None:
+        """Set the :cpp:enum:`Qt::WA_DeleteOnClose` attribute to ensure deletion of dialog."""
+        super().__init__(*args, **kwargs)
+        self.setAttribute(Qt.WA_DeleteOnClose)
+
     def open(self) -> None:
         """Override :meth:`QDialog.open` to set the dialog to a fixed size."""
         super().open()
