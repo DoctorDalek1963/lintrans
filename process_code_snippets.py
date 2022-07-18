@@ -119,4 +119,6 @@ if __name__ == '__main__':
     process_snippets('sections/development.tex')
 
     for file in os.listdir('sections/development'):
-        process_snippets(f'sections/development/{file}')
+        name, ext = os.path.splitext(file)
+        if ext == '.tex' and not name.startswith('processed_'):
+            process_snippets(f'sections/development/{file}')
