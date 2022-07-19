@@ -285,4 +285,29 @@ In code, that looks like this:
 
 This change results in an animation system that will transition from the current matrix to whatever the user types into the input box.
 
+\subsubsection{Allowing for sequential animation with commas\label{development:improving-the-gui:allowing-for-sequential-animation-with-commas}}
+
+Applicative animation has two main forms. There's the version where a standard matrix expression gets applied to the current scene, and the kind where the user defines a sequence of matrices and we animate through the sequence, applying one at a time. Both of these are referenced in success criterion \ref{success-criterion:applicative-animation}.
+
+I want the user to be able to decide if they want applicative animation or transitional animation, so I'll need to create some form of display settings. However, transitional animation doesn't make much sense for sequential animation\footnote{I have since changed my thoughts on this, and I allowed sequential transitional animation much later, in commit \texttt{41907b81661f3878e435b794d9d719491ef14237}}, so I can implement this now.
+
+Applicative animation is just animating from the matrix $\mathbf{C}$ representing the current scene to the composition $\mathbf{TC}$ with the target matrix $\mathbf{T}$.
+
+We use $\mathbf{TC}$ instead of $\mathbf{CT}$ because matrix multiplication can be thought of as applying successive transformations from right to left. $\mathbf{TC}$ is the same as starting with the identity $\mathbf{I}$, applying $\mathbf{C}$ (to get to the current scene), and then applying $\mathbf{T}$.
+
+Doing this in code is very simple. We just split the expression on commas, and then apply each sub-expression to the current scene one by one, pausing on each comma.
+
+%: 60584d2559cacbf23479a1bebbb986a800a32331
+%: src/lintrans/gui/main_window.py:284-325
+
+We're deliberately not checking if the sub-expressions are valid here. We would normally validate the expression in \texttt{LintransMainWindow.update\_render\_buttons()} and only allow the user to render or animate an expression if it's valid. Now we have to check all the sub-expressions if the expression contains commas. Additionally, we can only animate these expressions with commas in them, so rendering should be disabled when the expression contains commas.
+
+Compare the old code to the new code:
+
+%: 4017b84fbce67d8e041bc9ce84cefcb0b6e65e1f
+%: src/lintrans/gui/main_window.py:243-247
+
+%: 60584d2559cacbf23479a1bebbb986a800a32331
+%: src/lintrans/gui/main_window.py:243-256
+
 \end{document}
