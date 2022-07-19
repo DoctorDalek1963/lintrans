@@ -84,7 +84,9 @@ def process_snippets(filename: str) -> None:
             first = 1
             snippet = snippet_file_text
 
-        snippet = snippet.replace(COPYRIGHT_COMMENT, '')
+        if snippet.startswith(COPYRIGHT_COMMENT):
+            snippet = snippet.replace(COPYRIGHT_COMMENT, '')
+            first = 7
 
         if snippet.endswith('\n'):
             snippet = snippet[:-1]
