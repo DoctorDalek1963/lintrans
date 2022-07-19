@@ -1,0 +1,32 @@
+% lintrans - The linear transformation visualizer
+% Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
+
+% This program is licensed under GNU GPLv3, available here:
+% <https://www.gnu.org/licenses/gpl-3.0.html>
+
+\documentclass[../development.tex]{subfiles}
+
+\begin{document}
+
+\subsubsection{Creating the dataclass\label{development:adding-display-settings:creating-the-dataclass}}
+
+The first step of adding display settings is creating a dataclass to hold all of the settings. This dataclass will hold attributes to manage how a matrix transformation is displayed. Things like whether to show eigenlines or the determinant parallelogram. It will also hold information for animation. We can factor out the code used to smoothen the determinant, as written in \S\ref{development:visualizing-matrices:preserving-determinants}, and make it dependant on a \pyinline{bool} attribute of the \texttt{DisplaySettings} dataclass.
+
+This is a standard class rather than some form of singleton to allow different plots to have different display settings. For example, the user might want different settings for the main view and the visual definition dialog. Allowing each instance of a subclass of \texttt{VectorGridPlot} to have its own \texttt{DisplaySettings} attribute allows for separate settings for separate plots.
+
+However, this class initially just contained attributes relevant to animation, so it was only an attribute on \texttt{LintransMainWindow}.
+
+%: 2041c7a24d963d8d142d6f0f20ec3828ba8257c6
+%: src/lintrans/gui/settings.py
+
+Once I had the dataclass, I just had to add \enquote{\pyinline{from .settings import DisplaySettings}} to the top of the file, and \enquote{\pyinline{self.display_settings = DisplaySettings()}} to the constructor of \texttt{LintransMainWindow}. I could then use the attributes of this dataclass in \texttt{animate\_expression()}.
+
+%: 2041c7a24d963d8d142d6f0f20ec3828ba8257c6
+%: src/lintrans/gui/main_window.py:286-331
+
+I also wrapped the main logic of \texttt{animate\_between\_matrices()} in an \pyinline{if} block to check if the user wants the determinant to be smoothed.
+
+%: 2041c7a24d963d8d142d6f0f20ec3828ba8257c6
+%: src/lintrans/gui/main_window.py:333-397
+
+\end{document}
