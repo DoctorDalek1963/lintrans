@@ -345,7 +345,10 @@ class LintransMainWindow(QMainWindow):
             # and animate from the current matrix to that new matrix
             for expr in text.split(',')[::-1]:
                 try:
-                    new_matrix = self.matrix_wrapper.evaluate_expression(expr) @ current_matrix
+                    new_matrix = self.matrix_wrapper.evaluate_expression(expr)
+
+                    if self.plot.display_settings.applicative_animation:
+                        new_matrix = new_matrix @ current_matrix
                 except LinAlgError:
                     self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
                     return
