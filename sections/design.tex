@@ -225,4 +225,8 @@ Again, this section is brief to save space and time. All unit tests are included
 
 This section will be completed later.
 
+\subsection{Issues with testing\label{design:issues-with-testing}}
+
+Since \texttt{lintrans} is a graphical application about visualizing things, it will be mainly GUI focussed. Unfortunately, unit testing GUIs is a lot harder than unit testing library or API code. I don't think there's any way to easily and reliably unit test a graphical interface, so my unit tests will only cover the backend code for handling matrices. Testing the GUI will be entirely manual; mostly defining matrices, thinking about what I expect them to look like, and then making sure they look like that. I don't see a way around this limitation. I will make my backend unit tests very thorough, but testing the GUI can only be done manually.
+
 \end{document}
