@@ -252,12 +252,20 @@ class VectorGridPlot(BackgroundPlot):
 
             # If the matrix is rank 1, then we can draw the column space line
             if rank == 1:
-                if abs(vector_x) < 1e-12:
-                    painter.drawLine(self.width() // 2, 0, self.width() // 2, self.height())
-                elif abs(vector_y) < 1e-12:
-                    painter.drawLine(0, self.height() // 2, self.width(), self.height() // 2)
-                else:
+                # If the vector does not have a 0 x or y component, then we can just draw the line
+                if abs(vector_x) > 1e-12 and abs(vector_y) > 1e-12:
                     self.draw_oblique_line(painter, vector_y / vector_x, 0)
+
+                # Otherwise, we have to draw lines along the axes
+                elif abs(vector_x) > 1e-12 and abs(vector_y) < 1e-12:
+                    painter.drawLine(0, self.height() // 2, self.width(), self.height() // 2)
+
+                elif abs(vector_x) < 1e-12 and abs(vector_y) > 1e-12:
+                    painter.drawLine(self.width() // 2, 0, self.width() // 2, self.height())
+
+                # If the vector is (0, 0), then don't draw a line for it
+                else:
+                    return
 
             # If the rank is 0, then we don't draw any lines
             else:
