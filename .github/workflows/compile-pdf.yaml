@@ -41,6 +41,7 @@ jobs:
       - name: Compile main.tex
         uses: xu-cheng/latex-action@v2
         with:
+          pre_compile: mkdir -p tikz-imgs
           root_file: main.tex
           args: -lualatex -file-line-error -halt-on-error -interaction=nonstopmode -shell-escape
           extra_fonts: ./.fonts/ttf/Hack-*.ttf
