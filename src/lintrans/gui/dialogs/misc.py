@@ -129,9 +129,26 @@ class InfoPanelDialog(FixedSizeDialog):
 
             widget_matrix = self._get_matrix_widget(value)
 
-            grid_layout.addWidget(label_name, i, 0, Qt.AlignCenter | Qt.AlignVCenter)
-            grid_layout.addWidget(label_equals, i, 1, Qt.AlignCenter | Qt.AlignVCenter)
-            grid_layout.addWidget(widget_matrix, i, 2, Qt.AlignCenter | Qt.AlignVCenter)
+            column = 3 * (i // 6)
+
+            grid_layout.addWidget(
+                label_name,
+                i - 2 * column,
+                column,
+                Qt.AlignCenter
+            )
+            grid_layout.addWidget(
+                label_equals,
+                i - 2 * column,
+                column + 1,
+                Qt.AlignCenter
+            )
+            grid_layout.addWidget(
+                widget_matrix,
+                i - 2 * column,
+                column + 2,
+                Qt.AlignCenter
+            )
 
         self.setContentsMargins(10, 10, 10, 10)
         self.setLayout(grid_layout)
