@@ -29,7 +29,7 @@ from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.matrices.utility import polar_coords, rotate_coord
 from lintrans.typing_ import MatrixType, VectorType
 from .dialogs import (AboutDialog, DefineAsAnExpressionDialog, DefineDialog,
-                      DefineNumericallyDialog, DefineVisuallyDialog)
+                      DefineNumericallyDialog, DefineVisuallyDialog, InfoPanelDialog)
 from .dialogs.settings import DisplaySettingsDialog
 from .plots import VisualizeTransformationWidget
 from .settings import DisplaySettings
@@ -201,6 +201,13 @@ class LintransMainWindow(QMainWindow):
         self.groupbox_define_new_matrix = QtWidgets.QGroupBox('Define a new matrix', self)
         self.groupbox_define_new_matrix.setLayout(self.vlay_define_new_matrix)
 
+        # Info panel button
+
+        self.button_info_panel = QtWidgets.QPushButton(self)
+        self.button_info_panel.setText('Show defined matrices')
+        self.button_info_panel.setToolTip('Open an info panel with all matrices that have been defined in this session')
+        self.button_info_panel.clicked.connect(lambda: InfoPanelDialog(self.matrix_wrapper, self).open())
+
         # Render buttons
 
         self.button_reset = QtWidgets.QPushButton(self)
@@ -235,6 +242,10 @@ class LintransMainWindow(QMainWindow):
         self.vlay_misc_buttons.addWidget(self.button_change_display_settings)
         self.vlay_misc_buttons.addWidget(self.button_reset_zoom)
 
+        self.vlay_info_buttons = QVBoxLayout()
+        self.vlay_info_buttons.setSpacing(20)
+        self.vlay_info_buttons.addWidget(self.button_info_panel)
+
         self.vlay_render = QVBoxLayout()
         self.vlay_render.setSpacing(20)
         self.vlay_render.addWidget(self.button_reset)
@@ -246,6 +257,8 @@ class LintransMainWindow(QMainWindow):
         self.vlay_right.addLayout(self.vlay_misc_buttons)
         self.vlay_right.addItem(QSpacerItem(100, 2, hPolicy=QSizePolicy.Minimum, vPolicy=QSizePolicy.Expanding))
         self.vlay_right.addWidget(self.groupbox_define_new_matrix)
+        self.vlay_right.addItem(QSpacerItem(100, 2, hPolicy=QSizePolicy.Minimum, vPolicy=QSizePolicy.Expanding))
+        self.vlay_right.addLayout(self.vlay_info_buttons)
         self.vlay_right.addItem(QSpacerItem(100, 2, hPolicy=QSizePolicy.Minimum, vPolicy=QSizePolicy.Expanding))
         self.vlay_right.addLayout(self.vlay_render)
 

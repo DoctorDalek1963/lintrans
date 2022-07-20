@@ -12,7 +12,7 @@ import re
 from copy import copy
 from functools import reduce
 from operator import add, matmul
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 
@@ -247,3 +247,17 @@ class MatrixWrapper:
             final_groups.append(f_group)
 
         return reduce(add, [reduce(matmul, group) for group in final_groups])
+
+    def get_defined_matrices(self) -> List[Tuple[str, Union[MatrixType, str]]]:
+        """Return a list of tuples containing the name and value of all defined matrices in the wrapper.
+
+        :returns: A list of tuples where the first element is the name, and the second element is the value
+        :rtype: List[Tuple[str, Union[MatrixType, str]]]
+        """
+        matrices = []
+
+        for name, value in self._matrices.items():
+            if value is not None:
+                matrices.append((name, value))
+
+        return matrices
