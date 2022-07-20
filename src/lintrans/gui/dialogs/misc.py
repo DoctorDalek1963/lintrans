@@ -12,7 +12,7 @@ import platform
 from typing import Union
 
 from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR, Qt
-from PyQt5.QtWidgets import QDialog, QGridLayout, QHBoxLayout, QLabel, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QDialog, QGridLayout, QLabel, QVBoxLayout, QWidget
 
 import lintrans
 from lintrans.matrices.utility import round_float
@@ -109,30 +109,32 @@ class InfoPanelDialog(FixedSizeDialog):
 
         self.setWindowTitle('Defined matrices')
 
-        vlay_main = QVBoxLayout()
-        vlay_main.setSpacing(20)
+        grid_layout = QGridLayout()
+        grid_layout.setSpacing(20)
 
-        for name, value in self.wrapper.get_defined_matrices():
+        bold_font = self.font()
+        bold_font.setBold(True)
+
+        name_value_pair: tuple[str, Union[MatrixType, str]]
+
+        for i, name_value_pair in enumerate(self.wrapper.get_defined_matrices()):
+            name, value = name_value_pair
+
             label_name = QLabel(self)
             label_name.setText(name)
-            label_name.setAlignment(Qt.AlignLeft)
+            label_name.setFont(bold_font)
 
             label_equals = QLabel(self)
             label_equals.setText('=')
-            label_equals.setAlignment(Qt.AlignLeft)
 
             widget_matrix = self._get_matrix_widget(value)
 
-            hlay_matrix = QHBoxLayout()
-            hlay_matrix.setSpacing(20)
-            hlay_matrix.addWidget(label_name)
-            hlay_matrix.addWidget(label_equals)
-            hlay_matrix.addWidget(widget_matrix)
-
-            vlay_main.addLayout(hlay_matrix)
+            grid_layout.addWidget(label_name, i, 0, Qt.AlignCenter | Qt.AlignVCenter)
+            grid_layout.addWidget(label_equals, i, 1, Qt.AlignCenter | Qt.AlignVCenter)
+            grid_layout.addWidget(widget_matrix, i, 2, Qt.AlignCenter | Qt.AlignVCenter)
 
         self.setContentsMargins(10, 10, 10, 10)
-        self.setLayout(vlay_main)
+        self.setLayout(grid_layout)
 
     def _get_matrix_widget(self, matrix: Union[MatrixType, str]) -> QWidget:
         """Return a :class:`QWidget` containing the value of the matrix.
@@ -147,9 +149,6 @@ class InfoPanelDialog(FixedSizeDialog):
             return label
 
         elif is_matrix_type(matrix):
-            container = QWidget(self)
-            grid_layout = QGridLayout()
-
             # tl = top left, br = bottom right, etc.
             label_tl = QLabel(self)
             label_tl.setText(round_float(matrix[0][0]))
@@ -163,18 +162,27 @@ class InfoPanelDialog(FixedSizeDialog):
             label_br = QLabel(self)
             label_br.setText(round_float(matrix[1][1]))
 
+            font_parens = self.font()
+            font_parens.setPointSize(int(font_parens.pointSize() * 2.5))
+            font_parens.setWeight(int(font_parens.weight() / 2.5))
+
             label_paren_left = QLabel(self)
             label_paren_left.setText('(')
+            label_paren_left.setFont(font_parens)
 
             label_paren_right = QLabel(self)
             label_paren_right.setText(')')
+            label_paren_right.setFont(font_parens)
 
-            grid_layout.addWidget(label_paren_left, 0, 0, 2, 0)
+            container = QWidget(self)
+            grid_layout = QGridLayout()
+
+            grid_layout.addWidget(label_paren_left, 0, 0, -1, 1)
             grid_layout.addWidget(label_tl, 0, 1)
             grid_layout.addWidget(label_tr, 0, 2)
             grid_layout.addWidget(label_bl, 1, 1)
             grid_layout.addWidget(label_br, 1, 2)
-            grid_layout.addWidget(label_paren_right, 0, 3, 2, 0)
+            grid_layout.addWidget(label_paren_right, 0, 3, -1, 1)
 
             container.setLayout(grid_layout)
 
