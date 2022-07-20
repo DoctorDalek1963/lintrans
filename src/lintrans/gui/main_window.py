@@ -643,7 +643,6 @@ def main(args: List[str]) -> None:
     """
     app = QApplication(args)
     app.setApplicationName('lintrans')
-    app.setApplicationDisplayName('lintrans')
     app.setApplicationVersion(lintrans.__version__)
 
     qapp().setStyle(QStyleFactory.create('fusion'))
