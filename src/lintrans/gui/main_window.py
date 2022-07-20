@@ -205,8 +205,16 @@ class LintransMainWindow(QMainWindow):
 
         self.button_info_panel = QtWidgets.QPushButton(self)
         self.button_info_panel.setText('Show defined matrices')
-        self.button_info_panel.setToolTip('Open an info panel with all matrices that have been defined in this session')
-        self.button_info_panel.clicked.connect(lambda: InfoPanelDialog(self.matrix_wrapper, self).open())
+        self.button_info_panel.clicked.connect(
+            # We have to use a lambda instead of 'InfoPanelDialog(self.matrix_wrapper, self).open' here
+            # because that would create an unnamed instance of InfoPanelDialog when LintransMainWindow is
+            # constructed, but we need to create a new instance every time to keep self.matrix_wrapper up to date
+            lambda: InfoPanelDialog(self.matrix_wrapper, self).open()
+        )
+        self.button_info_panel.setToolTip(
+            'Open an info panel with all matrices that have been defined in this session<br><b>(Ctrl + M)</b>'
+        )
+        QShortcut(QKeySequence('Ctrl+M'), self).activated.connect(self.button_info_panel.click)
 
         # Render buttons
 
