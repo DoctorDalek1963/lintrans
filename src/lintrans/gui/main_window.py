@@ -642,7 +642,13 @@ def main(args: List[str]) -> None:
     :param List[str] args: The args to pass to :class:`QApplication`
     """
     app = QApplication(args)
+    app.setApplicationName('lintrans')
+    app.setApplicationDisplayName('lintrans')
+    app.setApplicationVersion(lintrans.__version__)
+
     qapp().setStyle(QStyleFactory.create('fusion'))
+
     window = LintransMainWindow()
     window.show()
+
     sys.exit(app.exec_())
