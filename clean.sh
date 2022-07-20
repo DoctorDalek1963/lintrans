@@ -26,6 +26,10 @@ rm -f *.fls
 rm -f *.run.xml
 rm -f *.synctex.gz
 
+rm -f *.dpth
+rm -f *.md5
+rm -f *.auxlock
+
 rm -f sections/processed_*.tex
 rm -f sections/development/processed_*.tex
 

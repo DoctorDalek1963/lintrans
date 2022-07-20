@@ -21,6 +21,12 @@
 *.synctex*
 *.pyg
 
+# Ignore externalized TikZ images
+tikz-imgs/
+*.dpth
+*.md5
+*.auxlock
+
 # We want to ignore the PDF itself to allow me to keep a local build
 *.pdf
 
