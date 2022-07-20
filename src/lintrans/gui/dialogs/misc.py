@@ -117,9 +117,13 @@ class InfoPanelDialog(FixedSizeDialog):
 
         name_value_pair: tuple[str, Union[MatrixType, str]]
 
+        # Each defined matrix will get a widget group. Each group will be a label for the name,
+        # a label for '=', and a container widget to either show the matrix numerically, or to
+        # show the expression that it's defined as
         for i, name_value_pair in enumerate(self.wrapper.get_defined_matrices()):
             name, value = name_value_pair
 
+            # Create all the widgets first
             label_name = QLabel(self)
             label_name.setText(name)
             label_name.setFont(bold_font)
@@ -129,6 +133,11 @@ class InfoPanelDialog(FixedSizeDialog):
 
             widget_matrix = self._get_matrix_widget(value)
 
+            # We want columns of at most 6 widget groups
+            # This column variable manages which column of defined matrices we're on
+            # It's multiplied by 3 because all the widgets are in a single grid layout
+            # I could factor out each triplet of widgets for a defined matrix into a container widget,
+            # but I prefer to keep the widget count lower to reduce any possible lag
             column = 3 * (i // 6)
 
             grid_layout.addWidget(
@@ -179,6 +188,8 @@ class InfoPanelDialog(FixedSizeDialog):
             label_br = QLabel(self)
             label_br.setText(round_float(matrix[1][1]))
 
+            # The parens need to be bigger than the numbers, but increasing the font size also
+            # makes the font thicker, so we have to reduce the font weight by the same factor
             font_parens = self.font()
             font_parens.setPointSize(int(font_parens.pointSize() * 2.5))
             font_parens.setWeight(int(font_parens.weight() / 2.5))
