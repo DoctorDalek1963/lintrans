@@ -12,7 +12,7 @@ import re
 import sys
 import webbrowser
 from copy import deepcopy
-from typing import List, Tuple, Type
+from typing import List, Optional, Tuple, Type
 
 import numpy as np
 from numpy import linalg
@@ -32,6 +32,7 @@ from .dialogs import (AboutDialog, DefineAsAnExpressionDialog, DefineDialog,
                       DefineNumericallyDialog, DefineVisuallyDialog, InfoPanelDialog)
 from .dialogs.settings import DisplaySettingsDialog
 from .plots import VisualizeTransformationWidget
+from .session import Session
 from .settings import DisplaySettings
 from .validate import MatrixExpressionValidator
 
@@ -58,6 +59,8 @@ class LintransMainWindow(QMainWindow):
         self.animating: bool = False
         self.animating_sequence: bool = False
 
+        self.save_filename: Optional[str] = 'test.lt'
+
         # === Create menubar
 
         self.menubar = QtWidgets.QMenuBar(self)
@@ -81,11 +84,12 @@ class LintransMainWindow(QMainWindow):
         self.action_save = QtWidgets.QAction(self)
         self.action_save.setText('&Save')
         self.action_save.setShortcut('Ctrl+S')
-        self.action_save.triggered.connect(lambda: print('save'))
+        self.action_save.triggered.connect(lambda: self.save_session(self.save_filename))
 
         self.action_save_as = QtWidgets.QAction(self)
         self.action_save_as.setText('Save as...')
-        self.action_save_as.triggered.connect(lambda: print('save as'))
+        self.action_save_as.setShortcut('Ctrl+Shift+S')
+        self.action_save_as.triggered.connect(self.save_session_as)
 
         self.action_tutorial = QtWidgets.QAction(self)
         self.action_tutorial.setText('&Tutorial')
@@ -115,8 +119,6 @@ class LintransMainWindow(QMainWindow):
         # TODO: Implement these actions and enable them
         self.action_new.setEnabled(False)
         self.action_open.setEnabled(False)
-        self.action_save.setEnabled(False)
-        self.action_save_as.setEnabled(False)
         self.action_tutorial.setEnabled(False)
 
         self.menu_file.addAction(self.action_new)
@@ -629,6 +631,21 @@ class LintransMainWindow(QMainWindow):
                 return True
 
         return False
+
+    def save_session(self, filename: Optional[str]) -> None:
+        """Save the session to the given file.
+
+        If the filename is ``None``, then call :meth:`save_session_as` and return.
+        """
+        if filename is None:
+            self.save_session_as()
+            return
+
+        Session(self.matrix_wrapper).save_to_file(filename)
+
+    def save_session_as(self) -> None:
+        """Ask the user for a file to save the session to, and then call :meth:`save_session`."""
+        # TODO: Implement this
 
 
 def qapp() -> QCoreApplication:
