@@ -20,7 +20,7 @@ from numpy.linalg import LinAlgError
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot, QCoreApplication, QThread
 from PyQt5.QtGui import QCloseEvent, QKeySequence
-from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox,
+from PyQt5.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QMainWindow, QMessageBox,
                              QShortcut, QSizePolicy, QSpacerItem, QStyleFactory, QVBoxLayout)
 
 import lintrans
@@ -59,7 +59,7 @@ class LintransMainWindow(QMainWindow):
         self.animating: bool = False
         self.animating_sequence: bool = False
 
-        self.save_filename: Optional[str] = 'test.lt'
+        self.save_filename: Optional[str] = None
 
         # === Create menubar
 
@@ -644,8 +644,27 @@ class LintransMainWindow(QMainWindow):
         Session(self.matrix_wrapper).save_to_file(filename)
 
     def save_session_as(self) -> None:
-        """Ask the user for a file to save the session to, and then call :meth:`save_session`."""
-        # TODO: Implement this
+        """Ask the user for a file to save the session to, and then call :meth:`save_session`.
+
+        .. note::
+           If the user doesn't select a file to save the session to, then the session
+           just doesn't get saved, and :meth:`save_session` is never called.
+        """
+        dialog = QFileDialog(
+            self,
+            'Save this session',
+            '.',
+            'lintrans sessions (*.lt)'
+        )
+        dialog.setAcceptMode(QFileDialog.AcceptSave)
+        dialog.setFileMode(QFileDialog.AnyFile)
+        dialog.setViewMode(QFileDialog.List)
+        dialog.setDefaultSuffix('.lt')
+
+        if dialog.exec():
+            filename = dialog.selectedFiles()[0]
+            self.save_filename = filename
+            self.save_session(filename)
 
 
 def qapp() -> QCoreApplication:
