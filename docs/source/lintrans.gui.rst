@@ -23,6 +23,11 @@ lintrans.gui.main\_window module
 
 .. automodule:: lintrans.gui.main_window
 
+lintrans.gui.session module
+---------------------------
+
+.. automodule:: lintrans.gui.session
+
 lintrans.gui.settings module
 ----------------------------
 
