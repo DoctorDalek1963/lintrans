@@ -79,7 +79,7 @@ class LintransMainWindow(QMainWindow):
         self.action_open = QtWidgets.QAction(self)
         self.action_open.setText('&Open')
         self.action_open.setShortcut('Ctrl+O')
-        self.action_open.triggered.connect(lambda: print('open'))
+        self.action_open.triggered.connect(self.open_session_file)
 
         self.action_save = QtWidgets.QAction(self)
         self.action_save.setText('&Save')
@@ -118,7 +118,6 @@ class LintransMainWindow(QMainWindow):
 
         # TODO: Implement these actions and enable them
         self.action_new.setEnabled(False)
-        self.action_open.setEnabled(False)
         self.action_tutorial.setEnabled(False)
 
         self.menu_file.addAction(self.action_new)
@@ -631,6 +630,25 @@ class LintransMainWindow(QMainWindow):
                 return True
 
         return False
+
+    def open_session_file(self) -> None:
+        """Ask the user to select a session file, and then open it and load the session."""
+        dialog = QFileDialog(
+            self,
+            'Open a session',
+            '.',
+            'lintrans sessions (*.lt)'
+        )
+        dialog.setAcceptMode(QFileDialog.AcceptOpen)
+        dialog.setFileMode(QFileDialog.ExistingFile)
+        dialog.setViewMode(QFileDialog.List)
+
+        if dialog.exec():
+            filename = dialog.selectedFiles()[0]
+            self.save_filename = filename
+
+            session = Session.load_from_file(filename)
+            self.matrix_wrapper = session.matrix_wrapper
 
     def save_session(self, filename: Optional[str]) -> None:
         """Save the session to the given file.
