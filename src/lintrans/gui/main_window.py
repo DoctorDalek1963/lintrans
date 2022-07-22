@@ -632,7 +632,11 @@ class LintransMainWindow(QMainWindow):
         return False
 
     def open_session_file(self) -> None:
-        """Ask the user to select a session file, and then open it and load the session."""
+        """Ask the user to select a session file, and then open it and load the session.
+
+        If the selected file is not a valid lintrans session file, we just show an error message,
+        but if it's valid, we load it and set it as the default filename for saving.
+        """
         dialog = QFileDialog(
             self,
             'Open a session',
@@ -645,10 +649,25 @@ class LintransMainWindow(QMainWindow):
 
         if dialog.exec():
             filename = dialog.selectedFiles()[0]
-            self.save_filename = filename
 
-            session = Session.load_from_file(filename)
+            try:
+                session = Session.load_from_file(filename)
+
+            # load_from_file() can raise errors if the contents is not a valid pickled Python object,
+            # or if the pickled Python object is of the wrong type
+            except (EOFError, ValueError):
+                self.show_error_message(
+                    'Invalid file contents',
+                    'This is not a valid lintrans session file',
+                    'Not all .lt files are lintrans session files. This file was probably created by an unrelated '
+                    'program.'
+                )
+                return
+
             self.matrix_wrapper = session.matrix_wrapper
+
+            # Set this as the default filename if we could read it properly
+            self.save_filename = filename
 
     def save_session(self, filename: Optional[str]) -> None:
         """Save the session to the given file.
