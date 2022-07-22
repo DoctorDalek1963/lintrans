@@ -1,7 +1,5 @@
-# This format is:
-# <reference name> <domain>:<role> <priority> <URI> <display name>
-# Sphinx handles the prefix for the URI
-# If the display name is '-', then it's the same as the reference name
+PROJECT=PyQt5
+VERSION=5.15
 
 # === Classes
 

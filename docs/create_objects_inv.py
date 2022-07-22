@@ -8,7 +8,24 @@
 
 """A simple script to convert my manually curated text file to an inventory file that intersphinx can use.
 
-.. note:: The URIs in the text file must not have .html suffices
+The file format for the text files is as follows:
+   {name} {domain}:{role} {priority} {uri} {dispname}
+
+The base URI is taken from the relevant element of the ``intersphinx_mapping`` configuration parameter in conf.py.
+This is the element with the same key as the project name This is the element with the same key as the project name.
+
+If the display name is ``-``, then it is the same as the reference name.
+
+See https://sphobjinv.readthedocs.io/en/v2.2/syntax.html for details on restrictions.
+
+Additionally, to define the project and version in the text file, the first two non-blank,
+non-comment lines MUST be of the form:
+   PROJECT=project_name
+   VERSION=version_number
+
+The version_name should not contain a leading ``v``.
+
+.. note:: The URIs MUST have .html suffices
 """
 
 import re
@@ -21,24 +38,35 @@ pattern = re.compile(r'^(\S+)\s+([^:\s]+):([^:\s]+)\s+(\d+)\s+(\S+)\s+(\S+)$')
 
 
 def generate_objects_inv(prefix: str) -> None:
-    """Generate the ``objects.inv`` file for PyQt5.
+    """Generate the ``objects.inv`` file for the specified prefix.
 
     We read from ``prefix-objects.txt`` and write to ``prefix-objects.inv``,
     so if you want to use ``pyqt5-objects.txt``, then the prefix should be ``pyqt5``.
 
     :param str prefix: The prefix for the object files
+
+    :raises ValueError: If the file doesn't match the format
     """
     inv = soi.Inventory()
-    inv.project = 'PyQt5'
-    inv.version = '5.15'
 
     with open(prefix + '-objects.txt', 'r', encoding='utf-8') as f:
         text = f.read().splitlines()
 
-    for line in text:
-        if line == '' or line.lstrip().startswith('#'):
-            continue
+    # Remove blank lines and comments
+    text = [x for x in text if x != '' and not x.lstrip().startswith('#')]
 
+    try:
+        inv.project = re.match(r'^PROJECT=(.+)$', text[0]).group(1)
+    except (AttributeError, IndexError):
+        raise ValueError(f'The first line of {prefix}-objects.txt must be of the form "PROJECT=project_name"')
+
+    try:
+        inv.version = re.match(r'^VERSION=([^v][\d.]+)$', text[1]).group(1)
+    except (AttributeError, IndexError):
+        raise ValueError(f'The second line of {prefix}-objects.txt must be of the form "VERSION=version_number"')
+
+
+    for line in text[2:]:
         if (match := re.match(pattern, line)) is None:
             raise ValueError(f'Every line in {prefix}-objects.txt must match the pattern')
 
