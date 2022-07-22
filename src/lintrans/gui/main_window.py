@@ -28,8 +28,8 @@ from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.matrices.utility import polar_coords, rotate_coord
 from lintrans.typing_ import MatrixType, VectorType
-from .dialogs import (AboutDialog, DefineAsAnExpressionDialog, DefineDialog,
-                      DefineNumericallyDialog, DefineVisuallyDialog, InfoPanelDialog)
+from .dialogs import (AboutDialog, DefineAsAnExpressionDialog, DefineDialog, DefineNumericallyDialog,
+                      DefineVisuallyDialog, FileSelectDialog, InfoPanelDialog)
 from .dialogs.settings import DisplaySettingsDialog
 from .plots import VisualizeTransformationWidget
 from .session import Session
@@ -650,7 +650,7 @@ class LintransMainWindow(QMainWindow):
            If the user doesn't select a file to save the session to, then the session
            just doesn't get saved, and :meth:`save_session` is never called.
         """
-        dialog = QFileDialog(
+        dialog = FileSelectDialog(
             self,
             'Save this session',
             '.',

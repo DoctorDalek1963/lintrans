@@ -8,6 +8,7 @@
 QApplication py:class 1 qapplication.html      -
 QCloseEvent  py:class 1 qcloseevent.html       -
 QDialog      py:class 1 qdialog.html           -
+QFileDialog  py:class 1 qfiledialog.html       -
 QKeyEvent    py:class 1 qkeyevent.html         -
 QLabel       py:class 1 qlabel.html            -
 QMouseEvent  py:class 1 qmouseevent.html       -
@@ -42,5 +43,6 @@ PyQt5.QtGui.QValidator        py:class 1 qvalidator.html            -
 PyQt5.QtGui.QValidator.State  py:class 1 qvalidator.html#State-enum -
 PyQt5.QtGui.QWheelEvent       py:class 1 qwheelevent.html           -
 PyQt5.QtWidgets.QDialog       py:class 1 qdialog.html               -
+PyQt5.QtWidgets.QFileDialog   py:class 1 qfiledialog.html           -
 PyQt5.QtWidgets.QMainWindow   py:class 1 qmainwindow.html           -
 PyQt5.QtWidgets.QWidget       py:class 1 qwidget.html               -
