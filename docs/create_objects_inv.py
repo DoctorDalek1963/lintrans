@@ -34,7 +34,7 @@ from glob import glob
 import sphobjinv as soi
 
 
-pattern = re.compile(r'^(\S+)\s+([^:\s]+):([^:\s]+)\s+(\d+)\s+(\S+)\s+(\S+)$')
+pattern = re.compile(r'^(\S+)\s+([^:\s]+):([^:\s]+)\s+(-?\d+)\s+(\S+)\s+(\S+)$')
 
 
 def generate_objects_inv(prefix: str) -> None:
