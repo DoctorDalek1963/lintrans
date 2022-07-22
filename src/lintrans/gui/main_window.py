@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+import os
 import re
 import sys
 import webbrowser
@@ -60,6 +61,7 @@ class LintransMainWindow(QMainWindow):
         self.animating_sequence: bool = False
 
         self.save_filename: Optional[str] = None
+        self.changed_since_save: bool = False
 
         # === Create menubar
 
@@ -577,6 +579,9 @@ class LintransMainWindow(QMainWindow):
         self.lineedit_expression_box.setFocus()
         self.update_render_buttons()
 
+        self.changed_since_save = True
+        self.update_window_title()
+
     @pyqtSlot()
     def dialog_change_display_settings(self) -> None:
         """Open the dialog to change the display settings."""
@@ -629,6 +634,18 @@ class LintransMainWindow(QMainWindow):
 
         return False
 
+    def update_window_title(self) -> None:
+        """Update the window title to reflect whether the session has changed since it was last saved."""
+        title = 'lintrans'
+
+        if self.save_filename:
+            title = os.path.split(self.save_filename)[-1] + ' - ' + title
+
+            if self.changed_since_save:
+                title = '*' + title
+
+        self.setWindowTitle(title)
+
     def reset_session(self) -> None:
         """Ask the user if they want to reset the current session.
 
@@ -647,9 +664,12 @@ class LintransMainWindow(QMainWindow):
             self.lineedit_expression_box.setText('I')
             self.render_expression()
             self.lineedit_expression_box.setText('')
+            self.lineedit_expression_box.setFocus()
             self.update_render_buttons()
 
             self.save_filename = None
+            self.changed_since_save = False
+            self.update_window_title()
 
     @pyqtSlot()
     def open_session_file(self) -> None:
@@ -690,10 +710,13 @@ class LintransMainWindow(QMainWindow):
             self.lineedit_expression_box.setText('I')
             self.render_expression()
             self.lineedit_expression_box.setText('')
+            self.lineedit_expression_box.setFocus()
             self.update_render_buttons()
 
             # Set this as the default filename if we could read it properly
             self.save_filename = filename
+            self.changed_since_save = False
+            self.update_window_title()
 
     @pyqtSlot(str)
     def save_session(self, filename: Optional[str]) -> None:
@@ -706,6 +729,9 @@ class LintransMainWindow(QMainWindow):
             return
 
         Session(self.matrix_wrapper).save_to_file(filename)
+
+        self.changed_since_save = False
+        self.update_window_title()
 
     @pyqtSlot()
     def save_session_as(self) -> None:
