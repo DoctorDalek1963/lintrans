@@ -71,10 +71,9 @@ class LintransMainWindow(QMainWindow):
         self.menu_help = QtWidgets.QMenu(self.menubar)
         self.menu_help.setTitle('&Help')
 
-        self.action_new = QtWidgets.QAction(self)
-        self.action_new.setText('&New')
-        self.action_new.setShortcut('Ctrl+N')
-        self.action_new.triggered.connect(lambda: print('new'))
+        self.action_reset_session = QtWidgets.QAction(self)
+        self.action_reset_session.setText('Reset session')
+        self.action_reset_session.triggered.connect(self.reset_session)
 
         self.action_open = QtWidgets.QAction(self)
         self.action_open.setText('&Open')
@@ -117,10 +116,9 @@ class LintransMainWindow(QMainWindow):
         self.action_about.triggered.connect(lambda: AboutDialog(self).open())
 
         # TODO: Implement these actions and enable them
-        self.action_new.setEnabled(False)
         self.action_tutorial.setEnabled(False)
 
-        self.menu_file.addAction(self.action_new)
+        self.menu_file.addAction(self.action_reset_session)
         self.menu_file.addAction(self.action_open)
         self.menu_file.addSeparator()
         self.menu_file.addAction(self.action_save)
@@ -631,6 +629,28 @@ class LintransMainWindow(QMainWindow):
 
         return False
 
+    def reset_session(self) -> None:
+        """Ask the user if they want to reset the current session.
+
+        Resetting the session means setting the matrix wrapper to a new instance, and rendering I.
+        """
+        dialog = QMessageBox(self)
+        dialog.setIcon(QMessageBox.Question)
+        dialog.setWindowTitle('Reset the session?')
+        dialog.setText('Are you sure you want to reset the current session?')
+        dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        dialog.setDefaultButton(QMessageBox.No)
+
+        if dialog.exec() == QMessageBox.Yes:
+            self.matrix_wrapper = MatrixWrapper()
+
+            self.lineedit_expression_box.setText('I')
+            self.render_expression()
+            self.lineedit_expression_box.setText('')
+            self.update_render_buttons()
+
+            self.save_filename = None
+
     @pyqtSlot()
     def open_session_file(self) -> None:
         """Ask the user to select a session file, and then open it and load the session.
@@ -666,6 +686,11 @@ class LintransMainWindow(QMainWindow):
                 return
 
             self.matrix_wrapper = session.matrix_wrapper
+
+            self.lineedit_expression_box.setText('I')
+            self.render_expression()
+            self.lineedit_expression_box.setText('')
+            self.update_render_buttons()
 
             # Set this as the default filename if we could read it properly
             self.save_filename = filename
