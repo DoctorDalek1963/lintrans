@@ -631,6 +631,7 @@ class LintransMainWindow(QMainWindow):
 
         return False
 
+    @pyqtSlot()
     def open_session_file(self) -> None:
         """Ask the user to select a session file, and then open it and load the session.
 
@@ -669,6 +670,7 @@ class LintransMainWindow(QMainWindow):
             # Set this as the default filename if we could read it properly
             self.save_filename = filename
 
+    @pyqtSlot(str)
     def save_session(self, filename: Optional[str]) -> None:
         """Save the session to the given file.
 
@@ -680,6 +682,7 @@ class LintransMainWindow(QMainWindow):
 
         Session(self.matrix_wrapper).save_to_file(filename)
 
+    @pyqtSlot()
     def save_session_as(self) -> None:
         """Ask the user for a file to save the session to, and then call :meth:`save_session`.
 
