@@ -8,6 +8,7 @@
 
 from __future__ import annotations
 
+import pkgutil
 import re
 import sys
 import webbrowser
@@ -19,7 +20,7 @@ from numpy import linalg
 from numpy.linalg import LinAlgError
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot, QCoreApplication, QThread
-from PyQt5.QtGui import QCloseEvent, QKeySequence
+from PyQt5.QtGui import QCloseEvent, QIcon, QImage, QKeySequence, QPixmap
 from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox,
                              QShortcut, QSizePolicy, QSpacerItem, QStyleFactory, QVBoxLayout)
 
@@ -57,6 +58,14 @@ class LintransMainWindow(QMainWindow):
 
         self.animating: bool = False
         self.animating_sequence: bool = False
+
+        # pkgutil.get_data is needed because it's more portable with the package
+        # See https://stackoverflow.com/a/58941536/12985838
+        # However, it returns the raw bytes of the jpg, so we have to construct a QImage
+        # from that data, a QPixmap from the QImage, and then a QIcon from the QPixmap
+        self.setWindowIcon(QIcon(QPixmap.fromImage(QImage.fromData(
+                        pkgutil.get_data(__name__, 'assets/icon.jpg')
+        ))))
 
         # === Create menubar
 
