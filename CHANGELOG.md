@@ -9,11 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add Qt and PyQt5 version numbers to the *About* dialog box
+- Qt5 and PyQt5 version numbers to the *About* dialog box
 - Basis vectors now snap to integer coordinates in the visual definition dialog
 - Allow for transitional animation in sequential animation (comma syntax)
-- Add info panel to display defined matrices
-- Add icon for window and taskbar
+- Info panel to display defined matrices
+- Icon for window and taskbar
+- Implement saving and loading session files
 
 ### Fixed
 
