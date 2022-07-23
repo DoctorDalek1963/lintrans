@@ -85,7 +85,7 @@ class LintransMainWindow(QMainWindow):
         self.action_save = QtWidgets.QAction(self)
         self.action_save.setText('&Save')
         self.action_save.setShortcut('Ctrl+S')
-        self.action_save.triggered.connect(lambda: self.save_session(self.save_filename))
+        self.action_save.triggered.connect(lambda: self.save_session)
 
         self.action_save_as = QtWidgets.QAction(self)
         self.action_save_as.setText('Save as...')
@@ -283,9 +283,29 @@ class LintransMainWindow(QMainWindow):
         self.setCentralWidget(self.central_widget)
 
     def closeEvent(self, event: QCloseEvent) -> None:
-        """Handle a :class:`QCloseEvent` by cancelling animation first."""
-        self.animating = False
-        event.accept()
+        """Handle a :class:`QCloseEvent` by confirming if the user wants to save, and cancelling animation."""
+        if self.save_filename is None or not self.changed_since_save:
+            self.animating = False
+            event.accept()
+            return
+
+        dialog = QMessageBox(self)
+        dialog.setIcon(QMessageBox.Question)
+        dialog.setWindowTitle('Save changes?')
+        dialog.setText(f"If you don't save, then changes made to {self.save_filename} will be lost.")
+        dialog.setStandardButtons(QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
+        dialog.setDefaultButton(QMessageBox.Save)
+
+        pressed_button = dialog.exec()
+
+        if pressed_button == QMessageBox.Save:
+            self.save_session()
+
+        if pressed_button in (QMessageBox.Save, QMessageBox.Discard):
+            self.animating = False
+            event.accept()
+        else:
+            event.ignore()
 
     def update_render_buttons(self) -> None:
         """Enable or disable the render and animate buttons according to whether the matrix expression is valid."""
@@ -719,16 +739,16 @@ class LintransMainWindow(QMainWindow):
             self.update_window_title()
 
     @pyqtSlot(str)
-    def save_session(self, filename: Optional[str]) -> None:
+    def save_session(self) -> None:
         """Save the session to the given file.
 
         If the filename is ``None``, then call :meth:`save_session_as` and return.
         """
-        if filename is None:
+        if self.save_filename is None:
             self.save_session_as()
             return
 
-        Session(self.matrix_wrapper).save_to_file(filename)
+        Session(self.matrix_wrapper).save_to_file(self.save_filename)
 
         self.changed_since_save = False
         self.update_window_title()
@@ -755,7 +775,7 @@ class LintransMainWindow(QMainWindow):
         if dialog.exec():
             filename = dialog.selectedFiles()[0]
             self.save_filename = filename
-            self.save_session(filename)
+            self.save_session()
 
 
 def qapp() -> QCoreApplication:
