@@ -85,7 +85,7 @@ class LintransMainWindow(QMainWindow):
         self.action_save = QtWidgets.QAction(self)
         self.action_save.setText('&Save')
         self.action_save.setShortcut('Ctrl+S')
-        self.action_save.triggered.connect(lambda: self.save_session)
+        self.action_save.triggered.connect(self.save_session)
 
         self.action_save_as = QtWidgets.QAction(self)
         self.action_save_as.setText('Save as...')
