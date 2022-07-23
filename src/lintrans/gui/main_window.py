@@ -9,11 +9,11 @@
 from __future__ import annotations
 
 import os
-import pkgutil
 import re
 import sys
 import webbrowser
 from copy import deepcopy
+from pathlib import Path
 from typing import List, Optional, Tuple, Type
 
 import numpy as np
@@ -21,7 +21,7 @@ from numpy import linalg
 from numpy.linalg import LinAlgError
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot, QCoreApplication, QThread
-from PyQt5.QtGui import QCloseEvent, QIcon, QImage, QKeySequence, QPixmap
+from PyQt5.QtGui import QCloseEvent, QIcon, QKeySequence
 from PyQt5.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QMainWindow, QMessageBox,
                              QShortcut, QSizePolicy, QSpacerItem, QStyleFactory, QVBoxLayout)
 
@@ -58,13 +58,8 @@ class LintransMainWindow(QMainWindow):
         self.setWindowTitle('lintrans')
         self.setMinimumSize(1000, 750)
 
-        # pkgutil.get_data is needed because it's more portable with the package
-        # See https://stackoverflow.com/a/58941536/12985838
-        # However, it returns the raw bytes of the jpg, so we have to construct a QImage
-        # from that data, a QPixmap from the QImage, and then a QIcon from the QPixmap
-        self.setWindowIcon(QIcon(QPixmap.fromImage(QImage.fromData(
-                        pkgutil.get_data(__name__, 'assets/icon.jpg')
-        ))))
+        path = Path(__file__).parent.absolute() / 'assets' / 'icon.jpg'
+        self.setWindowIcon(QIcon(str(path)))
 
         self.animating: bool = False
         self.animating_sequence: bool = False

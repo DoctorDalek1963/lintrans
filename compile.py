@@ -42,7 +42,7 @@ class Compiler:
         if fullname:
             self.filename = f'lintrans-{OS_NAME_DICT[self.platform]}-{self.version_name}'
         else:
-            self.filename = f'lintrans'
+            self.filename = 'lintrans'
 
         print(f'Created {self!r}')
 
@@ -154,6 +154,9 @@ class Compiler:
 
     def _get_pyi_args(self) -> list[str]:
         """Return the common args for PyInstaller."""
+        path_to_icon = os.path.join(os.path.dirname(__file__), 'src', 'lintrans', 'gui', 'assets', 'icon.jpg')
+        icon_dest = os.path.join('.', 'lintrans', 'gui', 'assets')
+
         return [
             'src/lintrans/__main__.py',
             '--onefile',
@@ -162,7 +165,11 @@ class Compiler:
             '--workpath=./build',
             '--noconfirm',
             '--clean',
-            f'--name={self.filename}'
+            f'--name={self.filename}',
+            '--icon',
+            path_to_icon,
+            '--add-data',
+            os.pathsep.join([path_to_icon, icon_dest])
         ]
 
     def _compile_macos(self) -> None:

@@ -97,8 +97,8 @@ jobs:
           pip install pyinstaller
 
       - name: Install UPX
-        if: runner.os == 'Linux'
-        run: sudo apt install upx-ucl
+        if: runner.os == 'Windows'  # PyInstaller currently only uses UPX on Windows
+        run: choco install upx
 
       - name: Compile
         run: python compile.py -f
