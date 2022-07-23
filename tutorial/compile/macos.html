@@ -45,7 +45,8 @@ This program is licensed under GNU GPLv3, available here:
 		<hr>
 
 		<div class="disclaimer">
-			Please note that <code>lintrans</code> doesn't work on macOS 10.8 and earlier. This is because it needs Python 3.10, which needs macOS 10.9 or later.
+			Please note that <code>lintrans</code> doesn't work on macOS 10.8 and earlier. This is because it needs Python 3.10, which needs macOS 10.9 or later.<br>
+			Additionally, this compilation tutorial requires macOS 10.15 or newer for PyInstaller.
 		</div>
 
 		<hr>
@@ -83,7 +84,7 @@ This program is licensed under GNU GPLv3, available here:
 		<div class="compilation-guide-step">
 			<h3>Create a virtual environment and install dependencies</h3>
 
-			<p>Using whichever version of Python is 3.10 for you, run <code>python3 -m venv venv</code> and then activate the virtual environment with <code>. venv/bin/activate</code>. Then run <code>pip install -U pip PyInstaller -e .</code> and wait for everything to install.</p>
+			<p>Using whichever version of Python is 3.10 for you, run <code>python3 -m venv venv</code> and then activate the virtual environment with <code>. venv/bin/activate</code>. Then run <code>pip install -U pip Pillow PyInstaller -e .</code> and wait for everything to install.</p>
 
 			<img src="images/macos/pip-commands.png"/>
 		</div>
