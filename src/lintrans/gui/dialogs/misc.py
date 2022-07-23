@@ -8,11 +8,12 @@
 
 from __future__ import annotations
 
+import os
 import platform
-from typing import Union
+from typing import List, Union
 
 from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR, Qt
-from PyQt5.QtWidgets import QDialog, QGridLayout, QLabel, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QDialog, QFileDialog, QGridLayout, QLabel, QVBoxLayout, QWidget
 
 import lintrans
 from lintrans.matrices.utility import round_float
@@ -222,3 +223,32 @@ class InfoPanelDialog(FixedSizeDialog):
             return container
 
         raise ValueError('Matrix was not MatrixType or str')
+
+
+class FileSelectDialog(QFileDialog):
+    """A subclass of :class:`QFileDialog` that fixes an issue with the default suffix on UNIX platforms."""
+
+    def selectedFiles(self) -> List[str]:
+        """Return a list of strings containing the absolute paths of the selected files in the dialog.
+
+        There is an issue on UNIX platforms where a hidden directory will be recognised as a suffix.
+        For example, ``/home/dyson/.lintrans/saves/test`` should have ``.lt`` appended, but
+        ``.lintrans/saves/test`` gets recognised as the suffix, so the default suffix is not added.
+
+        To fix this, we just look at the basename and see if it needs a suffix added. We do this for
+        every name in the list, but there should be just one name, since this class is only intended
+        to be used for saving files. We still return the full list of filenames.
+        """
+        selected_files: List[str] = []
+
+        for filename in super().selectedFiles():
+            # path will be the full path of the file, without the extension
+            # This method understands hidden directories on UNIX platforms
+            path, ext = os.path.splitext(filename)
+
+            if ext == '':
+                ext = '.' + self.defaultSuffix()
+
+            selected_files.append(''.join((path, ext)))
+
+        return selected_files

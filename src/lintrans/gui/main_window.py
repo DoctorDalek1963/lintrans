@@ -8,12 +8,13 @@
 
 from __future__ import annotations
 
+import os
 import pkgutil
 import re
 import sys
 import webbrowser
 from copy import deepcopy
-from typing import List, Tuple, Type
+from typing import List, Optional, Tuple, Type
 
 import numpy as np
 from numpy import linalg
@@ -21,7 +22,7 @@ from numpy.linalg import LinAlgError
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot, QCoreApplication, QThread
 from PyQt5.QtGui import QCloseEvent, QIcon, QImage, QKeySequence, QPixmap
-from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QMainWindow, QMessageBox,
+from PyQt5.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QMainWindow, QMessageBox,
                              QShortcut, QSizePolicy, QSpacerItem, QStyleFactory, QVBoxLayout)
 
 import lintrans
@@ -29,10 +30,11 @@ from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.matrices.utility import polar_coords, rotate_coord
 from lintrans.typing_ import MatrixType, VectorType
-from .dialogs import (AboutDialog, DefineAsAnExpressionDialog, DefineDialog,
-                      DefineNumericallyDialog, DefineVisuallyDialog, InfoPanelDialog)
+from .dialogs import (AboutDialog, DefineAsAnExpressionDialog, DefineDialog, DefineNumericallyDialog,
+                      DefineVisuallyDialog, FileSelectDialog, InfoPanelDialog)
 from .dialogs.settings import DisplaySettingsDialog
 from .plots import VisualizeTransformationWidget
+from .session import Session
 from .settings import DisplaySettings
 from .validate import MatrixExpressionValidator
 
@@ -56,9 +58,6 @@ class LintransMainWindow(QMainWindow):
         self.setWindowTitle('lintrans')
         self.setMinimumSize(1000, 750)
 
-        self.animating: bool = False
-        self.animating_sequence: bool = False
-
         # pkgutil.get_data is needed because it's more portable with the package
         # See https://stackoverflow.com/a/58941536/12985838
         # However, it returns the raw bytes of the jpg, so we have to construct a QImage
@@ -66,6 +65,12 @@ class LintransMainWindow(QMainWindow):
         self.setWindowIcon(QIcon(QPixmap.fromImage(QImage.fromData(
                         pkgutil.get_data(__name__, 'assets/icon.jpg')
         ))))
+
+        self.animating: bool = False
+        self.animating_sequence: bool = False
+
+        self.save_filename: Optional[str] = None
+        self.changed_since_save: bool = False
 
         # === Create menubar
 
@@ -77,24 +82,24 @@ class LintransMainWindow(QMainWindow):
         self.menu_help = QtWidgets.QMenu(self.menubar)
         self.menu_help.setTitle('&Help')
 
-        self.action_new = QtWidgets.QAction(self)
-        self.action_new.setText('&New')
-        self.action_new.setShortcut('Ctrl+N')
-        self.action_new.triggered.connect(lambda: print('new'))
+        self.action_reset_session = QtWidgets.QAction(self)
+        self.action_reset_session.setText('Reset session')
+        self.action_reset_session.triggered.connect(self.reset_session)
 
         self.action_open = QtWidgets.QAction(self)
         self.action_open.setText('&Open')
         self.action_open.setShortcut('Ctrl+O')
-        self.action_open.triggered.connect(lambda: print('open'))
+        self.action_open.triggered.connect(self.ask_for_session_file)
 
         self.action_save = QtWidgets.QAction(self)
         self.action_save.setText('&Save')
         self.action_save.setShortcut('Ctrl+S')
-        self.action_save.triggered.connect(lambda: print('save'))
+        self.action_save.triggered.connect(self.save_session)
 
         self.action_save_as = QtWidgets.QAction(self)
         self.action_save_as.setText('Save as...')
-        self.action_save_as.triggered.connect(lambda: print('save as'))
+        self.action_save_as.setShortcut('Ctrl+Shift+S')
+        self.action_save_as.triggered.connect(self.save_session_as)
 
         self.action_tutorial = QtWidgets.QAction(self)
         self.action_tutorial.setText('&Tutorial')
@@ -122,13 +127,9 @@ class LintransMainWindow(QMainWindow):
         self.action_about.triggered.connect(lambda: AboutDialog(self).open())
 
         # TODO: Implement these actions and enable them
-        self.action_new.setEnabled(False)
-        self.action_open.setEnabled(False)
-        self.action_save.setEnabled(False)
-        self.action_save_as.setEnabled(False)
         self.action_tutorial.setEnabled(False)
 
-        self.menu_file.addAction(self.action_new)
+        self.menu_file.addAction(self.action_reset_session)
         self.menu_file.addAction(self.action_open)
         self.menu_file.addSeparator()
         self.menu_file.addAction(self.action_save)
@@ -291,9 +292,29 @@ class LintransMainWindow(QMainWindow):
         self.setCentralWidget(self.central_widget)
 
     def closeEvent(self, event: QCloseEvent) -> None:
-        """Handle a :class:`QCloseEvent` by cancelling animation first."""
-        self.animating = False
-        event.accept()
+        """Handle a :class:`QCloseEvent` by confirming if the user wants to save, and cancelling animation."""
+        if self.save_filename is None or not self.changed_since_save:
+            self.animating = False
+            event.accept()
+            return
+
+        dialog = QMessageBox(self)
+        dialog.setIcon(QMessageBox.Question)
+        dialog.setWindowTitle('Save changes?')
+        dialog.setText(f"If you don't save, then changes made to {self.save_filename} will be lost.")
+        dialog.setStandardButtons(QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
+        dialog.setDefaultButton(QMessageBox.Save)
+
+        pressed_button = dialog.exec()
+
+        if pressed_button == QMessageBox.Save:
+            self.save_session()
+
+        if pressed_button in (QMessageBox.Save, QMessageBox.Discard):
+            self.animating = False
+            event.accept()
+        else:
+            event.ignore()
 
     def update_render_buttons(self) -> None:
         """Enable or disable the render and animate buttons according to whether the matrix expression is valid."""
@@ -587,6 +608,9 @@ class LintransMainWindow(QMainWindow):
         self.lineedit_expression_box.setFocus()
         self.update_render_buttons()
 
+        self.changed_since_save = True
+        self.update_window_title()
+
     @pyqtSlot()
     def dialog_change_display_settings(self) -> None:
         """Open the dialog to change the display settings."""
@@ -639,6 +663,131 @@ class LintransMainWindow(QMainWindow):
 
         return False
 
+    def update_window_title(self) -> None:
+        """Update the window title to reflect whether the session has changed since it was last saved."""
+        title = 'lintrans'
+
+        if self.save_filename:
+            title = os.path.split(self.save_filename)[-1] + ' - ' + title
+
+            if self.changed_since_save:
+                title = '*' + title
+
+        self.setWindowTitle(title)
+
+    def reset_session(self) -> None:
+        """Ask the user if they want to reset the current session.
+
+        Resetting the session means setting the matrix wrapper to a new instance, and rendering I.
+        """
+        dialog = QMessageBox(self)
+        dialog.setIcon(QMessageBox.Question)
+        dialog.setWindowTitle('Reset the session?')
+        dialog.setText('Are you sure you want to reset the current session?')
+        dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        dialog.setDefaultButton(QMessageBox.No)
+
+        if dialog.exec() == QMessageBox.Yes:
+            self.matrix_wrapper = MatrixWrapper()
+
+            self.lineedit_expression_box.setText('I')
+            self.render_expression()
+            self.lineedit_expression_box.setText('')
+            self.lineedit_expression_box.setFocus()
+            self.update_render_buttons()
+
+            self.save_filename = None
+            self.changed_since_save = False
+            self.update_window_title()
+
+    def open_session_file(self, filename: str) -> None:
+        """Open the given session file.
+
+        If the selected file is not a valid lintrans session file, we just show an error message,
+        but if it's valid, we load it and set it as the default filename for saving.
+        """
+        try:
+            session = Session.load_from_file(filename)
+
+        # load_from_file() can raise errors if the contents is not a valid pickled Python object,
+        # or if the pickled Python object is of the wrong type
+        except (EOFError, FileNotFoundError, ValueError):
+            self.show_error_message(
+                'Invalid file contents',
+                'This is not a valid lintrans session file',
+                'Not all .lt files are lintrans session files. This file was probably created by an unrelated '
+                'program.'
+            )
+            return
+
+        self.matrix_wrapper = session.matrix_wrapper
+
+        self.lineedit_expression_box.setText('I')
+        self.render_expression()
+        self.lineedit_expression_box.setText('')
+        self.lineedit_expression_box.setFocus()
+        self.update_render_buttons()
+
+        # Set this as the default filename if we could read it properly
+        self.save_filename = filename
+        self.changed_since_save = False
+        self.update_window_title()
+
+    @pyqtSlot()
+    def ask_for_session_file(self) -> None:
+        """Ask the user to select a session file, and then open it and load the session."""
+        dialog = QFileDialog(
+            self,
+            'Open a session',
+            '.',
+            'lintrans sessions (*.lt)'
+        )
+        dialog.setAcceptMode(QFileDialog.AcceptOpen)
+        dialog.setFileMode(QFileDialog.ExistingFile)
+        dialog.setViewMode(QFileDialog.List)
+
+        if dialog.exec():
+            self.open_session_file(dialog.selectedFiles()[0])
+
+    @pyqtSlot()
+    def save_session(self) -> None:
+        """Save the session to the given file.
+
+        If ``self.save_filename`` is ``None``, then call :meth:`save_session_as` and return.
+        """
+        if self.save_filename is None:
+            self.save_session_as()
+            return
+
+        Session(self.matrix_wrapper).save_to_file(self.save_filename)
+
+        self.changed_since_save = False
+        self.update_window_title()
+
+    @pyqtSlot()
+    def save_session_as(self) -> None:
+        """Ask the user for a file to save the session to, and then call :meth:`save_session`.
+
+        .. note::
+           If the user doesn't select a file to save the session to, then the session
+           just doesn't get saved, and :meth:`save_session` is never called.
+        """
+        dialog = FileSelectDialog(
+            self,
+            'Save this session',
+            '.',
+            'lintrans sessions (*.lt)'
+        )
+        dialog.setAcceptMode(QFileDialog.AcceptSave)
+        dialog.setFileMode(QFileDialog.AnyFile)
+        dialog.setViewMode(QFileDialog.List)
+        dialog.setDefaultSuffix('.lt')
+
+        if dialog.exec():
+            filename = dialog.selectedFiles()[0]
+            self.save_filename = filename
+            self.save_session()
+
 
 def qapp() -> QCoreApplication:
     """Return the equivalent of the global :class:`qApp` pointer.
@@ -653,18 +802,22 @@ def qapp() -> QCoreApplication:
     return instance
 
 
-def main(args: List[str]) -> None:
+def main(filename: Optional[str]) -> None:
     """Run the GUI by creating and showing an instance of :class:`LintransMainWindow`.
 
-    :param List[str] args: The args to pass to :class:`QApplication`
+    :param Optional[str] filename: A session file to optionally open at startup
     """
-    app = QApplication(args)
+    app = QApplication([])
     app.setApplicationName('lintrans')
     app.setApplicationVersion(lintrans.__version__)
 
     qapp().setStyle(QStyleFactory.create('fusion'))
 
     window = LintransMainWindow()
+
+    if filename:
+        window.open_session_file(filename)
+
     window.show()
 
     sys.exit(app.exec_())
