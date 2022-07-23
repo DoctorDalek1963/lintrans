@@ -1,1 +1,9 @@
-graft src/lintrans/gui/assets
+graft src/lintrans
+
+global-exclude *.pyc
+global-exclude py.typed
+
+prune src/lintrans.egg-info
+
+prune src/lintrans/gui/assets
+include src/lintrans/gui/assets/icon.jpg
