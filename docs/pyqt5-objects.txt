@@ -28,6 +28,11 @@ QDialog.open              py:method 1 qdialog.html#open              QDialog.ope
 QComboBox.activated py:method 1 qcombobox.html#activated -
 QDialog.accepted    py:method 1 qdialog.html#accepted    -
 
+# === Misc
+
+Qt::WA_DeleteOnClose cpp:enum 1 qt.html#WidgetAttribute-enum -
+
+# === Full forms
 # These are in full form so that autodoc can reference base classes and param types
 
 PyQt5.QtCore.QCoreApplication py:class 1 qcoreapplication.html      QCoreApplication

@@ -11,9 +11,13 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ['3.10', '3.9', '3.8']
+
+    env:
+      DISPLAY: ':99.0'
 
     steps:
       - uses: actions/checkout@v2
@@ -29,8 +33,15 @@ jobs:
           pip install -r requirements.txt -r dev_requirements.txt
           pip install -e .
 
-      - name: Run pytest
-        run: pytest
+      - name: Run pytest (no GUI)
+        run: pytest tests/matrices/
+
+      - name: Run pytest (with GUI)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt install libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xfixes0 x11-utils
+          /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX
+          pytest tests/gui/
 
       - name: Run doctests
         run: pytest --doctest-modules src/
