@@ -80,7 +80,7 @@ class LintransMainWindow(QMainWindow):
         self.action_open = QtWidgets.QAction(self)
         self.action_open.setText('&Open')
         self.action_open.setShortcut('Ctrl+O')
-        self.action_open.triggered.connect(self.open_session_file)
+        self.action_open.triggered.connect(self.ask_for_session_file)
 
         self.action_save = QtWidgets.QAction(self)
         self.action_save.setText('&Save')
@@ -691,13 +691,42 @@ class LintransMainWindow(QMainWindow):
             self.changed_since_save = False
             self.update_window_title()
 
-    @pyqtSlot()
-    def open_session_file(self) -> None:
-        """Ask the user to select a session file, and then open it and load the session.
+    def open_session_file(self, filename: str) -> None:
+        """Open the given session file.
 
         If the selected file is not a valid lintrans session file, we just show an error message,
         but if it's valid, we load it and set it as the default filename for saving.
         """
+        try:
+            session = Session.load_from_file(filename)
+
+        # load_from_file() can raise errors if the contents is not a valid pickled Python object,
+        # or if the pickled Python object is of the wrong type
+        except (EOFError, FileNotFoundError, ValueError):
+            self.show_error_message(
+                'Invalid file contents',
+                'This is not a valid lintrans session file',
+                'Not all .lt files are lintrans session files. This file was probably created by an unrelated '
+                'program.'
+            )
+            return
+
+        self.matrix_wrapper = session.matrix_wrapper
+
+        self.lineedit_expression_box.setText('I')
+        self.render_expression()
+        self.lineedit_expression_box.setText('')
+        self.lineedit_expression_box.setFocus()
+        self.update_render_buttons()
+
+        # Set this as the default filename if we could read it properly
+        self.save_filename = filename
+        self.changed_since_save = False
+        self.update_window_title()
+
+    @pyqtSlot()
+    def ask_for_session_file(self) -> None:
+        """Ask the user to select a session file, and then open it and load the session."""
         dialog = QFileDialog(
             self,
             'Open a session',
@@ -709,40 +738,13 @@ class LintransMainWindow(QMainWindow):
         dialog.setViewMode(QFileDialog.List)
 
         if dialog.exec():
-            filename = dialog.selectedFiles()[0]
+            self.open_session_file(dialog.selectedFiles()[0])
 
-            try:
-                session = Session.load_from_file(filename)
-
-            # load_from_file() can raise errors if the contents is not a valid pickled Python object,
-            # or if the pickled Python object is of the wrong type
-            except (EOFError, ValueError):
-                self.show_error_message(
-                    'Invalid file contents',
-                    'This is not a valid lintrans session file',
-                    'Not all .lt files are lintrans session files. This file was probably created by an unrelated '
-                    'program.'
-                )
-                return
-
-            self.matrix_wrapper = session.matrix_wrapper
-
-            self.lineedit_expression_box.setText('I')
-            self.render_expression()
-            self.lineedit_expression_box.setText('')
-            self.lineedit_expression_box.setFocus()
-            self.update_render_buttons()
-
-            # Set this as the default filename if we could read it properly
-            self.save_filename = filename
-            self.changed_since_save = False
-            self.update_window_title()
-
-    @pyqtSlot(str)
+    @pyqtSlot()
     def save_session(self) -> None:
         """Save the session to the given file.
 
-        If the filename is ``None``, then call :meth:`save_session_as` and return.
+        If ``self.save_filename`` is ``None``, then call :meth:`save_session_as` and return.
         """
         if self.save_filename is None:
             self.save_session_as()
@@ -791,18 +793,22 @@ def qapp() -> QCoreApplication:
     return instance
 
 
-def main(args: List[str]) -> None:
+def main(filename: Optional[str]) -> None:
     """Run the GUI by creating and showing an instance of :class:`LintransMainWindow`.
 
-    :param List[str] args: The args to pass to :class:`QApplication`
+    :param Optional[str] filename: A session file to optionally open at startup
     """
-    app = QApplication(args)
+    app = QApplication([])
     app.setApplicationName('lintrans')
     app.setApplicationVersion(lintrans.__version__)
 
     qapp().setStyle(QStyleFactory.create('fusion'))
 
     window = LintransMainWindow()
+
+    if filename:
+        window.open_session_file(filename)
+
     window.show()
 
     sys.exit(app.exec_())

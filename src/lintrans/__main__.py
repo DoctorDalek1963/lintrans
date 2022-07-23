@@ -27,6 +27,13 @@ def main(args: List[str]) -> None:
     parser = ArgumentParser(add_help=False)
 
     parser.add_argument(
+        'filename',
+        nargs='?',
+        type=str,
+        default=None
+    )
+
+    parser.add_argument(
         '-h',
         '--help',
         default=False,
@@ -40,18 +47,18 @@ def main(args: List[str]) -> None:
         action='store_true'
     )
 
-    parsed_args, unparsed_args = parser.parse_known_args()
+    parsed_args = parser.parse_args()
 
     if parsed_args.help:
         print(dedent('''
-        Usage: lintrans [option]
+        Usage: lintrans [option] [filename]
+
+        Arguments:
+            filename         The name of a session file to open
 
         Options:
             -h, --help       Display this help text and exit
-            -V, --version    Display the version information and exit
-
-        Any other options will get passed to the QApplication constructor.
-        If you don't know what that means, then don't provide any arguments and just the run the program.'''[1:]))
+            -V, --version    Display the version information and exit'''[1:]))
         return
 
     if parsed_args.version:
@@ -65,10 +72,7 @@ def main(args: List[str]) -> None:
         <https://www.gnu.org/licenses/gpl-3.0.html>'''[1:]))
         return
 
-    for arg in unparsed_args:
-        print(f'Passing "{arg}" to QApplication. See --help for recognised args')
-
-    gui.main(args[:1] + unparsed_args)
+    gui.main(parsed_args.filename)
 
 
 if __name__ == '__main__':
