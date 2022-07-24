@@ -809,10 +809,9 @@ def main(filename: Optional[str]) -> None:
     qapp().setStyle(QStyleFactory.create('fusion'))
 
     window = LintransMainWindow()
+    window.show()
 
     if filename:
         window.open_session_file(filename)
-
-    window.show()
 
     sys.exit(app.exec_())
