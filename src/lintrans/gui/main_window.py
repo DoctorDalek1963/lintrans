@@ -194,7 +194,9 @@ class LintransMainWindow(QMainWindow):
         self._button_define_as_expression = QPushButton(self)
         self._button_define_as_expression.setText('As an expression')
         self._button_define_as_expression.setToolTip('Define a matrix in terms of other matrices<br><b>(Alt + 3)</b>')
-        self._button_define_as_expression.clicked.connect(lambda: self._dialog_define_matrix(DefineAsAnExpressionDialog))
+        self._button_define_as_expression.clicked.connect(
+            lambda: self._dialog_define_matrix(DefineAsAnExpressionDialog)
+        )
         QShortcut(QKeySequence('Alt+3'), self).activated.connect(self._button_define_as_expression.click)
 
         vlay_define_new_matrix = QVBoxLayout()
