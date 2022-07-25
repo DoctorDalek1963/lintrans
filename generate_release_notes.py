@@ -15,7 +15,7 @@ TEXT = '''DESCRIPTION
 
 ---
 
-The Linux binary should work fine, but if you use the Windows `.exe` file, you will get a warning that the program may be unsafe. This is expected and you can just ignore it. There's no binary for macOS due to Apple code signing issues.
+The Linux binary should work fine, but if you use the Windows `.exe` file, you will get a warning that the program may be unsafe. This is expected and you can just ignore it. This is caused by me not being able to afford a certificate from Microsoft, and there's no binary for macOS for the same reason.
 
 If you're running macOS, then you will need to compile the program from source. This is also an option on Linux and Windows. Instructions can be found [here](https://doctordalek1963.github.io/lintrans/tutorial/compile/).
 

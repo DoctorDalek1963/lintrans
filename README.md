@@ -13,11 +13,12 @@
 ---
 
 ## NOTICE
-This project is still a work in progress and is nowhere near feature complete. It is actively being worked on.
+This project is still a work in progress and is not yet feature complete. It is actively being worked on.
+Version 1.0.0 should hopefully be out near the beginning of the new academic year in September.
 
 ---
 
-This is the `lintrans` Python package, with included GUI. This project aims to provide an easy way to
+This is the `lintrans` project. It is a Python package with a GUI. This project aims to provide an easy way to
 visualize matrices as linear transformations. The user can define 2x2 matrices and visualize them in 2D
 space. The user can also visualize compositions of defined matrices - addition and multiplication - as well
 as inverses and transpositions.
@@ -26,7 +27,7 @@ This program is aimed at teachers teaching linear transformations, as well as st
 first time. The 3blue1brown series [Essence of Linear Algebra](https://www.youtube.com/watch?v=fNk_zzaMoSs&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab)
 is a fantastic learning resource for this topic and I aim to provide an interactive supplement to that series.
 
-The Python source code can be found in `src/lintrans/` and the full documentation can be found on [my GitHub pages site](https://doctordalek1963.github.io/lintrans)
+The Python source code can be found in `src/lintrans/` and the full documentation can be found on [readthedocs.io](https://lintrans.readthedocs.io/en/stable/)
 along with the tutorial (NOT YET WRITTEN).
 
 This project is also my A Level Computer Science NEA (Non-Exam Assessment), which means I need to provide a
@@ -38,9 +39,12 @@ downloaded from [my GitHub pages site](https://doctordalek1963.github.io/lintran
 
 ## Usage
 
-Currently, this project is not feature complete. Don't use it yet. When this project is ready to be released
-and used by the public, it will have releases available in this repo's [releases](https://github.com/DoctorDalek1963/lintrans/releases)
-page.
+Currently, this project is not feature complete. You can download it from the [releases page](https://github.com/DoctorDalek1963/lintrans/releases/latest)
+or run the package directly by installing it in a virtual environment with `pip install -e .` and then running
+`python -m lintrans`. Just downloading it is much easier if you don't use Python.
+
+There will eventually be a tutorial on [my GitHub pages site](https://doctordalek1963.github.io/lintrans/tutorial),
+but this unfortunately doesn't exist yet.
 
 ---
 
