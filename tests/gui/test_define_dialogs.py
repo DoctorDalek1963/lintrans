@@ -21,28 +21,28 @@ ALPHABET_NO_I = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
 def test_define_visually_dialog_opens(qtbot: QtBot, window: LintransMainWindow) -> None:
     """Test that the :class:`DefineVisuallyDialog` opens."""
-    qtbot.mouseClick(window.button_define_visually, Qt.LeftButton)
+    qtbot.mouseClick(window._button_define_visually, Qt.LeftButton)
     assert is_widget_class_open(DefineVisuallyDialog)
     qtbot.addWidget(get_open_widget(DefineVisuallyDialog))
 
 
 def test_define_numerically_dialog_opens(qtbot: QtBot, window: LintransMainWindow) -> None:
     """Test that the :class:`DefineNumericallyDialog` opens."""
-    qtbot.mouseClick(window.button_define_numerically, Qt.LeftButton)
+    qtbot.mouseClick(window._button_define_numerically, Qt.LeftButton)
     assert is_widget_class_open(DefineNumericallyDialog)
     qtbot.addWidget(get_open_widget(DefineNumericallyDialog))
 
 
 def test_define_as_expression_dialog_opens(qtbot: QtBot, window: LintransMainWindow) -> None:
     """Test that the :class:`DefineAsAnExpressionDialog` opens."""
-    qtbot.mouseClick(window.button_define_as_expression, Qt.LeftButton)
+    qtbot.mouseClick(window._button_define_as_expression, Qt.LeftButton)
     assert is_widget_class_open(DefineAsAnExpressionDialog)
     qtbot.addWidget(get_open_widget(DefineAsAnExpressionDialog))
 
 
 def test_define_numerically_dialog_works(qtbot: QtBot, monkeypatch: MonkeyPatch, window: LintransMainWindow) -> None:
     """Test that matrices can be defined numerically."""
-    qtbot.mouseClick(window.button_define_numerically, Qt.LeftButton)
+    qtbot.mouseClick(window._button_define_numerically, Qt.LeftButton)
     dialog = get_open_widget(DefineNumericallyDialog)
     qtbot.addWidget(dialog)
 
