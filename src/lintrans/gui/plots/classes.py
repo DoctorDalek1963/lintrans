@@ -35,8 +35,14 @@ class BackgroundPlot(QWidget):
        and every superclass of a class must have the same metaclass, and :class:`QWidget` is not an abstract class.
     """
 
-    default_grid_spacing: int = 85
-    minimum_grid_spacing: int = 5
+    DEFAULT_GRID_SPACING: int = 85
+    _MINIMUM_GRID_SPACING: int = 5
+
+    # Set the grid colour to grey and the axes colour to black
+    _COLOUR_BACKGROUND_GRID: QColor = QColor('#808080')
+    _COLOUR_BACKGROUND_AXES: QColor = QColor('#000000')
+
+    _WIDTH_BACKGROUND_GRID: float = 0.3
 
     def __init__(self, *args, **kwargs):
         """Create the widget and setup backend stuff for rendering.
@@ -52,15 +58,10 @@ class BackgroundPlot(QWidget):
         palette.setColor(self.backgroundRole(), Qt.white)
         self.setPalette(palette)
 
-        # Set the grid colour to grey and the axes colour to black
-        self.colour_background_grid = QColor('#808080')
-        self.colour_background_axes = QColor('#000000')
-
-        self.grid_spacing = BackgroundPlot.default_grid_spacing
-        self.width_background_grid: float = 0.3
+        self.grid_spacing = self.DEFAULT_GRID_SPACING
 
     @property
-    def canvas_origin(self) -> Tuple[int, int]:
+    def _canvas_origin(self) -> Tuple[int, int]:
         """Return the canvas coords of the grid origin.
 
         The return value is intended to be unpacked and passed to a :meth:`QPainter.drawLine:iiii` call.
@@ -72,13 +73,13 @@ class BackgroundPlot(QWidget):
         """
         return self.width() // 2, self.height() // 2
 
-    def canvas_x(self, x: float) -> int:
+    def _canvas_x(self, x: float) -> int:
         """Convert an x coordinate from grid coords to canvas coords."""
-        return int(self.canvas_origin[0] + x * self.grid_spacing)
+        return int(self._canvas_origin[0] + x * self.grid_spacing)
 
-    def canvas_y(self, y: float) -> int:
+    def _canvas_y(self, y: float) -> int:
         """Convert a y coordinate from grid coords to canvas coords."""
-        return int(self.canvas_origin[1] - y * self.grid_spacing)
+        return int(self._canvas_origin[1] - y * self.grid_spacing)
 
     def canvas_coords(self, x: float, y: float) -> Tuple[int, int]:
         """Convert a coordinate from grid coords to canvas coords.
@@ -93,22 +94,22 @@ class BackgroundPlot(QWidget):
 
         .. code::
 
-           painter.drawLine(*self.canvas_origin, *self.canvas_coords(x, y))
+           painter.drawLine(*self._canvas_origin, *self.canvas_coords(x, y))
 
-        See :attr:`canvas_origin`.
+        See :attr:`_canvas_origin`.
 
         :param float x: The x component of the grid coordinate
         :param float y: The y component of the grid coordinate
         :returns: The resultant canvas coordinates
         :rtype: Tuple[int, int]
         """
-        return self.canvas_x(x), self.canvas_y(y)
+        return self._canvas_x(x), self._canvas_y(y)
 
-    def grid_corner(self) -> Tuple[float, float]:
+    def _grid_corner(self) -> Tuple[float, float]:
         """Return the grid coords of the top right corner."""
         return self.width() / (2 * self.grid_spacing), self.height() / (2 * self.grid_spacing)
 
-    def grid_coords(self, x: int, y: int) -> Tuple[float, float]:
+    def _grid_coords(self, x: int, y: int) -> Tuple[float, float]:
         """Convert a coordinate from canvas coords to grid coords.
 
         :param int x: The x component of the canvas coordinate
@@ -117,7 +118,7 @@ class BackgroundPlot(QWidget):
         :rtype: Tuple[float, float]
         """
         # We get the maximum grid coords and convert them into canvas coords
-        return (x - self.canvas_origin[0]) / self.grid_spacing, (-y + self.canvas_origin[1]) / self.grid_spacing
+        return (x - self._canvas_origin[0]) / self.grid_spacing, (-y + self._canvas_origin[1]) / self.grid_spacing
 
     @abstractmethod
     def paintEvent(self, event: QPaintEvent) -> None:
@@ -126,7 +127,7 @@ class BackgroundPlot(QWidget):
         .. note:: This method is abstract and must be overridden by all subclasses.
         """
 
-    def draw_background(self, painter: QPainter, draw_grid: bool) -> None:
+    def _draw_background(self, painter: QPainter, draw_grid: bool) -> None:
         """Draw the background grid.
 
         .. note:: This method is just a utility method for subclasses to use to render the background grid.
@@ -135,7 +136,7 @@ class BackgroundPlot(QWidget):
         :param bool draw_grid: Whether to draw the grid lines
         """
         if draw_grid:
-            painter.setPen(QPen(self.colour_background_grid, self.width_background_grid))
+            painter.setPen(QPen(self._COLOUR_BACKGROUND_GRID, self._WIDTH_BACKGROUND_GRID))
 
             # Draw equally spaced vertical lines, starting in the middle and going out
             # We loop up to half of the width. This is because we draw a line on each side in each iteration
@@ -149,7 +150,7 @@ class BackgroundPlot(QWidget):
                 painter.drawLine(0, self.height() - y, self.width(), self.height() - y)
 
         # Now draw the axes
-        painter.setPen(QPen(self.colour_background_axes, self.width_background_grid))
+        painter.setPen(QPen(self._COLOUR_BACKGROUND_AXES, self._WIDTH_BACKGROUND_GRID))
         painter.drawLine(self.width() // 2, 0, self.width() // 2, self.height())
         painter.drawLine(0, self.height() // 2, self.width(), self.height() // 2)
 
@@ -161,7 +162,7 @@ class BackgroundPlot(QWidget):
         if degrees is not None:
             new_spacing = max(1, self.grid_spacing + degrees.y())
 
-            if new_spacing >= self.minimum_grid_spacing:
+            if new_spacing >= self._MINIMUM_GRID_SPACING:
                 self.grid_spacing = new_spacing
 
         event.accept()
@@ -177,6 +178,18 @@ class VectorGridPlot(BackgroundPlot):
     .. warning:: This class should never be directly instantiated, only subclassed.
     """
 
+    _COLOUR_I = QColor('#0808d8')
+    _COLOUR_J = QColor('#e90000')
+    _COLOUR_EIGEN = QColor('#13cf00')
+    _COLOUR_TEXT = QColor('#000000')
+
+    _WIDTH_VECTOR_LINE = 1.8
+    _WIDTH_TRANSFORMED_GRID = 0.8
+
+    _ARROWHEAD_LENGTH = 0.15
+
+    _MAX_PARALLEL_LINES = 150
+
     def __init__(self, *args, **kwargs):
         """Create the widget with ``point_i`` and ``point_j`` attributes.
 
@@ -187,20 +200,8 @@ class VectorGridPlot(BackgroundPlot):
         self.point_i: Tuple[float, float] = (1., 0.)
         self.point_j: Tuple[float, float] = (0., 1.)
 
-        self.colour_i = QColor('#0808d8')
-        self.colour_j = QColor('#e90000')
-        self.colour_eigen = QColor('#13cf00')
-        self.colour_text = QColor('#000000')
-
-        self.width_vector_line = 1.8
-        self.width_transformed_grid = 0.8
-
-        self.arrowhead_length = 0.15
-
-        self.max_parallel_lines = 150
-
     @property
-    def matrix(self) -> MatrixType:
+    def _matrix(self) -> MatrixType:
         """Return the assembled matrix of the basis vectors."""
         return np.array([
             [self.point_i[0], self.point_j[0]],
@@ -208,17 +209,17 @@ class VectorGridPlot(BackgroundPlot):
         ])
 
     @property
-    def det(self) -> float:
+    def _det(self) -> float:
         """Return the determinant of the assembled matrix."""
-        return float(np.linalg.det(self.matrix))
+        return float(np.linalg.det(self._matrix))
 
     @property
-    def eigs(self) -> Iterable[Tuple[float, NDArray[(1, 2), Float]]]:
+    def _eigs(self) -> Iterable[Tuple[float, NDArray[(1, 2), Float]]]:
         """Return the eigenvalues and eigenvectors zipped together to be iterated over.
 
         :rtype: Iterable[Tuple[float, NDArray[(1, 2), Float]]]
         """
-        values, vectors = np.linalg.eig(self.matrix)
+        values, vectors = np.linalg.eig(self._matrix)
         return zip(values, vectors.T)
 
     @abstractmethod
@@ -228,7 +229,7 @@ class VectorGridPlot(BackgroundPlot):
         .. note:: This method is abstract and must be overridden by all subclasses.
         """
 
-    def draw_parallel_lines(self, painter: QPainter, vector: Tuple[float, float], point: Tuple[float, float]) -> None:
+    def _draw_parallel_lines(self, painter: QPainter, vector: Tuple[float, float], point: Tuple[float, float]) -> None:
         """Draw a set of evenly spaced grid lines parallel to ``vector`` intersecting ``point``.
 
         :param QPainter painter: The painter to draw the lines with
@@ -237,7 +238,7 @@ class VectorGridPlot(BackgroundPlot):
         :param point: The point for the lines to intersect with
         :type point: Tuple[float, float]
         """
-        max_x, max_y = self.grid_corner()
+        max_x, max_y = self._grid_corner()
         vector_x, vector_y = vector
         point_x, point_y = point
 
@@ -254,7 +255,7 @@ class VectorGridPlot(BackgroundPlot):
             if rank == 1:
                 # If the vector does not have a 0 x or y component, then we can just draw the line
                 if abs(vector_x) > 1e-12 and abs(vector_y) > 1e-12:
-                    self.draw_oblique_line(painter, vector_y / vector_x, 0)
+                    self._draw_oblique_line(painter, vector_y / vector_x, 0)
 
                 # Otherwise, we have to draw lines along the axes
                 elif abs(vector_x) > 1e-12 and abs(vector_y) < 1e-12:
@@ -277,38 +278,38 @@ class VectorGridPlot(BackgroundPlot):
 
         # Draw vertical lines
         elif abs(vector_x) < 1e-12:
-            painter.drawLine(self.canvas_x(0), 0, self.canvas_x(0), self.height())
+            painter.drawLine(self._canvas_x(0), 0, self._canvas_x(0), self.height())
 
-            for i in range(max(abs(int(max_x / point_x)), self.max_parallel_lines)):
+            for i in range(max(abs(int(max_x / point_x)), self._MAX_PARALLEL_LINES)):
                 painter.drawLine(
-                    self.canvas_x((i + 1) * point_x),
+                    self._canvas_x((i + 1) * point_x),
                     0,
-                    self.canvas_x((i + 1) * point_x),
+                    self._canvas_x((i + 1) * point_x),
                     self.height()
                 )
                 painter.drawLine(
-                    self.canvas_x(-1 * (i + 1) * point_x),
+                    self._canvas_x(-1 * (i + 1) * point_x),
                     0,
-                    self.canvas_x(-1 * (i + 1) * point_x),
+                    self._canvas_x(-1 * (i + 1) * point_x),
                     self.height()
                 )
 
         # Draw horizontal lines
         elif abs(vector_y) < 1e-12:
-            painter.drawLine(0, self.canvas_y(0), self.width(), self.canvas_y(0))
+            painter.drawLine(0, self._canvas_y(0), self.width(), self._canvas_y(0))
 
-            for i in range(max(abs(int(max_y / point_y)), self.max_parallel_lines)):
+            for i in range(max(abs(int(max_y / point_y)), self._MAX_PARALLEL_LINES)):
                 painter.drawLine(
                     0,
-                    self.canvas_y((i + 1) * point_y),
+                    self._canvas_y((i + 1) * point_y),
                     self.width(),
-                    self.canvas_y((i + 1) * point_y)
+                    self._canvas_y((i + 1) * point_y)
                 )
                 painter.drawLine(
                     0,
-                    self.canvas_y(-1 * (i + 1) * point_y),
+                    self._canvas_y(-1 * (i + 1) * point_y),
                     self.width(),
-                    self.canvas_y(-1 * (i + 1) * point_y)
+                    self._canvas_y(-1 * (i + 1) * point_y)
                 )
 
         # If the line is oblique, then we can use y = mx + c
@@ -316,18 +317,18 @@ class VectorGridPlot(BackgroundPlot):
             m = vector_y / vector_x
             c = point_y - m * point_x
 
-            self.draw_oblique_line(painter, m, 0)
+            self._draw_oblique_line(painter, m, 0)
 
             # We don't want to overshoot the max number of parallel lines,
             # but we should also stop looping as soon as we can't draw any more lines
-            for i in range(1, self.max_parallel_lines + 1):
-                if not self.draw_pair_of_oblique_lines(painter, m, i * c):
+            for i in range(1, self._MAX_PARALLEL_LINES + 1):
+                if not self._draw_pair_of_oblique_lines(painter, m, i * c):
                     break
 
-    def draw_pair_of_oblique_lines(self, painter: QPainter, m: float, c: float) -> bool:
+    def _draw_pair_of_oblique_lines(self, painter: QPainter, m: float, c: float) -> bool:
         """Draw a pair of oblique lines, using the equation y = mx + c.
 
-        This method just calls :meth:`draw_oblique_line` with ``c`` and ``-c``,
+        This method just calls :meth:`_draw_oblique_line` with ``c`` and ``-c``,
         and returns True if either call returned True.
 
         :param QPainter painter: The painter to draw the vectors and grid lines with
@@ -336,11 +337,11 @@ class VectorGridPlot(BackgroundPlot):
         :returns bool: Whether we were able to draw any lines on the canvas
         """
         return any([
-            self.draw_oblique_line(painter, m, c),
-            self.draw_oblique_line(painter, m, -c)
+            self._draw_oblique_line(painter, m, c),
+            self._draw_oblique_line(painter, m, -c)
         ])
 
-    def draw_oblique_line(self, painter: QPainter, m: float, c: float) -> bool:
+    def _draw_oblique_line(self, painter: QPainter, m: float, c: float) -> bool:
         """Draw an oblique line, using the equation y = mx + c.
 
         We only draw the part of the line that fits within the canvas, returning True if
@@ -351,7 +352,7 @@ class VectorGridPlot(BackgroundPlot):
         :param float c: The y-intercept of the line to draw
         :returns bool: Whether we were able to draw a line on the canvas
         """
-        max_x, max_y = self.grid_corner()
+        max_x, max_y = self._grid_corner()
 
         # These variable names are shortened for convenience
         # myi is max_y_intersection, mmyi is minus_max_y_intersection, etc.
@@ -385,20 +386,20 @@ class VectorGridPlot(BackgroundPlot):
             )
             return True
 
-    def draw_transformed_grid(self, painter: QPainter) -> None:
+    def _draw_transformed_grid(self, painter: QPainter) -> None:
         """Draw the transformed version of the grid, given by the basis vectors.
 
-        .. note:: This method draws the grid, but not the basis vectors. Use :meth:`draw_basis_vectors` to draw them.
+        .. note:: This method draws the grid, but not the basis vectors. Use :meth:`_draw_basis_vectors` to draw them.
 
         :param QPainter painter: The painter to draw the grid lines with
         """
         # Draw all the parallel lines
-        painter.setPen(QPen(self.colour_i, self.width_transformed_grid))
-        self.draw_parallel_lines(painter, self.point_i, self.point_j)
-        painter.setPen(QPen(self.colour_j, self.width_transformed_grid))
-        self.draw_parallel_lines(painter, self.point_j, self.point_i)
+        painter.setPen(QPen(self._COLOUR_I, self._WIDTH_TRANSFORMED_GRID))
+        self._draw_parallel_lines(painter, self.point_i, self.point_j)
+        painter.setPen(QPen(self._COLOUR_J, self._WIDTH_TRANSFORMED_GRID))
+        self._draw_parallel_lines(painter, self.point_j, self.point_i)
 
-    def draw_arrowhead_away_from_origin(self, painter: QPainter, point: Tuple[float, float]) -> None:
+    def _draw_arrowhead_away_from_origin(self, painter: QPainter, point: Tuple[float, float]) -> None:
         """Draw an arrowhead at ``point``, pointing away from the origin.
 
         :param QPainter painter: The painter to draw the arrowhead with
@@ -422,7 +423,7 @@ class VectorGridPlot(BackgroundPlot):
 
         # We choose a length and find the steps in the x and y directions
         length = min(
-            self.arrowhead_length * self.default_grid_spacing / self.grid_spacing,
+            self._ARROWHEAD_LENGTH * self.DEFAULT_GRID_SPACING / self.grid_spacing,
             vector_length
         )
         dx = length * (-nx - ny)
@@ -432,7 +433,7 @@ class VectorGridPlot(BackgroundPlot):
         painter.drawLine(*self.canvas_coords(x, y), *self.canvas_coords(x + dx, y + dy))
         painter.drawLine(*self.canvas_coords(x, y), *self.canvas_coords(x - dy, y + dx))
 
-    def draw_position_vector(self, painter: QPainter, point: Tuple[float, float], colour: QColor) -> None:
+    def _draw_position_vector(self, painter: QPainter, point: Tuple[float, float], colour: QColor) -> None:
         """Draw a vector from the origin to the given point.
 
         :param QPainter painter: The painter to draw the position vector with
@@ -440,43 +441,43 @@ class VectorGridPlot(BackgroundPlot):
         :type point: Tuple[float, float]
         :param QColor colour: The colour to draw the position vector in
         """
-        painter.setPen(QPen(colour, self.width_vector_line))
-        painter.drawLine(*self.canvas_origin, *self.canvas_coords(*point))
-        self.draw_arrowhead_away_from_origin(painter, point)
+        painter.setPen(QPen(colour, self._WIDTH_VECTOR_LINE))
+        painter.drawLine(*self._canvas_origin, *self.canvas_coords(*point))
+        self._draw_arrowhead_away_from_origin(painter, point)
 
-    def draw_basis_vectors(self, painter: QPainter) -> None:
+    def _draw_basis_vectors(self, painter: QPainter) -> None:
         """Draw arrowheads at the tips of the basis vectors.
 
         :param QPainter painter: The painter to draw the basis vectors with
         """
-        self.draw_position_vector(painter, self.point_i, self.colour_i)
-        self.draw_position_vector(painter, self.point_j, self.colour_j)
+        self._draw_position_vector(painter, self.point_i, self._COLOUR_I)
+        self._draw_position_vector(painter, self.point_j, self._COLOUR_J)
 
-    def draw_determinant_parallelogram(self, painter: QPainter) -> None:
+    def _draw_determinant_parallelogram(self, painter: QPainter) -> None:
         """Draw the parallelogram of the determinant of the matrix.
 
         :param QPainter painter: The painter to draw the parallelogram with
         """
-        if self.det == 0:
+        if self._det == 0:
             return
 
         path = QPainterPath()
-        path.moveTo(*self.canvas_origin)
+        path.moveTo(*self._canvas_origin)
         path.lineTo(*self.canvas_coords(*self.point_i))
         path.lineTo(*self.canvas_coords(self.point_i[0] + self.point_j[0], self.point_i[1] + self.point_j[1]))
         path.lineTo(*self.canvas_coords(*self.point_j))
 
-        color = (16, 235, 253) if self.det > 0 else (253, 34, 16)
+        color = (16, 235, 253) if self._det > 0 else (253, 34, 16)
         brush = QBrush(QColor(*color, alpha=128), Qt.SolidPattern)
 
         painter.fillPath(path, brush)
 
-    def draw_determinant_text(self, painter: QPainter) -> None:
+    def _draw_determinant_text(self, painter: QPainter) -> None:
         """Write the string value of the determinant in the middle of the parallelogram.
 
         :param QPainter painter: The painter to draw the determinant text with
         """
-        painter.setPen(QPen(self.colour_text, self.width_vector_line))
+        painter.setPen(QPen(self._COLOUR_TEXT, self._WIDTH_VECTOR_LINE))
 
         # We're building a QRect that encloses the determinant parallelogram
         # Then we can center the text in this QRect
@@ -501,22 +502,22 @@ class VectorGridPlot(BackgroundPlot):
         painter.drawText(
             rect,
             Qt.AlignHCenter | Qt.AlignVCenter,
-            f'{self.det:.2f}'
+            f'{self._det:.2f}'
         )
 
-    def draw_eigenvectors(self, painter: QPainter) -> None:
+    def _draw_eigenvectors(self, painter: QPainter) -> None:
         """Draw the eigenvectors of the displayed matrix transformation.
 
         :param QPainter painter: The painter to draw the eigenvectors with
         """
-        for value, vector in self.eigs:
+        for value, vector in self._eigs:
             x = value * vector[0]
             y = value * vector[1]
 
             if x.imag != 0 or y.imag != 0:
                 continue
 
-            self.draw_position_vector(painter, (x, y), self.colour_eigen)
+            self._draw_position_vector(painter, (x, y), self._COLOUR_EIGEN)
 
             # Now we need to draw the eigenvalue at the tip of the eigenvector
 
@@ -526,36 +527,36 @@ class VectorGridPlot(BackgroundPlot):
             alignment_flags: int
 
             if x >= 0 and y >= 0:  # Q1
-                top_left = QPoint(self.canvas_x(x) + offset, 0)
-                bottom_right = QPoint(self.width(), self.canvas_y(y) - offset)
+                top_left = QPoint(self._canvas_x(x) + offset, 0)
+                bottom_right = QPoint(self.width(), self._canvas_y(y) - offset)
                 alignment_flags = Qt.AlignLeft | Qt.AlignBottom
 
             elif x < 0 and y >= 0:  # Q2
                 top_left = QPoint(0, 0)
-                bottom_right = QPoint(self.canvas_x(x) - offset, self.canvas_y(y) - offset)
+                bottom_right = QPoint(self._canvas_x(x) - offset, self._canvas_y(y) - offset)
                 alignment_flags = Qt.AlignRight | Qt.AlignBottom
 
             elif x < 0 and y < 0:  # Q3
-                top_left = QPoint(0, self.canvas_y(y) + offset)
-                bottom_right = QPoint(self.canvas_x(x) - offset, self.height())
+                top_left = QPoint(0, self._canvas_y(y) + offset)
+                bottom_right = QPoint(self._canvas_x(x) - offset, self.height())
                 alignment_flags = Qt.AlignRight | Qt.AlignTop
 
             else:  # Q4
-                top_left = QPoint(self.canvas_x(x) + offset, self.canvas_y(y) + offset)
+                top_left = QPoint(self._canvas_x(x) + offset, self._canvas_y(y) + offset)
                 bottom_right = QPoint(self.width(), self.height())
                 alignment_flags = Qt.AlignLeft | Qt.AlignTop
 
-            painter.setPen(QPen(self.colour_text, self.width_vector_line))
+            painter.setPen(QPen(self._COLOUR_TEXT, self._WIDTH_VECTOR_LINE))
             painter.drawText(QRectF(top_left, bottom_right), alignment_flags, f'{value:.2f}')
 
-    def draw_eigenlines(self, painter: QPainter) -> None:
+    def _draw_eigenlines(self, painter: QPainter) -> None:
         """Draw the eigenlines (invariant lines).
 
         :param QPainter painter: The painter to draw the eigenlines with
         """
-        painter.setPen(QPen(self.colour_eigen, self.width_transformed_grid))
+        painter.setPen(QPen(self._COLOUR_EIGEN, self._WIDTH_TRANSFORMED_GRID))
 
-        for value, vector in self.eigs:
+        for value, vector in self._eigs:
             if value.imag != 0:
                 continue
 
@@ -570,4 +571,4 @@ class VectorGridPlot(BackgroundPlot):
                 painter.drawLine(0, y_mid, self.width(), y_mid)
 
             else:
-                self.draw_oblique_line(painter, y / x, 0)
+                self._draw_oblique_line(painter, y / x, 0)

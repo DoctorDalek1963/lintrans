@@ -111,7 +111,6 @@ class InfoPanelDialog(FixedSizeDialog):
     def __init__(self, matrix_wrapper: MatrixWrapper, *args, **kwargs):
         """Create the dialog box with all the widgets needed to show the information."""
         super().__init__(*args, **kwargs)
-        self.wrapper = matrix_wrapper
 
         self.setWindowTitle('Defined matrices')
 
@@ -126,7 +125,7 @@ class InfoPanelDialog(FixedSizeDialog):
         # Each defined matrix will get a widget group. Each group will be a label for the name,
         # a label for '=', and a container widget to either show the matrix numerically, or to
         # show the expression that it's defined as
-        for i, name_value_pair in enumerate(self.wrapper.get_defined_matrices()):
+        for i, name_value_pair in enumerate(matrix_wrapper.get_defined_matrices()):
             name, value = name_value_pair
 
             # Create all the widgets first

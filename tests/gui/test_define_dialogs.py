@@ -46,14 +46,14 @@ def test_define_numerically_dialog_works(qtbot: QtBot, monkeypatch: MonkeyPatch,
     dialog = get_open_widget(DefineNumericallyDialog)
     qtbot.addWidget(dialog)
 
-    qtbot.keyClicks(dialog.element_tl, '-1')
-    qtbot.keyClicks(dialog.element_tr, '3')
-    qtbot.keyClicks(dialog.element_bl, '2')
-    qtbot.keyClicks(dialog.element_br, '-0.5')
+    qtbot.keyClicks(dialog._element_tl, '-1')
+    qtbot.keyClicks(dialog._element_tr, '3')
+    qtbot.keyClicks(dialog._element_bl, '2')
+    qtbot.keyClicks(dialog._element_br, '-0.5')
 
-    qtbot.mouseClick(dialog.button_confirm, Qt.LeftButton)
+    qtbot.mouseClick(dialog._button_confirm, Qt.LeftButton)
 
-    assert (window.matrix_wrapper['A'] == np.array([
+    assert (window._matrix_wrapper['A'] == np.array([
         [-1, 3],
         [2, -0.5]
     ])).all()

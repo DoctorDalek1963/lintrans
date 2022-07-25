@@ -22,8 +22,8 @@ from numpy.linalg import LinAlgError
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot, QCoreApplication, QThread
 from PyQt5.QtGui import QCloseEvent, QIcon, QKeySequence
-from PyQt5.QtWidgets import (QApplication, QFileDialog, QHBoxLayout, QMainWindow, QMessageBox,
-                             QShortcut, QSizePolicy, QSpacerItem, QStyleFactory, QVBoxLayout)
+from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QHBoxLayout, QMainWindow, QMessageBox,
+                             QPushButton, QShortcut, QSizePolicy, QSpacerItem, QStyleFactory, QVBoxLayout)
 
 import lintrans
 from lintrans.matrices import MatrixWrapper
@@ -53,7 +53,7 @@ class LintransMainWindow(QMainWindow):
         """
         super().__init__()
 
-        self.matrix_wrapper = MatrixWrapper()
+        self._matrix_wrapper = MatrixWrapper()
 
         self.setWindowTitle('lintrans')
         self.setMinimumSize(1000, 750)
@@ -61,48 +61,48 @@ class LintransMainWindow(QMainWindow):
         path = Path(__file__).parent.absolute() / 'assets' / 'icon.jpg'
         self.setWindowIcon(QIcon(str(path)))
 
-        self.animating: bool = False
-        self.animating_sequence: bool = False
+        self._animating: bool = False
+        self._animating_sequence: bool = False
 
-        self.save_filename: Optional[str] = None
-        self.changed_since_save: bool = False
+        self._save_filename: Optional[str] = None
+        self._changed_since_save: bool = False
 
         # === Create menubar
 
-        self.menubar = QtWidgets.QMenuBar(self)
+        menubar = QtWidgets.QMenuBar(self)
 
-        self.menu_file = QtWidgets.QMenu(self.menubar)
-        self.menu_file.setTitle('&File')
+        menu_file = QtWidgets.QMenu(menubar)
+        menu_file.setTitle('&File')
 
-        self.menu_help = QtWidgets.QMenu(self.menubar)
-        self.menu_help.setTitle('&Help')
+        menu_help = QtWidgets.QMenu(menubar)
+        menu_help.setTitle('&Help')
 
-        self.action_reset_session = QtWidgets.QAction(self)
-        self.action_reset_session.setText('Reset session')
-        self.action_reset_session.triggered.connect(self.reset_session)
+        action_reset_session = QAction(self)
+        action_reset_session.setText('Reset session')
+        action_reset_session.triggered.connect(self._reset_session)
 
-        self.action_open = QtWidgets.QAction(self)
-        self.action_open.setText('&Open')
-        self.action_open.setShortcut('Ctrl+O')
-        self.action_open.triggered.connect(self.ask_for_session_file)
+        action_open = QAction(self)
+        action_open.setText('&Open')
+        action_open.setShortcut('Ctrl+O')
+        action_open.triggered.connect(self._ask_for_session_file)
 
-        self.action_save = QtWidgets.QAction(self)
-        self.action_save.setText('&Save')
-        self.action_save.setShortcut('Ctrl+S')
-        self.action_save.triggered.connect(self.save_session)
+        action_save = QAction(self)
+        action_save.setText('&Save')
+        action_save.setShortcut('Ctrl+S')
+        action_save.triggered.connect(self._save_session)
 
-        self.action_save_as = QtWidgets.QAction(self)
-        self.action_save_as.setText('Save as...')
-        self.action_save_as.setShortcut('Ctrl+Shift+S')
-        self.action_save_as.triggered.connect(self.save_session_as)
+        action_save_as = QAction(self)
+        action_save_as.setText('Save as...')
+        action_save_as.setShortcut('Ctrl+Shift+S')
+        action_save_as.triggered.connect(self._save_session_as)
 
-        self.action_tutorial = QtWidgets.QAction(self)
-        self.action_tutorial.setText('&Tutorial')
-        self.action_tutorial.setShortcut('F1')
-        self.action_tutorial.triggered.connect(lambda: print('tutorial'))
+        action_tutorial = QAction(self)
+        action_tutorial.setText('&Tutorial')
+        action_tutorial.setShortcut('F1')
+        action_tutorial.triggered.connect(lambda: print('tutorial'))
 
-        self.action_docs = QtWidgets.QAction(self)
-        self.action_docs.setText('&Docs')
+        action_docs = QAction(self)
+        action_docs.setText('&Docs')
 
         # If this is an old release, use the docs for this release. Else, use the latest docs
         # We use the latest because most use cases for non-stable releases will be in development and testing
@@ -113,333 +113,333 @@ class LintransMainWindow(QMainWindow):
         else:
             docs_link += 'latest'
 
-        self.action_docs.triggered.connect(
+        action_docs.triggered.connect(
             lambda: webbrowser.open_new_tab(docs_link)
         )
 
-        self.action_about = QtWidgets.QAction(self)
-        self.action_about.setText('&About')
-        self.action_about.triggered.connect(lambda: AboutDialog(self).open())
+        action_about = QAction(self)
+        action_about.setText('&About')
+        action_about.triggered.connect(lambda: AboutDialog(self).open())
 
         # TODO: Implement these actions and enable them
-        self.action_tutorial.setEnabled(False)
+        action_tutorial.setEnabled(False)
 
-        self.menu_file.addAction(self.action_reset_session)
-        self.menu_file.addAction(self.action_open)
-        self.menu_file.addSeparator()
-        self.menu_file.addAction(self.action_save)
-        self.menu_file.addAction(self.action_save_as)
+        menu_file.addAction(action_reset_session)
+        menu_file.addAction(action_open)
+        menu_file.addSeparator()
+        menu_file.addAction(action_save)
+        menu_file.addAction(action_save_as)
 
-        self.menu_help.addAction(self.action_tutorial)
-        self.menu_help.addAction(self.action_docs)
-        self.menu_help.addSeparator()
-        self.menu_help.addAction(self.action_about)
+        menu_help.addAction(action_tutorial)
+        menu_help.addAction(action_docs)
+        menu_help.addSeparator()
+        menu_help.addAction(action_about)
 
-        self.menubar.addAction(self.menu_file.menuAction())
-        self.menubar.addAction(self.menu_help.menuAction())
+        menubar.addAction(menu_file.menuAction())
+        menubar.addAction(menu_help.menuAction())
 
-        self.setMenuBar(self.menubar)
+        self.setMenuBar(menubar)
 
         # === Create widgets
 
         # Left layout: the plot and input box
 
-        self.plot = VisualizeTransformationWidget(self, display_settings=DisplaySettings())
+        self._plot = VisualizeTransformationWidget(self, display_settings=DisplaySettings())
 
-        self.lineedit_expression_box = QtWidgets.QLineEdit(self)
-        self.lineedit_expression_box.setPlaceholderText('Enter matrix expression...')
-        self.lineedit_expression_box.setValidator(MatrixExpressionValidator(self))
-        self.lineedit_expression_box.textChanged.connect(self.update_render_buttons)
+        self._lineedit_expression_box = QtWidgets.QLineEdit(self)
+        self._lineedit_expression_box.setPlaceholderText('Enter matrix expression...')
+        self._lineedit_expression_box.setValidator(MatrixExpressionValidator(self))
+        self._lineedit_expression_box.textChanged.connect(self._update_render_buttons)
 
         # Right layout: all the buttons
 
         # Misc buttons
 
-        self.button_create_polygon = QtWidgets.QPushButton(self)
-        self.button_create_polygon.setText('Create polygon')
-        # self.button_create_polygon.clicked.connect(self.create_polygon)
-        self.button_create_polygon.setToolTip('Define a new polygon to view the transformation of')
+        button_create_polygon = QPushButton(self)
+        button_create_polygon.setText('Create polygon')
+        # button_create_polygon.clicked.connect(self.create_polygon)
+        button_create_polygon.setToolTip('Define a new polygon to view the transformation of')
 
         # TODO: Implement this and enable button
-        self.button_create_polygon.setEnabled(False)
+        button_create_polygon.setEnabled(False)
 
-        self.button_change_display_settings = QtWidgets.QPushButton(self)
-        self.button_change_display_settings.setText('Change\ndisplay settings')
-        self.button_change_display_settings.clicked.connect(self.dialog_change_display_settings)
-        self.button_change_display_settings.setToolTip(
+        button_change_display_settings = QPushButton(self)
+        button_change_display_settings.setText('Change\ndisplay settings')
+        button_change_display_settings.clicked.connect(self._dialog_change_display_settings)
+        button_change_display_settings.setToolTip(
             "Change which things are rendered and how they're rendered<br><b>(Ctrl + D)</b>"
         )
-        QShortcut(QKeySequence('Ctrl+D'), self).activated.connect(self.button_change_display_settings.click)
+        QShortcut(QKeySequence('Ctrl+D'), self).activated.connect(button_change_display_settings.click)
 
-        self.button_reset_zoom = QtWidgets.QPushButton(self)
-        self.button_reset_zoom.setText('Reset zoom')
-        self.button_reset_zoom.clicked.connect(self.reset_zoom)
-        self.button_reset_zoom.setToolTip('Reset the zoom level back to normal<br><b>(Ctrl + Shift + R)</b>')
-        QShortcut(QKeySequence('Ctrl+Shift+R'), self).activated.connect(self.button_reset_zoom.click)
+        button_reset_zoom = QPushButton(self)
+        button_reset_zoom.setText('Reset zoom')
+        button_reset_zoom.clicked.connect(self._reset_zoom)
+        button_reset_zoom.setToolTip('Reset the zoom level back to normal<br><b>(Ctrl + Shift + R)</b>')
+        QShortcut(QKeySequence('Ctrl+Shift+R'), self).activated.connect(button_reset_zoom.click)
 
         # Define new matrix buttons and their groupbox
 
-        self.button_define_visually = QtWidgets.QPushButton(self)
-        self.button_define_visually.setText('Visually')
-        self.button_define_visually.setToolTip('Drag the basis vectors<br><b>(Alt + 1)</b>')
-        self.button_define_visually.clicked.connect(lambda: self.dialog_define_matrix(DefineVisuallyDialog))
-        QShortcut(QKeySequence('Alt+1'), self).activated.connect(self.button_define_visually.click)
+        button_define_visually = QPushButton(self)
+        button_define_visually.setText('Visually')
+        button_define_visually.setToolTip('Drag the basis vectors<br><b>(Alt + 1)</b>')
+        button_define_visually.clicked.connect(lambda: self._dialog_define_matrix(DefineVisuallyDialog))
+        QShortcut(QKeySequence('Alt+1'), self).activated.connect(button_define_visually.click)
 
-        self.button_define_numerically = QtWidgets.QPushButton(self)
-        self.button_define_numerically.setText('Numerically')
-        self.button_define_numerically.setToolTip('Define a matrix just with numbers<br><b>(Alt + 2)</b>')
-        self.button_define_numerically.clicked.connect(lambda: self.dialog_define_matrix(DefineNumericallyDialog))
-        QShortcut(QKeySequence('Alt+2'), self).activated.connect(self.button_define_numerically.click)
+        button_define_numerically = QPushButton(self)
+        button_define_numerically.setText('Numerically')
+        button_define_numerically.setToolTip('Define a matrix just with numbers<br><b>(Alt + 2)</b>')
+        button_define_numerically.clicked.connect(lambda: self._dialog_define_matrix(DefineNumericallyDialog))
+        QShortcut(QKeySequence('Alt+2'), self).activated.connect(button_define_numerically.click)
 
-        self.button_define_as_expression = QtWidgets.QPushButton(self)
-        self.button_define_as_expression.setText('As an expression')
-        self.button_define_as_expression.setToolTip('Define a matrix in terms of other matrices<br><b>(Alt + 3)</b>')
-        self.button_define_as_expression.clicked.connect(lambda: self.dialog_define_matrix(DefineAsAnExpressionDialog))
-        QShortcut(QKeySequence('Alt+3'), self).activated.connect(self.button_define_as_expression.click)
+        button_define_as_expression = QPushButton(self)
+        button_define_as_expression.setText('As an expression')
+        button_define_as_expression.setToolTip('Define a matrix in terms of other matrices<br><b>(Alt + 3)</b>')
+        button_define_as_expression.clicked.connect(lambda: self._dialog_define_matrix(DefineAsAnExpressionDialog))
+        QShortcut(QKeySequence('Alt+3'), self).activated.connect(button_define_as_expression.click)
 
-        self.vlay_define_new_matrix = QVBoxLayout()
-        self.vlay_define_new_matrix.setSpacing(20)
-        self.vlay_define_new_matrix.addWidget(self.button_define_visually)
-        self.vlay_define_new_matrix.addWidget(self.button_define_numerically)
-        self.vlay_define_new_matrix.addWidget(self.button_define_as_expression)
+        vlay_define_new_matrix = QVBoxLayout()
+        vlay_define_new_matrix.setSpacing(20)
+        vlay_define_new_matrix.addWidget(button_define_visually)
+        vlay_define_new_matrix.addWidget(button_define_numerically)
+        vlay_define_new_matrix.addWidget(button_define_as_expression)
 
-        self.groupbox_define_new_matrix = QtWidgets.QGroupBox('Define a new matrix', self)
-        self.groupbox_define_new_matrix.setLayout(self.vlay_define_new_matrix)
+        groupbox_define_new_matrix = QtWidgets.QGroupBox('Define a new matrix', self)
+        groupbox_define_new_matrix.setLayout(vlay_define_new_matrix)
 
         # Info panel button
 
-        self.button_info_panel = QtWidgets.QPushButton(self)
-        self.button_info_panel.setText('Show defined matrices')
-        self.button_info_panel.clicked.connect(
+        button_info_panel = QPushButton(self)
+        button_info_panel.setText('Show defined matrices')
+        button_info_panel.clicked.connect(
             # We have to use a lambda instead of 'InfoPanelDialog(self.matrix_wrapper, self).open' here
             # because that would create an unnamed instance of InfoPanelDialog when LintransMainWindow is
             # constructed, but we need to create a new instance every time to keep self.matrix_wrapper up to date
-            lambda: InfoPanelDialog(self.matrix_wrapper, self).open()
+            lambda: InfoPanelDialog(self._matrix_wrapper, self).open()
         )
-        self.button_info_panel.setToolTip(
+        button_info_panel.setToolTip(
             'Open an info panel with all matrices that have been defined in this session<br><b>(Ctrl + M)</b>'
         )
-        QShortcut(QKeySequence('Ctrl+M'), self).activated.connect(self.button_info_panel.click)
+        QShortcut(QKeySequence('Ctrl+M'), self).activated.connect(button_info_panel.click)
 
         # Render buttons
 
-        self.button_reset = QtWidgets.QPushButton(self)
-        self.button_reset.setText('Reset')
-        self.button_reset.clicked.connect(self.reset_transformation)
-        self.button_reset.setToolTip('Reset the visualized transformation back to the identity<br><b>(Ctrl + R)</b>')
-        QShortcut(QKeySequence('Ctrl+R'), self).activated.connect(self.button_reset.click)
+        button_reset = QPushButton(self)
+        button_reset.setText('Reset')
+        button_reset.clicked.connect(self._reset_transformation)
+        button_reset.setToolTip('Reset the visualized transformation back to the identity<br><b>(Ctrl + R)</b>')
+        QShortcut(QKeySequence('Ctrl+R'), self).activated.connect(button_reset.click)
 
-        self.button_render = QtWidgets.QPushButton(self)
-        self.button_render.setText('Render')
-        self.button_render.setEnabled(False)
-        self.button_render.clicked.connect(self.render_expression)
-        self.button_render.setToolTip('Render the expression<br><b>(Ctrl + Enter)</b>')
-        QShortcut(QKeySequence('Ctrl+Return'), self).activated.connect(self.button_render.click)
+        self._button_render = QPushButton(self)
+        self._button_render.setText('Render')
+        self._button_render.setEnabled(False)
+        self._button_render.clicked.connect(self._render_expression)
+        self._button_render.setToolTip('Render the expression<br><b>(Ctrl + Enter)</b>')
+        QShortcut(QKeySequence('Ctrl+Return'), self).activated.connect(self._button_render.click)
 
-        self.button_animate = QtWidgets.QPushButton(self)
-        self.button_animate.setText('Animate')
-        self.button_animate.setEnabled(False)
-        self.button_animate.clicked.connect(self.animate_expression)
-        self.button_animate.setToolTip('Animate the expression<br><b>(Ctrl + Shift + Enter)</b>')
-        QShortcut(QKeySequence('Ctrl+Shift+Return'), self).activated.connect(self.button_animate.click)
+        self._button_animate = QPushButton(self)
+        self._button_animate.setText('Animate')
+        self._button_animate.setEnabled(False)
+        self._button_animate.clicked.connect(self._animate_expression)
+        self._button_animate.setToolTip('Animate the expression<br><b>(Ctrl + Shift + Enter)</b>')
+        QShortcut(QKeySequence('Ctrl+Shift+Return'), self).activated.connect(self._button_animate.click)
 
         # === Arrange widgets
 
-        self.vlay_left = QVBoxLayout()
-        self.vlay_left.addWidget(self.plot)
-        self.vlay_left.addWidget(self.lineedit_expression_box)
+        vlay_left = QVBoxLayout()
+        vlay_left.addWidget(self._plot)
+        vlay_left.addWidget(self._lineedit_expression_box)
 
-        self.vlay_misc_buttons = QVBoxLayout()
-        self.vlay_misc_buttons.setSpacing(20)
-        self.vlay_misc_buttons.addWidget(self.button_create_polygon)
-        self.vlay_misc_buttons.addWidget(self.button_change_display_settings)
-        self.vlay_misc_buttons.addWidget(self.button_reset_zoom)
+        vlay_misc_buttons = QVBoxLayout()
+        vlay_misc_buttons.setSpacing(20)
+        vlay_misc_buttons.addWidget(button_create_polygon)
+        vlay_misc_buttons.addWidget(button_change_display_settings)
+        vlay_misc_buttons.addWidget(button_reset_zoom)
 
-        self.vlay_info_buttons = QVBoxLayout()
-        self.vlay_info_buttons.setSpacing(20)
-        self.vlay_info_buttons.addWidget(self.button_info_panel)
+        vlay_info_buttons = QVBoxLayout()
+        vlay_info_buttons.setSpacing(20)
+        vlay_info_buttons.addWidget(button_info_panel)
 
-        self.vlay_render = QVBoxLayout()
-        self.vlay_render.setSpacing(20)
-        self.vlay_render.addWidget(self.button_reset)
-        self.vlay_render.addWidget(self.button_animate)
-        self.vlay_render.addWidget(self.button_render)
+        vlay_render = QVBoxLayout()
+        vlay_render.setSpacing(20)
+        vlay_render.addWidget(button_reset)
+        vlay_render.addWidget(self._button_animate)
+        vlay_render.addWidget(self._button_render)
 
-        self.vlay_right = QVBoxLayout()
-        self.vlay_right.setSpacing(50)
-        self.vlay_right.addLayout(self.vlay_misc_buttons)
-        self.vlay_right.addItem(QSpacerItem(100, 2, hPolicy=QSizePolicy.Minimum, vPolicy=QSizePolicy.Expanding))
-        self.vlay_right.addWidget(self.groupbox_define_new_matrix)
-        self.vlay_right.addItem(QSpacerItem(100, 2, hPolicy=QSizePolicy.Minimum, vPolicy=QSizePolicy.Expanding))
-        self.vlay_right.addLayout(self.vlay_info_buttons)
-        self.vlay_right.addItem(QSpacerItem(100, 2, hPolicy=QSizePolicy.Minimum, vPolicy=QSizePolicy.Expanding))
-        self.vlay_right.addLayout(self.vlay_render)
+        vlay_right = QVBoxLayout()
+        vlay_right.setSpacing(50)
+        vlay_right.addLayout(vlay_misc_buttons)
+        vlay_right.addItem(QSpacerItem(100, 2, hPolicy=QSizePolicy.Minimum, vPolicy=QSizePolicy.Expanding))
+        vlay_right.addWidget(groupbox_define_new_matrix)
+        vlay_right.addItem(QSpacerItem(100, 2, hPolicy=QSizePolicy.Minimum, vPolicy=QSizePolicy.Expanding))
+        vlay_right.addLayout(vlay_info_buttons)
+        vlay_right.addItem(QSpacerItem(100, 2, hPolicy=QSizePolicy.Minimum, vPolicy=QSizePolicy.Expanding))
+        vlay_right.addLayout(vlay_render)
 
-        self.hlay_all = QHBoxLayout()
-        self.hlay_all.setSpacing(15)
-        self.hlay_all.addLayout(self.vlay_left)
-        self.hlay_all.addLayout(self.vlay_right)
+        hlay_all = QHBoxLayout()
+        hlay_all.setSpacing(15)
+        hlay_all.addLayout(vlay_left)
+        hlay_all.addLayout(vlay_right)
 
-        self.central_widget = QtWidgets.QWidget()
-        self.central_widget.setLayout(self.hlay_all)
-        self.central_widget.setContentsMargins(10, 10, 10, 10)
+        central_widget = QtWidgets.QWidget()
+        central_widget.setLayout(hlay_all)
+        central_widget.setContentsMargins(10, 10, 10, 10)
 
-        self.setCentralWidget(self.central_widget)
+        self.setCentralWidget(central_widget)
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """Handle a :class:`QCloseEvent` by confirming if the user wants to save, and cancelling animation."""
-        if self.save_filename is None or not self.changed_since_save:
-            self.animating = False
+        if self._save_filename is None or not self._changed_since_save:
+            self._animating = False
             event.accept()
             return
 
         dialog = QMessageBox(self)
         dialog.setIcon(QMessageBox.Question)
         dialog.setWindowTitle('Save changes?')
-        dialog.setText(f"If you don't save, then changes made to {self.save_filename} will be lost.")
+        dialog.setText(f"If you don't save, then changes made to {self._save_filename} will be lost.")
         dialog.setStandardButtons(QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
         dialog.setDefaultButton(QMessageBox.Save)
 
         pressed_button = dialog.exec()
 
         if pressed_button == QMessageBox.Save:
-            self.save_session()
+            self._save_session()
 
         if pressed_button in (QMessageBox.Save, QMessageBox.Discard):
-            self.animating = False
+            self._animating = False
             event.accept()
         else:
             event.ignore()
 
-    def update_render_buttons(self) -> None:
+    def _update_render_buttons(self) -> None:
         """Enable or disable the render and animate buttons according to whether the matrix expression is valid."""
-        text = self.lineedit_expression_box.text()
+        text = self._lineedit_expression_box.text()
 
         # Let's say that the user defines a non-singular matrix A, then defines B as A^-1
         # If they then redefine A and make it singular, then we get a LinAlgError when
         # trying to evaluate an expression with B in it
         # To fix this, we just do naive validation rather than aware validation
         if ',' in text:
-            self.button_render.setEnabled(False)
+            self._button_render.setEnabled(False)
 
             try:
-                valid = all(self.matrix_wrapper.is_valid_expression(x) for x in text.split(','))
+                valid = all(self._matrix_wrapper.is_valid_expression(x) for x in text.split(','))
             except LinAlgError:
                 valid = all(validate_matrix_expression(x) for x in text.split(','))
 
-            self.button_animate.setEnabled(valid)
+            self._button_animate.setEnabled(valid)
 
         else:
             try:
-                valid = self.matrix_wrapper.is_valid_expression(text)
+                valid = self._matrix_wrapper.is_valid_expression(text)
             except LinAlgError:
                 valid = validate_matrix_expression(text)
 
-            self.button_render.setEnabled(valid)
-            self.button_animate.setEnabled(valid)
+            self._button_render.setEnabled(valid)
+            self._button_animate.setEnabled(valid)
 
     @pyqtSlot()
-    def reset_zoom(self) -> None:
+    def _reset_zoom(self) -> None:
         """Reset the zoom level back to normal."""
-        self.plot.grid_spacing = self.plot.default_grid_spacing
-        self.plot.update()
+        self._plot.grid_spacing = self._plot.DEFAULT_GRID_SPACING
+        self._plot.update()
 
     @pyqtSlot()
-    def reset_transformation(self) -> None:
+    def _reset_transformation(self) -> None:
         """Reset the visualized transformation back to the identity."""
-        self.plot.visualize_matrix_transformation(self.matrix_wrapper['I'])
-        self.animating = False
-        self.animating_sequence = False
-        self.plot.update()
+        self._plot.plot_matrix(self._matrix_wrapper['I'])
+        self._animating = False
+        self._animating_sequence = False
+        self._plot.update()
 
     @pyqtSlot()
-    def render_expression(self) -> None:
+    def _render_expression(self) -> None:
         """Render the transformation given by the expression in the input box."""
         try:
-            matrix = self.matrix_wrapper.evaluate_expression(self.lineedit_expression_box.text())
+            matrix = self._matrix_wrapper.evaluate_expression(self._lineedit_expression_box.text())
 
         except LinAlgError:
-            self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
+            self._show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
             return
 
-        if self.is_matrix_too_big(matrix):
-            self.show_error_message('Matrix too big', "This matrix doesn't fit on the canvas")
+        if self._is_matrix_too_big(matrix):
+            self._show_error_message('Matrix too big', "This matrix doesn't fit on the canvas")
             return
 
-        self.plot.visualize_matrix_transformation(matrix)
-        self.plot.update()
+        self._plot.plot_matrix(matrix)
+        self._plot.update()
 
     @pyqtSlot()
-    def animate_expression(self) -> None:
+    def _animate_expression(self) -> None:
         """Animate from the current matrix to the matrix in the expression box."""
-        self.button_render.setEnabled(False)
-        self.button_animate.setEnabled(False)
+        self._button_render.setEnabled(False)
+        self._button_animate.setEnabled(False)
 
         matrix_start: MatrixType = np.array([
-            [self.plot.point_i[0], self.plot.point_j[0]],
-            [self.plot.point_i[1], self.plot.point_j[1]]
+            [self._plot.point_i[0], self._plot.point_j[0]],
+            [self._plot.point_i[1], self._plot.point_j[1]]
         ])
 
-        text = self.lineedit_expression_box.text()
+        text = self._lineedit_expression_box.text()
 
         # If there's commas in the expression, then we want to animate each part at a time
         if ',' in text:
             current_matrix = matrix_start
-            self.animating_sequence = True
+            self._animating_sequence = True
 
             # For each expression in the list, right multiply it by the current matrix,
             # and animate from the current matrix to that new matrix
             for expr in text.split(',')[::-1]:
                 try:
-                    new_matrix = self.matrix_wrapper.evaluate_expression(expr)
+                    new_matrix = self._matrix_wrapper.evaluate_expression(expr)
 
-                    if self.plot.display_settings.applicative_animation:
+                    if self._plot.display_settings.applicative_animation:
                         new_matrix = new_matrix @ current_matrix
                 except LinAlgError:
-                    self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
+                    self._show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
                     return
 
-                if not self.animating_sequence:
+                if not self._animating_sequence:
                     break
 
-                self.animate_between_matrices(current_matrix, new_matrix)
+                self._animate_between_matrices(current_matrix, new_matrix)
                 current_matrix = new_matrix
 
                 # Here we just redraw and allow for other events to be handled while we pause
-                self.plot.update()
+                self._plot.update()
                 QApplication.processEvents()
-                QThread.msleep(self.plot.display_settings.animation_pause_length)
+                QThread.msleep(self._plot.display_settings.animation_pause_length)
 
-            self.animating_sequence = False
+            self._animating_sequence = False
 
         # If there's no commas, then just animate directly from the start to the target
         else:
             # Get the target matrix and it's determinant
             try:
-                matrix_target = self.matrix_wrapper.evaluate_expression(text)
+                matrix_target = self._matrix_wrapper.evaluate_expression(text)
 
             except LinAlgError:
-                self.show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
+                self._show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
                 return
 
             # The concept of applicative animation is explained in /gui/settings.py
-            if self.plot.display_settings.applicative_animation:
+            if self._plot.display_settings.applicative_animation:
                 matrix_target = matrix_target @ matrix_start
 
             # If we want a transitional animation and we're animating the same matrix, then restart the animation
             # We use this check rather than equality because of small floating point errors
             elif (abs(matrix_start - matrix_target) < 1e-12).all():
-                matrix_start = self.matrix_wrapper['I']
+                matrix_start = self._matrix_wrapper['I']
 
                 # We pause here for 200 ms to make the animation look a bit nicer
-                self.plot.visualize_matrix_transformation(matrix_start)
-                self.plot.update()
+                self._plot.plot_matrix(matrix_start)
+                self._plot.update()
                 QApplication.processEvents()
                 QThread.msleep(200)
 
-            self.animate_between_matrices(matrix_start, matrix_target)
+            self._animate_between_matrices(matrix_start, matrix_target)
 
-        self.update_render_buttons()
+        self._update_render_buttons()
 
     def _get_animation_frame(self, start: MatrixType, target: MatrixType, proportion: float) -> MatrixType:
         """Get the matrix to render for this frame of the animation.
@@ -466,7 +466,7 @@ class LintransMainWindow(QMainWindow):
         # its vectors must be perpendicular, and its vectors must be the same length
         # The checks for 'abs(value) < 1e-10' are to account for floating point error
         if matrix_application is not None \
-                and self.plot.display_settings.smoothen_determinant \
+                and self._plot.display_settings.smoothen_determinant \
                 and linalg.det(matrix_application) > 0 \
                 and abs(np.dot(matrix_application.T[0], matrix_application.T[1])) < 1e-10 \
                 and abs(np.hypot(*matrix_application.T[0]) - np.hypot(*matrix_application.T[1])) < 1e-10:
@@ -498,7 +498,7 @@ class LintransMainWindow(QMainWindow):
         # If we just used matrix_a, then things would animate, but the determinants would be weird
         matrix_a = start + proportion * (target - start)
 
-        if not self.plot.display_settings.smoothen_determinant or det_start * det_target <= 0:
+        if not self._plot.display_settings.smoothen_determinant or det_start * det_target <= 0:
             return matrix_a
 
         # To fix the determinant problem, we get the determinant of matrix_a and use it to normalize
@@ -533,38 +533,38 @@ class LintransMainWindow(QMainWindow):
         scalar = 1 + proportion * (np.sqrt(abs(det_target / det_b)) - 1)
         return scalar * matrix_b
 
-    def animate_between_matrices(self, matrix_start: MatrixType, matrix_target: MatrixType) -> None:
+    def _animate_between_matrices(self, matrix_start: MatrixType, matrix_target: MatrixType) -> None:
         """Animate from the start matrix to the target matrix."""
-        self.animating = True
+        self._animating = True
 
         # Making steps depend on animation_time ensures a smooth animation without
         # massive overheads for small animation times
-        steps = self.plot.display_settings.animation_time // 10
+        steps = self._plot.display_settings.animation_time // 10
 
         for i in range(0, steps + 1):
-            if not self.animating:
+            if not self._animating:
                 break
 
             matrix_to_render = self._get_animation_frame(matrix_start, matrix_target, i / steps)
 
-            if self.is_matrix_too_big(matrix_to_render):
-                self.show_error_message('Matrix too big', "This matrix doesn't fit on the canvas")
-                self.animating = False
+            if self._is_matrix_too_big(matrix_to_render):
+                self._show_error_message('Matrix too big', "This matrix doesn't fit on the canvas")
+                self._animating = False
                 return
 
-            self.plot.visualize_matrix_transformation(matrix_to_render)
+            self._plot.plot_matrix(matrix_to_render)
 
             # We schedule the plot to be updated, tell the event loop to
             # process events, and asynchronously sleep for 10ms
             # This allows for other events to be processed while animating, like zooming in and out
-            self.plot.update()
+            self._plot.update()
             QApplication.processEvents()
-            QThread.msleep(self.plot.display_settings.animation_time // steps)
+            QThread.msleep(self._plot.display_settings.animation_time // steps)
 
-        self.animating = False
+        self._animating = False
 
     @pyqtSlot(DefineDialog)
-    def dialog_define_matrix(self, dialog_class: Type[DefineDialog]) -> None:
+    def _dialog_define_matrix(self, dialog_class: Type[DefineDialog]) -> None:
         """Open a generic definition dialog to define a new matrix.
 
         The class for the desired dialog is passed as an argument. We create an
@@ -584,44 +584,44 @@ class LintransMainWindow(QMainWindow):
         if dialog_class == DefineVisuallyDialog:
             dialog = DefineVisuallyDialog(
                 self,
-                matrix_wrapper=deepcopy(self.matrix_wrapper),
-                display_settings=self.plot.display_settings
+                matrix_wrapper=deepcopy(self._matrix_wrapper),
+                display_settings=self._plot.display_settings
             )
         else:
-            dialog = dialog_class(self, matrix_wrapper=deepcopy(self.matrix_wrapper))
+            dialog = dialog_class(self, matrix_wrapper=deepcopy(self._matrix_wrapper))
 
         # .open() is asynchronous and doesn't spawn a new event loop, but the dialog is still modal (blocking)
         dialog.open()
 
         # So we have to use the accepted signal to call a method when the user accepts the dialog
-        dialog.accepted.connect(self.assign_matrix_wrapper)
+        dialog.accepted.connect(self._assign_matrix_wrapper)
 
     @pyqtSlot()
-    def assign_matrix_wrapper(self) -> None:
-        """Assign a new value to ``self.matrix_wrapper`` and give the expression box focus."""
-        self.matrix_wrapper = self.sender().matrix_wrapper
-        self.lineedit_expression_box.setFocus()
-        self.update_render_buttons()
+    def _assign_matrix_wrapper(self) -> None:
+        """Assign a new value to ``self._matrix_wrapper`` and give the expression box focus."""
+        self._matrix_wrapper = self.sender().matrix_wrapper
+        self._lineedit_expression_box.setFocus()
+        self._update_render_buttons()
 
-        self.changed_since_save = True
-        self.update_window_title()
+        self._changed_since_save = True
+        self._update_window_title()
 
     @pyqtSlot()
-    def dialog_change_display_settings(self) -> None:
+    def _dialog_change_display_settings(self) -> None:
         """Open the dialog to change the display settings."""
-        dialog = DisplaySettingsDialog(self, display_settings=self.plot.display_settings)
+        dialog = DisplaySettingsDialog(self, display_settings=self._plot.display_settings)
         dialog.open()
-        dialog.accepted.connect(lambda: self.assign_display_settings(dialog.display_settings))
+        dialog.accepted.connect(self._assign_display_settings)
 
-    @pyqtSlot(DisplaySettings)
-    def assign_display_settings(self, display_settings: DisplaySettings) -> None:
-        """Assign a new value to ``self.plot.display_settings`` and give the expression box focus."""
-        self.plot.display_settings = display_settings
-        self.plot.update()
-        self.lineedit_expression_box.setFocus()
-        self.update_render_buttons()
+    @pyqtSlot()
+    def _assign_display_settings(self) -> None:
+        """Assign a new value to ``self._plot.display_settings`` and give the expression box focus."""
+        self._plot.display_settings = self.sender().display_settings
+        self._plot.update()
+        self._lineedit_expression_box.setFocus()
+        self._update_render_buttons()
 
-    def show_error_message(self, title: str, text: str, info: str | None = None) -> None:
+    def _show_error_message(self, title: str, text: str, info: str | None = None) -> None:
         """Show an error message in a dialog box.
 
         :param str title: The window title of the dialog box
@@ -640,9 +640,9 @@ class LintransMainWindow(QMainWindow):
         dialog.open()
 
         # This is `finished` rather than `accepted` because we want to update the buttons no matter what
-        dialog.finished.connect(self.update_render_buttons)
+        dialog.finished.connect(self._update_render_buttons)
 
-    def is_matrix_too_big(self, matrix: MatrixType) -> bool:
+    def _is_matrix_too_big(self, matrix: MatrixType) -> bool:
         """Check if the given matrix will actually fit onto the canvas.
 
         Convert the elements of the matrix to canvas coords and make sure they fit within Qt's 32-bit integer limit.
@@ -650,7 +650,7 @@ class LintransMainWindow(QMainWindow):
         :param MatrixType matrix: The matrix to check
         :returns bool: Whether the matrix is too big to fit on the canvas
         """
-        coords: List[Tuple[int, int]] = [self.plot.canvas_coords(*vector) for vector in matrix.T]
+        coords: List[Tuple[int, int]] = [self._plot.canvas_coords(*vector) for vector in matrix.T]
 
         for x, y in coords:
             if not (-2147483648 <= x <= 2147483647 and -2147483648 <= y <= 2147483647):
@@ -658,19 +658,19 @@ class LintransMainWindow(QMainWindow):
 
         return False
 
-    def update_window_title(self) -> None:
+    def _update_window_title(self) -> None:
         """Update the window title to reflect whether the session has changed since it was last saved."""
         title = 'lintrans'
 
-        if self.save_filename:
-            title = os.path.split(self.save_filename)[-1] + ' - ' + title
+        if self._save_filename:
+            title = os.path.split(self._save_filename)[-1] + ' - ' + title
 
-            if self.changed_since_save:
+            if self._changed_since_save:
                 title = '*' + title
 
         self.setWindowTitle(title)
 
-    def reset_session(self) -> None:
+    def _reset_session(self) -> None:
         """Ask the user if they want to reset the current session.
 
         Resetting the session means setting the matrix wrapper to a new instance, and rendering I.
@@ -683,17 +683,17 @@ class LintransMainWindow(QMainWindow):
         dialog.setDefaultButton(QMessageBox.No)
 
         if dialog.exec() == QMessageBox.Yes:
-            self.matrix_wrapper = MatrixWrapper()
+            self._matrix_wrapper = MatrixWrapper()
 
-            self.lineedit_expression_box.setText('I')
-            self.render_expression()
-            self.lineedit_expression_box.setText('')
-            self.lineedit_expression_box.setFocus()
-            self.update_render_buttons()
+            self._lineedit_expression_box.setText('I')
+            self._render_expression()
+            self._lineedit_expression_box.setText('')
+            self._lineedit_expression_box.setFocus()
+            self._update_render_buttons()
 
-            self.save_filename = None
-            self.changed_since_save = False
-            self.update_window_title()
+            self._save_filename = None
+            self._changed_since_save = False
+            self._update_window_title()
 
     def open_session_file(self, filename: str) -> None:
         """Open the given session file.
@@ -707,7 +707,7 @@ class LintransMainWindow(QMainWindow):
         # load_from_file() can raise errors if the contents is not a valid pickled Python object,
         # or if the pickled Python object is of the wrong type
         except (EOFError, FileNotFoundError, ValueError):
-            self.show_error_message(
+            self._show_error_message(
                 'Invalid file contents',
                 'This is not a valid lintrans session file',
                 'Not all .lt files are lintrans session files. This file was probably created by an unrelated '
@@ -715,21 +715,21 @@ class LintransMainWindow(QMainWindow):
             )
             return
 
-        self.matrix_wrapper = session.matrix_wrapper
+        self._matrix_wrapper = session.matrix_wrapper
 
-        self.lineedit_expression_box.setText('I')
-        self.render_expression()
-        self.lineedit_expression_box.setText('')
-        self.lineedit_expression_box.setFocus()
-        self.update_render_buttons()
+        self._lineedit_expression_box.setText('I')
+        self._render_expression()
+        self._lineedit_expression_box.setText('')
+        self._lineedit_expression_box.setFocus()
+        self._update_render_buttons()
 
         # Set this as the default filename if we could read it properly
-        self.save_filename = filename
-        self.changed_since_save = False
-        self.update_window_title()
+        self._save_filename = filename
+        self._changed_since_save = False
+        self._update_window_title()
 
     @pyqtSlot()
-    def ask_for_session_file(self) -> None:
+    def _ask_for_session_file(self) -> None:
         """Ask the user to select a session file, and then open it and load the session."""
         dialog = QFileDialog(
             self,
@@ -745,27 +745,27 @@ class LintransMainWindow(QMainWindow):
             self.open_session_file(dialog.selectedFiles()[0])
 
     @pyqtSlot()
-    def save_session(self) -> None:
+    def _save_session(self) -> None:
         """Save the session to the given file.
 
-        If ``self.save_filename`` is ``None``, then call :meth:`save_session_as` and return.
+        If ``self._save_filename`` is ``None``, then call :meth:`_save_session_as` and return.
         """
-        if self.save_filename is None:
-            self.save_session_as()
+        if self._save_filename is None:
+            self._save_session_as()
             return
 
-        Session(self.matrix_wrapper).save_to_file(self.save_filename)
+        Session(self._matrix_wrapper).save_to_file(self._save_filename)
 
-        self.changed_since_save = False
-        self.update_window_title()
+        self._changed_since_save = False
+        self._update_window_title()
 
     @pyqtSlot()
-    def save_session_as(self) -> None:
-        """Ask the user for a file to save the session to, and then call :meth:`save_session`.
+    def _save_session_as(self) -> None:
+        """Ask the user for a file to save the session to, and then call :meth:`_save_session`.
 
         .. note::
            If the user doesn't select a file to save the session to, then the session
-           just doesn't get saved, and :meth:`save_session` is never called.
+           just doesn't get saved, and :meth:`_save_session` is never called.
         """
         dialog = FileSelectDialog(
             self,
@@ -780,8 +780,8 @@ class LintransMainWindow(QMainWindow):
 
         if dialog.exec():
             filename = dialog.selectedFiles()[0]
-            self.save_filename = filename
-            self.save_session()
+            self._save_filename = filename
+            self._save_session()
 
 
 def qapp() -> QCoreApplication:

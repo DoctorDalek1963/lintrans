@@ -167,22 +167,22 @@ class ExpressionParser:
         # Get rid of a potential leading + introduced by the last step
         expression = re.sub(r'^\+', '', expression)
 
-        self.expression = expression
-        self.pointer: int = 0
+        self._expression = expression
+        self._pointer: int = 0
 
-        self.current_token = MatrixToken()
-        self.current_group: List[Tuple[str, str, str]] = []
+        self._current_token = MatrixToken()
+        self._current_group: List[Tuple[str, str, str]] = []
 
-        self.final_list: MatrixParseList = []
+        self._final_list: MatrixParseList = []
 
     def __repr__(self) -> str:
         """Return a simple repr containing the expression."""
-        return f'{self.__class__.__module__}.{self.__class__.__name__}("{self.expression}")'
+        return f'{self.__class__.__module__}.{self.__class__.__name__}("{self._expression}")'
 
     @property
-    def char(self) -> str:
-        """Return the char pointed to by the pointer."""
-        return self.expression[self.pointer]
+    def _char(self) -> str:
+        """Return the character pointed to by the pointer."""
+        return self._expression[self._pointer]
 
     def parse(self) -> MatrixParseList:
         """Fully parse the instance's matrix expression and return the :attr:`lintrans.typing_.MatrixParseList`.
@@ -195,14 +195,14 @@ class ExpressionParser:
         """
         self._parse_multiplication_group()
 
-        while self.pointer < len(self.expression):
-            if self.expression[self.pointer] != '+':
+        while self._pointer < len(self._expression):
+            if self._expression[self._pointer] != '+':
                 raise MatrixParseError('Expected "+" between multiplication groups')
 
-            self.pointer += 1
+            self._pointer += 1
             self._parse_multiplication_group()
 
-        return self.final_list
+        return self._final_list
 
     def _parse_multiplication_group(self) -> None:
         """Parse a group of matrices to be multiplied together.
@@ -212,10 +212,10 @@ class ExpressionParser:
         # This loop continues to parse matrices until we fail to do so
         while self._parse_matrix():
             # Once we get to the end of the multiplication group, we add it the final list and reset the group list
-            if self.pointer >= len(self.expression) or self.char == '+':
-                self.final_list.append(self.current_group)
-                self.current_group = []
-                self.pointer += 1
+            if self._pointer >= len(self._expression) or self._char == '+':
+                self._final_list.append(self._current_group)
+                self._current_group = []
+                self._pointer += 1
 
     def _parse_matrix(self) -> bool:
         """Parse a full matrix using :meth:`_parse_matrix_part`.
@@ -226,15 +226,15 @@ class ExpressionParser:
 
         :returns bool: Success or failure
         """
-        self.current_token = MatrixToken()
+        self._current_token = MatrixToken()
 
         while self._parse_matrix_part():
             pass  # The actual execution is taken care of in the loop condition
 
-        if self.current_token.identifier == '':
+        if self._current_token.identifier == '':
             return False
 
-        self.current_group.append(self.current_token.tuple)
+        self._current_group.append(self._current_token.tuple)
         return True
 
     def _parse_matrix_part(self) -> bool:
@@ -248,46 +248,46 @@ class ExpressionParser:
         :returns bool: Success or failure
         :raises MatrixParseError: If we fail to parse this part of the matrix
         """
-        if self.pointer >= len(self.expression):
+        if self._pointer >= len(self._expression):
             return False
 
-        if self.char.isdigit() or self.char == '-':
-            if self.current_token.multiplier != '' \
-                    or (self.current_token.multiplier == '' and self.current_token.identifier != ''):
+        if self._char.isdigit() or self._char == '-':
+            if self._current_token.multiplier != '' \
+                    or (self._current_token.multiplier == '' and self._current_token.identifier != ''):
                 return False
 
             self._parse_multiplier()
 
-        elif self.char.isalpha() and self.char.isupper():
-            if self.current_token.identifier != '':
+        elif self._char.isalpha() and self._char.isupper():
+            if self._current_token.identifier != '':
                 return False
 
-            self.current_token.identifier = self.char
-            self.pointer += 1
+            self._current_token.identifier = self._char
+            self._pointer += 1
 
-        elif self.char == 'r':
-            if self.current_token.identifier != '':
+        elif self._char == 'r':
+            if self._current_token.identifier != '':
                 return False
 
             self._parse_rot_identifier()
 
-        elif self.char == '(':
-            if self.current_token.identifier != '':
+        elif self._char == '(':
+            if self._current_token.identifier != '':
                 return False
 
             self._parse_sub_expression()
 
-        elif self.char == '^':
-            if self.current_token.exponent != '':
+        elif self._char == '^':
+            if self._current_token.exponent != '':
                 return False
 
             self._parse_exponent()
 
-        elif self.char == '+':
+        elif self._char == '+':
             return False
 
         else:
-            raise MatrixParseError(f'Unrecognised character "{self.char}" in matrix expression')
+            raise MatrixParseError(f'Unrecognised character "{self._char}" in matrix expression')
 
         return True
 
@@ -301,16 +301,16 @@ class ExpressionParser:
         """
         multiplier = ''
 
-        while self.char.isdigit() or self.char in ('.', '-'):
-            multiplier += self.char
-            self.pointer += 1
+        while self._char.isdigit() or self._char in ('.', '-'):
+            multiplier += self._char
+            self._pointer += 1
 
         try:
             float(multiplier)
         except ValueError as e:
             raise MatrixParseError(f'Invalid multiplier "{multiplier}"') from e
 
-        self.current_token.multiplier = multiplier
+        self._current_token.multiplier = multiplier
 
     def _parse_rot_identifier(self) -> None:
         """Parse a ``rot()``-style identifier from the expression and pointer.
@@ -319,17 +319,19 @@ class ExpressionParser:
 
         :raises MatrixParseError: If we fail to parse this part of the matrix
         """
-        if match := re.match(r'rot\(([\d.-]+)\)', self.expression[self.pointer:]):
+        if match := re.match(r'rot\(([\d.-]+)\)', self._expression[self._pointer:]):
             # Ensure that the number in brackets is a valid float
             try:
                 float(match.group(1))
             except ValueError as e:
                 raise MatrixParseError(f'Invalid angle number "{match.group(1)}" in rot-identifier') from e
 
-            self.current_token.identifier = match.group(0)
-            self.pointer += len(match.group(0))
+            self._current_token.identifier = match.group(0)
+            self._pointer += len(match.group(0))
         else:
-            raise MatrixParseError(f'Invalid rot-identifier "{self.expression[self.pointer:self.pointer + 15]}..."')
+            raise MatrixParseError(
+                f'Invalid rot-identifier "{self._expression[self._pointer : self._pointer + 15]}..."'
+            )
 
     def _parse_sub_expression(self) -> None:
         """Parse a parenthesized sub-expression as the identifier.
@@ -338,30 +340,30 @@ class ExpressionParser:
 
         :raises MatrixParseError: If we fail to parse this part of the matrix
         """
-        if self.char != '(':
+        if self._char != '(':
             raise MatrixParseError('Sub-expression must start with "("')
 
-        self.pointer += 1
+        self._pointer += 1
         paren_depth = 1
         identifier = ''
 
         while paren_depth > 0:
-            if self.char == '(':
+            if self._char == '(':
                 paren_depth += 1
-            elif self.char == ')':
+            elif self._char == ')':
                 paren_depth -= 1
 
             if paren_depth == 0:
-                self.pointer += 1
+                self._pointer += 1
                 break
 
-            identifier += self.char
-            self.pointer += 1
+            identifier += self._char
+            self._pointer += 1
 
         if not validate_matrix_expression(identifier):
             raise MatrixParseError(f'Invalid sub-expression identifier "{identifier}"')
 
-        self.current_token.identifier = identifier
+        self._current_token.identifier = identifier
 
     def _parse_exponent(self) -> None:
         """Parse a matrix exponent from the expression and pointer.
@@ -370,7 +372,7 @@ class ExpressionParser:
 
         :raises MatrixParseError: If we fail to parse this part of the token
         """
-        if match := re.match(r'\^\{(-?\d+|T)\}', self.expression[self.pointer:]):
+        if match := re.match(r'\^\{(-?\d+|T)\}', self._expression[self._pointer:]):
             exponent = match.group(1)
 
             try:
@@ -379,10 +381,12 @@ class ExpressionParser:
             except ValueError as e:
                 raise MatrixParseError(f'Invalid exponent "{match.group(1)}"') from e
 
-            self.current_token.exponent = exponent
-            self.pointer += len(match.group(0))
+            self._current_token.exponent = exponent
+            self._pointer += len(match.group(0))
         else:
-            raise MatrixParseError(f'Invalid exponent "{self.expression[self.pointer:self.pointer + 10]}..."')
+            raise MatrixParseError(
+                f'Invalid exponent "{self._expression[self._pointer : self._pointer + 10]}..."'
+            )
 
 
 def parse_matrix_expression(expression: str) -> MatrixParseList:

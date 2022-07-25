@@ -28,43 +28,43 @@ class SettingsDialog(FixedSizeDialog):
 
         # === Create the widgets
 
-        self.button_confirm = QtWidgets.QPushButton(self)
-        self.button_confirm.setText('Confirm')
-        self.button_confirm.clicked.connect(self.confirm_settings)
-        self.button_confirm.setToolTip('Confirm these new settings<br><b>(Ctrl + Enter)</b>')
-        QShortcut(QKeySequence('Ctrl+Return'), self).activated.connect(self.button_confirm.click)
+        self._button_confirm = QtWidgets.QPushButton(self)
+        self._button_confirm.setText('Confirm')
+        self._button_confirm.clicked.connect(self._confirm_settings)
+        self._button_confirm.setToolTip('Confirm these new settings<br><b>(Ctrl + Enter)</b>')
+        QShortcut(QKeySequence('Ctrl+Return'), self).activated.connect(self._button_confirm.click)
 
-        self.button_cancel = QtWidgets.QPushButton(self)
-        self.button_cancel.setText('Cancel')
-        self.button_cancel.clicked.connect(self.reject)
-        self.button_cancel.setToolTip('Revert these settings<br><b>(Escape)</b>')
+        self._button_cancel = QtWidgets.QPushButton(self)
+        self._button_cancel.setText('Cancel')
+        self._button_cancel.clicked.connect(self.reject)
+        self._button_cancel.setToolTip('Revert these settings<br><b>(Escape)</b>')
 
         # === Arrange the widgets
 
         self.setContentsMargins(10, 10, 10, 10)
 
-        self.hlay_buttons = QHBoxLayout()
-        self.hlay_buttons.setSpacing(20)
-        self.hlay_buttons.addItem(QSpacerItem(50, 5, hPolicy=QSizePolicy.Expanding, vPolicy=QSizePolicy.Minimum))
-        self.hlay_buttons.addWidget(self.button_cancel)
-        self.hlay_buttons.addWidget(self.button_confirm)
+        hlay_buttons = QHBoxLayout()
+        hlay_buttons.setSpacing(20)
+        hlay_buttons.addItem(QSpacerItem(50, 5, hPolicy=QSizePolicy.Expanding, vPolicy=QSizePolicy.Minimum))
+        hlay_buttons.addWidget(self._button_cancel)
+        hlay_buttons.addWidget(self._button_confirm)
 
         self.vlay_options = QVBoxLayout()
         self.vlay_options.setSpacing(20)
 
-        self.vlay_all = QVBoxLayout()
-        self.vlay_all.setSpacing(20)
-        self.vlay_all.addLayout(self.vlay_options)
-        self.vlay_all.addLayout(self.hlay_buttons)
+        vlay_all = QVBoxLayout()
+        vlay_all.setSpacing(20)
+        vlay_all.addLayout(self.vlay_options)
+        vlay_all.addLayout(hlay_buttons)
 
-        self.setLayout(self.vlay_all)
+        self.setLayout(vlay_all)
 
     @abc.abstractmethod
-    def load_settings(self) -> None:
+    def _load_settings(self) -> None:
         """Load the current settings into the widgets."""
 
     @abc.abstractmethod
-    def confirm_settings(self) -> None:
+    def _confirm_settings(self) -> None:
         """Confirm the settings chosen in the dialog."""
 
 
@@ -81,195 +81,195 @@ class DisplaySettingsDialog(SettingsDialog):
         self.display_settings = display_settings
         self.setWindowTitle('Change display settings')
 
-        self.dict_checkboxes: Dict[str, QCheckBox] = dict()
+        self._dict_checkboxes: Dict[str, QCheckBox] = dict()
 
         # === Create the widgets
 
         # Basic stuff
 
-        self.checkbox_draw_background_grid = QCheckBox(self)
-        self.checkbox_draw_background_grid.setText('Draw &background grid')
-        self.checkbox_draw_background_grid.setToolTip(
+        self._checkbox_draw_background_grid = QCheckBox(self)
+        self._checkbox_draw_background_grid.setText('Draw &background grid')
+        self._checkbox_draw_background_grid.setToolTip(
             'Draw the background grid (axes are always drawn)'
         )
-        self.dict_checkboxes['b'] = self.checkbox_draw_background_grid
+        self._dict_checkboxes['b'] = self._checkbox_draw_background_grid
 
-        self.checkbox_draw_transformed_grid = QCheckBox(self)
-        self.checkbox_draw_transformed_grid.setText('Draw t&ransformed grid')
-        self.checkbox_draw_transformed_grid.setToolTip(
+        self._checkbox_draw_transformed_grid = QCheckBox(self)
+        self._checkbox_draw_transformed_grid.setText('Draw t&ransformed grid')
+        self._checkbox_draw_transformed_grid.setToolTip(
             'Draw the transformed grid (vectors are handled separately)'
         )
-        self.dict_checkboxes['r'] = self.checkbox_draw_transformed_grid
+        self._dict_checkboxes['r'] = self._checkbox_draw_transformed_grid
 
-        self.checkbox_draw_basis_vectors = QCheckBox(self)
-        self.checkbox_draw_basis_vectors.setText('Draw basis &vectors')
-        self.checkbox_draw_basis_vectors.setToolTip(
+        self._checkbox_draw_basis_vectors = QCheckBox(self)
+        self._checkbox_draw_basis_vectors.setText('Draw basis &vectors')
+        self._checkbox_draw_basis_vectors.setToolTip(
             'Draw the transformed basis vectors'
         )
-        self.dict_checkboxes['v'] = self.checkbox_draw_basis_vectors
+        self._dict_checkboxes['v'] = self._checkbox_draw_basis_vectors
 
         # Animations
 
-        self.checkbox_smoothen_determinant = QCheckBox(self)
-        self.checkbox_smoothen_determinant.setText('&Smoothen determinant')
-        self.checkbox_smoothen_determinant.setToolTip(
+        self._checkbox_smoothen_determinant = QCheckBox(self)
+        self._checkbox_smoothen_determinant.setText('&Smoothen determinant')
+        self._checkbox_smoothen_determinant.setToolTip(
             'Smoothly animate the determinant transition during animation (if possible)'
         )
-        self.dict_checkboxes['s'] = self.checkbox_smoothen_determinant
+        self._dict_checkboxes['s'] = self._checkbox_smoothen_determinant
 
-        self.checkbox_applicative_animation = QCheckBox(self)
-        self.checkbox_applicative_animation.setText('&Applicative animation')
-        self.checkbox_applicative_animation.setToolTip(
+        self._checkbox_applicative_animation = QCheckBox(self)
+        self._checkbox_applicative_animation.setText('&Applicative animation')
+        self._checkbox_applicative_animation.setToolTip(
             'Animate the new transformation applied to the current one,\n'
             'rather than just that transformation on its own'
         )
-        self.dict_checkboxes['a'] = self.checkbox_applicative_animation
+        self._dict_checkboxes['a'] = self._checkbox_applicative_animation
 
-        self.label_animation_time = QtWidgets.QLabel(self)
-        self.label_animation_time.setText('Total animation length (ms)')
-        self.label_animation_time.setToolTip(
+        label_animation_time = QtWidgets.QLabel(self)
+        label_animation_time.setText('Total animation length (ms)')
+        label_animation_time.setToolTip(
             'How long it takes for an animation to complete'
         )
 
-        self.lineedit_animation_time = QtWidgets.QLineEdit(self)
-        self.lineedit_animation_time.setValidator(QIntValidator(1, 9999, self))
+        self._lineedit_animation_time = QtWidgets.QLineEdit(self)
+        self._lineedit_animation_time.setValidator(QIntValidator(1, 9999, self))
 
-        self.label_animation_pause_length = QtWidgets.QLabel(self)
-        self.label_animation_pause_length.setText('Animation pause length (ms)')
-        self.label_animation_pause_length.setToolTip(
+        label_animation_pause_length = QtWidgets.QLabel(self)
+        label_animation_pause_length.setText('Animation pause length (ms)')
+        label_animation_pause_length.setToolTip(
             'How many milliseconds to pause for in comma-separated animations'
         )
 
-        self.lineedit_animation_pause_length = QtWidgets.QLineEdit(self)
-        self.lineedit_animation_pause_length.setValidator(QIntValidator(1, 999, self))
+        self._lineedit_animation_pause_length = QtWidgets.QLineEdit(self)
+        self._lineedit_animation_pause_length.setValidator(QIntValidator(1, 999, self))
 
         # Matrix info
 
-        self.checkbox_draw_determinant_parallelogram = QCheckBox(self)
-        self.checkbox_draw_determinant_parallelogram.setText('Draw &determinant parallelogram')
-        self.checkbox_draw_determinant_parallelogram.setToolTip(
+        self._checkbox_draw_determinant_parallelogram = QCheckBox(self)
+        self._checkbox_draw_determinant_parallelogram.setText('Draw &determinant parallelogram')
+        self._checkbox_draw_determinant_parallelogram.setToolTip(
             'Shade the parallelogram representing the determinant of the matrix'
         )
-        self.checkbox_draw_determinant_parallelogram.clicked.connect(self.update_gui)
-        self.dict_checkboxes['d'] = self.checkbox_draw_determinant_parallelogram
+        self._checkbox_draw_determinant_parallelogram.clicked.connect(self._update_gui)
+        self._dict_checkboxes['d'] = self._checkbox_draw_determinant_parallelogram
 
-        self.checkbox_show_determinant_value = QCheckBox(self)
-        self.checkbox_show_determinant_value.setText('Show de&terminant value')
-        self.checkbox_show_determinant_value.setToolTip(
+        self._checkbox_show_determinant_value = QCheckBox(self)
+        self._checkbox_show_determinant_value.setText('Show de&terminant value')
+        self._checkbox_show_determinant_value.setToolTip(
             'Show the value of the determinant inside the parallelogram'
         )
-        self.dict_checkboxes['t'] = self.checkbox_show_determinant_value
+        self._dict_checkboxes['t'] = self._checkbox_show_determinant_value
 
-        self.checkbox_draw_eigenvectors = QCheckBox(self)
-        self.checkbox_draw_eigenvectors.setText('Draw &eigenvectors')
-        self.checkbox_draw_eigenvectors.setToolTip('Draw the eigenvectors of the transformations')
-        self.dict_checkboxes['e'] = self.checkbox_draw_eigenvectors
+        self._checkbox_draw_eigenvectors = QCheckBox(self)
+        self._checkbox_draw_eigenvectors.setText('Draw &eigenvectors')
+        self._checkbox_draw_eigenvectors.setToolTip('Draw the eigenvectors of the transformations')
+        self._dict_checkboxes['e'] = self._checkbox_draw_eigenvectors
 
-        self.checkbox_draw_eigenlines = QCheckBox(self)
-        self.checkbox_draw_eigenlines.setText('Draw eigen&lines')
-        self.checkbox_draw_eigenlines.setToolTip('Draw the eigenlines (invariant lines) of the transformations')
-        self.dict_checkboxes['l'] = self.checkbox_draw_eigenlines
+        self._checkbox_draw_eigenlines = QCheckBox(self)
+        self._checkbox_draw_eigenlines.setText('Draw eigen&lines')
+        self._checkbox_draw_eigenlines.setToolTip('Draw the eigenlines (invariant lines) of the transformations')
+        self._dict_checkboxes['l'] = self._checkbox_draw_eigenlines
 
         # === Arrange the widgets in QGroupBoxes
 
         # Basic stuff
 
-        self.vlay_groupbox_basic_stuff = QVBoxLayout()
-        self.vlay_groupbox_basic_stuff.setSpacing(20)
-        self.vlay_groupbox_basic_stuff.addWidget(self.checkbox_draw_background_grid)
-        self.vlay_groupbox_basic_stuff.addWidget(self.checkbox_draw_transformed_grid)
-        self.vlay_groupbox_basic_stuff.addWidget(self.checkbox_draw_basis_vectors)
+        vlay_groupbox_basic_stuff = QVBoxLayout()
+        vlay_groupbox_basic_stuff.setSpacing(20)
+        vlay_groupbox_basic_stuff.addWidget(self._checkbox_draw_background_grid)
+        vlay_groupbox_basic_stuff.addWidget(self._checkbox_draw_transformed_grid)
+        vlay_groupbox_basic_stuff.addWidget(self._checkbox_draw_basis_vectors)
 
-        self.groupbox_basic_stuff = QGroupBox('Basic stuff', self)
-        self.groupbox_basic_stuff.setLayout(self.vlay_groupbox_basic_stuff)
+        groupbox_basic_stuff = QGroupBox('Basic stuff', self)
+        groupbox_basic_stuff.setLayout(vlay_groupbox_basic_stuff)
 
         # Animations
 
-        self.hlay_animation_time = QHBoxLayout()
-        self.hlay_animation_time.addWidget(self.label_animation_time)
-        self.hlay_animation_time.addWidget(self.lineedit_animation_time)
+        hlay_animation_time = QHBoxLayout()
+        hlay_animation_time.addWidget(label_animation_time)
+        hlay_animation_time.addWidget(self._lineedit_animation_time)
 
-        self.hlay_animation_pause_length = QHBoxLayout()
-        self.hlay_animation_pause_length.addWidget(self.label_animation_pause_length)
-        self.hlay_animation_pause_length.addWidget(self.lineedit_animation_pause_length)
+        hlay_animation_pause_length = QHBoxLayout()
+        hlay_animation_pause_length.addWidget(label_animation_pause_length)
+        hlay_animation_pause_length.addWidget(self._lineedit_animation_pause_length)
 
-        self.vlay_groupbox_animations = QVBoxLayout()
-        self.vlay_groupbox_animations.setSpacing(20)
-        self.vlay_groupbox_animations.addWidget(self.checkbox_smoothen_determinant)
-        self.vlay_groupbox_animations.addWidget(self.checkbox_applicative_animation)
-        self.vlay_groupbox_animations.addLayout(self.hlay_animation_time)
-        self.vlay_groupbox_animations.addLayout(self.hlay_animation_pause_length)
+        vlay_groupbox_animations = QVBoxLayout()
+        vlay_groupbox_animations.setSpacing(20)
+        vlay_groupbox_animations.addWidget(self._checkbox_smoothen_determinant)
+        vlay_groupbox_animations.addWidget(self._checkbox_applicative_animation)
+        vlay_groupbox_animations.addLayout(hlay_animation_time)
+        vlay_groupbox_animations.addLayout(hlay_animation_pause_length)
 
-        self.groupbox_animations = QGroupBox('Animations', self)
-        self.groupbox_animations.setLayout(self.vlay_groupbox_animations)
+        groupbox_animations = QGroupBox('Animations', self)
+        groupbox_animations.setLayout(vlay_groupbox_animations)
 
         # Matrix info
 
-        self.vlay_groupbox_matrix_info = QVBoxLayout()
-        self.vlay_groupbox_matrix_info.setSpacing(20)
-        self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_determinant_parallelogram)
-        self.vlay_groupbox_matrix_info.addWidget(self.checkbox_show_determinant_value)
-        self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_eigenvectors)
-        self.vlay_groupbox_matrix_info.addWidget(self.checkbox_draw_eigenlines)
+        vlay_groupbox_matrix_info = QVBoxLayout()
+        vlay_groupbox_matrix_info.setSpacing(20)
+        vlay_groupbox_matrix_info.addWidget(self._checkbox_draw_determinant_parallelogram)
+        vlay_groupbox_matrix_info.addWidget(self._checkbox_show_determinant_value)
+        vlay_groupbox_matrix_info.addWidget(self._checkbox_draw_eigenvectors)
+        vlay_groupbox_matrix_info.addWidget(self._checkbox_draw_eigenlines)
 
-        self.groupbox_matrix_info = QGroupBox('Matrix info', self)
-        self.groupbox_matrix_info.setLayout(self.vlay_groupbox_matrix_info)
+        groupbox_matrix_info = QGroupBox('Matrix info', self)
+        groupbox_matrix_info.setLayout(vlay_groupbox_matrix_info)
 
         # Now arrange the groupboxes
-        self.vlay_options.addWidget(self.groupbox_basic_stuff)
-        self.vlay_options.addWidget(self.groupbox_animations)
-        self.vlay_options.addWidget(self.groupbox_matrix_info)
+        self.vlay_options.addWidget(groupbox_basic_stuff)
+        self.vlay_options.addWidget(groupbox_animations)
+        self.vlay_options.addWidget(groupbox_matrix_info)
 
         # Finally, we load the current settings and update the GUI
-        self.load_settings()
-        self.update_gui()
+        self._load_settings()
+        self._update_gui()
 
-    def load_settings(self) -> None:
+    def _load_settings(self) -> None:
         """Load the current display settings into the widgets."""
         # Basic stuff
-        self.checkbox_draw_background_grid.setChecked(self.display_settings.draw_background_grid)
-        self.checkbox_draw_transformed_grid.setChecked(self.display_settings.draw_transformed_grid)
-        self.checkbox_draw_basis_vectors.setChecked(self.display_settings.draw_basis_vectors)
+        self._checkbox_draw_background_grid.setChecked(self.display_settings.draw_background_grid)
+        self._checkbox_draw_transformed_grid.setChecked(self.display_settings.draw_transformed_grid)
+        self._checkbox_draw_basis_vectors.setChecked(self.display_settings.draw_basis_vectors)
 
         # Animations
-        self.checkbox_smoothen_determinant.setChecked(self.display_settings.smoothen_determinant)
-        self.checkbox_applicative_animation.setChecked(self.display_settings.applicative_animation)
-        self.lineedit_animation_time.setText(str(self.display_settings.animation_time))
-        self.lineedit_animation_pause_length.setText(str(self.display_settings.animation_pause_length))
+        self._checkbox_smoothen_determinant.setChecked(self.display_settings.smoothen_determinant)
+        self._checkbox_applicative_animation.setChecked(self.display_settings.applicative_animation)
+        self._lineedit_animation_time.setText(str(self.display_settings.animation_time))
+        self._lineedit_animation_pause_length.setText(str(self.display_settings.animation_pause_length))
 
         # Matrix info
-        self.checkbox_draw_determinant_parallelogram.setChecked(self.display_settings.draw_determinant_parallelogram)
-        self.checkbox_show_determinant_value.setChecked(self.display_settings.show_determinant_value)
-        self.checkbox_draw_eigenvectors.setChecked(self.display_settings.draw_eigenvectors)
-        self.checkbox_draw_eigenlines.setChecked(self.display_settings.draw_eigenlines)
+        self._checkbox_draw_determinant_parallelogram.setChecked(self.display_settings.draw_determinant_parallelogram)
+        self._checkbox_show_determinant_value.setChecked(self.display_settings.show_determinant_value)
+        self._checkbox_draw_eigenvectors.setChecked(self.display_settings.draw_eigenvectors)
+        self._checkbox_draw_eigenlines.setChecked(self.display_settings.draw_eigenlines)
 
-    def confirm_settings(self) -> None:
+    def _confirm_settings(self) -> None:
         """Build a :class:`lintrans.gui.settings.DisplaySettings` object and assign it."""
         # Basic stuff
-        self.display_settings.draw_background_grid = self.checkbox_draw_background_grid.isChecked()
-        self.display_settings.draw_transformed_grid = self.checkbox_draw_transformed_grid.isChecked()
-        self.display_settings.draw_basis_vectors = self.checkbox_draw_basis_vectors.isChecked()
+        self.display_settings.draw_background_grid = self._checkbox_draw_background_grid.isChecked()
+        self.display_settings.draw_transformed_grid = self._checkbox_draw_transformed_grid.isChecked()
+        self.display_settings.draw_basis_vectors = self._checkbox_draw_basis_vectors.isChecked()
 
         # Animations
-        self.display_settings.smoothen_determinant = self.checkbox_smoothen_determinant.isChecked()
-        self.display_settings.applicative_animation = self.checkbox_applicative_animation.isChecked()
-        self.display_settings.animation_time = int(self.lineedit_animation_time.text())
-        self.display_settings.animation_pause_length = int(self.lineedit_animation_pause_length.text())
+        self.display_settings.smoothen_determinant = self._checkbox_smoothen_determinant.isChecked()
+        self.display_settings.applicative_animation = self._checkbox_applicative_animation.isChecked()
+        self.display_settings.animation_time = int(self._lineedit_animation_time.text())
+        self.display_settings.animation_pause_length = int(self._lineedit_animation_pause_length.text())
 
         # Matrix info
-        self.display_settings.draw_determinant_parallelogram = self.checkbox_draw_determinant_parallelogram.isChecked()
-        self.display_settings.show_determinant_value = self.checkbox_show_determinant_value.isChecked()
-        self.display_settings.draw_eigenvectors = self.checkbox_draw_eigenvectors.isChecked()
-        self.display_settings.draw_eigenlines = self.checkbox_draw_eigenlines.isChecked()
+        self.display_settings.draw_determinant_parallelogram = self._checkbox_draw_determinant_parallelogram.isChecked()
+        self.display_settings.show_determinant_value = self._checkbox_show_determinant_value.isChecked()
+        self.display_settings.draw_eigenvectors = self._checkbox_draw_eigenvectors.isChecked()
+        self.display_settings.draw_eigenlines = self._checkbox_draw_eigenlines.isChecked()
 
         self.accept()
 
-    def update_gui(self) -> None:
+    def _update_gui(self) -> None:
         """Update the GUI according to other widgets in the GUI.
 
         For example, this method updates which checkboxes are enabled based on the values of other checkboxes.
         """
-        self.checkbox_show_determinant_value.setEnabled(self.checkbox_draw_determinant_parallelogram.isChecked())
+        self._checkbox_show_determinant_value.setEnabled(self._checkbox_draw_determinant_parallelogram.isChecked())
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         """Handle a :class:`QKeyEvent` by manually activating toggling checkboxes.
@@ -281,16 +281,16 @@ class DisplaySettingsDialog(SettingsDialog):
         letter = event.text().lower()
         key = event.key()
 
-        if letter in self.dict_checkboxes:
-            self.dict_checkboxes[letter].animateClick()
+        if letter in self._dict_checkboxes:
+            self._dict_checkboxes[letter].animateClick()
 
         # Return or keypad enter
         elif key == 0x01000004 or key == 0x01000005:
-            self.button_confirm.click()
+            self._button_confirm.click()
 
         # Escape
         elif key == 0x01000000:
-            self.button_cancel.click()
+            self._button_cancel.click()
 
         else:
             event.ignore()
