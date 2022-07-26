@@ -14,6 +14,7 @@ import re
 import shutil
 import sys
 from textwrap import dedent
+from typing import List
 
 from PyInstaller.__main__ import run as run_pyi
 
@@ -152,7 +153,7 @@ class Compiler:
 
         print(f'Info.plist replaced in {self.filename}.app')
 
-    def _get_pyi_args(self) -> list[str]:
+    def _get_pyi_args(self) -> List[str]:
         """Return the common args for PyInstaller."""
         path_to_icon = os.path.join(os.path.dirname(__file__), 'src', 'lintrans', 'gui', 'assets', 'icon.jpg')
         icon_dest = os.path.join('.', 'lintrans', 'gui', 'assets')
