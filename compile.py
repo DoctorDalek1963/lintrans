@@ -11,10 +11,70 @@
 import argparse
 import os
 import re
+import shlex
 import shutil
 import sys
+from importlib import import_module
+from importlib.util import find_spec
 from textwrap import dedent
 from typing import List
+
+
+def check_dependencies() -> None:
+    """Check that all dependencies are installed and if they're not, print an error and the command to install them."""
+    dependencies = [
+        ('nptyping', 'nptyping==1.4.4'),
+        ('numpy', 'numpy==1.21.0'),
+        ('PyQt5', 'pyqt5==5.15.6'),
+        ('PyInstaller', 'pyinstaller==4.8'),
+        ('PIL', 'Pillow==9.2.0')
+    ]
+    unmet = []
+
+    # Thanks to David Beazley for teaching me how Python imports work
+    # https://www.youtube.com/watch?v=0oTh1CXRaQ0
+
+    for import_name, package_name in dependencies:
+        # We don't have to import the module, we can just check if we COULD import it
+        if find_spec(import_name) is None:
+            unmet.append(shlex.quote(package_name))
+
+        else:
+            # Even if it's installed, we need the right version
+            # (I'm looking at you, nptyping)
+            expected_version = package_name.split('==')[1]
+
+            # This line imports the module and checks its version attribute, all programmatically
+            # However, this is made awkward by PyQt5 not having a top-level __version__ attribute
+            if (import_name != 'PyQt5' and getattr(import_module(import_name), '__version__') != expected_version) \
+                    or (import_name == 'PyQt5' and
+                        getattr(import_module('PyQt5.QtCore'), 'PYQT_VERSION_STR') != expected_version):
+                unmet.append(shlex.quote(package_name))
+
+    lintrans_needed = find_spec('lintrans') is None
+
+    if len(unmet) == 0 and not lintrans_needed:
+        return
+
+    command = f'{sys.executable} -m pip install {" ".join(unmet)}'
+
+    if lintrans_needed:
+        if command.endswith(' '):
+            command = command[:-1]
+
+        command += ' -e .'
+
+    print(' ERROR: Unmet dependencies '.center(os.get_terminal_size().columns, '='))
+    print()
+    print('Please run the following command to install the needed dependencies:')
+    print('  ' + command)
+    print()
+    print('Then run this script again to compile.')
+    print()
+    sys.exit(1)
+
+
+check_dependencies()
 
 from PyInstaller.__main__ import run as run_pyi
 
