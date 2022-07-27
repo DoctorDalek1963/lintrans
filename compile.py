@@ -22,19 +22,22 @@ from typing import List
 
 def check_dependencies() -> None:
     """Check that all dependencies are installed and if they're not, print an error and the command to install them."""
+    # This list contains tuples of (import_name, package_name, version_attr)
+    # We look for the import_name spec and if we can't find it, then we require the user to install package_name
+    # PyQt5 seems to be a bit complicated, so we look for PyQt5.QtCore to make sure the pacakge is properly installed
     dependencies = [
-        ('nptyping', 'nptyping==1.4.4'),
-        ('numpy', 'numpy==1.21.0'),
-        ('PyQt5', 'pyqt5==5.15.6'),
-        ('PyInstaller', 'pyinstaller==4.8'),
-        ('PIL', 'Pillow==9.2.0')
+        ('nptyping', 'nptyping==1.4.4', '__version__'),
+        ('numpy', 'numpy==1.21.0', '__version__'),
+        ('PyQt5.QtCore', 'pyqt5==5.15.6', 'PYQT_VERSION_STR'),
+        ('PyInstaller', 'pyinstaller==4.8', '__version__'),
+        ('PIL', 'Pillow==9.2.0', '__version__')
     ]
     unmet = []
 
     # Thanks to David Beazley for teaching me how Python imports work
     # https://www.youtube.com/watch?v=0oTh1CXRaQ0
 
-    for import_name, package_name in dependencies:
+    for import_name, package_name, version_attr in dependencies:
         # We don't have to import the module, we can just check if we COULD import it
         if find_spec(import_name) is None:
             unmet.append(shlex.quote(package_name))
@@ -45,10 +48,7 @@ def check_dependencies() -> None:
             expected_version = package_name.split('==')[1]
 
             # This line imports the module and checks its version attribute, all programmatically
-            # However, this is made awkward by PyQt5 not having a top-level __version__ attribute
-            if (import_name != 'PyQt5' and getattr(import_module(import_name), '__version__') != expected_version) \
-                    or (import_name == 'PyQt5' and
-                        getattr(import_module('PyQt5.QtCore'), 'PYQT_VERSION_STR') != expected_version):
+            if getattr(import_module(import_name), version_attr) != expected_version:
                 unmet.append(shlex.quote(package_name))
 
     lintrans_needed = find_spec('lintrans') is None
