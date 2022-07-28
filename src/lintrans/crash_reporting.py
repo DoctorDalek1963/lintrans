@@ -86,12 +86,12 @@ def _get_error_origin(
 
         frame = tb.tb_frame
 
-        origin += f'  Exception "{exc_value}" of type {exc_type.__name__} in call to {frame.f_code.co_name}() on' \
-            f'line {frame.f_lineno} of {frame.f_code.co_filename}'
+        origin += f'  Exception "{exc_value}"\n  of type {exc_type.__name__} in call to {frame.f_code.co_name}()\n' \
+            f'  on line {frame.f_lineno} of {frame.f_code.co_filename}'
 
     elif signal_number is not None and stack_frame is not None:
-        origin += f'  Signal "{strsignal(signal_number)}" received in call to {stack_frame.f_code.co_name}() on ' \
-            f'line {stack_frame.f_lineno} of {stack_frame.f_code.co_filename}'
+        origin += f'  Signal "{strsignal(signal_number)}" received in call to {stack_frame.f_code.co_name}()\n' \
+            f'  on line {stack_frame.f_lineno} of {stack_frame.f_code.co_filename}'
 
     else:
         origin += '  UNKNOWN (not exception or signal)'
@@ -190,7 +190,6 @@ def set_excepthook() -> None:
         traceback: TracebackType | None
     ) -> None:
         _report_crash(exc_type=exc_type, exc_value=exc_value, traceback=traceback)
-        sys.__excepthook__(exc_type, exc_value, traceback)
 
     sys.excepthook = _custom_excepthook
 
