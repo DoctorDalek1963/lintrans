@@ -16,6 +16,7 @@ from __future__ import annotations
 import sys
 from datetime import datetime
 from signal import signal, SIGABRT, SIGFPE, SIGILL, SIGSEGV, SIGTERM, strsignal
+from textwrap import indent
 from types import FrameType, TracebackType
 from typing import Type
 
@@ -109,20 +110,39 @@ def _get_crash_report(datetime_string: str, error_origin: str) -> str:
     report = f'CRASH REPORT at {datetime_string}\n\n'
     window = _get_main_window()
     matrix_wrapper = window._matrix_wrapper
+    plot = window._plot
 
     report += error_origin
 
-    report += 'Matrix wrapper:\n'
+    post_mortem = 'Matrix wrapper:\n'
 
     for matrix_name, matrix_value in matrix_wrapper.get_defined_matrices():
-        report += f'  {matrix_name}: '
+        post_mortem += f'  {matrix_name}: '
 
         if is_matrix_type(matrix_value):
-            report += f'[{matrix_value[0][0]} {matrix_value[0][1]}; {matrix_value[1][0]} {matrix_value[1][1]}]'
+            post_mortem += f'[{matrix_value[0][0]} {matrix_value[0][1]}; {matrix_value[1][0]} {matrix_value[1][1]}]'
         else:
-            report += matrix_value
+            post_mortem += f'"{matrix_value}"'
 
-        report += '\n'
+        post_mortem += '\n'
+
+    post_mortem += '\nExpression box: "'
+    post_mortem += window._lineedit_expression_box.text() + '"\n'
+
+    point_i = plot.point_i
+    point_j = plot.point_j
+    post_mortem += f'\nCurrently displayed: [{point_i[0]} {point_j[0]}; {point_i[1]} {point_j[1]}]\n'
+
+    post_mortem += f'\nAnimating (sequence): {window._animating} ({window._animating_sequence})\n'
+
+    post_mortem += f'\nGrid spacing: {plot.grid_spacing}\n'
+
+    post_mortem += f'\nWindow size: {window.width()} x {window.height()}\n'
+
+    post_mortem += f'\nGrid corner: {plot._grid_corner()}\n'
+
+    report += 'POST MORTEM:\n'
+    report += indent(post_mortem, '  ')
 
     return report
 
