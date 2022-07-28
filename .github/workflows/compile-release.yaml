@@ -94,7 +94,7 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt -r dev_requirements.txt
           pip install -e .
-          pip install pyinstaller
+          pip install Pillow==9.2.0 pyinstaller==4.8
 
       - name: Install UPX
         if: runner.os == 'Windows'  # PyInstaller currently only uses UPX on Windows
