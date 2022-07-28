@@ -18,8 +18,8 @@ Subpackages
 Submodules
 ----------
 
-lintrans.gui.main\_window module
---------------------------------
+lintrans.gui.main_window module
+-------------------------------
 
 .. automodule:: lintrans.gui.main_window
 

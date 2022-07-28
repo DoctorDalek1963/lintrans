@@ -9,8 +9,8 @@ Module contents
 Submodules
 ----------
 
-lintrans.gui.dialogs.define\_new\_matrix module
------------------------------------------------
+lintrans.gui.dialogs.define_new_matrix module
+---------------------------------------------
 
 .. automodule:: lintrans.gui.dialogs.define_new_matrix
 
