@@ -6,8 +6,8 @@
 
 """This is the top-level ``lintrans`` package, which contains all the subpackages of the project."""
 
-from . import gui, matrices, typing_
+from . import crash_reporting, gui, matrices, typing_
 
 __version__ = '0.3.0-alpha'
 
-__all__ = ['gui', 'matrices', 'typing_', '__version__']
+__all__ = ['crash_reporting', 'gui', 'matrices', 'typing_', '__version__']

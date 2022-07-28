@@ -28,3 +28,6 @@ build/
 # This is pre-compile stuff
 version_info.txt
 release_notes.md
+
+# Ignore the crash reports
+lintrans_crash_report_*.log

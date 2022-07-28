@@ -23,3 +23,8 @@ lintrans.__main__ module
 ------------------------
 
 .. automodule:: lintrans.__main__
+
+lintrans.crash_reporting module
+-------------------------------
+
+.. automodule:: lintrans.crash_reporting
