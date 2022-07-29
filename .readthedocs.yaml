@@ -9,11 +9,10 @@ build:
 
   jobs:
     pre_build:
+      - $(pwd | sed "s/checkouts\(\/[^/]\+\)\$/envs\1/")/bin/python -m pip install -e '.[docs]'
       - cd docs/ && $(pwd | sed "s/checkouts\(\/[^/]\+\)\/docs\$/envs\1/")/bin/python create_objects_inv.py
       - $(pwd | sed "s/checkouts\(\/[^/]\+\)\$/envs\1/")/bin/python -m pylint --rcfile=/dev/null --exit-zero --reports=y --disable=all --enable=imports,RP0402 --int-import-graph=docs/source/int-imports.png $(find ./src/lintrans/ -name "*.py" | tr "\n" " ")
       - mkdir -p docs/source/_static
-      - $(pwd | sed "s/checkouts\(\/[^/]\+\)\$/envs\1/")/bin/python -m pip install -e '.[docs]'
-      - $(pwd | sed "s/checkouts\(\/[^/]\+\)\$/envs\1/")/bin/python -c "import lintrans" && echo success || echo fail
 
 sphinx:
   builder: html
