@@ -13,6 +13,7 @@ and unhandled operating system signals respectively.
 
 from __future__ import annotations
 
+import platform
 import sys
 from datetime import datetime
 from signal import signal, SIGABRT, SIGFPE, SIGILL, SIGSEGV, SIGTERM, strsignal
@@ -20,6 +21,7 @@ from textwrap import indent
 from types import FrameType, TracebackType
 from typing import Type
 
+from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR
 from PyQt5.QtWidgets import QApplication
 
 from lintrans.typing_ import is_matrix_type
@@ -45,6 +47,19 @@ def _get_main_window() -> LintransMainWindow:
         raise RuntimeError(f'Expected 1 widget of type LintransMainWindow but found {len(widgets)}')
 
     return widgets[0]
+
+
+def _get_system_info() -> str:
+    """Return a string of all the system we could gather."""
+    info = 'SYSTEM INFO:\n'
+
+    info += f'  Python: {platform.python_version()}\n'
+    info += f'  Qt5: {QT_VERSION_STR}\n'
+    info += f'  PyQt5: {PYQT_VERSION_STR}\n'
+    info += f'  Platform: {platform.platform()}\n'
+
+    info += '\n'
+    return info
 
 
 def _get_error_origin(
@@ -101,18 +116,11 @@ def _get_error_origin(
     return origin
 
 
-def _get_crash_report(datetime_string: str, error_origin: str) -> str:
-    """Return a string crash report, ready to be written to a file and stderr.
-
-    :param str datetime_string: The datetime to use in the report; should be the same as the one in the filename
-    :param str error_origin: The origin of the error. Get this by calling :func:`_get_error_origin`
-    """
-    report = f'CRASH REPORT at {datetime_string}\n\n'
+def _get_post_mortem() -> str:
+    """Return whatever post mortem data we could gather from the window."""
     window = _get_main_window()
     matrix_wrapper = window._matrix_wrapper
     plot = window._plot
-
-    report += error_origin
 
     post_mortem = 'Matrix wrapper:\n'
 
@@ -141,8 +149,21 @@ def _get_crash_report(datetime_string: str, error_origin: str) -> str:
 
     post_mortem += f'\nGrid corner: {plot._grid_corner()}\n'
 
-    report += 'POST MORTEM:\n'
-    report += indent(post_mortem, '  ')
+    string = 'POST MORTEM:\n'
+    string += indent(post_mortem, '  ')
+    return string
+
+
+def _get_crash_report(datetime_string: str, error_origin: str) -> str:
+    """Return a string crash report, ready to be written to a file and stderr.
+
+    :param str datetime_string: The datetime to use in the report; should be the same as the one in the filename
+    :param str error_origin: The origin of the error. Get this by calling :func:`_get_error_origin`
+    """
+    report = f'CRASH REPORT at {datetime_string}\n\n'
+    report += _get_system_info()
+    report += error_origin
+    report += _get_post_mortem()
 
     return report
 
