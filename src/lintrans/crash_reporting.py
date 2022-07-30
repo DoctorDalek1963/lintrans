@@ -14,9 +14,10 @@ and unhandled operating system signals respectively.
 from __future__ import annotations
 
 import platform
+import signal
 import sys
 from datetime import datetime
-from signal import signal, SIGABRT, SIGFPE, SIGILL, SIGSEGV, SIGTERM, strsignal
+from signal import SIGABRT, SIGFPE, SIGILL, SIGSEGV, SIGTERM
 from textwrap import indent
 from types import FrameType, TracebackType
 from typing import Type
@@ -105,7 +106,7 @@ def _get_error_origin(
             f'  on line {frame.f_lineno} of {frame.f_code.co_filename}'
 
     elif signal_number is not None and stack_frame is not None:
-        origin += f'  Signal "{strsignal(signal_number)}" received in call to {stack_frame.f_code.co_name}()\n' \
+        origin += f'  Signal "{signal.strsignal(signal_number)}" received in call to {stack_frame.f_code.co_name}()\n' \
             f'  on line {stack_frame.f_lineno} of {stack_frame.f_code.co_filename}'
 
     else:
@@ -221,4 +222,11 @@ def set_signal_handler() -> None:
         _report_crash(signal_number=number, stack_frame=frame)
 
     for sig_num in (SIGABRT, SIGFPE, SIGILL, SIGSEGV, SIGTERM):
-        signal(sig_num, _handler)
+        if sig_num in signal.valid_signals():
+            signal.signal(sig_num, _handler)
+
+    try:
+        from signal import SIGQUIT
+        signal.signal(SIGQUIT, _handler)
+    except ImportError:
+        pass
