@@ -14,6 +14,7 @@ from textwrap import dedent
 from typing import List
 
 from lintrans import __version__, gui
+from lintrans.crash_reporting import set_excepthook, set_signal_handler
 
 
 def main(args: List[str]) -> None:
@@ -76,4 +77,6 @@ def main(args: List[str]) -> None:
 
 
 if __name__ == '__main__':
+    set_excepthook()
+    set_signal_handler()
     main(sys.argv)

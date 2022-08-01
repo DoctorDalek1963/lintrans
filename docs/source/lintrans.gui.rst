@@ -39,6 +39,11 @@ lintrans.gui.settings module
       :no-undoc-members:
       :exclude-members: __init__
 
+lintrans.gui.utility module
+---------------------------
+
+.. automodule:: lintrans.gui.utility
+
 lintrans.gui.validate module
 ----------------------------
 

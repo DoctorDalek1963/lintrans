@@ -20,7 +20,7 @@ import numpy as np
 from numpy import linalg
 from numpy.linalg import LinAlgError
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import pyqtSlot, QCoreApplication, QThread
+from PyQt5.QtCore import pyqtSlot, QThread
 from PyQt5.QtGui import QCloseEvent, QIcon, QKeySequence
 from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QHBoxLayout, QMainWindow, QMessageBox,
                              QPushButton, QShortcut, QSizePolicy, QSpacerItem, QStyleFactory, QVBoxLayout)
@@ -36,6 +36,7 @@ from .dialogs.settings import DisplaySettingsDialog
 from .plots import VisualizeTransformationWidget
 from .session import Session
 from .settings import DisplaySettings
+from .utility import qapp
 from .validate import MatrixExpressionValidator
 
 
@@ -784,19 +785,6 @@ class LintransMainWindow(QMainWindow):
             filename = dialog.selectedFiles()[0]
             self._save_filename = filename
             self._save_session()
-
-
-def qapp() -> QCoreApplication:
-    """Return the equivalent of the global :class:`qApp` pointer.
-
-    :raises RuntimeError: If :meth:`QCoreApplication.instance` returns ``None``
-    """
-    instance = QCoreApplication.instance()
-
-    if instance is None:
-        raise RuntimeError('qApp undefined')
-
-    return instance
 
 
 def main(filename: Optional[str]) -> None:

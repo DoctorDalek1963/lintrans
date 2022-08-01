@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Info panel to display defined matrices
 - Icon for window and taskbar
 - Implement saving and loading session files
+- Add comprehensive crash reports
 
 ### Fixed
 
