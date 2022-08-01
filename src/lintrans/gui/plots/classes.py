@@ -280,7 +280,7 @@ class VectorGridPlot(BackgroundPlot):
         elif abs(vector_x) < 1e-12:
             painter.drawLine(self._canvas_x(0), 0, self._canvas_x(0), self.height())
 
-            for i in range(max(abs(int(max_x / point_x)), self._MAX_PARALLEL_LINES)):
+            for i in range(min(abs(int(max_x / point_x)), self._MAX_PARALLEL_LINES)):
                 painter.drawLine(
                     self._canvas_x((i + 1) * point_x),
                     0,
@@ -298,7 +298,7 @@ class VectorGridPlot(BackgroundPlot):
         elif abs(vector_y) < 1e-12:
             painter.drawLine(0, self._canvas_y(0), self.width(), self._canvas_y(0))
 
-            for i in range(max(abs(int(max_y / point_y)), self._MAX_PARALLEL_LINES)):
+            for i in range(min(abs(int(max_y / point_y)), self._MAX_PARALLEL_LINES)):
                 painter.drawLine(
                     0,
                     self._canvas_y((i + 1) * point_y),
