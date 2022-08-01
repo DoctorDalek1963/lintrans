@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cancel animation before closing to prevent the app hanging in the background
 - Make matrices with a column of 0s only render 1 rank line
 - Reduce memory usage by automatically deleting closed dialogs
+- Fix bug with matrices that are too small creating lag with too many lines
+- Fix bug that caused crashes when animating very large matrices
 
 ## [0.2.2] - 2022-07-04
 
