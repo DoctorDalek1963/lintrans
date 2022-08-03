@@ -23,26 +23,3 @@ def test_open_dialog(qtbot: QtBot, window: LintransMainWindow) -> None:
     qtbot.mouseClick(window._button_change_display_settings, Qt.LeftButton)
     assert is_widget_class_open(DisplaySettingsDialog)
     qtbot.addWidget(get_open_widget(DisplaySettingsDialog))
-
-
-def test_settings_change(qtbot: QtBot, window: LintransMainWindow) -> None:
-    """Test that the display settings actually change when changed in the dialog."""
-    qtbot.mouseClick(window._button_change_display_settings, Qt.LeftButton)
-    dialog = get_open_widget(DisplaySettingsDialog)
-    qtbot.addWidget(dialog)
-    settings = window._plot.display_settings
-
-    # These are the only checkboxes that seem to work, and I have absolutely no idea why
-    smoothen_determinant = settings.smoothen_determinant
-    draw_parallelogram = settings.draw_determinant_parallelogram
-
-    qtbot.mouseClick(dialog._checkbox_smoothen_determinant, Qt.LeftButton)
-    qtbot.mouseClick(dialog._checkbox_draw_determinant_parallelogram, Qt.LeftButton)
-
-    qtbot.mouseClick(dialog._button_confirm, Qt.LeftButton)
-    qtbot.wait(50)  # This is a bodge but `qtbot.waitActive(window)` doesn't work
-
-    new_settings = window._plot.display_settings
-    print(is_widget_class_open(DisplaySettingsDialog))
-    assert not smoothen_determinant == new_settings.smoothen_determinant
-    assert not draw_parallelogram == new_settings.draw_determinant_parallelogram
