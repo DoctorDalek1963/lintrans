@@ -164,13 +164,13 @@ class LintransMainWindow(QMainWindow):
         # TODO: Implement this and enable button
         button_create_polygon.setEnabled(False)
 
-        button_change_display_settings = QPushButton(self)
-        button_change_display_settings.setText('Change\ndisplay settings')
-        button_change_display_settings.clicked.connect(self._dialog_change_display_settings)
-        button_change_display_settings.setToolTip(
+        self._button_change_display_settings = QPushButton(self)
+        self._button_change_display_settings.setText('Change\ndisplay settings')
+        self._button_change_display_settings.clicked.connect(self._dialog_change_display_settings)
+        self._button_change_display_settings.setToolTip(
             "Change which things are rendered and how they're rendered<br><b>(Ctrl + D)</b>"
         )
-        QShortcut(QKeySequence('Ctrl+D'), self).activated.connect(button_change_display_settings.click)
+        QShortcut(QKeySequence('Ctrl+D'), self).activated.connect(self._button_change_display_settings.click)
 
         button_reset_zoom = QPushButton(self)
         button_reset_zoom.setText('Reset zoom')
@@ -255,7 +255,7 @@ class LintransMainWindow(QMainWindow):
         vlay_misc_buttons = QVBoxLayout()
         vlay_misc_buttons.setSpacing(20)
         vlay_misc_buttons.addWidget(button_create_polygon)
-        vlay_misc_buttons.addWidget(button_change_display_settings)
+        vlay_misc_buttons.addWidget(self._button_change_display_settings)
         vlay_misc_buttons.addWidget(button_reset_zoom)
 
         vlay_info_buttons = QVBoxLayout()
