@@ -25,6 +25,7 @@ from typing import Type
 from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR
 from PyQt5.QtWidgets import QApplication
 
+import lintrans
 from lintrans.typing_ import is_matrix_type
 from .gui.main_window import LintransMainWindow
 
@@ -54,6 +55,7 @@ def _get_system_info() -> str:
     """Return a string of all the system we could gather."""
     info = 'SYSTEM INFO:\n'
 
+    info += f'  lintrans: {lintrans.__version__}\n'
     info += f'  Python: {platform.python_version()}\n'
     info += f'  Qt5: {QT_VERSION_STR}\n'
     info += f'  PyQt5: {PYQT_VERSION_STR}\n'
