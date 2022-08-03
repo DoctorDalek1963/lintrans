@@ -1,5 +1,5 @@
-lintrans.typing\ package
-========================
+lintrans.typing\_ package
+=========================
 
 Module contents
 ---------------
