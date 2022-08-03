@@ -6,10 +6,13 @@
 
 """A simple ``conftest.py`` containing some re-usable fixtures and functions."""
 
-from typing import Type, TypeVar
+import os
+from typing import List, Type, TypeVar
 
 import numpy as np
 import pytest
+from _pytest.config import Config
+from _pytest.python import Function
 from PyQt5.QtWidgets import QApplication, QWidget
 from pytestqt.qtbot import QtBot
 
@@ -18,6 +21,19 @@ from lintrans.matrices import MatrixWrapper
 
 
 T = TypeVar('T', bound=QWidget)
+
+
+def pytest_collection_modifyitems(config: Config, items: List[Function]) -> None:
+    """Modify the collected tests so that we only run the GUI tests on Linux (because they need an X server).
+
+    This function is called automatically during the pytest startup. See
+    https://docs.pytest.org/en/latest/example/simple.html#control-skipping-of-tests-according-to-command-line-option
+    for details.
+    """
+    skip_gui = pytest.mark.skip(reason='need X server (Linux only) to run GUI tests')
+    for item in items:
+        if 'gui' in item.location[0] and os.uname().sysname != 'Linux':
+            item.add_marker(skip_gui)
 
 
 # === Backend stuff
