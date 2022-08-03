@@ -1,8 +1,8 @@
-#  lintrans - The linear transformation visualizer
-#  Copyright (C) 2022 D. Dyson (DoctorDalek1963)
+# lintrans - The linear transformation visualizer
+# Copyright (C) 2022 D. Dyson (DoctorDalek1963)
 #
-#  This program is licensed under GNU GPLv3, available here:
-#  <https://www.gnu.org/licenses/gpl-3.0.html>
+# This program is licensed under GNU GPLv3, available here:
+# <https://www.gnu.org/licenses/gpl-3.0.html>
 
 """This module provides miscellaneous dialog classes like :class:`AboutDialog`."""
 
