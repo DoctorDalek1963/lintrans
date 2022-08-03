@@ -32,7 +32,7 @@ def pytest_collection_modifyitems(config: Config, items: List[Function]) -> None
     """
     skip_gui = pytest.mark.skip(reason='need X server (Linux only) to run GUI tests')
     for item in items:
-        if 'gui' in item.location[0] and os.uname().sysname != 'Linux':
+        if 'gui' in item.location[0] and hasattr(os, 'uname') and os.uname().sysname != 'Linux':
             item.add_marker(skip_gui)
 
 
