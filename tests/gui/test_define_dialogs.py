@@ -7,7 +7,6 @@
 """Test the :class:`DefineDialog` boxes in :class:`LintransMainWindow`."""
 
 import numpy as np
-from _pytest.monkeypatch import MonkeyPatch
 from PyQt5.QtCore import Qt
 from pytestqt.qtbot import QtBot
 
@@ -40,7 +39,7 @@ def test_define_as_expression_dialog_opens(qtbot: QtBot, window: LintransMainWin
     qtbot.addWidget(get_open_widget(DefineAsAnExpressionDialog))
 
 
-def test_define_numerically_dialog_works(qtbot: QtBot, monkeypatch: MonkeyPatch, window: LintransMainWindow) -> None:
+def test_define_numerically_dialog_works(qtbot: QtBot, window: LintransMainWindow) -> None:
     """Test that matrices can be defined numerically."""
     qtbot.mouseClick(window._button_define_numerically, Qt.LeftButton)
     dialog = get_open_widget(DefineNumericallyDialog)
