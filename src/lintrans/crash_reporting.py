@@ -119,6 +119,22 @@ def _get_error_origin(
     return origin
 
 
+def _get_display_settings() -> str:
+    """Return a string representing all of the display settings."""
+    display_settings = {
+        k: v
+        for k, v in _get_main_window()._plot.display_settings.__dict__.items()
+        if not k.startswith('_')
+    }
+
+    string = 'Display settings:\n'
+
+    for setting, value in display_settings.items():
+        string += f'  {setting}: {value}\n'
+
+    return string
+
+
 def _get_post_mortem() -> str:
     """Return whatever post mortem data we could gather from the window."""
     window = _get_main_window()
@@ -151,6 +167,8 @@ def _get_post_mortem() -> str:
     post_mortem += f'\nWindow size: {window.width()} x {window.height()}\n'
 
     post_mortem += f'\nGrid corner: {plot._grid_corner()}\n'
+
+    post_mortem += '\n' + _get_display_settings()
 
     string = 'POST MORTEM:\n'
     string += indent(post_mortem, '  ')
