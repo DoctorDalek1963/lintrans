@@ -10,12 +10,11 @@ build:
   jobs:
     pre_build:
       - $(pwd | sed "s/checkouts\(\/[^/]\+\)\$/envs\1/")/bin/python -m pip install -e '.[docs]'
-      - cd docs/ && $(pwd | sed "s/checkouts\(\/[^/]\+\)\/docs\$/envs\1/")/bin/python create_objects_inv.py
-      - $(pwd | sed "s/checkouts\(\/[^/]\+\)\$/envs\1/")/bin/python -m pylint --rcfile=/dev/null --exit-zero --reports=y --disable=all --enable=imports,RP0402 --int-import-graph=docs/source/int-imports.png $(find ./src/lintrans/ -name "*.py" | tr "\n" " ")
       - mkdir -p docs/source/_static
 
 sphinx:
-  builder: html
+  # NOTE: If this builder doesn't work, I'll have to run `make precompile` in the pre_build, but I'll have to set the venv first
+  builder: precompile html
   configuration: docs/source/conf.py
   fail_on_warning: true
 
