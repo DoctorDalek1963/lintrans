@@ -6,6 +6,8 @@
 
 """This module provides the :attr:`global_settings` attribute, which should be used to access global settings."""
 
+from __future__ import annotations
+
 import os
 
 
@@ -20,6 +22,14 @@ class _GlobalSettings:
        This class should never be directly used and should only be
        accessed through the :attr:`global_settings` attribute.
     """
+
+    def __new__(cls) -> _GlobalSettings:
+        """Override :meth:`__new__` to implement a singleton. This class will only be created once."""
+        # Only create a new instance if we don't already have one
+        if not hasattr(cls, '_instance'):
+            cls._instance = super(_GlobalSettings, cls).__new__(cls)
+
+        return cls._instance
 
     def __init__(self) -> None:
         """Create the global settings object and initialize state."""
