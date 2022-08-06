@@ -1,6 +1,20 @@
 .. _tutorial:
 
-Usage tutorial
-==============
+Tutorial
+========
 
-This tutorial will guide you through using the software for teaching, or to aid in your own learning.
+This tutorial will guide you through using lintrans for teaching, or to aid in your own learning.
+
+If you don't already have lintrans downloaded, please `download the latest version
+<https://github.com/DoctorDalek1963/lintrans/releases/latest>`_. You can get back to this tutorial
+at any point by clicking ``Help`` along the top of the app, and then ``Tutorial``, or by pressing
+``F1`` on your keyboard.
+
+There are several sections and they are roughly in the order that you should read them in. Start
+with :ref:`defining matrices<defining-matrices>`.
+
+.. toctree::
+   :maxdepth: 10
+   :caption: Contents:
+
+   defining-matrices
