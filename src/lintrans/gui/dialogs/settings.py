@@ -22,7 +22,7 @@ from lintrans.gui.settings import DisplaySettings
 class SettingsDialog(FixedSizeDialog):
     """An abstract superclass for other simple dialogs."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, resettable: bool, **kwargs):
         """Create the widgets and layout of the dialog, passing ``*args`` and ``**kwargs`` to super."""
         super().__init__(*args, **kwargs)
 
@@ -39,12 +39,23 @@ class SettingsDialog(FixedSizeDialog):
         self._button_cancel.clicked.connect(self.reject)
         self._button_cancel.setToolTip('Revert these settings<br><b>(Escape)</b>')
 
+        if resettable:
+            self._button_reset = QtWidgets.QPushButton(self)
+            self._button_reset.setText('Reset to defaults')
+            self._button_reset.clicked.connect(self._reset_settings)
+            self._button_reset.setToolTip('Reset these settings to their defaults<br><b>(Ctrl + R)</b>')
+            QShortcut(QKeySequence('Ctrl+R'), self).activated.connect(self._button_reset.click)
+
         # === Arrange the widgets
 
         self.setContentsMargins(10, 10, 10, 10)
 
         hlay_buttons = QHBoxLayout()
         hlay_buttons.setSpacing(20)
+
+        if resettable:
+            hlay_buttons.addWidget(self._button_reset)
+
         hlay_buttons.addItem(QSpacerItem(50, 5, hPolicy=QSizePolicy.Expanding, vPolicy=QSizePolicy.Minimum))
         hlay_buttons.addWidget(self._button_cancel)
         hlay_buttons.addWidget(self._button_confirm)
@@ -67,6 +78,12 @@ class SettingsDialog(FixedSizeDialog):
     def _confirm_settings(self) -> None:
         """Confirm the settings chosen in the dialog."""
 
+    def _reset_settings(self) -> None:
+        """Reset the settings.
+
+        .. note:: This method is empty but not abstract because not all subclasses will need to implement it.
+        """
+
 
 class DisplaySettingsDialog(SettingsDialog):
     """The dialog to allow the user to edit the display settings."""
@@ -76,12 +93,12 @@ class DisplaySettingsDialog(SettingsDialog):
 
         :param DisplaySettings display_settings: The :class:`lintrans.gui.settings.DisplaySettings` object to mutate
         """
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, resettable=True, **kwargs)
 
         self.display_settings = display_settings
         self.setWindowTitle('Change display settings')
 
-        self._dict_checkboxes: Dict[str, QCheckBox] = dict()
+        self._dict_checkboxes: Dict[str, QCheckBox] = {}
 
         # === Create the widgets
 
@@ -263,6 +280,12 @@ class DisplaySettingsDialog(SettingsDialog):
         self.display_settings.draw_eigenlines = self._checkbox_draw_eigenlines.isChecked()
 
         self.accept()
+
+    def _reset_settings(self) -> None:
+        """Reset the display settings to their defaults."""
+        self.display_settings = DisplaySettings()
+        self._load_settings()
+        self._update_gui()
 
     def _update_gui(self) -> None:
         """Update the GUI according to other widgets in the GUI.
