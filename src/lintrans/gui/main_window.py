@@ -98,6 +98,10 @@ class LintransMainWindow(QMainWindow):
         action_save_as.setShortcut('Ctrl+Shift+S')
         action_save_as.triggered.connect(self._save_session_as)
 
+        action_quit = QAction(self)
+        action_quit.setText('&Quit')
+        action_quit.triggered.connect(self.close)
+
         action_tutorial = QAction(self)
         action_tutorial.setText('&Tutorial')
         action_tutorial.setShortcut('F1')
@@ -131,6 +135,8 @@ class LintransMainWindow(QMainWindow):
         menu_file.addSeparator()
         menu_file.addAction(action_save)
         menu_file.addAction(action_save_as)
+        menu_file.addSeparator()
+        menu_file.addAction(action_quit)
 
         menu_help.addAction(action_tutorial)
         menu_help.addAction(action_docs)
