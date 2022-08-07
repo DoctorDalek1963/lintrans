@@ -13,6 +13,7 @@ and unhandled operating system signals respectively.
 
 from __future__ import annotations
 
+import os
 import platform
 import signal
 import sys
@@ -27,6 +28,7 @@ from PyQt5.QtWidgets import QApplication
 
 import lintrans
 from lintrans.typing_ import is_matrix_type
+from .global_settings import global_settings
 from .gui.main_window import LintransMainWindow
 
 
@@ -205,7 +207,10 @@ def _report_crash(
     """
     datetime_string = _get_datetime_string()
 
-    filename = f'lintrans_crash_report_{datetime_string.replace(" ", "_")}.log'
+    filename = os.path.join(
+        global_settings.get_crash_reports_directory(),
+        datetime_string.replace(" ", "_") + '.log'
+    )
     report = _get_crash_report(
         datetime_string,
         _get_error_origin(

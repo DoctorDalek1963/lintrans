@@ -28,3 +28,13 @@ lintrans.crash_reporting module
 -------------------------------
 
 .. automodule:: lintrans.crash_reporting
+
+lintrans.global_settings module
+-------------------------------
+
+.. automodule:: lintrans.global_settings
+   :exclude-members: _GlobalSettings
+
+   .. autoclass:: _GlobalSettings
+      :no-special-members:
+      :exclude-members: _instance
