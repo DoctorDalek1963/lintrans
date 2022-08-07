@@ -81,6 +81,7 @@ If I'd been using semantic versioning from the start, there would much more chan
 - Ability to zoom in and out of the viewport
 - Add dialog to change display settings
 
-[Unreleased]: https://github.com/DoctorDalek1963/lintrans/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/DoctorDalek1963/lintrans/compare/v0.2.2...HEAD
+[0.2.1]: https://github.com/DoctorDalek1963/lintrans/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/DoctorDalek1963/lintrans/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/DoctorDalek1963/lintrans/compare/13600cc6ff6299dc4a8101a367bc52fe08607554...v0.2.0
