@@ -30,7 +30,7 @@ from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.matrices.utility import polar_coords, rotate_coord
 from lintrans.typing_ import MatrixType, VectorType
-from .dialogs import (AboutDialog, DefineAsAnExpressionDialog, DefineDialog, DefineNumericallyDialog,
+from .dialogs import (AboutDialog, DefineAsExpressionDialog, DefineDialog, DefineNumericallyDialog,
                       DefineVisuallyDialog, FileSelectDialog, InfoPanelDialog)
 from .dialogs.settings import DisplaySettingsDialog
 from .plots import VisualizeTransformationWidget
@@ -196,7 +196,7 @@ class LintransMainWindow(QMainWindow):
         self._button_define_as_expression.setText('As an expression')
         self._button_define_as_expression.setToolTip('Define a matrix in terms of other matrices<br><b>(Alt + 3)</b>')
         self._button_define_as_expression.clicked.connect(
-            lambda: self._dialog_define_matrix(DefineAsAnExpressionDialog)
+            lambda: self._dialog_define_matrix(DefineAsExpressionDialog)
         )
         QShortcut(QKeySequence('Alt+3'), self).activated.connect(self._button_define_as_expression.click)
 

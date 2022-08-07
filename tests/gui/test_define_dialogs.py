@@ -10,7 +10,7 @@ import numpy as np
 from PyQt5.QtCore import Qt
 from pytestqt.qtbot import QtBot
 
-from lintrans.gui.dialogs import DefineAsAnExpressionDialog, DefineNumericallyDialog, DefineVisuallyDialog
+from lintrans.gui.dialogs import DefineAsExpressionDialog, DefineNumericallyDialog, DefineVisuallyDialog
 from lintrans.gui.main_window import LintransMainWindow
 
 from conftest import get_open_widget, is_widget_class_open
@@ -35,8 +35,8 @@ def test_define_numerically_dialog_opens(qtbot: QtBot, window: LintransMainWindo
 def test_define_as_expression_dialog_opens(qtbot: QtBot, window: LintransMainWindow) -> None:
     """Test that the :class:`DefineAsAnExpressionDialog` opens."""
     qtbot.mouseClick(window._button_define_as_expression, Qt.LeftButton)
-    assert is_widget_class_open(DefineAsAnExpressionDialog)
-    qtbot.addWidget(get_open_widget(DefineAsAnExpressionDialog))
+    assert is_widget_class_open(DefineAsExpressionDialog)
+    qtbot.addWidget(get_open_widget(DefineAsExpressionDialog))
 
 
 def test_define_numerically_dialog_works(qtbot: QtBot, window: LintransMainWindow) -> None:
@@ -56,3 +56,19 @@ def test_define_numerically_dialog_works(qtbot: QtBot, window: LintransMainWindo
         [-1, 3],
         [2, -0.5]
     ])).all()
+
+
+def test_define_as_expression_dialog_works(qtbot: QtBot, window: LintransMainWindow) -> None:
+    """Test that matrices can be defined as expressions."""
+    qtbot.mouseClick(window._button_define_as_expression, Qt.LeftButton)
+    dialog = get_open_widget(DefineAsExpressionDialog)
+    qtbot.addWidget(dialog)
+
+    qtbot.keyClicks(dialog._lineedit_expression_box, '(rot(45)^{2}3I)^Trot(210)^-1')
+    qtbot.mouseClick(dialog._button_confirm, Qt.LeftButton)
+
+    assert window._matrix_wrapper.get_expression('A') == '(rot(45)^{2}3I)^Trot(210)^-1'
+    assert (
+        window._matrix_wrapper['A'] ==
+        window._matrix_wrapper.evaluate_expression('(rot(45)^{2}3I)^Trot(210)^-1')
+    ).all()
