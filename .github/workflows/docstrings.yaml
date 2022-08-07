@@ -20,7 +20,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install --upgrade pip
-        pip install pydocstyle pytest -r requirements.txt
+        pip install pydocstyle==6.1.1
 
     - name: Run pydocstyle
       run: pydocstyle src/ tests/

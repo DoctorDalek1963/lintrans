@@ -295,7 +295,7 @@ class DefineNumericallyDialog(DefineDialog):
         self.accept()
 
 
-class DefineAsAnExpressionDialog(DefineDialog):
+class DefineAsExpressionDialog(DefineDialog):
     """The dialog class that allows the user to define a matrix as an expression of other matrices."""
 
     def __init__(self, *args, matrix_wrapper: MatrixWrapper, **kwargs):

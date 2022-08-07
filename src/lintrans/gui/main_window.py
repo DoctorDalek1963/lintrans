@@ -31,7 +31,7 @@ from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.matrices.utility import polar_coords, rotate_coord
 from lintrans.typing_ import MatrixType, VectorType
-from .dialogs import (AboutDialog, DefineAsAnExpressionDialog, DefineDialog, DefineNumericallyDialog,
+from .dialogs import (AboutDialog, DefineAsExpressionDialog, DefineDialog, DefineNumericallyDialog,
                       DefineVisuallyDialog, FileSelectDialog, InfoPanelDialog)
 from .dialogs.settings import DisplaySettingsDialog
 from .plots import VisualizeTransformationWidget
@@ -171,13 +171,13 @@ class LintransMainWindow(QMainWindow):
         # TODO: Implement this and enable button
         button_create_polygon.setEnabled(False)
 
-        button_change_display_settings = QPushButton(self)
-        button_change_display_settings.setText('Change\ndisplay settings')
-        button_change_display_settings.clicked.connect(self._dialog_change_display_settings)
-        button_change_display_settings.setToolTip(
+        self._button_change_display_settings = QPushButton(self)
+        self._button_change_display_settings.setText('Change\ndisplay settings')
+        self._button_change_display_settings.clicked.connect(self._dialog_change_display_settings)
+        self._button_change_display_settings.setToolTip(
             "Change which things are rendered and how they're rendered<br><b>(Ctrl + D)</b>"
         )
-        QShortcut(QKeySequence('Ctrl+D'), self).activated.connect(button_change_display_settings.click)
+        QShortcut(QKeySequence('Ctrl+D'), self).activated.connect(self._button_change_display_settings.click)
 
         button_reset_zoom = QPushButton(self)
         button_reset_zoom.setText('Reset zoom')
@@ -203,7 +203,7 @@ class LintransMainWindow(QMainWindow):
         self._button_define_as_expression.setText('As an expression')
         self._button_define_as_expression.setToolTip('Define a matrix in terms of other matrices<br><b>(Alt + 3)</b>')
         self._button_define_as_expression.clicked.connect(
-            lambda: self._dialog_define_matrix(DefineAsAnExpressionDialog)
+            lambda: self._dialog_define_matrix(DefineAsExpressionDialog)
         )
         QShortcut(QKeySequence('Alt+3'), self).activated.connect(self._button_define_as_expression.click)
 
@@ -218,18 +218,18 @@ class LintransMainWindow(QMainWindow):
 
         # Info panel button
 
-        button_info_panel = QPushButton(self)
-        button_info_panel.setText('Show defined matrices')
-        button_info_panel.clicked.connect(
+        self._button_info_panel = QPushButton(self)
+        self._button_info_panel.setText('Show defined matrices')
+        self._button_info_panel.clicked.connect(
             # We have to use a lambda instead of 'InfoPanelDialog(self.matrix_wrapper, self).open' here
             # because that would create an unnamed instance of InfoPanelDialog when LintransMainWindow is
             # constructed, but we need to create a new instance every time to keep self.matrix_wrapper up to date
             lambda: InfoPanelDialog(self._matrix_wrapper, self).open()
         )
-        button_info_panel.setToolTip(
+        self._button_info_panel.setToolTip(
             'Open an info panel with all matrices that have been defined in this session<br><b>(Ctrl + M)</b>'
         )
-        QShortcut(QKeySequence('Ctrl+M'), self).activated.connect(button_info_panel.click)
+        QShortcut(QKeySequence('Ctrl+M'), self).activated.connect(self._button_info_panel.click)
 
         # Render buttons
 
@@ -262,12 +262,12 @@ class LintransMainWindow(QMainWindow):
         vlay_misc_buttons = QVBoxLayout()
         vlay_misc_buttons.setSpacing(20)
         vlay_misc_buttons.addWidget(button_create_polygon)
-        vlay_misc_buttons.addWidget(button_change_display_settings)
+        vlay_misc_buttons.addWidget(self._button_change_display_settings)
         vlay_misc_buttons.addWidget(button_reset_zoom)
 
         vlay_info_buttons = QVBoxLayout()
         vlay_info_buttons.setSpacing(20)
-        vlay_info_buttons.addWidget(button_info_panel)
+        vlay_info_buttons.addWidget(self._button_info_panel)
 
         vlay_render = QVBoxLayout()
         vlay_render.setSpacing(20)
