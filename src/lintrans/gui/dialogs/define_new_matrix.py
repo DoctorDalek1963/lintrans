@@ -14,7 +14,8 @@ from numpy import array
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QDoubleValidator, QKeySequence
-from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
+from PyQt5.QtWidgets import (QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
+                             QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout)
 
 from lintrans.gui.dialogs.misc import FixedSizeDialog
 from lintrans.gui.plots import DefineVisuallyWidget
@@ -51,19 +52,19 @@ class DefineDialog(FixedSizeDialog):
 
         # === Create the widgets
 
-        self._button_confirm = QtWidgets.QPushButton(self)
+        self._button_confirm = QPushButton(self)
         self._button_confirm.setText('Confirm')
         self._button_confirm.setEnabled(False)
         self._button_confirm.clicked.connect(self._confirm_matrix)
         self._button_confirm.setToolTip('Confirm this as the new matrix<br><b>(Ctrl + Enter)</b>')
         QShortcut(QKeySequence('Ctrl+Return'), self).activated.connect(self._button_confirm.click)
 
-        button_cancel = QtWidgets.QPushButton(self)
+        button_cancel = QPushButton(self)
         button_cancel.setText('Cancel')
         button_cancel.clicked.connect(self.reject)
         button_cancel.setToolTip('Cancel this definition<br><b>(Escape)</b>')
 
-        label_equals = QtWidgets.QLabel()
+        label_equals = QLabel(self)
         label_equals.setText('=')
 
         self._combobox_letter = QtWidgets.QComboBox(self)
@@ -202,32 +203,46 @@ class DefineNumericallyDialog(DefineDialog):
         # === Create the widgets
 
         # tl = top left, br = bottom right, etc.
-        self._element_tl = QtWidgets.QLineEdit(self)
+        self._element_tl = QLineEdit(self)
         self._element_tl.textChanged.connect(self._update_confirm_button)
         self._element_tl.setValidator(QDoubleValidator())
 
-        self._element_tr = QtWidgets.QLineEdit(self)
+        self._element_tr = QLineEdit(self)
         self._element_tr.textChanged.connect(self._update_confirm_button)
         self._element_tr.setValidator(QDoubleValidator())
 
-        self._element_bl = QtWidgets.QLineEdit(self)
+        self._element_bl = QLineEdit(self)
         self._element_bl.textChanged.connect(self._update_confirm_button)
         self._element_bl.setValidator(QDoubleValidator())
 
-        self._element_br = QtWidgets.QLineEdit(self)
+        self._element_br = QLineEdit(self)
         self._element_br.textChanged.connect(self._update_confirm_button)
         self._element_br.setValidator(QDoubleValidator())
 
         self._matrix_elements = (self._element_tl, self._element_tr, self._element_bl, self._element_br)
 
+        font_parens = self.font()
+        font_parens.setPointSize(int(font_parens.pointSize() * 5))
+        font_parens.setWeight(int(font_parens.weight() / 5))
+
+        label_paren_left = QLabel(self)
+        label_paren_left.setText('(')
+        label_paren_left.setFont(font_parens)
+
+        label_paren_right = QLabel(self)
+        label_paren_right.setText(')')
+        label_paren_right.setFont(font_parens)
+
         # === Arrange the widgets
 
         grid_matrix = QGridLayout()
         grid_matrix.setSpacing(20)
-        grid_matrix.addWidget(self._element_tl, 0, 0)
-        grid_matrix.addWidget(self._element_tr, 0, 1)
-        grid_matrix.addWidget(self._element_bl, 1, 0)
-        grid_matrix.addWidget(self._element_br, 1, 1)
+        grid_matrix.addWidget(label_paren_left, 0, 0, -1, 1)
+        grid_matrix.addWidget(self._element_tl, 0, 1)
+        grid_matrix.addWidget(self._element_tr, 0, 2)
+        grid_matrix.addWidget(self._element_bl, 1, 1)
+        grid_matrix.addWidget(self._element_br, 1, 2)
+        grid_matrix.addWidget(label_paren_right, 0, 3, -1, 1)
 
         self._hlay_definition.addLayout(grid_matrix)
 
@@ -294,7 +309,7 @@ class DefineAsAnExpressionDialog(DefineDialog):
 
         # === Create the widgets
 
-        self._lineedit_expression_box = QtWidgets.QLineEdit(self)
+        self._lineedit_expression_box = QLineEdit(self)
         self._lineedit_expression_box.setPlaceholderText('Enter matrix expression...')
         self._lineedit_expression_box.textChanged.connect(self._update_confirm_button)
         self._lineedit_expression_box.setValidator(MatrixExpressionValidator())
