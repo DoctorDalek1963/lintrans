@@ -8,16 +8,14 @@
 
 """This module provides a :func:`main` function to interpret command line arguments and run the program."""
 
-import sys
 from argparse import ArgumentParser
 from textwrap import dedent
-from typing import List
 
 from lintrans import __version__, gui
 from lintrans.crash_reporting import set_excepthook, set_signal_handler
 
 
-def main(args: List[str]) -> None:
+def main() -> None:
     """Interpret program-specific command line arguments and run the main window in most cases.
 
     If the user supplies --help or --version, then we simply respond to that and then return.
@@ -79,4 +77,4 @@ def main(args: List[str]) -> None:
 if __name__ == '__main__':
     set_excepthook()
     set_signal_handler()
-    main(sys.argv)
+    main()
