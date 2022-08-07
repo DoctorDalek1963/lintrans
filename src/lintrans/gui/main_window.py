@@ -211,18 +211,18 @@ class LintransMainWindow(QMainWindow):
 
         # Info panel button
 
-        button_info_panel = QPushButton(self)
-        button_info_panel.setText('Show defined matrices')
-        button_info_panel.clicked.connect(
+        self._button_info_panel = QPushButton(self)
+        self._button_info_panel.setText('Show defined matrices')
+        self._button_info_panel.clicked.connect(
             # We have to use a lambda instead of 'InfoPanelDialog(self.matrix_wrapper, self).open' here
             # because that would create an unnamed instance of InfoPanelDialog when LintransMainWindow is
             # constructed, but we need to create a new instance every time to keep self.matrix_wrapper up to date
             lambda: InfoPanelDialog(self._matrix_wrapper, self).open()
         )
-        button_info_panel.setToolTip(
+        self._button_info_panel.setToolTip(
             'Open an info panel with all matrices that have been defined in this session<br><b>(Ctrl + M)</b>'
         )
-        QShortcut(QKeySequence('Ctrl+M'), self).activated.connect(button_info_panel.click)
+        QShortcut(QKeySequence('Ctrl+M'), self).activated.connect(self._button_info_panel.click)
 
         # Render buttons
 
@@ -260,7 +260,7 @@ class LintransMainWindow(QMainWindow):
 
         vlay_info_buttons = QVBoxLayout()
         vlay_info_buttons.setSpacing(20)
-        vlay_info_buttons.addWidget(button_info_panel)
+        vlay_info_buttons.addWidget(self._button_info_panel)
 
         vlay_render = QVBoxLayout()
         vlay_render.setSpacing(20)
