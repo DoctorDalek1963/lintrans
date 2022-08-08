@@ -473,7 +473,7 @@ class LintransMainWindow(QMainWindow):
             matrix_application = target @ linalg.inv(start)
 
         # For a matrix to represent a rotation, it must have a positive determinant,
-        # its vectors must be perpendicular, and its vectors must be the same length
+        # its vectors must be perpendicular, the same length, and at right angles
         # The checks for 'abs(value) < 1e-10' are to account for floating point error
         if matrix_application is not None \
                 and self._plot.display_settings.smoothen_determinant \
@@ -570,6 +570,9 @@ class LintransMainWindow(QMainWindow):
             self._plot.update()
             QApplication.processEvents()
             QThread.msleep(self._plot.display_settings.animation_time // steps)
+
+        self._plot.plot_matrix(matrix_target)
+        self._plot.update()
 
         self._animating = False
 
