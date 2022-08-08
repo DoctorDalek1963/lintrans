@@ -300,6 +300,7 @@ class LintransMainWindow(QMainWindow):
         """Handle a :class:`QCloseEvent` by confirming if the user wants to save, and cancelling animation."""
         if self._save_filename is None or not self._changed_since_save:
             self._animating = False
+            self._animating_sequence = False
             event.accept()
             return
 
@@ -317,6 +318,7 @@ class LintransMainWindow(QMainWindow):
 
         if pressed_button in (QMessageBox.Save, QMessageBox.Discard):
             self._animating = False
+            self._animating_sequence = False
             event.accept()
         else:
             event.ignore()
