@@ -9,12 +9,12 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import Iterable, List, Tuple
+from typing import Iterable, List, Optional, Tuple
 
 import numpy as np
 from nptyping import Float, NDArray
 from PyQt5.QtCore import QPoint, QRectF, Qt
-from PyQt5.QtGui import QBrush, QColor, QPainter, QPainterPath, QPaintEvent, QPen, QWheelEvent
+from PyQt5.QtGui import QBrush, QColor, QFont, QPainter, QPainterPath, QPaintEvent, QPen, QWheelEvent
 from PyQt5.QtWidgets import QWidget
 
 from lintrans.typing_ import MatrixType
@@ -189,6 +189,11 @@ class VectorGridPlot(BackgroundPlot):
     _ARROWHEAD_LENGTH = 0.15
 
     _MAX_PARALLEL_LINES = 150
+
+    # This is the distance (in pixels) that the cursor needs to be from the point to drag it
+    _CURSOR_EPSILON: int = 5
+
+    _SNAP_DIST = 0.1
 
     def __init__(self, *args, **kwargs):
         """Create the widget with ``point_i`` and ``point_j`` attributes.
@@ -505,6 +510,50 @@ class VectorGridPlot(BackgroundPlot):
             f'{self._det:.2f}'
         )
 
+    def _draw_text_at_vector_tip(
+        self,
+        painter: QPainter,
+        point: Tuple[float, float],
+        text: str,
+        font: Optional[QFont] = None
+    ) -> None:
+        """Draw the given text at the point as if it were the tip of a vector, using the custom font if given."""
+        offset = 3
+        top_left: QPoint
+        bottom_right: QPoint
+        alignment_flags: int
+        x, y = point
+
+        if x >= 0 and y >= 0:  # Q1
+            top_left = QPoint(self._canvas_x(x) + offset, 0)
+            bottom_right = QPoint(self.width(), self._canvas_y(y) - offset)
+            alignment_flags = Qt.AlignLeft | Qt.AlignBottom
+
+        elif x < 0 and y >= 0:  # Q2
+            top_left = QPoint(0, 0)
+            bottom_right = QPoint(self._canvas_x(x) - offset, self._canvas_y(y) - offset)
+            alignment_flags = Qt.AlignRight | Qt.AlignBottom
+
+        elif x < 0 and y < 0:  # Q3
+            top_left = QPoint(0, self._canvas_y(y) + offset)
+            bottom_right = QPoint(self._canvas_x(x) - offset, self.height())
+            alignment_flags = Qt.AlignRight | Qt.AlignTop
+
+        else:  # Q4
+            top_left = QPoint(self._canvas_x(x) + offset, self._canvas_y(y) + offset)
+            bottom_right = QPoint(self.width(), self.height())
+            alignment_flags = Qt.AlignLeft | Qt.AlignTop
+
+        original_font = painter.font()
+
+        if font is not None:
+            painter.setFont(font)
+
+        painter.setPen(QPen(self._COLOUR_TEXT, self._WIDTH_VECTOR_LINE))
+        painter.drawText(QRectF(top_left, bottom_right), alignment_flags, text)
+
+        painter.setFont(original_font)
+
     def _draw_eigenvectors(self, painter: QPainter) -> None:
         """Draw the eigenvectors of the displayed matrix transformation.
 
@@ -518,36 +567,7 @@ class VectorGridPlot(BackgroundPlot):
                 continue
 
             self._draw_position_vector(painter, (x, y), self._COLOUR_EIGEN)
-
-            # Now we need to draw the eigenvalue at the tip of the eigenvector
-
-            offset = 3
-            top_left: QPoint
-            bottom_right: QPoint
-            alignment_flags: int
-
-            if x >= 0 and y >= 0:  # Q1
-                top_left = QPoint(self._canvas_x(x) + offset, 0)
-                bottom_right = QPoint(self.width(), self._canvas_y(y) - offset)
-                alignment_flags = Qt.AlignLeft | Qt.AlignBottom
-
-            elif x < 0 and y >= 0:  # Q2
-                top_left = QPoint(0, 0)
-                bottom_right = QPoint(self._canvas_x(x) - offset, self._canvas_y(y) - offset)
-                alignment_flags = Qt.AlignRight | Qt.AlignBottom
-
-            elif x < 0 and y < 0:  # Q3
-                top_left = QPoint(0, self._canvas_y(y) + offset)
-                bottom_right = QPoint(self._canvas_x(x) - offset, self.height())
-                alignment_flags = Qt.AlignRight | Qt.AlignTop
-
-            else:  # Q4
-                top_left = QPoint(self._canvas_x(x) + offset, self._canvas_y(y) + offset)
-                bottom_right = QPoint(self.width(), self.height())
-                alignment_flags = Qt.AlignLeft | Qt.AlignTop
-
-            painter.setPen(QPen(self._COLOUR_TEXT, self._WIDTH_VECTOR_LINE))
-            painter.drawText(QRectF(top_left, bottom_right), alignment_flags, f'{value:.2f}')
+            self._draw_text_at_vector_tip(painter, (x, y), f'{value:.2f}')
 
     def _draw_eigenlines(self, painter: QPainter) -> None:
         """Draw the eigenlines (invariant lines).
@@ -572,3 +592,12 @@ class VectorGridPlot(BackgroundPlot):
 
             else:
                 self._draw_oblique_line(painter, y / x, 0)
+
+    def _draw_basis_vector_labels(self, painter: QPainter) -> None:
+        """Label the basis vectors with `i` and `j`."""
+        font = self.font()
+        font.setItalic(True)
+        font.setStyleHint(QFont.Serif)
+
+        self._draw_text_at_vector_tip(painter, self.point_i, 'i', font)
+        self._draw_text_at_vector_tip(painter, self.point_j, 'j', font)

@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Make display settings resettable
 - Save sessions and crash reports to a specific place in the user's home directory
 - Add `Quit` action in `File` menu
+- Add option to label *i* and *j* basis vectors
 
 ### Fixed
 

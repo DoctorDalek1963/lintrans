@@ -125,6 +125,13 @@ class DisplaySettingsDialog(SettingsDialog):
         )
         self._dict_checkboxes['v'] = self._checkbox_draw_basis_vectors
 
+        self._checkbox_label_basis_vectors = QCheckBox(self)
+        self._checkbox_label_basis_vectors.setText('Label the bas&is vectors')
+        self._checkbox_label_basis_vectors.setToolTip(
+            'Label the transformed i and j basis vectors'
+        )
+        self._dict_checkboxes['i'] = self._checkbox_label_basis_vectors
+
         # Animations
 
         self._checkbox_smoothen_determinant = QCheckBox(self)
@@ -196,6 +203,7 @@ class DisplaySettingsDialog(SettingsDialog):
         vlay_groupbox_basic_stuff.addWidget(self._checkbox_draw_background_grid)
         vlay_groupbox_basic_stuff.addWidget(self._checkbox_draw_transformed_grid)
         vlay_groupbox_basic_stuff.addWidget(self._checkbox_draw_basis_vectors)
+        vlay_groupbox_basic_stuff.addWidget(self._checkbox_label_basis_vectors)
 
         groupbox_basic_stuff = QGroupBox('Basic stuff', self)
         groupbox_basic_stuff.setLayout(vlay_groupbox_basic_stuff)
@@ -247,6 +255,7 @@ class DisplaySettingsDialog(SettingsDialog):
         self._checkbox_draw_background_grid.setChecked(self.display_settings.draw_background_grid)
         self._checkbox_draw_transformed_grid.setChecked(self.display_settings.draw_transformed_grid)
         self._checkbox_draw_basis_vectors.setChecked(self.display_settings.draw_basis_vectors)
+        self._checkbox_label_basis_vectors.setChecked(self.display_settings.label_basis_vectors)
 
         # Animations
         self._checkbox_smoothen_determinant.setChecked(self.display_settings.smoothen_determinant)
@@ -266,6 +275,7 @@ class DisplaySettingsDialog(SettingsDialog):
         self.display_settings.draw_background_grid = self._checkbox_draw_background_grid.isChecked()
         self.display_settings.draw_transformed_grid = self._checkbox_draw_transformed_grid.isChecked()
         self.display_settings.draw_basis_vectors = self._checkbox_draw_basis_vectors.isChecked()
+        self.display_settings.label_basis_vectors = self._checkbox_label_basis_vectors.isChecked()
 
         # Animations
         self.display_settings.smoothen_determinant = self._checkbox_smoothen_determinant.isChecked()

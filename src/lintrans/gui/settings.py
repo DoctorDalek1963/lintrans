@@ -29,6 +29,9 @@ class DisplaySettings:
     draw_basis_vectors: bool = True
     """This controls whether we want to draw the transformed basis vectors."""
 
+    label_basis_vectors: bool = False
+    """This controls whether we want to label the `i` and `j` basis vectors."""
+
     # === Animations
 
     smoothen_determinant: bool = True

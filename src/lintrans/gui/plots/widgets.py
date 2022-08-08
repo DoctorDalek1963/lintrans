@@ -74,6 +74,9 @@ class VisualizeTransformationWidget(VectorGridPlot):
         if self.display_settings.draw_basis_vectors:
             self._draw_basis_vectors(painter)
 
+        if self.display_settings.label_basis_vectors:
+            self._draw_basis_vector_labels(painter)
+
         painter.end()
         event.accept()
 
@@ -84,9 +87,6 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
     This is just the widget itself. If you want the dialog, use
     :class:`lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog`.
     """
-
-    # This is the distance that the cursor needs to be from the point to drag it
-    _EPSILON: int = 5
 
     def __init__(self, *args, display_settings: DisplaySettings, **kwargs):
         """Create the widget and enable mouse tracking. ``*args`` and ``**kwargs`` are passed to ``super()``."""
@@ -106,7 +106,7 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
 
         for point in (self.point_i, self.point_j):
             px, py = self.canvas_coords(*point)
-            if abs(px - mx) <= self._EPSILON and abs(py - my) <= self._EPSILON:
+            if abs(px - mx) <= self._CURSOR_EPSILON and abs(py - my) <= self._CURSOR_EPSILON:
                 self._dragged_point = point[0], point[1]
 
         event.accept()
@@ -143,7 +143,7 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
         ]
 
         for snap_dist, coord in snap_distances:
-            if snap_dist < 0.1:
+            if snap_dist < self._SNAP_DIST:
                 x, y = coord
 
         if self._dragged_point == self.point_i:
