@@ -12,12 +12,11 @@ from abc import abstractmethod
 from typing import Iterable, List, Optional, Tuple
 
 import numpy as np
-from nptyping import Float, NDArray
 from PyQt5.QtCore import QPoint, QRectF, Qt
 from PyQt5.QtGui import QBrush, QColor, QFont, QPainter, QPainterPath, QPaintEvent, QPen, QWheelEvent
 from PyQt5.QtWidgets import QWidget
 
-from lintrans.typing_ import MatrixType
+from lintrans.typing_ import MatrixType, VectorType
 
 
 class BackgroundPlot(QWidget):
@@ -241,10 +240,10 @@ class VectorGridPlot(BackgroundPlot):
         return float(np.linalg.det(self._matrix))
 
     @property
-    def _eigs(self) -> Iterable[Tuple[float, NDArray[(1, 2), Float]]]:
+    def _eigs(self) -> 'Iterable[Tuple[float, VectorType]]':
         """Return the eigenvalues and eigenvectors zipped together to be iterated over.
 
-        :rtype: Iterable[Tuple[float, NDArray[(1, 2), Float]]]
+        :rtype: Iterable[Tuple[float, VectorType]]
         """
         values, vectors = np.linalg.eig(self._matrix)
         return zip(values, vectors.T)

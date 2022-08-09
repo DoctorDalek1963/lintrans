@@ -68,7 +68,8 @@ autodoc_default_options: dict[str, bool | str] = {
 
 autodoc_type_aliases: dict[str, str] = {
     'MatrixType': 'lintrans.typing_.MatrixType',
-    'MatrixParseList': 'lintrans.typing_.MatrixParseList'
+    'MatrixParseList': 'lintrans.typing_.MatrixParseList',
+    'VectorType': 'lintrans.typing_.VectorType'
 }
 
 autodoc_class_signature = 'separated'
