@@ -36,13 +36,19 @@ class BackgroundPlot(QWidget):
     """
 
     DEFAULT_GRID_SPACING: int = 85
-    _MINIMUM_GRID_SPACING: int = 5
+    """This is the starting spacing between grid lines (in pixels)."""
 
-    # Set the grid colour to grey and the axes colour to black
+    _MINIMUM_GRID_SPACING: int = 5
+    """This is the minimum spacing between grid lines (in pixels)."""
+
     _COLOUR_BACKGROUND_GRID: QColor = QColor('#808080')
+    """This is the colour of the background grid lines."""
+
     _COLOUR_BACKGROUND_AXES: QColor = QColor('#000000')
+    """This is the colour of the background axes."""
 
     _WIDTH_BACKGROUND_GRID: float = 0.3
+    """This is the width of the background grid lines, as a multiple of the :class:`QPainter` line width."""
 
     def __init__(self, *args, **kwargs):
         """Create the widget and setup backend stuff for rendering.
@@ -179,21 +185,37 @@ class VectorGridPlot(BackgroundPlot):
     """
 
     _COLOUR_I = QColor('#0808d8')
+    """This is the colour of the `i` basis vector and associated transformed grid lines."""
+
     _COLOUR_J = QColor('#e90000')
+    """This is the colour of the `j` basis vector and associated transformed grid lines."""
+
     _COLOUR_EIGEN = QColor('#13cf00')
+    """This is the colour of the eigenvectors and eigenlines (the spans of the eigenvectors)."""
+
     _COLOUR_TEXT = QColor('#000000')
+    """This is the colour of the text."""
 
     _WIDTH_VECTOR_LINE = 1.8
+    """This is the width of the transformed basis vector lines, as a multiple of the :class:`QPainter` line width."""
+
     _WIDTH_TRANSFORMED_GRID = 0.8
+    """This is the width of the transformed grid lines, as a multiple of the :class:`QPainter` line width."""
 
     _ARROWHEAD_LENGTH = 0.15
+    """This is the minimum length (in grid coord size) of the arrowhead parts."""
 
     _MAX_PARALLEL_LINES = 150
+    """This is the maximum number of parallel transformed grid lines that will be drawn.
 
-    # This is the distance (in pixels) that the cursor needs to be from the point to drag it
+    The user can zoom out further, but we will stop drawing grid lines beyond this number.
+    """
+
     _CURSOR_EPSILON: int = 5
+    """This is the distance (in pixels) that the cursor needs to be from the point to drag it."""
 
     _SNAP_DIST = 0.1
+    """This is the distance (in grid coords) that the cursor needs to be from an integer point to snap to it."""
 
     def __init__(self, *args, **kwargs):
         """Create the widget with ``point_i`` and ``point_j`` attributes.
@@ -549,7 +571,7 @@ class VectorGridPlot(BackgroundPlot):
         if font is not None:
             painter.setFont(font)
 
-        painter.setPen(QPen(self._COLOUR_TEXT, self._WIDTH_VECTOR_LINE))
+        painter.setPen(QPen(self._COLOUR_TEXT, 1))
         painter.drawText(QRectF(top_left, bottom_right), alignment_flags, text)
 
         painter.setFont(original_font)
@@ -570,7 +592,7 @@ class VectorGridPlot(BackgroundPlot):
             self._draw_text_at_vector_tip(painter, (x, y), f'{value:.2f}')
 
     def _draw_eigenlines(self, painter: QPainter) -> None:
-        """Draw the eigenlines (invariant lines).
+        """Draw the eigenlines. These are the invariant lines, or the spans of the eigenvectors.
 
         :param QPainter painter: The painter to draw the eigenlines with
         """

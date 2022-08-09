@@ -15,6 +15,10 @@ from typing import List, Pattern, Tuple
 from lintrans.typing_ import MatrixParseList
 
 NAIVE_CHARACTER_CLASS = r'[-+\sA-Z0-9.rot()^{}]'
+"""This is a RegEx character class that just holds all the valid characters for an expression.
+
+See :func:`validate_matrix_expression` to actually validate matrix expressions.
+"""
 
 
 class MatrixParseError(Exception):
