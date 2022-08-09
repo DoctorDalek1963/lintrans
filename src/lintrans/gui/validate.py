@@ -21,12 +21,17 @@ class MatrixExpressionValidator(QValidator):
 
     def validate(self, text: str, pos: int) -> Tuple[QValidator.State, str, int]:
         """Validate the given text according to the rules defined in the :mod:`lintrans.matrices` module."""
-        clean_text = re.sub(parse.NAIVE_CHARACTER_CLASS[:-1] + ',]', '', text)
+        # We want to extend the naive character class by adding a comma, which isn't
+        # normally allowed in expressions, but is allowed for sequential animations
+        bad_chars = re.sub(parse.NAIVE_CHARACTER_CLASS[:-1] + ',]', '', text)
 
-        if clean_text == '':
-            if parse.validate_matrix_expression(clean_text):
-                return QValidator.Acceptable, text, pos
-            else:
-                return QValidator.Intermediate, text, pos
+        # If there are bad chars, just reject it
+        if bad_chars != '':
+            return QValidator.Invalid, text, pos
 
-        return QValidator.Invalid, text, pos
+        # Now we need to check if it's actually a valid expression
+        if all(parse.validate_matrix_expression(expression) for expression in text.split(',')):
+            return QValidator.Acceptable, text, pos
+
+        # Else, if it's got all the right characters but it's not a valid expression
+        return QValidator.Intermediate, text, pos
