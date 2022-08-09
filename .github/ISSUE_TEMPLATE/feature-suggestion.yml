@@ -1,0 +1,34 @@
+name: 'Feature suggestion'
+description: Suggest a new feature
+title: '[Suggestion] '
+labels: ['enhancement']
+assignees: 'DoctorDalek1963'
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **PLEASE NOTE:** If your feature suggestion involves 3D transformations, it will just be rejected. Supporting 3D transformations would be fantastic, but it's also a massive undertaking and I don't currently have the time to commit to such a project. Maybe in the future.
+  - type: textarea
+    id: summary
+    attributes:
+      label: 'Summary'
+      description: Provide an explanation of the suggested feature.
+      placeholder: I propose adding the ability to...
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: 'Example'
+      description: Give an example of how your new feature would be used.
+      placeholder: This feature would solve the problem of ... by allowing the user to...
+    validations:
+      required: false
+  - type: input
+    id: contact-details
+    attributes:
+      label: 'Contact details (optional)'
+      description: How can we get in touch with you if we need more info?
+      placeholder: email@example.com
+    validations:
+      required: false

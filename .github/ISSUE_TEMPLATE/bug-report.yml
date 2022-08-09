@@ -1,0 +1,46 @@
+name: 'Bug report'
+description: Create a new bug report
+title: '[Bug] '
+labels: ['bug']
+assignees: 'DoctorDalek1963'
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please check your version of `lintrans` (go to `Help` and click `About`) and make sure it's the latest version, available [here](https://github.com/DoctorDalek1963/lintrans/releases/latest). If it's not, then please download the latest version and make sure you can reproduce the bug there.
+  - type: textarea
+    id: description
+    attributes:
+      label: 'Description'
+      description: Please describe the bug and how you encountered it.
+      placeholder: Explicit description of the bug and how it happened.
+    validations:
+      required: true
+  - type: textarea
+    id: reprod
+    attributes:
+      label: 'Reproduction steps'
+      description: Please describe how to reproduce your bug, including all matrix definitions.
+      placeholder: |
+        1. Define A as ...
+        2. Define B as ...
+        3. Enter "..." and render
+        4. Enter "..." and animate
+    validations:
+      required: true
+  - type: textarea
+    id: crash-report
+    attributes:
+      label: 'Crash report'
+      description: Please copy and paste the generated crash report, if applicable. These can be found in `%APPDATA%\lintrans\crash_reports\` on Windows and `$HOME/.lintrans/crash_reports/` on Linux and macOS.
+      render: shell
+    validations:
+      required: false
+  - type: input
+    id: contact-details
+    attributes:
+      label: 'Contact details (optional)'
+      description: How can we get in touch with you if we need more info?
+      placeholder: email@example.com
+    validations:
+      required: false
