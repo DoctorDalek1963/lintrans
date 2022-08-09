@@ -1,4 +1,4 @@
-# Use Google Forms to create anonymous GitHub issues
+# Using Google Forms to create anonymous GitHub issues
 
 I wanted to use Google Forms to allow users to [submit a bug
 report](https://forms.gle/Q82cLTtgPLcV4xQD6) or [suggest a new
