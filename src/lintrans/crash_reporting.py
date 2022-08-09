@@ -222,7 +222,7 @@ def _report_crash(
         )
     )
 
-    print(report, end='', file=sys.stderr)
+    print('\n\n' + report, end='', file=sys.stderr)
     with open(filename, 'w', encoding='utf-8') as f:
         f.write(report)
 
