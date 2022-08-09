@@ -12,7 +12,7 @@ body:
     id: summary
     attributes:
       label: 'Summary'
-      description: Provide a brief explanation of the suggested feature.
+      description: Provide an explanation of the suggested feature.
       placeholder: I propose adding the ability to...
     validations:
       required: true

@@ -129,20 +129,13 @@ class LintransMainWindow(QMainWindow):
         action_bug_report = QAction(self)
         action_bug_report.setText('Report a bug')
         action_bug_report.triggered.connect(
-            lambda: webbrowser.open_new_tab(
-                'https://github.com/DoctorDalek1963/lintrans/issues/new'
-                '?assignees=DoctorDalek1963&labels=bug&template=bug-report.yml&title=%5BBug%5D+'
-            )
+            lambda: webbrowser.open_new_tab('https://forms.gle/Q82cLTtgPLcV4xQD6')
         )
 
         action_suggest_feature = QAction(self)
         action_suggest_feature.setText('Suggest a new feature')
         action_suggest_feature.triggered.connect(
-            lambda: webbrowser.open_new_tab(
-                'https://github.com/DoctorDalek1963/lintrans/issues/new'
-                '?assignees=DoctorDalek1963&labels=enhancement'
-                '&template=feature-suggestion.yml&title=%5BSuggestion%5D+'
-            )
+            lambda: webbrowser.open_new_tab('https://forms.gle/mVWbHiMBw9Zq5Ze37')
         )
 
         menu_feedback.addAction(action_bug_report)
