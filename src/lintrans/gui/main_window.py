@@ -22,7 +22,7 @@ from numpy.linalg import LinAlgError
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot, QThread
 from PyQt5.QtGui import QCloseEvent, QIcon, QKeySequence
-from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QHBoxLayout, QMainWindow, QMessageBox,
+from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QHBoxLayout, QMainWindow, QMenu, QMessageBox,
                              QPushButton, QShortcut, QSizePolicy, QSpacerItem, QStyleFactory, QVBoxLayout)
 
 import lintrans
@@ -73,10 +73,10 @@ class LintransMainWindow(QMainWindow):
 
         menubar = QtWidgets.QMenuBar(self)
 
-        menu_file = QtWidgets.QMenu(menubar)
+        menu_file = QMenu(menubar)
         menu_file.setTitle('&File')
 
-        menu_help = QtWidgets.QMenu(menubar)
+        menu_help = QMenu(menubar)
         menu_help.setTitle('&Help')
 
         action_reset_session = QAction(self)
@@ -123,6 +123,31 @@ class LintransMainWindow(QMainWindow):
             lambda: webbrowser.open_new_tab(docs_link)
         )
 
+        menu_feedback = QMenu(menubar)
+        menu_feedback.setTitle('Give feedback')
+
+        action_bug_report = QAction(self)
+        action_bug_report.setText('Report a bug')
+        action_bug_report.triggered.connect(
+            lambda: webbrowser.open_new_tab(
+                'https://github.com/DoctorDalek1963/lintrans/issues/new'
+                '?assignees=DoctorDalek1963&labels=bug&template=bug-report.yml&title=%5BBug%5D+'
+            )
+        )
+
+        action_suggest_feature = QAction(self)
+        action_suggest_feature.setText('Suggest a new feature')
+        action_suggest_feature.triggered.connect(
+            lambda: webbrowser.open_new_tab(
+                'https://github.com/DoctorDalek1963/lintrans/issues/new'
+                '?assignees=DoctorDalek1963&labels=enhancement'
+                '&template=feature-suggestion.yml&title=%5BSuggestion%5D+'
+            )
+        )
+
+        menu_feedback.addAction(action_bug_report)
+        menu_feedback.addAction(action_suggest_feature)
+
         action_about = QAction(self)
         action_about.setText('&About')
         action_about.triggered.connect(lambda: AboutDialog(self).open())
@@ -140,6 +165,8 @@ class LintransMainWindow(QMainWindow):
 
         menu_help.addAction(action_tutorial)
         menu_help.addAction(action_docs)
+        menu_help.addSeparator()
+        menu_help.addMenu(menu_feedback)
         menu_help.addSeparator()
         menu_help.addAction(action_about)
 
