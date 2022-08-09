@@ -142,6 +142,8 @@ def _get_post_mortem() -> str:
     window = _get_main_window()
     matrix_wrapper = window._matrix_wrapper
     plot = window._plot
+    point_i = plot.point_i
+    point_j = plot.point_j
 
     post_mortem = 'Matrix wrapper:\n'
 
@@ -155,19 +157,13 @@ def _get_post_mortem() -> str:
 
         post_mortem += '\n'
 
-    post_mortem += '\nExpression box: "'
-    post_mortem += window._lineedit_expression_box.text() + '"\n'
-
-    point_i = plot.point_i
-    point_j = plot.point_j
-    post_mortem += f'\nCurrently displayed: [{point_i[0]} {point_j[0]}; {point_i[1]} {point_j[1]}]\n'
-
+    post_mortem += f'\nExpression box: "{window._lineedit_expression_box.text()}"'
+    post_mortem += f'\nCurrently displayed: [{point_i[0]} {point_j[0]}; {point_i[1]} {point_j[1]}]'
     post_mortem += f'\nAnimating (sequence): {window._animating} ({window._animating_sequence})\n'
 
-    post_mortem += f'\nGrid spacing: {plot.grid_spacing}\n'
-
-    post_mortem += f'\nWindow size: {window.width()} x {window.height()}\n'
-
+    post_mortem += f'\nGrid spacing: {plot.grid_spacing}'
+    post_mortem += f'\nWindow size: {window.width()} x {window.height()}'
+    post_mortem += f'\nViewport size: {plot.width()} x {plot.height()}'
     post_mortem += f'\nGrid corner: {plot._grid_corner()}\n'
 
     post_mortem += '\n' + _get_display_settings()
