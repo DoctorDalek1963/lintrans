@@ -42,7 +42,7 @@ def compile_naive_expression_pattern() -> Pattern[str]:
 
 
 # This is an expensive pattern to compile, so we compile it when this module is initialized
-naive_expression_pattern = compile_naive_expression_pattern()
+_naive_expression_pattern = compile_naive_expression_pattern()
 
 
 def find_sub_expressions(expression: str) -> List[str]:
@@ -103,7 +103,7 @@ def validate_matrix_expression(expression: str) -> bool:
     # Remove all whitespace
     expression = re.sub(r'\s', '', expression)
 
-    match = naive_expression_pattern.match(expression)
+    match = _naive_expression_pattern.match(expression)
 
     if match is None:
         return False
