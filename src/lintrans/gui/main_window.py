@@ -65,6 +65,7 @@ class LintransMainWindow(QMainWindow):
 
         self._animating: bool = False
         self._animating_sequence: bool = False
+        self._reset_during_animation: bool = False
 
         self._save_filename: Optional[str] = None
         self._changed_since_save: bool = False
@@ -359,9 +360,11 @@ class LintransMainWindow(QMainWindow):
     @pyqtSlot()
     def _reset_transformation(self) -> None:
         """Reset the visualized transformation back to the identity."""
-        self._plot.plot_matrix(self._matrix_wrapper['I'])
         self._animating = False
         self._animating_sequence = False
+        self._reset_during_animation = True
+
+        self._plot.plot_matrix(self._matrix_wrapper['I'])
         self._plot.update()
 
     @pyqtSlot()
@@ -402,6 +405,9 @@ class LintransMainWindow(QMainWindow):
             # For each expression in the list, right multiply it by the current matrix,
             # and animate from the current matrix to that new matrix
             for expr in text.split(',')[::-1]:
+                if not self._animating_sequence:
+                    break
+
                 try:
                     new_matrix = self._matrix_wrapper.evaluate_expression(expr)
 
@@ -410,9 +416,6 @@ class LintransMainWindow(QMainWindow):
                 except LinAlgError:
                     self._show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
                     return
-
-                if not self._animating_sequence:
-                    break
 
                 self._animate_between_matrices(current_matrix, new_matrix)
                 current_matrix = new_matrix
@@ -426,7 +429,7 @@ class LintransMainWindow(QMainWindow):
 
         # If there's no commas, then just animate directly from the start to the target
         else:
-            # Get the target matrix and it's determinant
+            # Get the target matrix and its determinant
             try:
                 matrix_target = self._matrix_wrapper.evaluate_expression(text)
 
@@ -562,6 +565,7 @@ class LintransMainWindow(QMainWindow):
             if self._is_matrix_too_big(matrix_to_render):
                 self._show_error_message('Matrix too big', "This matrix doesn't fit on the canvas")
                 self._animating = False
+                self._animating_sequence = False
                 return
 
             self._plot.plot_matrix(matrix_to_render)
@@ -573,10 +577,15 @@ class LintransMainWindow(QMainWindow):
             QApplication.processEvents()
             QThread.msleep(self._plot.display_settings.animation_time // steps)
 
-        self._plot.plot_matrix(matrix_target)
+        if not self._reset_during_animation:
+            self._plot.plot_matrix(matrix_target)
+        else:
+            self._plot.plot_matrix(self._matrix_wrapper['I'])
+
         self._plot.update()
 
         self._animating = False
+        self._reset_during_animation = False
 
     @pyqtSlot(DefineDialog)
     def _dialog_define_matrix(self, dialog_class: Type[DefineDialog]) -> None:
