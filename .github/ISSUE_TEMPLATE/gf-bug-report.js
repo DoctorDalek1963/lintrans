@@ -133,7 +133,7 @@ function setupAuthorization() {
  * Get permission to call FormApp.getActiveForm (which we never call, but Google wants anyway)
  */
 function getActiveFormPermission() {
-  var dummy = FormApp.getActiveForm();
+  FormApp.getActiveForm();
 }
 
 
