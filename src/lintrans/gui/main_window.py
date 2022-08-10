@@ -124,7 +124,7 @@ class LintransMainWindow(QMainWindow):
             lambda: webbrowser.open_new_tab(docs_link)
         )
 
-        menu_feedback = QMenu(menubar)
+        menu_feedback = QMenu(menu_help)
         menu_feedback.setTitle('Give feedback')
 
         action_bug_report = QAction(self)
