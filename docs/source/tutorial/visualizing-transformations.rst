@@ -3,12 +3,6 @@
 Visualizing transformations
 ===========================
 
-Syntax for input
-----------------
-
-..
-   Talk about rotations
-
 Render
 ------
 

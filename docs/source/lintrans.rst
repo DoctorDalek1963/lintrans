@@ -11,6 +11,7 @@ To get an overview of the internal project structure, here's the graph generated
 
 .. image:: int-imports.png
    :alt: Internal import graph
+   :align: center
 
 
 Indices

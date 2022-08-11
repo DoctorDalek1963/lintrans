@@ -8,7 +8,7 @@ Module contents
 
 .. _expression-syntax-docs:
 
-Expression Syntax
+Expression syntax
 -----------------
 
 .. note::

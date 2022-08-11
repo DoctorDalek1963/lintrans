@@ -18,8 +18,8 @@ There are several sections and I would highly recommend reading them in order.
 
    anatomy-of-the-app
    defining-matrices
+   expression-syntax
    visualizing-transformations
-   composing-transformations
    configuring-display-settings
    saving-and-loading-sessions
    reporting-bugs-and-suggesting-features
