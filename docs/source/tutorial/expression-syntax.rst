@@ -3,7 +3,7 @@
 Expression syntax
 =================
 
-The `expression input box` and :ref:`expression definition dialog<defining-matrices-as-expression>`
+The `expression input box` and :ref:`expression definition dialog<defining-matrices.as-expression>`
 allow you to compose matrices using multiplication (scalar and matrix), addition, exponentiation,
 brackets, and transposes. Obviously you can't easily type something like
 :math:`\left(2\mathbf{A}^{2}3\mathbf{B}^{T}\right)^{-1}\mathbf{C}`, so lintrans uses a more

@@ -40,7 +40,7 @@ to whatever name you chose.
 
    The matrix :math:`\mathbf{B}` being defined as :math:`\begin{pmatrix}3 & 0\\ 0 & 2\end{pmatrix}`
 
-.. _defining-matrices-as-expression:
+.. _defining-matrices.as-expression:
 
 As an expression
 ----------------
@@ -61,6 +61,8 @@ this example, if you change the value of :math:`\mathbf{A}` or :math:`\mathbf{B}
 
 It is impossible to define a matrix in terms of a matrix which is not already defined, or in terms
 of itself.
+
+.. _defining-matrices.viewing:
 
 Viewing defined matrices
 ------------------------
