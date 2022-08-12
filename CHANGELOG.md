@@ -32,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reduce memory usage by automatically deleting closed dialogs
 - Fix bug with matrices that are too small creating lag with too many lines
 - Fix bug that caused crashes when animating very large matrices
+- Fix bug where `validate_matrix_expression` would return True, but the expression was unable to be
+  parsed, causing a crash
 
 ## [0.2.2] - 2022-07-04
 
@@ -69,9 +71,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.0] - 2022-03-11
 
-There were alpha tags before this, but I wasn't properly adhering to semantic versioning, so I'll start the changelog here.
+There were alpha tags before this, but I wasn't properly adhering to semantic versioning, so I'll
+start the changelog here.
 
-If I'd been using semantic versioning from the start, there would much more changelog here, but instead, I'll just summarize the features.
+If I'd been using semantic versioning from the start, there would much more changelog here, but
+instead, I'll just summarize the features.
 
 ### Added
 
@@ -83,7 +87,7 @@ If I'd been using semantic versioning from the start, there would much more chan
 - Ability to zoom in and out of the viewport
 - Add dialog to change display settings
 
-[Unreleased]: https://github.com/DoctorDalek1963/lintrans/compare/v0.2.2...HEAD
-[0.2.1]: https://github.com/DoctorDalek1963/lintrans/compare/v0.2.1...v0.2.2
+[Unreleased]: https://github.com/DoctorDalek1963/lintrans/compare/v0.2.2...main
+[0.2.2]: https://github.com/DoctorDalek1963/lintrans/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/DoctorDalek1963/lintrans/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/DoctorDalek1963/lintrans/compare/13600cc6ff6299dc4a8101a367bc52fe08607554...v0.2.0
