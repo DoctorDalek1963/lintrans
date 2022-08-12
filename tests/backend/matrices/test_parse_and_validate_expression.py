@@ -41,7 +41,7 @@ valid_inputs: List[str] = [
 
     'A+B', 'A+2B', '4.3A+9B', 'A^2+B^T', '3A^7+0.8B^{16}',
     'A-B', '3A-4B', '3.2A^3-16.79B^T', '4.752A^{17}-3.32B^{36}',
-    'A-1B', '-A', '-1A'
+    'A-1B', '-A', '-1A', 'A^{2}3.4B', 'A^{-1}2.3B',
 
     '3A4B', 'A^TB', 'A^{T}B', '4A^6B^3',
     '2A^{3}4B^5', '4rot(90)^3', 'rot(45)rot(13)',
@@ -54,9 +54,9 @@ valid_inputs: List[str] = [
 ]
 
 invalid_inputs: List[str] = [
-    '', 'rot()', 'A^', 'A^1.2', 'A^{3.4}', '1,2A', 'ro(12)', '5', '12^2', '^T', '^{12}', '.1A',
-    'A^{13', 'A^3}', 'A^A', '^2', 'A--B', '--A', '+A', '--1A', 'A--B', 'A--1B', '.A', '1.A',
-    '2.3AB)^T', '(AB+)', '-4.6(9A', '-2(3.4A^{-1}-C^)^2', '9.2)', '3A^2B+4A(B+C)^-1D^T-A(C(D+EB)',
+    '', 'rot()', 'A^', 'A^1.2', 'A^2 3.4B', 'A^23.4B', 'A^-1 2.3B', 'A^{3.4}', '1,2A', 'ro(12)', '5', '12^2',
+    '^T', '^{12}', '.1A', 'A^{13', 'A^3}', 'A^A', '^2', 'A--B', '--A', '+A', '--1A', 'A--B', 'A--1B',
+    '.A', '1.A', '2.3AB)^T', '(AB+)', '-4.6(9A', '-2(3.4A^{-1}-C^)^2', '9.2)', '3A^2B+4A(B+C)^-1D^T-A(C(D+EB)',
     '3()^2', '4(your mum)^T', 'rot()', 'rot(10.1.1)', 'rot(--2)',
 
     'This is 100% a valid matrix expression, I swear'
@@ -85,6 +85,7 @@ expressions_and_parsed_expressions: List[Tuple[str, MatrixParseList]] = [
     # Multiplications
     ('A 0.1B', [[('', 'A', ''), ('0.1', 'B', '')]]),
     ('A^2 3B', [[('', 'A', '23'), ('', 'B', '')]]),
+    ('A^{2}3.4B', [[('', 'A', '2'), ('3.4', 'B', '')]]),
     ('4A^{3} 6B^2', [[('4', 'A', '3'), ('6', 'B', '2')]]),
     ('4.2A^{T} 6.1B^-1', [[('4.2', 'A', 'T'), ('6.1', 'B', '-1')]]),
     ('-1.2A^2 rot(45)^2', [[('-1.2', 'A', '2'), ('', 'rot(45)', '2')]]),
@@ -120,6 +121,10 @@ def test_parse_matrix_expression() -> None:
         # Test it with and without whitespace
         assert parse_matrix_expression(expression) == parsed_expression
         assert parse_matrix_expression(expression.replace(' ', '')) == parsed_expression
+
+    for expression in valid_inputs:
+        # Assert that it doesn't raise MatrixParseError
+        parse_matrix_expression(expression)
 
 
 def test_parse_error() -> None:

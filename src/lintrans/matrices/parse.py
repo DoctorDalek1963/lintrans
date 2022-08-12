@@ -102,10 +102,12 @@ def validate_matrix_expression(expression: str) -> bool:
     """
     # Remove all whitespace
     expression = re.sub(r'\s', '', expression)
-
     match = _naive_expression_pattern.match(expression)
 
     if match is None:
+        return False
+
+    if re.search(r'\^-?\d*\.\d+', expression) is not None:
         return False
 
     # Check that the whole expression was matched against
@@ -117,7 +119,7 @@ def validate_matrix_expression(expression: str) -> bool:
     except MatrixParseError:
         return False
 
-    if not sub_expressions:
+    if len(sub_expressions) == 0:
         return True
 
     return all(validate_matrix_expression(m) for m in sub_expressions)
