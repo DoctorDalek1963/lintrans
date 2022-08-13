@@ -72,10 +72,10 @@ class AboutDialog(FixedSizeDialog):
         label_info.setText(
             'lintrans is a program designed to help visualise<br>'
             '2D linear transformations represented with matrices.<br><br>'
-            "It's designed for teachers and students and any feedback<br>"
-            'is greatly appreciated at <a href="https://github.com/DoctorDalek1963/lintrans" '
-            'style="color: black;">my GitHub page</a><br>or via email '
-            '(<a href="mailto:dyson.dyson@icloud.com" style="color: black;">dyson.dyson@icloud.com</a>).'
+            "It's designed for teachers and students and all feedback<br>"
+            'is greatly appreciated. Go to <em>Help</em> &gt; <em>Give Feedback</em><br>'
+            'to report a bug or suggest a new feature, or you can<br>email me directly at '
+            '<a href="mailto:dyson.dyson@icloud.com" style="color: black;">dyson.dyson@icloud.com</a>.'
         )
         label_info.setAlignment(Qt.AlignCenter)
         label_info.setTextFormat(Qt.RichText)
