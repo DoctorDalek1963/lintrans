@@ -11,7 +11,7 @@ from __future__ import annotations
 from typing import List, Optional, Tuple
 
 from PyQt5.QtCore import Qt, QPointF
-from PyQt5.QtGui import QMouseEvent, QPainter, QPaintEvent, QPolygonF
+from PyQt5.QtGui import QBrush, QColor, QMouseEvent, QPainter, QPaintEvent, QPen, QPolygonF
 
 from lintrans.typing_ import MatrixType
 from lintrans.gui.settings import DisplaySettings
@@ -149,21 +149,27 @@ class DefinePolygonWidget(InteractivePlot, BackgroundPlot):
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         """Handle the mouse being clicked by adding a point or setting the dragged point index to an existing point."""
-        if event.button() != Qt.LeftButton:
+        if event.button() not in (Qt.LeftButton, Qt.RightButton):
             event.ignore()
             return
 
         canvas_pos = (event.x(), event.y())
         grid_pos = self._grid_coords(*canvas_pos)
 
-        for i, point in enumerate(self.points):
-            if self._is_within_epsilon(canvas_pos, point):
-                self._dragged_point_index = i
-                event.accept()
-                return
+        if event.button() == Qt.LeftButton:
+            for i, point in enumerate(self.points):
+                if self._is_within_epsilon(canvas_pos, point):
+                    self._dragged_point_index = i
+                    event.accept()
+                    return
 
-        self.points.append(self._round_to_int_coord(grid_pos))
-        self._dragged_point_index = -1
+            self.points.append(self._round_to_int_coord(grid_pos))
+            self._dragged_point_index = -1
+
+        elif event.button() == Qt.RightButton:
+            for i, point in enumerate(self.points):
+                if self._is_within_epsilon(canvas_pos, point):
+                    self.points.pop(i)
 
         self.update()
 
@@ -178,6 +184,17 @@ class DefinePolygonWidget(InteractivePlot, BackgroundPlot):
             event.ignore()
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
+        """Handle mouse movement by dragging the selected point."""
+        if self._dragged_point_index is None:
+            event.ignore()
+            return
+
+        x, y = self._round_to_int_coord(self._grid_coords(event.x(), event.y()))
+
+        self.points[self._dragged_point_index] = x, y
+
+        self.update()
+
         event.accept()
 
     def paintEvent(self, event: QPaintEvent) -> None:
@@ -190,10 +207,39 @@ class DefinePolygonWidget(InteractivePlot, BackgroundPlot):
 
         self._draw_background(painter, True)
 
+        pen_polygon = QPen(QColor('#000000'), 1.5)
+        painter.setPen(pen_polygon)
+
         if len(self.points) > 2:
             painter.drawPolygon(QPolygonF(
                 [QPointF(*self.canvas_coords(*p)) for p in self.points]
             ))
+
+        for point in self.points:
+            x, y = self.canvas_coords(*point)
+
+            painter.setBrush(QBrush(QColor('#FFFFFF'), Qt.SolidPattern))
+            painter.setPen(QPen(Qt.NoPen))
+            painter.drawPie(
+                x - self._CURSOR_EPSILON,
+                y - self._CURSOR_EPSILON,
+                2 * self._CURSOR_EPSILON,
+                2 * self._CURSOR_EPSILON,
+                0,
+                16 * 360
+            )
+
+            painter.setPen(pen_polygon)
+            painter.drawArc(
+                x - self._CURSOR_EPSILON,
+                y - self._CURSOR_EPSILON,
+                2 * self._CURSOR_EPSILON,
+                2 * self._CURSOR_EPSILON,
+                0,
+                16 * 360
+            )
+
+        painter.setBrush(QBrush(Qt.NoBrush))
 
         painter.end()
         event.accept()
