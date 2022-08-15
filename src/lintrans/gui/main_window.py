@@ -27,6 +27,7 @@ from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QHBoxLayout, QM
 
 import lintrans
 from lintrans.global_settings import global_settings
+from lintrans.gui.dialogs.misc import DefinePolygonDialog
 from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.matrices.utility import polar_coords, rotate_coord
@@ -186,11 +187,8 @@ class LintransMainWindow(QMainWindow):
 
         button_create_polygon = QPushButton(self)
         button_create_polygon.setText('Create polygon')
-        # button_create_polygon.clicked.connect(self.create_polygon)
+        button_create_polygon.clicked.connect(lambda: DefinePolygonDialog(self).open())
         button_create_polygon.setToolTip('Define a new polygon to view the transformation of')
-
-        # TODO: Implement this and enable button
-        button_create_polygon.setEnabled(False)
 
         self._button_change_display_settings = QPushButton(self)
         self._button_change_display_settings.setText('Change\ndisplay settings')

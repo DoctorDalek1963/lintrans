@@ -9,11 +9,12 @@
 from __future__ import annotations
 
 from abc import abstractmethod
+from math import ceil, dist, floor
 from typing import Iterable, List, Optional, Tuple
 
 import numpy as np
 from PyQt5.QtCore import QPoint, QRectF, Qt
-from PyQt5.QtGui import QBrush, QColor, QFont, QPainter, QPainterPath, QPaintEvent, QPen, QWheelEvent
+from PyQt5.QtGui import QBrush, QColor, QFont, QMouseEvent, QPainter, QPainterPath, QPaintEvent, QPen, QWheelEvent
 from PyQt5.QtWidgets import QWidget
 
 from lintrans.typing_ import MatrixType, VectorType
@@ -174,6 +175,59 @@ class BackgroundPlot(QWidget):
         self.update()
 
 
+class InteractivePlot(BackgroundPlot):
+    """This class represents an interactive plot, which may allow the user to click and/or drag point(s)."""
+
+    _CURSOR_EPSILON: int = 5
+    """This is the distance (in pixels) that the cursor needs to be from the point to drag it."""
+
+    _SNAP_DIST = 0.1
+    """This is the distance (in grid coords) that the cursor needs to be from an integer point to snap to it."""
+
+    def _round_to_int_coord(self, point: Tuple[float, float]) -> Tuple[float, float]:
+        """Take a coordinate in grid coords and round it to an integer coordinate if it's within :attr:`_SNAP_DIST`.
+
+        If the point is not close enough, we just return the original point.
+        """
+        x, y = point
+
+        possible_snaps: List[Tuple[int, int]] = [
+            (floor(x), floor(y)),
+            (floor(x), ceil(y)),
+            (ceil(x), floor(y)),
+            (ceil(x), ceil(y))
+        ]
+
+        snap_distances: List[Tuple[float, Tuple[int, int]]] = [
+            (dist((x, y), coord), coord)
+            for coord in possible_snaps
+        ]
+
+        for snap_dist, coord in snap_distances:
+            if snap_dist < self._SNAP_DIST:
+                x, y = coord
+
+        return x, y
+
+    def _is_within_epsilon(self, cursor_pos: Tuple[float, float], point: Tuple[float, float]) -> bool:
+        """Check if the cursor position (in canvas coords) is within range of the given point."""
+        mx, my = cursor_pos
+        px, py = self.canvas_coords(*point)
+        return (abs(px - mx) <= self._CURSOR_EPSILON and abs(py - my) <= self._CURSOR_EPSILON)
+
+    @abstractmethod
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        """Handle the mouse being pressed."""
+
+    @abstractmethod
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
+        """Handle the mouse being released."""
+
+    @abstractmethod
+    def mouseMoveEvent(self, event: QMouseEvent) -> None:
+        """Handle the mouse moving on the widget."""
+
+
 class VectorGridPlot(BackgroundPlot):
     """This class represents a background plot, with vectors and their grid drawn on top.
 
@@ -209,12 +263,6 @@ class VectorGridPlot(BackgroundPlot):
 
     The user can zoom out further, but we will stop drawing grid lines beyond this number.
     """
-
-    _CURSOR_EPSILON: int = 5
-    """This is the distance (in pixels) that the cursor needs to be from the point to drag it."""
-
-    _SNAP_DIST = 0.1
-    """This is the distance (in grid coords) that the cursor needs to be from an integer point to snap to it."""
 
     def __init__(self, *args, **kwargs):
         """Create the widget with ``point_i`` and ``point_j`` attributes.

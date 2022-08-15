@@ -8,19 +8,18 @@
 
 from __future__ import annotations
 
-from math import ceil, dist, floor
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QMouseEvent, QPainter, QPaintEvent
+from PyQt5.QtCore import Qt, QPointF
+from PyQt5.QtGui import QMouseEvent, QPainter, QPaintEvent, QPolygonF
 
 from lintrans.typing_ import MatrixType
 from lintrans.gui.settings import DisplaySettings
-from .classes import VectorGridPlot
+from .classes import BackgroundPlot, InteractivePlot, VectorGridPlot
 
 
 class VisualizeTransformationWidget(VectorGridPlot):
-    """This class is the widget that is used in the main window to visualize transformations.
+    """This widget is used in the main window to visualize transformations.
 
     It handles all the rendering itself, and the only method that the user needs to care about
     is :meth:`plot_matrix`, which allows you to visualize the given matrix transformation.
@@ -81,8 +80,8 @@ class VisualizeTransformationWidget(VectorGridPlot):
         event.accept()
 
 
-class DefineVisuallyWidget(VisualizeTransformationWidget):
-    """This class is the widget that allows the user to visually define a matrix.
+class DefineVisuallyWidget(VisualizeTransformationWidget, InteractivePlot):
+    """This widget allows the user to visually define a matrix.
 
     This is just the widget itself. If you want the dialog, use
     :class:`lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog`.
@@ -95,9 +94,8 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
         self._dragged_point: Tuple[float, float] | None = None
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
-        """Handle a :class:`QMouseEvent` when the user presses a button."""
-        mx = event.x()
-        my = event.y()
+        """Set the dragged point if the cursor is within :attr:`_CURSOR_EPSILON`."""
+        cursor_pos = (event.x(), event.y())
         button = event.button()
 
         if button != Qt.LeftButton:
@@ -105,14 +103,13 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
             return
 
         for point in (self.point_i, self.point_j):
-            px, py = self.canvas_coords(*point)
-            if abs(px - mx) <= self._CURSOR_EPSILON and abs(py - my) <= self._CURSOR_EPSILON:
+            if self._is_within_epsilon(cursor_pos, point):
                 self._dragged_point = point[0], point[1]
 
         event.accept()
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
-        """Handle a :class:`QMouseEvent` when the user releases a button."""
+        """Handle the mouse click being released by unsetting the dragged point."""
         if event.button() == Qt.LeftButton:
             self._dragged_point = None
             event.accept()
@@ -121,30 +118,11 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
 
     def mouseMoveEvent(self, event: QMouseEvent) -> None:
         """Handle the mouse moving on the canvas."""
-        mx = event.x()
-        my = event.y()
-
         if self._dragged_point is None:
             event.ignore()
             return
 
-        x, y = self._grid_coords(mx, my)
-
-        possible_snaps: List[Tuple[int, int]] = [
-            (floor(x), floor(y)),
-            (floor(x), ceil(y)),
-            (ceil(x), floor(y)),
-            (ceil(x), ceil(y))
-        ]
-
-        snap_distances: List[Tuple[float, Tuple[int, int]]] = [
-            (dist((x, y), coord), coord)
-            for coord in possible_snaps
-        ]
-
-        for snap_dist, coord in snap_distances:
-            if snap_dist < self._SNAP_DIST:
-                x, y = coord
+        x, y = self._round_to_int_coord(self._grid_coords(event.x(), event.y()))
 
         if self._dragged_point == self.point_i:
             self.point_i = x, y
@@ -156,4 +134,66 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
 
         self.update()
 
+        event.accept()
+
+
+class DefinePolygonWidget(InteractivePlot, BackgroundPlot):
+    """This widget allows the user to define a polygon by clicking and dragging points on the canvas."""
+
+    def __init__(self, *args, **kwargs):
+        """Create the widget with a list of points and a dragged point index."""
+        super().__init__(*args, **kwargs)
+
+        self._dragged_point_index: Optional[int] = None
+        self.points: List[Tuple[float, float]] = []
+
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        """Handle the mouse being clicked by adding a point or setting the dragged point index to an existing point."""
+        if event.button() != Qt.LeftButton:
+            event.ignore()
+            return
+
+        canvas_pos = (event.x(), event.y())
+        grid_pos = self._grid_coords(*canvas_pos)
+
+        for i, point in enumerate(self.points):
+            if self._is_within_epsilon(canvas_pos, point):
+                self._dragged_point_index = i
+                event.accept()
+                return
+
+        self.points.append(self._round_to_int_coord(grid_pos))
+        self._dragged_point_index = -1
+
+        self.update()
+
+        event.accept()
+
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
+        """Handle the mouse click being released by unsetting the dragged point index."""
+        if event.button() == Qt.LeftButton:
+            self._dragged_point_index = None
+            event.accept()
+        else:
+            event.ignore()
+
+    def mouseMoveEvent(self, event: QMouseEvent) -> None:
+        event.accept()
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        """Draw the polygon on the canvas."""
+        painter = QPainter()
+        painter.begin(self)
+
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setBrush(Qt.NoBrush)
+
+        self._draw_background(painter, True)
+
+        if len(self.points) > 2:
+            painter.drawPolygon(QPolygonF(
+                [QPointF(*self.canvas_coords(*p)) for p in self.points]
+            ))
+
+        painter.end()
         event.accept()

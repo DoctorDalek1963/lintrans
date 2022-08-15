@@ -13,9 +13,10 @@ import platform
 from typing import List, Union
 
 from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR, Qt
-from PyQt5.QtWidgets import QDialog, QFileDialog, QGridLayout, QLabel, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QDialog, QFileDialog, QGridLayout, QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
 import lintrans
+from lintrans.gui.plots import DefinePolygonWidget
 from lintrans.matrices.utility import round_float
 from lintrans.matrices import MatrixWrapper
 from lintrans.typing_ import is_matrix_type, MatrixType
@@ -251,3 +252,27 @@ class FileSelectDialog(QFileDialog):
             selected_files.append(''.join((path, ext)))
 
         return selected_files
+
+
+class DefinePolygonDialog(FixedSizeDialog):
+    """This dialog class allows the use to define a polygon with :class:`DefinePolygonWidget`."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        """Create the dialog with the :class:`DefinePolygonWidget` widget."""
+        super().__init__(*args, **kwargs)
+
+        self.setWindowTitle('Define a polygon')
+        self.setMinimumSize(700, 550)
+
+        # === Create the widgets
+
+        polygon_widget = DefinePolygonWidget()
+
+        # === Arrange the widgets
+
+        self.setContentsMargins(10, 10, 10, 10)
+
+        hlay = QHBoxLayout()
+        hlay.addWidget(polygon_widget)
+
+        self.setLayout(hlay)
