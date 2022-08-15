@@ -8,6 +8,8 @@
 
 from __future__ import annotations
 
+import operator
+from math import dist
 from typing import List, Optional, Tuple
 
 from PyQt5.QtCore import Qt, QPointF
@@ -163,8 +165,43 @@ class DefinePolygonWidget(InteractivePlot, BackgroundPlot):
                     event.accept()
                     return
 
-            self.points.append(self._round_to_int_coord(grid_pos))
-            self._dragged_point_index = -1
+            new_point = self._round_to_int_coord(grid_pos)
+
+            if len(self.points) < 2:
+                self.points.append(new_point)
+                self._dragged_point_index = -1
+            else:
+                # FIXME: This algorithm doesn't work very well when the new point is far away
+                # from the existing polygon; it just picks the longest side
+
+                # Get a list of line segments and a list of their lengths
+                line_segments = list(zip(self.points, self.points[1:])) + [(self.points[-1], self.points[0])]
+                segment_lengths = map(lambda t: dist(*t), line_segments)
+
+                # Get the distance from each point in the polygon to the new point
+                distances_to_point = [dist(p, new_point) for p in self.points]
+
+                # For each pair of list-adjacent points, zip their distances to
+                # the new point into a tuple, and add them together
+                # This gives us the lengths of the catheti of the triangles that
+                # connect the new point to each pair of adjacent points
+                dist_to_point_pairs = list(zip(distances_to_point, distances_to_point[1:])) + \
+                    [(distances_to_point[-1], distances_to_point[0])]
+
+                # mypy doesn't like the use of sum for some reason. Just ignore it
+                point_triangle_lengths = map(sum, dist_to_point_pairs)  # type: ignore[arg-type]
+
+                # The normalized distance is the sum of the distances to the ends of the line segment
+                # (point_triangle_lengths) divided by the length of the segment
+                normalized_distances = list(map(operator.truediv, point_triangle_lengths, segment_lengths))
+
+                # Get the best distance and insert this new point just after the point with that index
+                # This will put it in the middle of the closest line segment
+                best_distance = min(normalized_distances)
+                index = 1 + normalized_distances.index(best_distance)
+
+                self.points.insert(index, new_point)
+                self._dragged_point_index = index
 
         elif event.button() == Qt.RightButton:
             for i, point in enumerate(self.points):
@@ -214,6 +251,11 @@ class DefinePolygonWidget(InteractivePlot, BackgroundPlot):
             painter.drawPolygon(QPolygonF(
                 [QPointF(*self.canvas_coords(*p)) for p in self.points]
             ))
+        elif len(self.points) == 2:
+            painter.drawLine(
+                *self.canvas_coords(*self.points[0]),
+                *self.canvas_coords(*self.points[1])
+            )
 
         for point in self.points:
             x, y = self.canvas_coords(*point)
