@@ -174,7 +174,7 @@ class LintransMainWindow(QMainWindow):
 
         # Left layout: the plot and input box
 
-        self._plot = VisualizeTransformationWidget(self, display_settings=DisplaySettings())
+        self._plot = VisualizeTransformationWidget(self, display_settings=DisplaySettings(), polygon_points=[])
 
         self._lineedit_expression_box = QtWidgets.QLineEdit(self)
         self._lineedit_expression_box.setPlaceholderText('Enter matrix expression...')
@@ -628,7 +628,8 @@ class LintransMainWindow(QMainWindow):
             dialog = DefineVisuallyDialog(
                 self,
                 matrix_wrapper=deepcopy(self._matrix_wrapper),
-                display_settings=self._plot.display_settings
+                display_settings=self._plot.display_settings,
+                polygon_points=self._plot.polygon_points
             )
         else:
             dialog = dialog_class(self, matrix_wrapper=deepcopy(self._matrix_wrapper))

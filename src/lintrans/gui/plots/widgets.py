@@ -28,12 +28,12 @@ class VisualizeTransformationWidget(VectorGridPlot):
     is :meth:`plot_matrix`, which allows you to visualize the given matrix transformation.
     """
 
-    def __init__(self, *args, display_settings: DisplaySettings, **kwargs):
+    def __init__(self, *args, display_settings: DisplaySettings, polygon_points: List[Tuple[float, float]], **kwargs):
         """Create the widget and assign its display settings, passing ``*args`` and ``**kwargs`` to super."""
         super().__init__(*args, **kwargs)
 
         self.display_settings = display_settings
-        self.polygon_points: List[Tuple[float, float]] = []
+        self.polygon_points = polygon_points
 
     def plot_matrix(self, matrix: MatrixType) -> None:
         """Plot the given matrix on the grid by setting the basis vectors.
@@ -121,16 +121,16 @@ class VisualizeTransformationWidget(VectorGridPlot):
         event.accept()
 
 
-class DefineVisuallyWidget(VisualizeTransformationWidget, InteractivePlot):
+class DefineMatrixVisuallyWidget(VisualizeTransformationWidget, InteractivePlot):
     """This widget allows the user to visually define a matrix.
 
     This is just the widget itself. If you want the dialog, use
     :class:`lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog`.
     """
 
-    def __init__(self, *args, display_settings: DisplaySettings, **kwargs):
+    def __init__(self, *args, display_settings: DisplaySettings, polygon_points: List[Tuple[float, float]], **kwargs):
         """Create the widget and enable mouse tracking. ``*args`` and ``**kwargs`` are passed to ``super()``."""
-        super().__init__(*args, display_settings=display_settings, **kwargs)
+        super().__init__(*args, display_settings=display_settings, polygon_points=polygon_points, **kwargs)
 
         self._dragged_point: Tuple[float, float] | None = None
 

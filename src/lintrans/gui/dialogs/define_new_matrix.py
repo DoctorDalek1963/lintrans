@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import abc
+from typing import List, Tuple
 
 from numpy import array
 from PyQt5 import QtWidgets
@@ -18,7 +19,7 @@ from PyQt5.QtWidgets import (QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushB
                              QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout)
 
 from lintrans.gui.dialogs.misc import FixedSizeDialog
-from lintrans.gui.plots import DefineVisuallyWidget
+from lintrans.gui.plots import DefineMatrixVisuallyWidget
 from lintrans.gui.settings import DisplaySettings
 from lintrans.gui.validate import MatrixExpressionValidator
 from lintrans.matrices import MatrixWrapper
@@ -131,7 +132,14 @@ class DefineMatrixDialog(FixedSizeDialog):
 class DefineVisuallyDialog(DefineMatrixDialog):
     """The dialog class that allows the user to define a matrix visually."""
 
-    def __init__(self, *args, matrix_wrapper: MatrixWrapper, display_settings: DisplaySettings, **kwargs):
+    def __init__(
+            self,
+            *args,
+            matrix_wrapper: MatrixWrapper,
+            display_settings: DisplaySettings,
+            polygon_points: List[Tuple[float, float]],
+            **kwargs
+    ):
         """Create the widgets and layout of the dialog.
 
         :param MatrixWrapper matrix_wrapper: The MatrixWrapper that this dialog will mutate
@@ -142,7 +150,11 @@ class DefineVisuallyDialog(DefineMatrixDialog):
 
         # === Create the widgets
 
-        self._plot = DefineVisuallyWidget(self, display_settings=display_settings)
+        self._plot = DefineMatrixVisuallyWidget(
+            self,
+            display_settings=display_settings,
+            polygon_points=polygon_points
+        )
 
         # === Arrange the widgets
 
