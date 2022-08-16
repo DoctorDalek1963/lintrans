@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Save sessions and crash reports to a specific place in the user's home directory
 - Add `Quit` action in `File` menu
 - Add option to label *i* and *j* basis vectors
+- Add user-friendly bug report and feature suggestion forms that don't require a GitHub account
 
 ### Fixed
 
@@ -34,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix bug that caused crashes when animating very large matrices
 - Fix bug where `validate_matrix_expression` would return True, but the expression was unable to be
   parsed, causing a crash
+- Fix crash when animation time was 0
 
 ## [0.2.2] - 2022-07-04
 
