@@ -20,7 +20,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install --upgrade pip
-        pip install pydocstyle==6.1.1
+        pip install -e '.[dev]'
 
     - name: Run pydocstyle
       run: pydocstyle src/ tests/
