@@ -140,10 +140,15 @@ def _get_display_settings() -> str:
 def _get_post_mortem() -> str:
     """Return whatever post mortem data we could gather from the window."""
     window = _get_main_window()
-    matrix_wrapper = window._matrix_wrapper
-    plot = window._plot
-    point_i = plot.point_i
-    point_j = plot.point_j
+
+    try:
+        matrix_wrapper = window._matrix_wrapper
+        plot = window._plot
+        point_i = plot.point_i
+        point_j = plot.point_j
+
+    except (AttributeError, RuntimeError) as e:
+        return f'UNABLE TO GET POST MORTEM DATA:\n  {e!r}\n'
 
     post_mortem = 'Matrix wrapper:\n'
 
