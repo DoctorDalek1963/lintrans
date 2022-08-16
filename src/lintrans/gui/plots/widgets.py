@@ -264,6 +264,7 @@ class DefinePolygonWidget(InteractivePlot):
             for i, point in enumerate(self.points):
                 if self._is_within_epsilon(canvas_pos, point):
                     self.points.pop(i)
+                    break
 
         self.update()
 
