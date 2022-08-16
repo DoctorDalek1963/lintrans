@@ -56,9 +56,6 @@ class BackgroundPlot(QWidget):
     _PEN_POLYGON: QPen = QPen(QColor('#000000'), 1.5)
     """This is the pen used to draw the normal polygon."""
 
-    _PEN_POLYGON_DASHED: QPen = QPen(QColor('#000000'), 1.2, Qt.DashLine)
-    """This is the pen used to draw a dashed line for the untransformed polygon."""
-
     def __init__(self, *args, **kwargs):
         """Create the widget and setup backend stuff for rendering.
 

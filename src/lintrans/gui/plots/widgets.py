@@ -14,7 +14,7 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 from PyQt5.QtCore import Qt, QPointF, pyqtSlot
-from PyQt5.QtGui import QBrush, QColor, QMouseEvent, QPainter, QPaintEvent, QPolygonF
+from PyQt5.QtGui import QBrush, QColor, QMouseEvent, QPainter, QPaintEvent, QPen, QPolygonF
 
 from lintrans.typing_ import MatrixType
 from lintrans.gui.settings import DisplaySettings
@@ -62,7 +62,10 @@ class VisualizeTransformationWidget(VectorGridPlot):
 
     def _draw_untransformed_polygon(self, painter: QPainter) -> None:
         """Draw the original untransformed polygon with a dashed line."""
-        painter.setPen(self._PEN_POLYGON_DASHED)
+        pen = QPen(self._PEN_POLYGON)
+        pen.setDashPattern([4, 4])
+        painter.setPen(pen)
+
         self._draw_polygon_from_points(painter, self.polygon_points)
 
     def _draw_transformed_polygon(self, painter: QPainter) -> None:
