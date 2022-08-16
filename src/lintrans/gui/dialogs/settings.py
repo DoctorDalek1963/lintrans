@@ -13,7 +13,7 @@ from typing import Dict
 
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIntValidator, QKeyEvent, QKeySequence
-from PyQt5.QtWidgets import QCheckBox, QGroupBox, QHBoxLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
+from PyQt5.QtWidgets import QCheckBox, QGroupBox, QHBoxLayout, QLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
 from lintrans.gui.dialogs.misc import FixedSizeDialog
 from lintrans.gui.settings import DisplaySettings
@@ -50,23 +50,26 @@ class SettingsDialog(FixedSizeDialog):
 
         self.setContentsMargins(10, 10, 10, 10)
 
-        hlay_buttons = QHBoxLayout()
-        hlay_buttons.setSpacing(20)
+        self._hlay_buttons = QHBoxLayout()
+        self._hlay_buttons.setSpacing(20)
 
         if resettable:
-            hlay_buttons.addWidget(self._button_reset)
+            self._hlay_buttons.addWidget(self._button_reset)
 
-        hlay_buttons.addItem(QSpacerItem(50, 5, hPolicy=QSizePolicy.Expanding, vPolicy=QSizePolicy.Minimum))
-        hlay_buttons.addWidget(self._button_cancel)
-        hlay_buttons.addWidget(self._button_confirm)
+        self._hlay_buttons.addItem(QSpacerItem(50, 5, hPolicy=QSizePolicy.Expanding, vPolicy=QSizePolicy.Minimum))
+        self._hlay_buttons.addWidget(self._button_cancel)
+        self._hlay_buttons.addWidget(self._button_confirm)
 
-        self.vlay_options = QVBoxLayout()
-        self.vlay_options.setSpacing(20)
+    def _setup_layout(self, options_layout: QLayout) -> None:
+        """Set the layout of the settings widget.
 
+        .. note:: This method must be called at the end of :meth:`__init__`
+        in subclasses to setup the layout properly.
+        """
         vlay_all = QVBoxLayout()
         vlay_all.setSpacing(20)
-        vlay_all.addLayout(self.vlay_options)
-        vlay_all.addLayout(hlay_buttons)
+        vlay_all.addLayout(options_layout)
+        vlay_all.addLayout(self._hlay_buttons)
 
         self.setLayout(vlay_all)
 
@@ -263,10 +266,23 @@ class DisplaySettingsDialog(SettingsDialog):
         groupbox_polygon.setLayout(vlay_groupbox_polygon)
 
         # Now arrange the groupboxes
-        self.vlay_options.addWidget(groupbox_basic_stuff)
-        self.vlay_options.addWidget(groupbox_animations)
-        self.vlay_options.addWidget(groupbox_matrix_info)
-        self.vlay_options.addWidget(groupbox_polygon)
+        vlay_left = QVBoxLayout()
+        vlay_left.setSpacing(20)
+        vlay_left.addWidget(groupbox_basic_stuff)
+        vlay_left.addWidget(groupbox_animations)
+
+        vlay_right = QVBoxLayout()
+        vlay_right.setSpacing(20)
+        vlay_right.addWidget(groupbox_matrix_info)
+        vlay_right.addWidget(groupbox_polygon)
+        vlay_right.addItem(QSpacerItem(100, 2, hPolicy=QSizePolicy.Minimum, vPolicy=QSizePolicy.Expanding))
+
+        options_layout = QHBoxLayout()
+        options_layout.setSpacing(20)
+        options_layout.addLayout(vlay_left)
+        options_layout.addLayout(vlay_right)
+
+        self._setup_layout(options_layout)
 
         # Finally, we load the current settings and update the GUI
         self._load_settings()
