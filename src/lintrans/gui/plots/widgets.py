@@ -117,8 +117,11 @@ class VisualizeTransformationWidget(VectorGridPlot):
         if self.display_settings.label_basis_vectors:
             self._draw_basis_vector_labels(painter)
 
-        self._draw_untransformed_polygon(painter)
-        self._draw_transformed_polygon(painter)
+        if self.display_settings.draw_untransformed_polygon:
+            self._draw_untransformed_polygon(painter)
+
+        if self.display_settings.draw_transformed_polygon:
+            self._draw_transformed_polygon(painter)
 
         painter.end()
         event.accept()

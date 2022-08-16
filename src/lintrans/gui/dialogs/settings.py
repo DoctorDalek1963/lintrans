@@ -194,6 +194,18 @@ class DisplaySettingsDialog(SettingsDialog):
         self._checkbox_draw_eigenlines.setToolTip('Draw the eigenlines (invariant lines) of the transformations')
         self._dict_checkboxes['l'] = self._checkbox_draw_eigenlines
 
+        # Polygon
+
+        self._checkbox_draw_untransformed_polygon = QCheckBox(self)
+        self._checkbox_draw_untransformed_polygon.setText('&Untransformed polygon')
+        self._checkbox_draw_untransformed_polygon.setToolTip('Draw the untransformed version of the polygon')
+        self._dict_checkboxes['u'] = self._checkbox_draw_untransformed_polygon
+
+        self._checkbox_draw_transformed_polygon = QCheckBox(self)
+        self._checkbox_draw_transformed_polygon.setText('Transformed &polygon')
+        self._checkbox_draw_transformed_polygon.setToolTip('Draw the transformed version of the polygon')
+        self._dict_checkboxes['p'] = self._checkbox_draw_transformed_polygon
+
         # === Arrange the widgets in QGroupBoxes
 
         # Basic stuff
@@ -240,10 +252,21 @@ class DisplaySettingsDialog(SettingsDialog):
         groupbox_matrix_info = QGroupBox('Matrix info', self)
         groupbox_matrix_info.setLayout(vlay_groupbox_matrix_info)
 
+        # Polygon
+
+        vlay_groupbox_polygon = QVBoxLayout()
+        vlay_groupbox_polygon.setSpacing(20)
+        vlay_groupbox_polygon.addWidget(self._checkbox_draw_untransformed_polygon)
+        vlay_groupbox_polygon.addWidget(self._checkbox_draw_transformed_polygon)
+
+        groupbox_polygon = QGroupBox('Polygon', self)
+        groupbox_polygon.setLayout(vlay_groupbox_polygon)
+
         # Now arrange the groupboxes
         self.vlay_options.addWidget(groupbox_basic_stuff)
         self.vlay_options.addWidget(groupbox_animations)
         self.vlay_options.addWidget(groupbox_matrix_info)
+        self.vlay_options.addWidget(groupbox_polygon)
 
         # Finally, we load the current settings and update the GUI
         self._load_settings()
@@ -269,6 +292,10 @@ class DisplaySettingsDialog(SettingsDialog):
         self._checkbox_draw_eigenvectors.setChecked(self.display_settings.draw_eigenvectors)
         self._checkbox_draw_eigenlines.setChecked(self.display_settings.draw_eigenlines)
 
+        # Polygon
+        self._checkbox_draw_untransformed_polygon.setChecked(self.display_settings.draw_untransformed_polygon)
+        self._checkbox_draw_transformed_polygon.setChecked(self.display_settings.draw_transformed_polygon)
+
     def _confirm_settings(self) -> None:
         """Build a :class:`lintrans.gui.settings.DisplaySettings` object and assign it."""
         # Basic stuff
@@ -288,6 +315,10 @@ class DisplaySettingsDialog(SettingsDialog):
         self.display_settings.show_determinant_value = self._checkbox_show_determinant_value.isChecked()
         self.display_settings.draw_eigenvectors = self._checkbox_draw_eigenvectors.isChecked()
         self.display_settings.draw_eigenlines = self._checkbox_draw_eigenlines.isChecked()
+
+        # Polygon
+        self.display_settings.draw_untransformed_polygon = self._checkbox_draw_untransformed_polygon.isChecked()
+        self.display_settings.draw_transformed_polygon = self._checkbox_draw_transformed_polygon.isChecked()
 
         self.accept()
 

@@ -73,3 +73,11 @@ class DisplaySettings:
 
     draw_eigenlines: bool = False
     """This controls whether we should draw the eigenlines of the transformation."""
+
+    # === Polygon
+
+    draw_untransformed_polygon: bool = True
+    """This controls whether we should draw the untransformed version of the user-defined polygon."""
+
+    draw_transformed_polygon: bool = True
+    """This controls whether we should draw the transformed version of the user-defined polygon."""
