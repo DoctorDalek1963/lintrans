@@ -12,7 +12,7 @@ import operator
 from math import dist
 from typing import List, Optional, Tuple
 
-from PyQt5.QtCore import Qt, QPointF
+from PyQt5.QtCore import Qt, QPointF, pyqtSlot
 from PyQt5.QtGui import QBrush, QColor, QMouseEvent, QPainter, QPaintEvent, QPen, QPolygonF
 
 from lintrans.typing_ import MatrixType
@@ -32,6 +32,7 @@ class VisualizeTransformationWidget(VectorGridPlot):
         super().__init__(*args, **kwargs)
 
         self.display_settings = display_settings
+        self.polygon_points: List[Tuple[float, float]] = []
 
     def plot_matrix(self, matrix: MatrixType) -> None:
         """Plot the given matrix on the grid by setting the basis vectors.
@@ -139,15 +140,21 @@ class DefineVisuallyWidget(VisualizeTransformationWidget, InteractivePlot):
         event.accept()
 
 
-class DefinePolygonWidget(InteractivePlot, BackgroundPlot):
+class DefinePolygonWidget(InteractivePlot):
     """This widget allows the user to define a polygon by clicking and dragging points on the canvas."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, polygon_points: List[Tuple[float, float]], **kwargs):
         """Create the widget with a list of points and a dragged point index."""
         super().__init__(*args, **kwargs)
 
         self._dragged_point_index: Optional[int] = None
-        self.points: List[Tuple[float, float]] = []
+        self.points = polygon_points.copy()
+
+    @pyqtSlot()
+    def reset_polygon(self) -> None:
+        """Reset the polygon and update the widget."""
+        self.points = []
+        self.update()
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         """Handle the mouse being clicked by adding a point or setting the dragged point index to an existing point."""

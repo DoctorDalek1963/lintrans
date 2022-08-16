@@ -4,7 +4,7 @@
 # This program is licensed under GNU GPLv3, available here:
 # <https://www.gnu.org/licenses/gpl-3.0.html>
 
-"""This module provides an abstract :class:`DefineDialog` class and subclasses, allowing definition of new matrices."""
+"""This module provides an abstract :class:`DefineMatrixDialog` class and subclasses."""
 
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ from lintrans.typing_ import MatrixType
 _ALPHABET_NO_I = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
 
-class DefineDialog(FixedSizeDialog):
+class DefineMatrixDialog(FixedSizeDialog):
     """An abstract superclass for definitions dialogs.
 
     .. warning:: This class should never be directly instantiated, only subclassed.
@@ -128,7 +128,7 @@ class DefineDialog(FixedSizeDialog):
         """
 
 
-class DefineVisuallyDialog(DefineDialog):
+class DefineVisuallyDialog(DefineMatrixDialog):
     """The dialog class that allows the user to define a matrix visually."""
 
     def __init__(self, *args, matrix_wrapper: MatrixWrapper, display_settings: DisplaySettings, **kwargs):
@@ -190,7 +190,7 @@ class DefineVisuallyDialog(DefineDialog):
         self.accept()
 
 
-class DefineNumericallyDialog(DefineDialog):
+class DefineNumericallyDialog(DefineMatrixDialog):
     """The dialog class that allows the user to define a new matrix numerically."""
 
     def __init__(self, *args, matrix_wrapper: MatrixWrapper, **kwargs):
@@ -295,7 +295,7 @@ class DefineNumericallyDialog(DefineDialog):
         self.accept()
 
 
-class DefineAsExpressionDialog(DefineDialog):
+class DefineAsExpressionDialog(DefineMatrixDialog):
     """The dialog class that allows the user to define a matrix as an expression of other matrices."""
 
     def __init__(self, *args, matrix_wrapper: MatrixWrapper, **kwargs):

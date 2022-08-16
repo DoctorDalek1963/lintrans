@@ -32,7 +32,7 @@ from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.matrices.utility import polar_coords, rotate_coord
 from lintrans.typing_ import MatrixType, VectorType
-from .dialogs import (AboutDialog, DefineAsExpressionDialog, DefineDialog, DefineNumericallyDialog,
+from .dialogs import (AboutDialog, DefineAsExpressionDialog, DefineMatrixDialog, DefineNumericallyDialog,
                       DefineVisuallyDialog, FileSelectDialog, InfoPanelDialog)
 from .dialogs.settings import DisplaySettingsDialog
 from .plots import VisualizeTransformationWidget
@@ -187,8 +187,9 @@ class LintransMainWindow(QMainWindow):
 
         button_create_polygon = QPushButton(self)
         button_create_polygon.setText('Create polygon')
-        button_create_polygon.clicked.connect(lambda: DefinePolygonDialog(self).open())
-        button_create_polygon.setToolTip('Define a new polygon to view the transformation of')
+        button_create_polygon.clicked.connect(self._dialog_define_polygon)
+        button_create_polygon.setToolTip('Define a polygon to view its transformation<br><b>(Ctrl + P)</b>')
+        QShortcut(QKeySequence('Ctrl+P'), self).activated.connect(button_create_polygon.click)
 
         self._button_change_display_settings = QPushButton(self)
         self._button_change_display_settings.setText('Change\ndisplay settings')
@@ -605,8 +606,8 @@ class LintransMainWindow(QMainWindow):
         self._animating = False
         self._reset_during_animation = False
 
-    @pyqtSlot(DefineDialog)
-    def _dialog_define_matrix(self, dialog_class: Type[DefineDialog]) -> None:
+    @pyqtSlot(DefineMatrixDialog)
+    def _dialog_define_matrix(self, dialog_class: Type[DefineMatrixDialog]) -> None:
         """Open a generic definition dialog to define a new matrix.
 
         The class for the desired dialog is passed as an argument. We create an
@@ -614,14 +615,14 @@ class LintransMainWindow(QMainWindow):
         (meaning it blocks interaction with the main window) with the proper method
         connected to the :meth:`QDialog.accepted` signal.
 
-        .. note:: ``dialog_class`` must subclass :class:`lintrans.gui.dialogs.define_new_matrix.DefineDialog`.
+        .. note:: ``dialog_class`` must subclass :class:`lintrans.gui.dialogs.define_new_matrix.DefineMatrixDialog`.
 
         :param dialog_class: The dialog class to instantiate
-        :type dialog_class: Type[lintrans.gui.dialogs.define_new_matrix.DefineDialog]
+        :type dialog_class: Type[lintrans.gui.dialogs.define_new_matrix.DefineMatrixDialog]
         """
         # We create a dialog with a deepcopy of the current matrix_wrapper
         # This avoids the dialog mutating this one
-        dialog: DefineDialog
+        dialog: DefineMatrixDialog
 
         if dialog_class == DefineVisuallyDialog:
             dialog = DefineVisuallyDialog(
@@ -659,6 +660,21 @@ class LintransMainWindow(QMainWindow):
     def _assign_display_settings(self) -> None:
         """Assign a new value to ``self._plot.display_settings`` and give the expression box focus."""
         self._plot.display_settings = self.sender().display_settings
+        self._plot.update()
+        self._lineedit_expression_box.setFocus()
+        self._update_render_buttons()
+
+    @pyqtSlot()
+    def _dialog_define_polygon(self) -> None:
+        """Open the dialog to define a polygon."""
+        dialog = DefinePolygonDialog(self, polygon_points=self._plot.polygon_points)
+        dialog.open()
+        dialog.accepted.connect(self._assign_polygon_points)
+
+    @pyqtSlot()
+    def _assign_polygon_points(self) -> None:
+        """Assign a new value to ``self._plot.polygon_points`` and give the expression box focus."""
+        self._plot.polygon_points = self.sender().polygon_points
         self._plot.update()
         self._lineedit_expression_box.setFocus()
         self._update_render_buttons()

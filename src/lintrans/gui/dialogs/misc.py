@@ -10,16 +10,18 @@ from __future__ import annotations
 
 import os
 import platform
-from typing import List, Union
+from typing import List, Tuple, Union
 
-from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR, Qt
-from PyQt5.QtWidgets import QDialog, QFileDialog, QGridLayout, QHBoxLayout, QLabel, QVBoxLayout, QWidget
+from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR, Qt, pyqtSlot
+from PyQt5.QtGui import QKeySequence
+from PyQt5.QtWidgets import (QDialog, QFileDialog, QGridLayout, QHBoxLayout, QLabel, QPushButton,
+                             QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
 
 import lintrans
 from lintrans.gui.plots import DefinePolygonWidget
-from lintrans.matrices.utility import round_float
 from lintrans.matrices import MatrixWrapper
-from lintrans.typing_ import is_matrix_type, MatrixType
+from lintrans.matrices.utility import round_float
+from lintrans.typing_ import MatrixType, is_matrix_type
 
 
 class FixedSizeDialog(QDialog):
@@ -257,22 +259,56 @@ class FileSelectDialog(QFileDialog):
 class DefinePolygonDialog(FixedSizeDialog):
     """This dialog class allows the use to define a polygon with :class:`DefinePolygonWidget`."""
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, polygon_points: List[Tuple[float, float]], **kwargs) -> None:
         """Create the dialog with the :class:`DefinePolygonWidget` widget."""
         super().__init__(*args, **kwargs)
 
         self.setWindowTitle('Define a polygon')
         self.setMinimumSize(700, 550)
 
+        self.polygon_points = polygon_points
+
         # === Create the widgets
 
-        polygon_widget = DefinePolygonWidget()
+        self._polygon_widget = DefinePolygonWidget(polygon_points=polygon_points)
+
+        button_confirm = QPushButton(self)
+        button_confirm.setText('Confirm')
+        button_confirm.clicked.connect(self._confirm_polygon)
+        button_confirm.setToolTip('Confirm this polygon<br><b>(Ctrl + Enter)</b>')
+        QShortcut(QKeySequence('Ctrl+Return'), self).activated.connect(button_confirm.click)
+
+        button_cancel = QPushButton(self)
+        button_cancel.setText('Cancel')
+        button_cancel.clicked.connect(self.reject)
+        button_cancel.setToolTip('Discard this polygon<br><b>(Escape)</b>')
+
+        button_reset = QPushButton(self)
+        button_reset.setText('Reset polygon')
+        button_reset.clicked.connect(self._polygon_widget.reset_polygon)
+        button_reset.setToolTip('Remove all points of the polygon<br><b>(Ctrl + R)</b>')
+        QShortcut(QKeySequence('Ctrl+R'), self).activated.connect(button_reset.click)
 
         # === Arrange the widgets
 
         self.setContentsMargins(10, 10, 10, 10)
 
-        hlay = QHBoxLayout()
-        hlay.addWidget(polygon_widget)
+        hlay_buttons = QHBoxLayout()
+        hlay_buttons.setSpacing(20)
+        hlay_buttons.addWidget(button_reset)
+        hlay_buttons.addItem(QSpacerItem(50, 5, hPolicy=QSizePolicy.Expanding, vPolicy=QSizePolicy.Minimum))
+        hlay_buttons.addWidget(button_cancel)
+        hlay_buttons.addWidget(button_confirm)
 
-        self.setLayout(hlay)
+        vlay = QVBoxLayout()
+        vlay.setSpacing(20)
+        vlay.addWidget(self._polygon_widget)
+        vlay.addLayout(hlay_buttons)
+
+        self.setLayout(vlay)
+
+    @pyqtSlot()
+    def _confirm_polygon(self) -> None:
+        """Confirm the polygon that the user has defined."""
+        self.polygon_points = self._polygon_widget.points
+        self.accept()
