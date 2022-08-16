@@ -44,14 +44,13 @@ from .validate import MatrixExpressionValidator
 class LintransMainWindow(QMainWindow):
     """This class provides a main window for the GUI using the Qt framework.
 
-    This class should not be used directly, instead call :func:`lintrans.gui.main_window.main` to create the GUI.
+    This class should not be used directly, instead call :func:`main` to create the GUI.
     """
 
     def __init__(self):
         """Create the main window object, and create and arrange every widget in it.
 
-        This doesn't show the window, it just constructs it.
-        Use :func:`lintrans.gui.main_window.main` to show the GUI.
+        This doesn't show the window, it just constructs it. Use :func:`main` to show the GUI.
         """
         super().__init__()
 
@@ -616,7 +615,7 @@ class LintransMainWindow(QMainWindow):
         (meaning it blocks interaction with the main window) with the proper method
         connected to the :meth:`QDialog.accepted` signal.
 
-        .. note:: ``dialog_class`` must subclass :class:`lintrans.gui.dialogs.define_new_matrix.DefineDialog`.
+        .. note:: ``dialog_class`` must subclass :class:`~lintrans.gui.dialogs.define_new_matrix.DefineDialog`.
 
         :param dialog_class: The dialog class to instantiate
         :type dialog_class: Type[lintrans.gui.dialogs.define_new_matrix.DefineDialog]

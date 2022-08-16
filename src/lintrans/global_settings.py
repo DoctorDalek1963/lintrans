@@ -15,7 +15,7 @@ class _GlobalSettings:
     """A class to provide global settings that can be shared throughout the app.
 
     The directory methods are split up into things like :meth:`get_save_directory` and
-    :meth:`get_crash_report_directory` to make sure the directories exist and discourage
+    :meth:`get_crash_reports_directory` to make sure the directories exist and discourage
     the use of other directories in the root one.
 
     .. warning::

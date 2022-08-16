@@ -49,6 +49,6 @@ def is_matrix_type(matrix: Any) -> TypeGuard[NDArray[(2, 2), Float]]:
 
     .. note::
        This function is a TypeGuard, meaning if it returns True, then the
-       passed value must be a :attr:`lintrans.typing_.MatrixType`.
+       passed value must be a :attr:`MatrixType`.
     """
     return isinstance(matrix, ndarray) and matrix.shape == (2, 2)

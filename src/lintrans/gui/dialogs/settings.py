@@ -91,7 +91,7 @@ class DisplaySettingsDialog(SettingsDialog):
     def __init__(self, *args, display_settings: DisplaySettings, **kwargs):
         """Create the widgets and layout of the dialog.
 
-        :param DisplaySettings display_settings: The :class:`lintrans.gui.settings.DisplaySettings` object to mutate
+        :param DisplaySettings display_settings: The :class:`~lintrans.gui.settings.DisplaySettings` object to mutate
         """
         super().__init__(*args, resettable=True, **kwargs)
 
@@ -270,7 +270,7 @@ class DisplaySettingsDialog(SettingsDialog):
         self._checkbox_draw_eigenlines.setChecked(self.display_settings.draw_eigenlines)
 
     def _confirm_settings(self) -> None:
-        """Build a :class:`lintrans.gui.settings.DisplaySettings` object and assign it."""
+        """Build a :class:`~lintrans.gui.settings.DisplaySettings` object and assign it."""
         # Basic stuff
         self.display_settings.draw_background_grid = self._checkbox_draw_background_grid.isChecked()
         self.display_settings.draw_transformed_grid = self._checkbox_draw_transformed_grid.isChecked()

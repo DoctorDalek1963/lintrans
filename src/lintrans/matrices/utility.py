@@ -17,9 +17,9 @@ from lintrans.typing_ import MatrixType
 
 
 def polar_coords(x: float, y: float, *, degrees: bool = False) -> Tuple[float, float]:
-    """Return the polar coordinates of a given (x, y) Cartesian coordinate.
+    r"""Return the polar coordinates of a given (x, y) Cartesian coordinate.
 
-    .. note:: We're returning the angle in the range [0, 2pi)
+    .. note:: We're returning the angle in the range :math:`[0, 2\pi)`
     """
     radius = math.hypot(x, y)
 

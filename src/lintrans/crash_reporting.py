@@ -38,9 +38,9 @@ def _get_datetime_string() -> str:
 
 
 def _get_main_window() -> LintransMainWindow:
-    """Return the only instance of :class:`lintrans.gui.main_window.LintransMainWindow`.
+    """Return the only instance of :class:`~lintrans.gui.main_window.LintransMainWindow`.
 
-    :raises RuntimeError: If there is not exactly 1 instance of :class:`lintrans.gui.main_window.LintransMainWindow`
+    :raises RuntimeError: If there is not exactly 1 instance of :class:`~lintrans.gui.main_window.LintransMainWindow`
     """
     widgets = [
         x for x in QApplication.topLevelWidgets()

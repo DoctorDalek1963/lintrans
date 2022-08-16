@@ -95,7 +95,8 @@ def validate_matrix_expression(expression: str) -> bool:
     This function simply checks the expression against the BNF schema documented in
     :ref:`expression-syntax-docs`. It is not aware of which matrices are actually defined
     in a wrapper. For an aware version of this function, use the
-    :meth:`lintrans.matrices.wrapper.MatrixWrapper.is_valid_expression` method.
+    :meth:`~lintrans.matrices.wrapper.MatrixWrapper.is_valid_expression` method on
+    :class:`~lintrans.matrices.wrapper.MatrixWrapper`.
 
     :param str expression: The expression to be validated
     :returns bool: Whether the expression is valid according to the schema
@@ -191,13 +192,13 @@ class ExpressionParser:
         return self._expression[self._pointer]
 
     def parse(self) -> MatrixParseList:
-        """Fully parse the instance's matrix expression and return the :attr:`lintrans.typing_.MatrixParseList`.
+        """Fully parse the instance's matrix expression and return the :attr:`~lintrans.typing_.MatrixParseList`.
 
         This method uses all the private methods of this class to parse the
         expression in parts. All private methods mutate the instance variables.
 
         :returns: The parsed expression
-        :rtype: :attr:`lintrans.typing_.MatrixParseList`
+        :rtype: :attr:`~lintrans.typing_.MatrixParseList`
         """
         self._parse_multiplication_group()
 
@@ -396,7 +397,7 @@ class ExpressionParser:
 
 
 def parse_matrix_expression(expression: str) -> MatrixParseList:
-    """Parse the matrix expression and return a :data:`lintrans.typing_.MatrixParseList`.
+    """Parse the matrix expression and return a :attr:`~lintrans.typing_.MatrixParseList`.
 
     :Example:
 
@@ -417,6 +418,6 @@ def parse_matrix_expression(expression: str) -> MatrixParseList:
 
     :param str expression: The expression to be parsed
     :returns: A list of parsed components
-    :rtype: :data:`lintrans.typing_.MatrixParseList`
+    :rtype: :attr:`~lintrans.typing_.MatrixParseList`
     """
     return ExpressionParser(expression).parse()

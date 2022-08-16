@@ -85,7 +85,7 @@ class DefineVisuallyWidget(VisualizeTransformationWidget):
     """This class is the widget that allows the user to visually define a matrix.
 
     This is just the widget itself. If you want the dialog, use
-    :class:`lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog`.
+    :class:`~lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog`.
     """
 
     def __init__(self, *args, display_settings: DisplaySettings, **kwargs):

@@ -20,7 +20,7 @@ class MatrixExpressionValidator(QValidator):
     """This class validates matrix expressions in a Qt input box."""
 
     def validate(self, text: str, pos: int) -> Tuple[QValidator.State, str, int]:
-        """Validate the given text according to the rules defined in the :mod:`lintrans.matrices` module."""
+        """Validate the given text according to the rules defined in the :mod:`~lintrans.matrices` module."""
         # We want to extend the naive character class by adding a comma, which isn't
         # normally allowed in expressions, but is allowed for sequential animations
         bad_chars = re.sub(parse.NAIVE_CHARACTER_CLASS[:-1] + ',]', '', text)
