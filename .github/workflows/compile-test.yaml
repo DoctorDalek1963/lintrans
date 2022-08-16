@@ -1,0 +1,46 @@
+# We want to test that compilation workswhen we push to main,
+# even when we're not releasing a new version
+# This ensures minimal issues when actually compiling for release
+
+# We want to test that compilation works on all supported platforms, despite
+# compile-release.yaml only using the oldest runners with the newest Python
+# This is because users should be able to compile on as many platforms as possible
+
+name: Test compilation
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  compile:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        # All non-deprecated GitHub-hosted runners as of August 2022
+        # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+        os: [macos-11, macos-12, ubuntu-20.04, ubuntu-22.04, windows-2019, windows-2022]
+        python-version: ['3.10', '3.9', '3.8']
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -e '.[compile,dev]'
+
+      - name: Install UPX
+        if: runner.os == 'Windows'  # PyInstaller currently only uses UPX on Windows
+        run: choco install upx
+
+      - name: Compile
+        run: python compile.py -f
+        shell: bash
