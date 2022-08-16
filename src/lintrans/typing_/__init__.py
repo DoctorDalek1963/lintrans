@@ -21,17 +21,17 @@ from numpy import ndarray
 from nptyping import NDArray, Float
 
 if version_info >= (3, 10):
-    from typing import TypeGuard
+    from typing import TypeAlias, TypeGuard
 
 __all__ = ['is_matrix_type', 'MatrixType', 'MatrixParseList', 'VectorType']
 
-MatrixType = NDArray[(2, 2), Float]
+MatrixType: TypeAlias = 'NDArray[(2, 2), Float]'
 """This type represents a 2x2 matrix as a NumPy array."""
 
-VectorType = NDArray[(2,), Float]
+VectorType: TypeAlias = 'NDArray[(2,), Float]'
 """This type represents a 2D vector as a NumPy array, for use with :attr:`MatrixType`."""
 
-MatrixParseList = List[List[Tuple[str, str, str]]]
+MatrixParseList: TypeAlias = List[List[Tuple[str, str, str]]]
 """This is a list containing lists of tuples. Each tuple represents a matrix and is ``(multiplier,
 matrix_identifier, index)`` where all of them are strings. These matrix-representing tuples are
 contained in lists which represent multiplication groups. Every matrix in the group should be
@@ -44,7 +44,7 @@ representing an integer, or it's the letter ``T`` for transpose.
 """
 
 
-def is_matrix_type(matrix: Any) -> TypeGuard[NDArray[(2, 2), Float]]:
+def is_matrix_type(matrix: Any) -> TypeGuard[MatrixType]:
     """Check if the given value is a valid matrix type.
 
     .. note::

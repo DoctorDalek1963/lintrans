@@ -239,7 +239,13 @@ class MatrixWrapper:
                     matrix_value = m.T
 
                 else:
-                    matrix_value = np.linalg.matrix_power(self[identifier], 1 if index == '' else int(index))
+                    # Again, this assertion is just for mypy
+                    # We know this will be a matrix, but since upgrading from NumPy 1.21 to 1.23
+                    # (to fix a bug with GH Actions on Windows), mypy complains about matrix_power()
+                    base_matrix = self[identifier]
+                    assert is_matrix_type(base_matrix)
+
+                    matrix_value = np.linalg.matrix_power(base_matrix, 1 if index == '' else int(index))
 
                 matrix_value *= 1 if multiplier == '' else float(multiplier)
                 f_group.append(matrix_value)
