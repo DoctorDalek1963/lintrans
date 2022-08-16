@@ -12,12 +12,13 @@ import operator
 from math import dist
 from typing import List, Optional, Tuple
 
+import numpy as np
 from PyQt5.QtCore import Qt, QPointF, pyqtSlot
-from PyQt5.QtGui import QBrush, QColor, QMouseEvent, QPainter, QPaintEvent, QPen, QPolygonF
+from PyQt5.QtGui import QBrush, QColor, QMouseEvent, QPainter, QPaintEvent, QPolygonF
 
 from lintrans.typing_ import MatrixType
 from lintrans.gui.settings import DisplaySettings
-from .classes import BackgroundPlot, InteractivePlot, VectorGridPlot
+from .classes import InteractivePlot, VectorGridPlot
 
 
 class VisualizeTransformationWidget(VectorGridPlot):
@@ -43,6 +44,40 @@ class VisualizeTransformationWidget(VectorGridPlot):
         """
         self.point_i = (matrix[0][0], matrix[1][0])
         self.point_j = (matrix[0][1], matrix[1][1])
+
+    def _draw_polygon_from_points(self, painter: QPainter, points: List[Tuple[float, float]]) -> None:
+        """Draw a polygon from a given list of points.
+
+        This is a helper method for :meth:`_draw_untransformed_polygon` and :meth:`_draw_transformed_polygon`.
+        """
+        if len(points) > 2:
+            painter.drawPolygon(QPolygonF(
+                [QPointF(*self.canvas_coords(*p)) for p in points]
+            ))
+        elif len(points) == 2:
+            painter.drawLine(
+                *self.canvas_coords(*points[0]),
+                *self.canvas_coords(*points[1])
+            )
+
+    def _draw_untransformed_polygon(self, painter: QPainter) -> None:
+        """Draw the original untransformed polygon with a dashed line."""
+        painter.setPen(self._PEN_POLYGON_DASHED)
+        self._draw_polygon_from_points(painter, self.polygon_points)
+
+    def _draw_transformed_polygon(self, painter: QPainter) -> None:
+        """Draw the transformed version of the polygon."""
+        if len(self.polygon_points) == 0:
+            return
+
+        painter.setPen(self._PEN_POLYGON)
+
+        # This transpose trick lets us do one matrix multiplication to transform every point in the polygon
+        # I learned this from Phil. Thanks Phil
+        self._draw_polygon_from_points(
+            painter,
+            (self._matrix @ np.array(self.polygon_points).T).T
+        )
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """Handle a :class:`QPaintEvent` by drawing the background grid and the transformed grid.
@@ -78,6 +113,9 @@ class VisualizeTransformationWidget(VectorGridPlot):
 
         if self.display_settings.label_basis_vectors:
             self._draw_basis_vector_labels(painter)
+
+        self._draw_untransformed_polygon(painter)
+        self._draw_transformed_polygon(painter)
 
         painter.end()
         event.accept()
@@ -142,6 +180,12 @@ class DefineVisuallyWidget(VisualizeTransformationWidget, InteractivePlot):
 
 class DefinePolygonWidget(InteractivePlot):
     """This widget allows the user to define a polygon by clicking and dragging points on the canvas."""
+
+    _BRUSH_NONE: QBrush = QBrush(Qt.NoBrush)
+    """This is a brush with ``Qt::NoBrush``. See :cpp:enum:`Qt::BrushStyle`."""
+
+    _BRUSH_DEFINE_POLYGON_VERTEX: QBrush = QBrush(QColor('#FFFFFF'), Qt.SolidPattern)
+    """This is the brush used to draw the inside of the vertices when defining a polygon."""
 
     def __init__(self, *args, polygon_points: List[Tuple[float, float]], **kwargs):
         """Create the widget with a list of points and a dragged point index."""
@@ -251,8 +295,7 @@ class DefinePolygonWidget(InteractivePlot):
 
         self._draw_background(painter, True)
 
-        pen_polygon = QPen(QColor('#000000'), 1.5)
-        painter.setPen(pen_polygon)
+        painter.setPen(self._PEN_POLYGON)
 
         if len(self.points) > 2:
             painter.drawPolygon(QPolygonF(
@@ -264,11 +307,12 @@ class DefinePolygonWidget(InteractivePlot):
                 *self.canvas_coords(*self.points[1])
             )
 
+        painter.setBrush(self._BRUSH_DEFINE_POLYGON_VERTEX)
+
         for point in self.points:
             x, y = self.canvas_coords(*point)
 
-            painter.setBrush(QBrush(QColor('#FFFFFF'), Qt.SolidPattern))
-            painter.setPen(QPen(Qt.NoPen))
+            painter.setPen(self._PEN_NONE)
             painter.drawPie(
                 x - self._CURSOR_EPSILON,
                 y - self._CURSOR_EPSILON,
@@ -278,7 +322,7 @@ class DefinePolygonWidget(InteractivePlot):
                 16 * 360
             )
 
-            painter.setPen(pen_polygon)
+            painter.setPen(self._PEN_POLYGON)
             painter.drawArc(
                 x - self._CURSOR_EPSILON,
                 y - self._CURSOR_EPSILON,
@@ -288,7 +332,7 @@ class DefinePolygonWidget(InteractivePlot):
                 16 * 360
             )
 
-        painter.setBrush(QBrush(Qt.NoBrush))
+        painter.setBrush(self._BRUSH_NONE)
 
         painter.end()
         event.accept()

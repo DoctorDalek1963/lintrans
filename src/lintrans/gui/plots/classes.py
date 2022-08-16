@@ -50,6 +50,15 @@ class BackgroundPlot(QWidget):
     _WIDTH_BACKGROUND_GRID: float = 0.3
     """This is the width of the background grid lines, as a multiple of the :class:`QPainter` line width."""
 
+    _PEN_NONE: QPen = QPen(Qt.NoPen)
+    """This is a pen with ``Qt::NoPen``. See :cpp:enum:`Qt::PenStyle`."""
+
+    _PEN_POLYGON: QPen = QPen(QColor('#000000'), 1.5)
+    """This is the pen used to draw the normal polygon."""
+
+    _PEN_POLYGON_DASHED: QPen = QPen(QColor('#000000'), 1.2, Qt.DashLine)
+    """This is the pen used to draw a dashed line for the untransformed polygon."""
+
     def __init__(self, *args, **kwargs):
         """Create the widget and setup backend stuff for rendering.
 
