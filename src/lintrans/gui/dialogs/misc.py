@@ -31,6 +31,7 @@ class FixedSizeDialog(QDialog):
         """Set the :cpp:enum:`Qt::WA_DeleteOnClose` attribute to ensure deletion of dialog."""
         super().__init__(*args, **kwargs)
         self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setWindowFlag(Qt.WindowContextHelpButtonHint, False)
 
     def open(self) -> None:
         """Override :meth:`QDialog.open` to set the dialog to a fixed size."""
