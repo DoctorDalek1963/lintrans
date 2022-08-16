@@ -157,6 +157,7 @@ class DisplaySettingsDialog(SettingsDialog):
 
         self._lineedit_animation_time = QtWidgets.QLineEdit(self)
         self._lineedit_animation_time.setValidator(QIntValidator(1, 9999, self))
+        self._lineedit_animation_time.textChanged.connect(self._update_gui)
 
         label_animation_pause_length = QtWidgets.QLabel(self)
         label_animation_pause_length.setText('Animation pause length (ms)')
@@ -303,6 +304,11 @@ class DisplaySettingsDialog(SettingsDialog):
         For example, this method updates which checkboxes are enabled based on the values of other checkboxes.
         """
         self._checkbox_show_determinant_value.setEnabled(self._checkbox_draw_determinant_parallelogram.isChecked())
+
+        try:
+            self._button_confirm.setEnabled(int(self._lineedit_animation_time.text()) != 0)
+        except ValueError:
+            self._button_confirm.setEnabled(False)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         """Handle a :class:`QKeyEvent` by manually activating toggling checkboxes.
