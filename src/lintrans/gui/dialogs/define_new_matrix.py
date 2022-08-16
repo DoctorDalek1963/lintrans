@@ -4,11 +4,12 @@
 # This program is licensed under GNU GPLv3, available here:
 # <https://www.gnu.org/licenses/gpl-3.0.html>
 
-"""This module provides an abstract :class:`DefineDialog` class and subclasses, allowing definition of new matrices."""
+"""This module provides an abstract :class:`DefineMatrixDialog` class and subclasses."""
 
 from __future__ import annotations
 
 import abc
+from typing import List, Tuple
 
 from numpy import array
 from PyQt5 import QtWidgets
@@ -18,7 +19,7 @@ from PyQt5.QtWidgets import (QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushB
                              QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout)
 
 from lintrans.gui.dialogs.misc import FixedSizeDialog
-from lintrans.gui.plots import DefineVisuallyWidget
+from lintrans.gui.plots import DefineMatrixVisuallyWidget
 from lintrans.gui.settings import DisplaySettings
 from lintrans.gui.validate import MatrixExpressionValidator
 from lintrans.matrices import MatrixWrapper
@@ -28,7 +29,7 @@ from lintrans.typing_ import MatrixType
 _ALPHABET_NO_I = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
 
-class DefineDialog(FixedSizeDialog):
+class DefineMatrixDialog(FixedSizeDialog):
     """An abstract superclass for definitions dialogs.
 
     .. warning:: This class should never be directly instantiated, only subclassed.
@@ -124,10 +125,17 @@ class DefineDialog(FixedSizeDialog):
         """
 
 
-class DefineVisuallyDialog(DefineDialog):
+class DefineVisuallyDialog(DefineMatrixDialog):
     """The dialog class that allows the user to define a matrix visually."""
 
-    def __init__(self, *args, matrix_wrapper: MatrixWrapper, display_settings: DisplaySettings, **kwargs):
+    def __init__(
+            self,
+            *args,
+            matrix_wrapper: MatrixWrapper,
+            display_settings: DisplaySettings,
+            polygon_points: List[Tuple[float, float]],
+            **kwargs
+    ):
         """Create the widgets and layout of the dialog.
 
         :param MatrixWrapper matrix_wrapper: The MatrixWrapper that this dialog will mutate
@@ -138,7 +146,11 @@ class DefineVisuallyDialog(DefineDialog):
 
         # === Create the widgets
 
-        self._plot = DefineVisuallyWidget(self, display_settings=display_settings)
+        self._plot = DefineMatrixVisuallyWidget(
+            self,
+            display_settings=display_settings,
+            polygon_points=polygon_points
+        )
 
         # === Arrange the widgets
 
@@ -186,7 +198,7 @@ class DefineVisuallyDialog(DefineDialog):
         self.accept()
 
 
-class DefineNumericallyDialog(DefineDialog):
+class DefineNumericallyDialog(DefineMatrixDialog):
     """The dialog class that allows the user to define a new matrix numerically."""
 
     def __init__(self, *args, matrix_wrapper: MatrixWrapper, **kwargs):
@@ -291,7 +303,7 @@ class DefineNumericallyDialog(DefineDialog):
         self.accept()
 
 
-class DefineAsExpressionDialog(DefineDialog):
+class DefineAsExpressionDialog(DefineMatrixDialog):
     """The dialog class that allows the user to define a matrix as an expression of other matrices."""
 
     def __init__(self, *args, matrix_wrapper: MatrixWrapper, **kwargs):

@@ -32,12 +32,16 @@ QDialog.accepted    py:method 1 qdialog.html#accepted    -
 
 # === Misc
 
+Qt::BrushStyle       cpp:enum 1 qt.html#BrushStyle-enum      -
+Qt::PenStyle         cpp:enum 1 qt.html#PenStyle-enum        -
 Qt::WA_DeleteOnClose cpp:enum 1 qt.html#WidgetAttribute-enum -
 
 # === Full forms
 # These are in full form so that autodoc can reference base classes and param types
 
 PyQt5.QtCore.QCoreApplication py:class 1 qcoreapplication.html      QCoreApplication
+PyQt5.QtGui.QBrush            py:class 1 qbrush.html                QBrush
+PyQt5.QtGui.QColor            py:class 1 qcolor.html                QColor
 PyQt5.QtGui.QCloseEvent       py:class 1 qcloseevent.html           QCloseEvent
 PyQt5.QtGui.QColor            py:class 1 qcolor.html                QColor
 PyQt5.QtGui.QFont             py:class 1 qfont.html                 QFont
@@ -45,6 +49,7 @@ PyQt5.QtGui.QKeyEvent         py:class 1 qkeyevent.html             QKeyEvent
 PyQt5.QtGui.QMouseEvent       py:class 1 qmouseevent.html           QMouseEvent
 PyQt5.QtGui.QPainter          py:class 1 qpainter.html              QPainter
 PyQt5.QtGui.QPaintEvent       py:class 1 qpaintevent.html           QPaintEvent
+PyQt5.QtGui.QPen              py:class 1 qpen.html                  QPen
 PyQt5.QtGui.QValidator        py:class 1 qvalidator.html            QValidator
 PyQt5.QtGui.QValidator.State  py:class 1 qvalidator.html#State-enum QValidator.State
 PyQt5.QtGui.QWheelEvent       py:class 1 qwheelevent.html           QWheelEvent
