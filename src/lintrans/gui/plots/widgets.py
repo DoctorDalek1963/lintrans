@@ -74,8 +74,8 @@ class VisualizeTransformationWidget(VectorGridPlot):
         if self.display_settings.draw_basis_vectors:
             self._draw_basis_vectors(painter)
 
-        if self.display_settings.label_basis_vectors:
-            self._draw_basis_vector_labels(painter)
+            if self.display_settings.label_basis_vectors:
+                self._draw_basis_vector_labels(painter)
 
         painter.end()
         event.accept()

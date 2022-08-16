@@ -123,6 +123,7 @@ class DisplaySettingsDialog(SettingsDialog):
         self._checkbox_draw_basis_vectors.setToolTip(
             'Draw the transformed basis vectors'
         )
+        self._checkbox_draw_basis_vectors.clicked.connect(self._update_gui)
         self._dict_checkboxes['v'] = self._checkbox_draw_basis_vectors
 
         self._checkbox_label_basis_vectors = QCheckBox(self)
@@ -304,6 +305,7 @@ class DisplaySettingsDialog(SettingsDialog):
         For example, this method updates which checkboxes are enabled based on the values of other checkboxes.
         """
         self._checkbox_show_determinant_value.setEnabled(self._checkbox_draw_determinant_parallelogram.isChecked())
+        self._checkbox_label_basis_vectors.setEnabled(self._checkbox_draw_basis_vectors.isChecked())
 
         try:
             self._button_confirm.setEnabled(int(self._lineedit_animation_time.text()) != 0)
