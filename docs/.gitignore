@@ -1,5 +1,5 @@
 build/
 *objects.inv
 
-*.gv
-source/*imports.png
+source/int-imports.png
+source/classes.png
