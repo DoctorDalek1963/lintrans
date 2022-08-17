@@ -679,6 +679,9 @@ class LintransMainWindow(QMainWindow):
         self._lineedit_expression_box.setFocus()
         self._update_render_buttons()
 
+        self._changed_since_save = True
+        self._update_window_title()
+
     def _show_error_message(self, title: str, text: str, info: str | None = None) -> None:
         """Show an error message in a dialog box.
 
@@ -774,6 +777,7 @@ class LintransMainWindow(QMainWindow):
             return
 
         self._matrix_wrapper = session.matrix_wrapper
+        self._plot.polygon_points = session.polygon_points
 
         self._lineedit_expression_box.setText('I')
         self._render_expression()
@@ -812,7 +816,10 @@ class LintransMainWindow(QMainWindow):
             self._save_session_as()
             return
 
-        Session(self._matrix_wrapper).save_to_file(self._save_filename)
+        Session(
+            matrix_wrapper=self._matrix_wrapper,
+            polygon_points=self._plot.polygon_points
+        ).save_to_file(self._save_filename)
 
         self._changed_since_save = False
         self._update_window_title()
