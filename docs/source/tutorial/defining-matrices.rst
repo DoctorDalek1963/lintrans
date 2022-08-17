@@ -19,11 +19,12 @@ under the heading `Define a new matrix`. You will be presented with 4 text boxes
 be filled in with numbers to create a matrix that looks like the ones in your textbooks. This
 should be the most familiar way to define a matrix.
 
-.. figure:: images/defining/numerically.png
+.. figure:: _images/defining/numerically.png
    :alt: The numerical definition dialog
    :align: center
 
-   The matrix :math:`\mathbf{A}` being defined as :math:`\begin{pmatrix}2 & -3.2\\ -1.9 & 0.63\end{pmatrix}`
+   The matrix :math:`\mathbf{A}` being defined as
+   :math:`\begin{pmatrix}2 & -3.2\\ -1.9 & 0.63\end{pmatrix}`
 
 .. _defining-matrices.visually:
 
@@ -36,7 +37,7 @@ For example, if you want a transformation that stretches everything by a scale f
 where they would be after that transformation, and the program will save the corresponding matrix
 to whatever name you chose.
 
-.. figure:: images/defining/visually.png
+.. figure:: _images/defining/visually.png
    :alt: The visual definition dialog
    :align: center
 
@@ -51,7 +52,7 @@ lintrans also supports matrices being defined in terms of other matrices. Any ex
 valid in the `expression input box` is valid as an expression to define a new matrix. See
 :ref:`Expression syntax<expression-syntax>` for what counts as a valid expression.
 
-.. figure:: images/defining/expression.png
+.. figure:: _images/defining/expression.png
    :alt: The expression definition dialog
    :align: center
 
@@ -75,6 +76,6 @@ do this, click the button labelled `Show defined matrices`.
 The matrix :math:`\mathbf{I}` is reserved for the identity matrix and you cannot
 assign a new matrix to this name.
 
-.. image:: images/defining/info.png
+.. image:: _images/defining/info.png
    :alt: The defined matrices info dialog
    :align: center

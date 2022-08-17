@@ -68,12 +68,8 @@ The example below (using Applicative animation and the matrix :math:`\mathbf{B}`
 the expression changes the result of animation. This is because matrix multiplication is
 non-commutative.
 
-.. table::
-   :align: center
-   :widths: 50 50
-
 +----------------------------------------------------+----------------------------------------------------+
-| .. figure:: images/visualizing/rotB.png            | .. figure:: images/visualizing/Brot.png            |
+| .. figure:: _images/visualizing/rotB.png           | .. figure:: _images/visualizing/Brot.png           |
 |   :alt: The viewport after animating ``rot(45),B`` |   :alt: The viewport after animating ``B,rot(45)`` |
 |   :align: center                                   |   :align: center                                   |
 |                                                    |                                                    |
@@ -98,7 +94,7 @@ You can then see this polygon before and after the transformation when you rende
 expression. The before and after versions can be independently hidden in the :ref:`display
 settings<configuring-display-settings.polygons>`.
 
-.. figure:: images/visualizing/polygon.png
+.. figure:: _images/visualizing/polygon.png
    :alt: A polygon before and after transformation
    :align: center
 

@@ -5,7 +5,7 @@ Anatomy of the app
 
 When you open lintrans, you will be presented with something like this:
 
-.. image:: images/anatomy/main.png
+.. image:: _images/anatomy/main.png
    :alt: Screenshot of the app when it's first opened
    :align: center
 
