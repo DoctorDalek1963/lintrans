@@ -392,11 +392,11 @@ class LintransMainWindow(QMainWindow):
             matrix = self._matrix_wrapper.evaluate_expression(self._lineedit_expression_box.text())
 
         except LinAlgError:
-            self._show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
+            self._show_error_message('Singular matrix', 'Cannot take inverse of singular matrix.')
             return
 
         if self._is_matrix_too_big(matrix):
-            self._show_error_message('Matrix too big', "This matrix doesn't fit on the canvas")
+            self._show_error_message('Matrix too big', "This matrix doesn't fit on the canvas.")
             return
 
         self._plot.plot_matrix(matrix)
@@ -432,7 +432,7 @@ class LintransMainWindow(QMainWindow):
                     if self._plot.display_settings.applicative_animation:
                         new_matrix = new_matrix @ current_matrix
                 except LinAlgError:
-                    self._show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
+                    self._show_error_message('Singular matrix', 'Cannot take inverse of singular matrix.')
                     return
 
                 self._animate_between_matrices(current_matrix, new_matrix)
@@ -452,7 +452,7 @@ class LintransMainWindow(QMainWindow):
                 matrix_target = self._matrix_wrapper.evaluate_expression(text)
 
             except LinAlgError:
-                self._show_error_message('Singular matrix', 'Cannot take inverse of singular matrix')
+                self._show_error_message('Singular matrix', 'Cannot take inverse of singular matrix.')
                 return
 
             # The concept of applicative animation is explained in /gui/settings.py
@@ -581,7 +581,7 @@ class LintransMainWindow(QMainWindow):
             matrix_to_render = self._get_animation_frame(matrix_start, matrix_target, i / steps)
 
             if self._is_matrix_too_big(matrix_to_render):
-                self._show_error_message('Matrix too big', "This matrix doesn't fit on the canvas")
+                self._show_error_message('Matrix too big', "This matrix doesn't fit on the canvas.")
                 self._animating = False
                 self._animating_sequence = False
                 return
@@ -774,7 +774,7 @@ class LintransMainWindow(QMainWindow):
         except (AttributeError, EOFError, FileNotFoundError, ValueError):
             self._show_error_message(
                 'Invalid file contents',
-                'This is not a valid lintrans session file',
+                'This is not a valid lintrans session file.',
                 'Not all .lt files are lintrans session files. This file was probably created by an unrelated '
                 'program.'
             )
