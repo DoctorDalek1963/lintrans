@@ -22,7 +22,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `Quit` action in `File` menu
 - Add option to label *i* and *j* basis vectors
 - Add user-friendly bug report and feature suggestion forms that don't require a GitHub account
+  (`Help` > `Give feedback`)
 - The user can now define an arbitrary polygon and see its transformation
+- Saved sessions should now work between lintrans versions
 
 ### Fixed
 

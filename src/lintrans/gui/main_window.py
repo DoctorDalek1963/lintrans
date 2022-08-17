@@ -682,7 +682,7 @@ class LintransMainWindow(QMainWindow):
         self._changed_since_save = True
         self._update_window_title()
 
-    def _show_error_message(self, title: str, text: str, info: str | None = None) -> None:
+    def _show_error_message(self, title: str, text: str, info: str | None = None, *, warning: bool = False) -> None:
         """Show an error message in a dialog box.
 
         :param str title: The window title of the dialog box
@@ -691,9 +691,13 @@ class LintransMainWindow(QMainWindow):
         :type info: Optional[str]
         """
         dialog = QMessageBox(self)
-        dialog.setIcon(QMessageBox.Critical)
         dialog.setWindowTitle(title)
         dialog.setText(text)
+
+        if warning:
+            dialog.setIcon(QMessageBox.Warning)
+        else:
+            dialog.setIcon(QMessageBox.Critical)
 
         if info is not None:
             dialog.setInformativeText(info)
@@ -763,11 +767,11 @@ class LintransMainWindow(QMainWindow):
         but if it's valid, we load it and set it as the default filename for saving.
         """
         try:
-            session = Session.load_from_file(filename)
+            session, version = Session.load_from_file(filename)
 
         # load_from_file() can raise errors if the contents is not a valid pickled Python object,
         # or if the pickled Python object is of the wrong type
-        except (EOFError, FileNotFoundError, ValueError):
+        except (AttributeError, EOFError, FileNotFoundError, ValueError):
             self._show_error_message(
                 'Invalid file contents',
                 'This is not a valid lintrans session file',
@@ -776,8 +780,31 @@ class LintransMainWindow(QMainWindow):
             )
             return
 
-        self._matrix_wrapper = session.matrix_wrapper
-        self._plot.polygon_points = session.polygon_points
+        show_warning = False
+
+        if session.matrix_wrapper is not None:
+            self._matrix_wrapper = session.matrix_wrapper
+        else:
+            show_warning = True  # type: ignore[unreachable]
+
+        if session.polygon_points is not None:
+            self._plot.polygon_points = session.polygon_points
+        else:
+            show_warning = True  # type: ignore[unreachable]
+
+        if show_warning:
+            if version != lintrans.__version__:
+                info = f"This may be a version conflict. This file was saved with lintrans v{version} " \
+                       f"but you're running lintrans v{lintrans.__version__}."
+            else:
+                info = None
+
+            self._show_error_message(
+                'Session file missing parts',
+                'This session file is missing certain elements. It may not work correctly.',
+                info,
+                warning=True
+            )
 
         self._lineedit_expression_box.setText('I')
         self._render_expression()
