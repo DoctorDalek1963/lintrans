@@ -16,9 +16,12 @@ from conftest import get_test_wrapper
 
 def test_save_and_load(tmp_path: Path, test_wrapper: MatrixWrapper) -> None:
     """Test that sessions save and load and return the same matrix wrapper."""
-    session = Session(test_wrapper)
+    points = [(1, 0), (-2, 3), (3.2, -10), (0, 0), (-2, -3), (2, -1.3)]
+    session = Session(matrix_wrapper=test_wrapper, polygon_points=points)
+
     path = str((tmp_path / 'test.lt').absolute())
     session.save_to_file(path)
 
-    loaded_session = Session.load_from_file(path)
+    loaded_session, _ = Session.load_from_file(path)
     assert loaded_session.matrix_wrapper == get_test_wrapper()
+    assert loaded_session.polygon_points == points
