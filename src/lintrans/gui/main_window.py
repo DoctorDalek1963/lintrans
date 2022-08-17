@@ -378,9 +378,11 @@ class LintransMainWindow(QMainWindow):
     @pyqtSlot()
     def _reset_transformation(self) -> None:
         """Reset the visualized transformation back to the identity."""
+        if self._animating or self._animating_sequence:
+            self._reset_during_animation = True
+
         self._animating = False
         self._animating_sequence = False
-        self._reset_during_animation = True
 
         self._plot.plot_matrix(self._matrix_wrapper['I'])
         self._plot.update()

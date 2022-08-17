@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix bug where `validate_matrix_expression` would return True, but the expression was unable to be
   parsed, causing a crash
 - Fix crash when animation time was 0
+- Fix bug where animations would reset to `I` if the user reset before animating
 
 ## [0.2.2] - 2022-07-04
 
