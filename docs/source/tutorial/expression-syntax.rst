@@ -11,7 +11,7 @@ keyboard-friendly syntax.
 
 For this example, you would type ``(2A^{2} 3B^{T})^{-1} C`` or ``(2A^{2}3B^T)^-1C`` if you wanted
 to be more concise. Notice that the squared part of :math:`\mathbf{A}^{2}` didn't lose its braces.
-This is because lintrans ignores spaces and parses exponents "greedily"[#]_, meaning that ``A^2
+This is because lintrans ignores spaces and parses exponents "greedily" [#]_, meaning that ``A^2
 3B`` will be interpreted as ``A^{23}B``, not ``A^{2}3B`` as probably intended. If you have two
 numbers next to each other like this, use braces (``A^{2}3B``) or brackets (``(A^2)(3B)``) to
 separate the terms.

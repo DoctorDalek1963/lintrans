@@ -25,6 +25,8 @@ should be the most familiar way to define a matrix.
 
    The matrix :math:`\mathbf{A}` being defined as :math:`\begin{pmatrix}2 & -3.2\\ -1.9 & 0.63\end{pmatrix}`
 
+.. _defining-matrices.visually:
+
 Visually
 --------
 
@@ -55,8 +57,8 @@ valid in the `expression input box` is valid as an expression to define a new ma
 
    The matrix :math:`\mathbf{C}` being defined as :math:`(\mathbf{A}^2\mathbf{B})^{-1}`
 
-One advantage of this method, is that the matrix is re-evaluated each time it is needed. So for
-this example, if you change the value of :math:`\mathbf{A}` or :math:`\mathbf{B}`, then
+One advantage of this method is that the matrix is re-evaluated each time it is needed. So for this
+example, if you change the value of :math:`\mathbf{A}` or :math:`\mathbf{B}`, then
 :math:`\mathbf{C}` updates automatically.
 
 It is impossible to define a matrix in terms of a matrix which is not already defined, or in terms

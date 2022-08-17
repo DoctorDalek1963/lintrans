@@ -3,11 +3,13 @@
 Configuring display settings
 ============================
 
-Basic stuff is self-explanatory
--------------------------------
+Basic stuff
+-----------
 
 Smoothen determinant
 --------------------
+
+.. _configuring-display-settings.applicative-animation:
 
 Applicative animation
 ---------------------
@@ -20,3 +22,8 @@ Determinant parallelogram
 
 Eigenvectors and eigenlines
 ---------------------------
+
+.. _configuring-display-settings.polygons:
+
+Polygons
+--------
