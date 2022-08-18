@@ -98,8 +98,8 @@ You can then see this polygon before and after the transformation when you rende
 expression. The before and after versions can be independently hidden in the :ref:`display
 settings<configuring-display-settings.polygons>`.
 
-.. figure:: _images/visualizing/polygon.png
-   :alt: A polygon before and after transformation
+.. figure:: _images/visualizing/polygon.gif
+   :alt: A polygon being transformed
    :align: center
 
    The version with the dashed outline is the untransformed version, whereas the one with the solid
