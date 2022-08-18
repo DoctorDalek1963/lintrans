@@ -64,7 +64,7 @@ class SettingsDialog(FixedSizeDialog):
         """Set the layout of the settings widget.
 
         .. note:: This method must be called at the end of :meth:`__init__`
-        in subclasses to setup the layout properly.
+           in subclasses to setup the layout properly.
         """
         vlay_all = QVBoxLayout()
         vlay_all.setSpacing(20)
