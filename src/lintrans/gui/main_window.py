@@ -104,14 +104,6 @@ class LintransMainWindow(QMainWindow):
         action_quit.setText('&Quit')
         action_quit.triggered.connect(self.close)
 
-        action_tutorial = QAction(self)
-        action_tutorial.setText('&Tutorial')
-        action_tutorial.setShortcut('F1')
-        action_tutorial.triggered.connect(lambda: print('tutorial'))
-
-        action_docs = QAction(self)
-        action_docs.setText('&Docs')
-
         # If this is an old release, use the docs for this release. Else, use the latest docs
         # We use the latest because most use cases for non-stable releases will be in development and testing
         docs_link = 'https://lintrans.readthedocs.io/en/'
@@ -121,8 +113,17 @@ class LintransMainWindow(QMainWindow):
         else:
             docs_link += 'latest'
 
+        action_tutorial = QAction(self)
+        action_tutorial.setText('&Tutorial')
+        action_tutorial.setShortcut('F1')
+        action_tutorial.triggered.connect(
+            lambda: webbrowser.open_new_tab(docs_link + '/tutorial/index.html')
+        )
+
+        action_docs = QAction(self)
+        action_docs.setText('&Docs')
         action_docs.triggered.connect(
-            lambda: webbrowser.open_new_tab(docs_link)
+            lambda: webbrowser.open_new_tab(docs_link + '/lintrans.html')
         )
 
         menu_feedback = QMenu(menu_help)
@@ -146,9 +147,6 @@ class LintransMainWindow(QMainWindow):
         action_about = QAction(self)
         action_about.setText('&About')
         action_about.triggered.connect(lambda: AboutDialog(self).open())
-
-        # TODO: Implement these actions and enable them
-        action_tutorial.setEnabled(False)
 
         menu_file.addAction(action_reset_session)
         menu_file.addAction(action_open)
