@@ -18,7 +18,7 @@ from lintrans.crash_reporting import set_excepthook, set_signal_handler
 def main() -> None:
     """Interpret program-specific command line arguments and run the main window in most cases.
 
-    If the user supplies --help or --version, then we simply respond to that and then return.
+    If the user supplies ``--help`` or ``--version``, then we simply respond to that and then return.
     If they don't supply either of these, then we run :func:`lintrans.gui.main_window.main`.
 
     :param List[str] args: The full argument list (including program name)
