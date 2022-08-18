@@ -14,6 +14,7 @@ import sys
 import webbrowser
 from copy import deepcopy
 from pathlib import Path
+from pickle import UnpicklingError
 from typing import List, Optional, Tuple, Type
 
 import numpy as np
@@ -773,7 +774,7 @@ class LintransMainWindow(QMainWindow):
 
         # load_from_file() can raise errors if the contents is not a valid pickled Python object,
         # or if the pickled Python object is of the wrong type
-        except (AttributeError, EOFError, FileNotFoundError, ValueError):
+        except (AttributeError, EOFError, FileNotFoundError, ValueError, UnpicklingError):
             self._show_error_message(
                 'Invalid file contents',
                 'This is not a valid lintrans session file.',
