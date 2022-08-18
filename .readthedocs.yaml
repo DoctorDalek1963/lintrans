@@ -9,9 +9,10 @@ build:
 
   jobs:
     pre_build:
+      # This -e flag is incredibly important. Without it, the package won't install properly. No, I don't know why
       - $(pwd | sed "s/checkouts\(\/[^/]\+\)\$/envs\1/")/bin/python -m pip install -e '.[docs]'
-      - mkdir -p docs/source/_static
-      - cd docs; make precompile
+      - . $(pwd | sed "s/checkouts\(\/[^/]\+\)\$/envs\1/")/bin/activate; cd docs; make precompile
+
 
 sphinx:
   builder: html
