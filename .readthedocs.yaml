@@ -11,10 +11,10 @@ build:
     pre_build:
       - $(pwd | sed "s/checkouts\(\/[^/]\+\)\$/envs\1/")/bin/python -m pip install -e '.[docs]'
       - mkdir -p docs/source/_static
+      - cd docs; make precompile
 
 sphinx:
-  # NOTE: If this builder doesn't work, I'll have to run `make precompile` in the pre_build, but I'll have to set the venv first
-  builder: precompile html
+  builder: html
   configuration: docs/source/conf.py
   fail_on_warning: true
 
