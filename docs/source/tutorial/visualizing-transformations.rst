@@ -63,18 +63,22 @@ With Applicative animation, commas do not affect the final result. They just sho
 taken to get there. But when using commas with Transitive animation, the result is the same as just
 rendering the expression on the left.
 
-The example below (using Applicative animation and the matrix :math:`\mathbf{B}` from
-:ref:`defining matrices visually<defining-matrices.visually>`) shows that the order of matrices in
+The examples below (using Applicative animation and the matrix :math:`\mathbf{B}` from
+:ref:`defining matrices visually<defining-matrices.visually>`) show that the order of matrices in
 the expression changes the result of animation. This is because matrix multiplication is
 non-commutative.
 
-+----------------------------------------------------+----------------------------------------------------+
-| .. figure:: _images/visualizing/rotB.png           | .. figure:: _images/visualizing/Brot.png           |
-|   :alt: The viewport after animating ``rot(45),B`` |   :alt: The viewport after animating ``B,rot(45)`` |
-|   :align: center                                   |   :align: center                                   |
-|                                                    |                                                    |
-|   The viewport after animating ``rot(45),B``       |   The viewport after animating ``B,rot(45)``       |
-+----------------------------------------------------+----------------------------------------------------+
+.. figure:: _images/visualizing/rotB.gif
+   :alt: Animating ``rot(45),B`` with Applicative animation
+   :align: center
+
+   Animating ``rot(45),B`` with Applicative animation
+
+.. figure:: _images/visualizing/Brot.gif
+   :alt: Animating ``B,rot(45)`` with Applicative animation
+   :align: center
+
+   Animating ``B,rot(45)`` with Applicative animation
 
 Using input and output vectors
 ------------------------------
