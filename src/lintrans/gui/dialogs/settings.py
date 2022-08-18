@@ -355,7 +355,7 @@ class DisplaySettingsDialog(SettingsDialog):
         self._checkbox_label_basis_vectors.setEnabled(self._checkbox_draw_basis_vectors.isChecked())
 
         try:
-            self._button_confirm.setEnabled(int(self._lineedit_animation_time.text()) != 0)
+            self._button_confirm.setEnabled(int(self._lineedit_animation_time.text()) >= 10)
         except ValueError:
             self._button_confirm.setEnabled(False)
 
