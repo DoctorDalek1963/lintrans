@@ -41,6 +41,8 @@ an animation, but the second time will look like nothing happens. This is becaus
 dragged to its new position, which is exactly the same as its current position, so nothing actually
 moves.
 
+.. _visualizing-transformations.animate.applicative:
+
 Applicative
 ^^^^^^^^^^^
 
@@ -84,6 +86,8 @@ Using input and output vectors
 ------------------------------
 
 .. note:: I/O vectors are currently not implemented.
+
+.. _visualizing-transformations.defining-custom-polygons:
 
 Defining custom polygons
 ------------------------

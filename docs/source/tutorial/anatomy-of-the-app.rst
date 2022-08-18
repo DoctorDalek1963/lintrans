@@ -27,3 +27,6 @@ On the right are a collection of buttons.
 
 The text box along the bottom is the `expression input box`, which allows you to compose linear
 transformations by writing expressions in terms of the matrices that you've defined.
+
+Most buttons in the app have tooltips if you hover over them. These will explain the purpose of the
+button and tell you the keyboard shortcut if it has one.
