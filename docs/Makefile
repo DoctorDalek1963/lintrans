@@ -14,11 +14,11 @@ help:
 precompile:
 	python create_objects_inv.py
 
-	python -m pylint --rcfile=/dev/null --exit-zero --output=/dev/null --reports=y --disable=all --enable=imports,RP0402 --int-import-graph=source/int-imports.png $(shell find ../src/lintrans/ -name "*.py" | tr "\n" " ")
+	python -m pylint --rcfile=/dev/null --exit-zero --output=/dev/null --reports=y --disable=all --enable=imports,RP0402 --int-import-graph=source/_images/int-imports.png $(shell find ../src/lintrans/ -name "*.py" | tr "\n" " ")
 
 	pyreverse -A -S -m n -f SPECIAL -o png -d . lintrans
 	rm packages.png
-	mv classes.png source/classes.png
+	mv classes.png source/_images/classes.png
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
