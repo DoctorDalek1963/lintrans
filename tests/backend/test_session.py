@@ -8,6 +8,7 @@
 
 from pathlib import Path
 
+import lintrans
 from lintrans.gui.session import Session
 from lintrans.matrices.wrapper import MatrixWrapper
 
@@ -22,6 +23,9 @@ def test_save_and_load(tmp_path: Path, test_wrapper: MatrixWrapper) -> None:
     path = str((tmp_path / 'test.lt').absolute())
     session.save_to_file(path)
 
-    loaded_session, _ = Session.load_from_file(path)
+    loaded_session, version, extra_attrs = Session.load_from_file(path)
     assert loaded_session.matrix_wrapper == get_test_wrapper()
     assert loaded_session.polygon_points == points
+
+    assert version == lintrans.__version__
+    assert not extra_attrs

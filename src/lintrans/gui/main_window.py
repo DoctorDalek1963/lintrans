@@ -768,7 +768,7 @@ class LintransMainWindow(QMainWindow):
         but if it's valid, we load it and set it as the default filename for saving.
         """
         try:
-            session, version = Session.load_from_file(filename)
+            session, version, extra_attrs = Session.load_from_file(filename)
 
         # load_from_file() can raise errors if the contents is not a valid pickled Python object,
         # or if the pickled Python object is of the wrong type
@@ -781,19 +781,19 @@ class LintransMainWindow(QMainWindow):
             )
             return
 
-        show_warning = False
+        missing_parts = False
 
         if session.matrix_wrapper is not None:
             self._matrix_wrapper = session.matrix_wrapper
         else:
-            show_warning = True  # type: ignore[unreachable]
+            missing_parts = True  # type: ignore[unreachable]
 
         if session.polygon_points is not None:
             self._plot.polygon_points = session.polygon_points
         else:
-            show_warning = True  # type: ignore[unreachable]
+            missing_parts = True  # type: ignore[unreachable]
 
-        if show_warning:
+        if missing_parts:
             if version != lintrans.__version__:
                 info = f"This may be a version conflict. This file was saved with lintrans v{version} " \
                        f"but you're running lintrans v{lintrans.__version__}."
@@ -803,6 +803,20 @@ class LintransMainWindow(QMainWindow):
             self._show_error_message(
                 'Session file missing parts',
                 'This session file is missing certain elements. It may not work correctly.',
+                info,
+                warning=True
+            )
+        elif extra_attrs:
+            if version != lintrans.__version__:
+                info = f"This may be a version conflict. This file was saved with lintrans v{version} " \
+                       f"but you're running lintrans v{lintrans.__version__}."
+            else:
+                info = None
+
+            self._show_error_message(
+                'Session file has extra parts',
+                'This session file has more parts than expected. It will work correctly, '
+                'but you might be missing some features.',
                 info,
                 warning=True
             )

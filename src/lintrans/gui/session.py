@@ -56,12 +56,12 @@ class Session:
             pickle.dump(data_dict, f, protocol=4)
 
     @classmethod
-    def load_from_file(cls, filename: str) -> Tuple[Session, str]:
-        """Return the session state that was previously saved to ``filename`` along with its lintrans version.
+    def load_from_file(cls, filename: str) -> Tuple[Session, str, bool]:
+        """Return the session state that was previously saved to ``filename`` along with some extra information.
 
-        If the session file is missing any attributes that we expect, then
-        those missing attributes will be None. The version number we return
-        is the version of lintrans that created the save file.
+        The tuple we return has the :class:`Session` object (with some possibly None arguments),
+        the lintrans version that the file was saved under, and whether the file had any extra
+        attributes that this version doesn't support.
 
         :raises AttributeError: For specific older versions of :class:`Session` before it used ``__slots__``
         :raises EOFError: If the file doesn't contain a pickled Python object
@@ -79,4 +79,12 @@ class Session:
             polygon_points=data_dict['polygon_points']
         )
 
-        return session, data_dict['lintrans']
+        # Check if the file has more attributes than we expect
+        # If it does, it's probably from a higher version of lintrans
+        extra_attrs = len(
+            set(data_dict.keys()).difference(
+                set(['lintrans', *cls.__slots__])
+            )
+        ) != 0
+
+        return session, data_dict['lintrans'], extra_attrs
