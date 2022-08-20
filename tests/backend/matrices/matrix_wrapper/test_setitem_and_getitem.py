@@ -6,7 +6,7 @@
 
 """Test the MatrixWrapper __setitem__() and __getitem__() methods."""
 
-from typing import Any, List
+from typing import Any, Dict, List
 
 import numpy as np
 import pytest
@@ -67,6 +67,9 @@ def test_set_expression(test_wrapper: MatrixWrapper) -> None:
 
     with pytest.raises(TypeError):
         test_wrapper['X'] = 'M^-1'
+
+    with pytest.raises(TypeError):
+        test_wrapper['Y'] = 'A^2B+C^'
 
 
 def test_simple_dynamic_evaluation(test_wrapper: MatrixWrapper) -> None:
@@ -130,6 +133,63 @@ def test_recursive_dynamic_evaluation(test_wrapper: MatrixWrapper) -> None:
     assert test_wrapper['Q'] == pytest.approx(test_wrapper.evaluate_expression('A^-2'))
     assert test_wrapper['R'] == pytest.approx(test_wrapper.evaluate_expression('A + C - 16B'))
     assert test_wrapper['S'] == pytest.approx(test_wrapper.evaluate_expression('A^{2}4BA + A^{2}4BC'))
+
+
+def test_self_referential_expressions(test_wrapper: MatrixWrapper) -> None:
+    """Test that self-referential expressions raise an error."""
+    expressions: Dict[str, str] = {
+        'A': 'A^2',
+        'B': 'A(C^-1A^T)+rot(45)B',
+        'C': '2Brot(1482.536)(A^-1D^{2}4CE)^3F'
+    }
+
+    for name, expression in expressions.items():
+        with pytest.raises(ValueError):
+            test_wrapper[name] = expression
+
+    test_wrapper['B'] = '3A^2'
+    test_wrapper['C'] = 'ABBA'
+    with pytest.raises(ValueError):
+        test_wrapper['A'] = 'C^-1'
+
+    test_wrapper['E'] = 'rot(45)B^-1+C^T'
+    test_wrapper['F'] = 'EBDBIC'
+    test_wrapper['D'] = 'E'
+    with pytest.raises(ValueError):
+        test_wrapper['D'] = 'F'
+
+
+def test_get_matrix_dependencies(test_wrapper: MatrixWrapper) -> None:
+    """Test MatrixWrapper's get_matrix_dependencies() and get_expression_dependencies() methods."""
+    test_wrapper['N'] = 'A^2'
+    test_wrapper['O'] = '4B'
+    test_wrapper['P'] = 'A+C'
+    test_wrapper['Q'] = 'N^-1'
+    test_wrapper['R'] = 'P-4O'
+    test_wrapper['S'] = 'NOP'
+
+    assert test_wrapper.get_matrix_dependencies('A') == set()
+    assert test_wrapper.get_matrix_dependencies('B') == set()
+    assert test_wrapper.get_matrix_dependencies('C') == set()
+    assert test_wrapper.get_matrix_dependencies('D') == set()
+    assert test_wrapper.get_matrix_dependencies('E') == set()
+    assert test_wrapper.get_matrix_dependencies('F') == set()
+    assert test_wrapper.get_matrix_dependencies('G') == set()
+
+    assert test_wrapper.get_matrix_dependencies('N') == {'A'}
+    assert test_wrapper.get_matrix_dependencies('O') == {'B'}
+    assert test_wrapper.get_matrix_dependencies('P') == {'A', 'C'}
+    assert test_wrapper.get_matrix_dependencies('Q') == {'A', 'N'}
+    assert test_wrapper.get_matrix_dependencies('R') == {'A', 'B', 'C', 'O', 'P'}
+    assert test_wrapper.get_matrix_dependencies('S') == {'A', 'B', 'C', 'N', 'O', 'P'}
+
+    assert test_wrapper.get_expression_dependencies('ABC') == set()
+    assert test_wrapper.get_expression_dependencies('NOB') == {'A', 'B'}
+    assert test_wrapper.get_expression_dependencies('N^2O^Trot(90)B^-1') == {'A', 'B'}
+    assert test_wrapper.get_expression_dependencies('NOP') == {'A', 'B', 'C'}
+    assert test_wrapper.get_expression_dependencies('NOPQ') == {'A', 'B', 'C', 'N'}
+    assert test_wrapper.get_expression_dependencies('NOPQR') == {'A', 'B', 'C', 'N', 'O', 'P'}
+    assert test_wrapper.get_expression_dependencies('NOPQRS') == {'A', 'B', 'C', 'N', 'O', 'P'}
 
 
 def test_set_identity_error(new_wrapper: MatrixWrapper) -> None:

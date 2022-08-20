@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   parsed, causing a crash
 - Fix crash when animation time was 0
 - Fix bug where animations would reset to `I` if the user reset before animating
+- Fix bug that would cause a crash if a matrix indirectly referenced itself
 
 ## [0.2.2] - 2022-07-04
 

@@ -10,9 +10,11 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from typing import List, Pattern, Tuple
+from typing import List, Pattern, Tuple, Set
 
 from lintrans.typing_ import MatrixParseList
+
+_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 NAIVE_CHARACTER_CLASS = r'[-+\sA-Z0-9.rot()^{}]'
 """This is a RegEx character class that just holds all the valid characters for an expression.
@@ -421,3 +423,24 @@ def parse_matrix_expression(expression: str) -> MatrixParseList:
     :rtype: :attr:`~lintrans.typing_.MatrixParseList`
     """
     return ExpressionParser(expression).parse()
+
+
+def get_matrix_identifiers(expression: str) -> Set[str]:
+    """Return all the matrix identifiers used in the given expression.
+
+    This method works recursively with sub-expressions.
+    """
+    s = set()
+    top_level = [id for sublist in parse_matrix_expression(expression) for _, id, _ in sublist]
+
+    for body in top_level:
+        if body in _ALPHABET:
+            s.add(body)
+
+        elif re.match(r'rot\(\d+(\.\d+)?\)', body):
+            continue
+
+        else:
+            s.update(get_matrix_identifiers(body))
+
+    return s

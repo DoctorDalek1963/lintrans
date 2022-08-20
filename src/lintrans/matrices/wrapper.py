@@ -12,12 +12,12 @@ import re
 from copy import copy
 from functools import reduce
 from operator import add, matmul
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 import numpy as np
 
 from lintrans.typing_ import is_matrix_type, MatrixType
-from .parse import parse_matrix_expression, validate_matrix_expression
+from .parse import get_matrix_identifiers, parse_matrix_expression, validate_matrix_expression
 from .utility import create_rotation_matrix
 
 
@@ -153,7 +153,8 @@ class MatrixWrapper:
 
         if isinstance(new_matrix, str):
             if self.is_valid_expression(new_matrix):
-                if name not in new_matrix:
+                if name not in new_matrix and \
+                        name not in self.get_expression_dependencies(new_matrix):
                     self._matrices[name] = new_matrix
                     return
                 else:
@@ -169,6 +170,39 @@ class MatrixWrapper:
         d = float(new_matrix[1][1])
 
         self._matrices[name] = np.array([[a, b], [c, d]])
+
+    def get_matrix_dependencies(self, matrix_name: str) -> Set[str]:
+        """Return all the matrices (as identifiers) that the given matrix (indirectly) depends on.
+
+        If A depends on nothing, B directly depends on A, and C directly depends on B,
+        then we say C depends on B `and` A.
+        """
+        expression = self.get_expression(matrix_name)
+        if expression is None:
+            return set()
+
+        s = set()
+        identifiers = get_matrix_identifiers(expression)
+        for identifier in identifiers:
+            s.add(identifier)
+            s.update(self.get_matrix_dependencies(identifier))
+
+        return s
+
+    def get_expression_dependencies(self, expression: str) -> Set[str]:
+        """Return all the matrices that the given expression depends on.
+
+        This method just calls :meth:`_get_matrix_dependencies` on each matrix
+        identifier in the expression. See that method for details.
+
+        If an expression contains a matrix that has no dependencies, then the
+        expression is `not` considered to depend on that matrix. But it `is`
+        considered to depend on any matrix that has its own dependencies.
+        """
+        s = set()
+        for iden in get_matrix_identifiers(expression):
+            s.update(self.get_matrix_dependencies(iden))
+        return s
 
     def get_expression(self, name: str) -> Optional[str]:
         """If the named matrix is defined as an expression, return that expression, else return None.

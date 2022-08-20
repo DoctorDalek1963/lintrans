@@ -10,9 +10,8 @@ from typing import List, Tuple
 
 import pytest
 
-from lintrans.matrices.parse import (
-    MatrixParseError, find_sub_expressions, parse_matrix_expression, validate_matrix_expression
-)
+from lintrans.matrices.parse import (MatrixParseError, find_sub_expressions, get_matrix_identifiers,
+                                     parse_matrix_expression, validate_matrix_expression)
 from lintrans.typing_ import MatrixParseList
 
 expected_sub_expressions: List[Tuple[str, List[str]]] = [
@@ -132,3 +131,16 @@ def test_parse_error() -> None:
     for expression in invalid_inputs:
         with pytest.raises(MatrixParseError):
             parse_matrix_expression(expression)
+
+
+def test_get_matrix_identifiers() -> None:
+    """Test that matrix identifiers can be properly found."""
+    assert get_matrix_identifiers('M^T') == {'M'}
+    assert get_matrix_identifiers('ABCDEF') == {'A', 'B', 'C', 'D', 'E', 'F'}
+    assert get_matrix_identifiers('AB^{-1}3Crot(45)2A(B^2C^-1)') == {'A', 'B', 'C'}
+    assert get_matrix_identifiers('A^{2}3A^-1A^TA') == {'A'}
+    assert get_matrix_identifiers('rot(45)(rot(25)rot(20))^2') == set()
+
+    for expression in invalid_inputs:
+        with pytest.raises(MatrixParseError):
+            get_matrix_identifiers(expression)

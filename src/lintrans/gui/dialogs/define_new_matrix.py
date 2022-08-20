@@ -340,7 +340,11 @@ class DefineAsExpressionDialog(DefineMatrixDialog):
         text = self._lineedit_expression_box.text()
         valid_expression = self.matrix_wrapper.is_valid_expression(text)
 
-        self._button_confirm.setEnabled(valid_expression and self._selected_letter not in text)
+        self._button_confirm.setEnabled(
+            valid_expression
+            and self._selected_letter not in text
+            and self._selected_letter not in self.matrix_wrapper.get_expression_dependencies(text)
+        )
 
     @pyqtSlot(int)
     def _load_matrix(self, index: int) -> None:
