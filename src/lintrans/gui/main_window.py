@@ -123,7 +123,7 @@ class LintransMainWindow(QMainWindow):
         action_docs = QAction(self)
         action_docs.setText('&Docs')
         action_docs.triggered.connect(
-            lambda: webbrowser.open_new_tab(docs_link + '/lintrans.html')
+            lambda: webbrowser.open_new_tab(docs_link + '/backend/lintrans.html')
         )
 
         menu_feedback = QMenu(menu_help)
