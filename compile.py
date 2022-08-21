@@ -147,7 +147,7 @@ class Compiler:
                   '040904B0',
                   kids=[
                     StringStruct('CompanyName', 'D. Dyson (DoctorDalek1963)'),
-                    StringStruct('FileDescription', 'Linear transformation visualizer'),
+                    StringStruct('FileDescription', 'lintrans'),
                     StringStruct('FileVersion', '{self.version_name}'),
                     StringStruct('InternalName', 'lintrans'),
                     StringStruct('LegalCopyright', '(C) D. Dyson (DoctorDalek1963) under GPLv3'),
