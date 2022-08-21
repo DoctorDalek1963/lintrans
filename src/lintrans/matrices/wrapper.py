@@ -192,7 +192,7 @@ class MatrixWrapper:
     def get_expression_dependencies(self, expression: str) -> Set[str]:
         """Return all the matrices that the given expression depends on.
 
-        This method just calls :meth:`_get_matrix_dependencies` on each matrix
+        This method just calls :meth:`get_matrix_dependencies` on each matrix
         identifier in the expression. See that method for details.
 
         If an expression contains a matrix that has no dependencies, then the
