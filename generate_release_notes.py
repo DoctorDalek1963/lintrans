@@ -15,9 +15,15 @@ TEXT = '''DESCRIPTION
 
 ---
 
-The Linux binary should work fine, but if you use the Windows `.exe` file, you will get a warning that the program may be unsafe. This is expected and you can just ignore it. This is caused by me not being able to afford a certificate from Microsoft, and there's no binary for macOS for the same reason.
+I highly recommend reading the tutorial, available [here](https://lintrans.readthedocs.io/en/VERSION_RTD/tutorial/index.html).
 
-If you're running macOS, then you will need to compile the program from source. This is also an option on Linux and Windows. Instructions can be found [here](https://doctordalek1963.github.io/lintrans/tutorial/compile/).
+---
+
+The Windows `.exe` file should work fine, but you might get a warning that the program might be unsafe. This is expected and it's safe to ignore it. The only way to get rid of it would be to pay Microsoft. On macOS, I would need to pay Apple to allow other people to run it at all.
+
+If this warning bothers you or you want to use `lintrans` on macOS, then you can compile the program from its source code. This is a relatively simple process and the tutorial for doing that is available [here](https://doctordalek1963.github.io/lintrans/tutorial/compile/).
+
+The Linux binary is a dynamically linked ELF compiled on Ubuntu 20.04 and may or may not work on other distros. Compiling is also an option for Linux.
 
 ---
 
@@ -54,6 +60,7 @@ def main(args: list[str]) -> None:
         flags=re.S
     )) is not None:
         text = TEXT.replace('CHANGELOG', m.group(0))
+        text = text.replace('VERSION_RTD', tag_name)
 
     else:
         raise ValueError('Error in searching for changelog notes. Bad format')
