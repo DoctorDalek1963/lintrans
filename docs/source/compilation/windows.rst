@@ -32,10 +32,10 @@ version you installed.
 Get the lintrans source code
 ----------------------------
 
-Go to the `latest release <https://github.com/DoctorDalek1963/lintrans/releases/latest>`_ on GitHub
-(if you want an older release, go to that release page) and download the source code zip file.
-Unzip the file by just right-clicking it in your Downloads folder and clicking "Extract All...",
-and keep the default name. Then run the following commands.
+Go to the `release page <https://github.com/DoctorDalek1963/lintrans/releases/tag/vVERSION_NUMBER>`_
+on GitHub and download the source code zip file. Unzip the file by just right-clicking it in your
+Downloads folder and clicking "Extract All...", and keep the default name. Then run the following
+commands.
 
 .. code-block:: pwsh-session
 

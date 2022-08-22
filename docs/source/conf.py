@@ -19,8 +19,8 @@ project = 'lintrans'
 author = 'D. Dyson (DoctorDalek1963)'
 copyright = f'2021 - 2022, {author}'
 
-# The full version, including alpha/beta/rc tags
 release = lintrans.__version__
+version = lintrans.__version__
 
 # -- General configuration ---------------------------------------------------
 

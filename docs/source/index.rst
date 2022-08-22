@@ -1,7 +1,7 @@
 Welcome to the lintrans documentation
 =====================================
 
-This is the documentation for lintrans version |release|. It is split into 2 main parts.
+This is the documentation for lintrans version |version|. It is split into 2 main parts.
 
 The first part is the :ref:`tutorial<tutorial>`, which explains how to use the software. If you
 just want to use it for teaching or learning linear transformations, read this.

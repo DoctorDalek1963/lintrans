@@ -30,10 +30,9 @@ just installed.
 Get the lintrans source code
 ----------------------------
 
-Go to the `latest release <https://github.com/DoctorDalek1963/lintrans/releases/latest>`_ on GitHub
-(if you want an older release, go to that release page). Download the source code zip file. macOS
-should unzip the file for you, so open `Terminal` from Spotlight Search and ``cd`` in the new
-folder:
+Go to the `release page <https://github.com/DoctorDalek1963/lintrans/releases/tag/vVERSION_NUMBER>`_
+on GitHub. Download the source code zip file. macOS should unzip the file for you, so open
+`Terminal` from Spotlight Search and ``cd`` in the new folder:
 
 .. code-block:: shell-session
 

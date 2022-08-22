@@ -57,9 +57,8 @@ Then you can compile Python with the following commands:
 Get the lintrans source code
 ----------------------------
 
-Go to the `latest release <https://github.com/DoctorDalek1963/lintrans/releases/latest>`_ on GitHub
-(if you want an older release, go to that release page). Download the source code tarball and run
-the following commands:
+Go to the `release page <https://github.com/DoctorDalek1963/lintrans/releases/tag/vVERSION_NUMBER>`_
+on GitHub. Download the source code tarball and run the following commands:
 
 .. code-block:: shell-session
 
