@@ -11,9 +11,12 @@ maintainer of the software (currently just me) or want to learn about its inner 
 backend documentation is very technical, and you don't need to read it to learn how to use the
 software.
 
-There is also a tutorial on compiling the software from its source code. This is rarely necessary,
-but is available for anyone who wants or needs it (macOS users need to compile from source due to
-issues with Apple preventing unsigned code from running on their system).
+.. only:: include_compilation
+
+   There is also a :ref:`tutorial on compiling<compilation>` the software from its source code.
+   This is rarely necessary, but is available for anyone who wants or needs it (macOS users need to
+   compile from source due to issues with Apple preventing unsigned code from running on their
+   system).
 
 .. toctree::
    :maxdepth: 10

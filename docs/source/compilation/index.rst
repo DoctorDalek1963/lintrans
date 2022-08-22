@@ -1,4 +1,4 @@
-.. _compliation:
+.. _compilation:
 
 How to compile lintrans
 =======================

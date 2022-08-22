@@ -1,11 +1,13 @@
 """A minimal Sphinx config. Sphinx must be called in an environment with lintrans installed."""
 
 from __future__ import annotations
-from typing import List
 
 # This file only contains a selection of the most common options. For a full
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
+
+import os
+from typing import List
 
 from sphinx.application import Sphinx
 
@@ -85,14 +87,28 @@ intersphinx_mapping: dict[str, tuple[str, str | None]] = {
     'PyQt5': ('https://doc.qt.io/qt-5/', 'pyqt5-objects.inv')
 }
 
+# -- Only include the compilation tutorial if this is an RTD stable build ----
+
+include_compilation: bool
+
+if 'READTHEDOCS' in os.environ \
+        and 'READTHEDOCS_VERSION' in os.environ \
+        and os.environ['READTHEDOCS_VERSION'] != 'latest':
+    exclude_patterns = []
+    tags.add('include_compilation')
+
+else:
+    exclude_patterns = ['compilation/*']
+
 # -- Functions for setup() ---------------------------------------------------
 
 
 def _source_read_handler(app: Sphinx, docname: str, source: List[str]) -> None:
-    if not docname.startswith('compilation/'):
-        return
+    if docname.startswith('compilation/'):
+        source[0] = source[0].replace('VERSION_NUMBER', lintrans.__version__)
 
-    source[0] = source[0].replace('VERSION_NUMBER', lintrans.__version__)
+    elif 'index' in docname and not tags.has('include_compilation'):
+        source[0] = source[0].replace('\n   compilation/index', '')
 
 
 def setup(app: Sphinx) -> None:
