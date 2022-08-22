@@ -20,16 +20,14 @@ And here's the UML diagram containing all the classes in the project, as generat
    :alt: A UML diagram containing all the classes in the project
    :align: center
 
+.. toctree::
+   :maxdepth: 3
+   :caption: Modules:
+
+   lintrans
+
 Indices
 -------
 
 * :ref:`genindex`
 * :ref:`modindex`
-
-Modules
--------
-
-.. toctree::
-   :maxdepth: 3
-
-   lintrans

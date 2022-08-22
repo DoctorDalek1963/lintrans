@@ -1,10 +1,13 @@
 """A minimal Sphinx config. Sphinx must be called in an environment with lintrans installed."""
 
 from __future__ import annotations
+from typing import List
 
 # This file only contains a selection of the most common options. For a full
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
+
+from sphinx.application import Sphinx
 
 import lintrans
 
@@ -23,7 +26,8 @@ release = lintrans.__version__
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones
 extensions: list[str] = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.intersphinx'
+    'sphinx.ext.intersphinx',
+    'sphinxcontrib.email'
 ]
 
 # Add any paths that contain templates here, relative to this directory
@@ -80,3 +84,17 @@ intersphinx_mapping: dict[str, tuple[str, str | None]] = {
     'python': ('https://docs.python.org/3', None),
     'PyQt5': ('https://doc.qt.io/qt-5/', 'pyqt5-objects.inv')
 }
+
+# -- Functions for setup() ---------------------------------------------------
+
+
+def _source_read_handler(app: Sphinx, docname: str, source: List[str]) -> None:
+    if not docname.startswith('compilation/'):
+        return
+
+    source[0] = source[0].replace('VERSION_NUMBER', lintrans.__version__)
+
+
+def setup(app: Sphinx) -> None:
+    """Set up event handlers for Sphinx config."""
+    app.connect('source-read', _source_read_handler)

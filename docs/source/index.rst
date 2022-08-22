@@ -1,7 +1,7 @@
 Welcome to the lintrans documentation
 =====================================
 
-This is the documentation for lintrans version |release|. It is split into 2 parts.
+This is the documentation for lintrans version |release|. It is split into 2 main parts.
 
 The first part is the :ref:`tutorial<tutorial>`, which explains how to use the software. If you
 just want to use it for teaching or learning linear transformations, read this.
@@ -11,9 +11,14 @@ maintainer of the software (currently just me) or want to learn about its inner 
 backend documentation is very technical, and you don't need to read it to learn how to use the
 software.
 
+There is also a tutorial on compiling the software from its source code. This is rarely necessary,
+but is available for anyone who wants or needs it (macOS users need to compile from source due to
+issues with Apple preventing unsigned code from running on their system).
+
 .. toctree::
    :maxdepth: 10
    :caption: Contents:
 
    tutorial/index
    backend/index
+   compilation/index
