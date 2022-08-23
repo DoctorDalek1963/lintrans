@@ -14,7 +14,7 @@ from math import dist
 from typing import List, Optional, Tuple
 
 from PyQt5.QtCore import Qt, QPointF, pyqtSlot
-from PyQt5.QtGui import QMouseEvent, QPainter, QPaintEvent, QPolygonF
+from PyQt5.QtGui import QBrush, QColor, QMouseEvent, QPainter, QPaintEvent, QPen, QPolygonF
 
 from lintrans.typing_ import MatrixType
 from lintrans.gui.settings import DisplaySettings
@@ -88,11 +88,13 @@ class VisualizeTransformationWidget(VisualizeTransformationPlot):
         """Paint the scene of the transformation."""
 
 
-class MainViewportWidget(VisualizeTransformationWidget):
+class MainViewportWidget(VisualizeTransformationWidget, InteractivePlot):
     """This is the widget for the main viewport.
 
     It extends :class:`VisualizeTransformationWidget` with input and output vectors.
     """
+
+    _COLOUR_OUTPUT_VECTOR = QColor('#efa00e')
 
     def __init__(self, *args, **kwargs):
         """Create the main viewport widget with its input point."""
@@ -100,12 +102,62 @@ class MainViewportWidget(VisualizeTransformationWidget):
 
         self._point_input: Tuple[float, float] = (1, 1)
 
+    def _draw_input_vector(self, painter: QPainter) -> None:
+        """Draw the input vector."""
+        pen = QPen(QColor('#000000'), self._WIDTH_VECTOR_LINE)
+        painter.setPen(pen)
+
+        x, y = self.canvas_coords(*self._point_input)
+        painter.drawLine(*self._canvas_origin, x, y)
+
+        painter.setBrush(self._BRUSH_SOLID_WHITE)
+
+        painter.setPen(Qt.NoPen)
+        painter.drawPie(
+            x - self._CURSOR_EPSILON,
+            y - self._CURSOR_EPSILON,
+            2 * self._CURSOR_EPSILON,
+            2 * self._CURSOR_EPSILON,
+            0,
+            16 * 360
+        )
+
+        painter.setPen(pen)
+        painter.drawArc(
+            x - self._CURSOR_EPSILON,
+            y - self._CURSOR_EPSILON,
+            2 * self._CURSOR_EPSILON,
+            2 * self._CURSOR_EPSILON,
+            0,
+            16 * 360
+        )
+
+    def _draw_output_vector(self, painter: QPainter) -> None:
+        """Draw the output vector."""
+        painter.setPen(QPen(self._COLOUR_OUTPUT_VECTOR, self._WIDTH_VECTOR_LINE))
+        painter.setBrush(QBrush(self._COLOUR_OUTPUT_VECTOR, Qt.SolidPattern))
+
+        x, y = self.canvas_coords(*(self._matrix @ self._point_input))
+
+        painter.drawLine(*self._canvas_origin, x, y)
+        painter.drawPie(
+            x - self._CURSOR_EPSILON,
+            y - self._CURSOR_EPSILON,
+            2 * self._CURSOR_EPSILON,
+            2 * self._CURSOR_EPSILON,
+            0,
+            16 * 360
+        )
+
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the scene by just calling :meth:`_draw_scene` and drawing the I/O vectors."""
         painter = QPainter()
         painter.begin(self)
 
         self._draw_scene(painter)
+
+        self._draw_output_vector(painter)
+        self._draw_input_vector(painter)
 
         painter.end()
         event.accept()
