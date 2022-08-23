@@ -6,8 +6,10 @@ from __future__ import annotations
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import inspect
 import os
-from typing import List
+from importlib import import_module
+from typing import Dict, List, Optional
 
 from sphinx.application import Sphinx
 
@@ -29,6 +31,7 @@ version = lintrans.__version__
 extensions: list[str] = [
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
+    'sphinx.ext.linkcode',
     'sphinxcontrib.email'
 ]
 
@@ -100,6 +103,7 @@ if 'READTHEDOCS' in os.environ \
 else:
     exclude_patterns = ['compilation/*']
 
+
 # -- Functions for setup() ---------------------------------------------------
 
 
@@ -114,3 +118,34 @@ def _source_read_handler(app: Sphinx, docname: str, source: List[str]) -> None:
 def setup(app: Sphinx) -> None:
     """Set up event handlers for Sphinx config."""
     app.connect('source-read', _source_read_handler)
+
+
+# -- Functions for extensions ------------------------------------------------
+
+
+def linkcode_resolve(domain: str, info: Dict[str, str]) -> Optional[str]:
+    """Specify the GitHub link for parts of code for ``sphinx.ext.linkcode``."""
+    if domain != 'py':
+        return None
+
+    # Take the module and fullname and get the class or funtion object
+    module_name = info['module']
+    thing = import_module(module_name)
+    for part in info['fullname'].split('.'):
+        thing = getattr(thing, part)
+
+    # We can then inspect the object to find out where it's defined so we can link directly to it
+    try:
+        lines_list, first_line = inspect.getsourcelines(thing)
+        url_filename = inspect.getsourcefile(thing).split('src')[-1]
+    except (OSError, TypeError):
+        return None
+
+    last_line = first_line + len(lines_list) - 1
+
+    # If this is a include_compilation build, then it's built with a tag
+    # That means we want to link directly to that tag on GitHub
+    url = 'https://github.com/DoctorDalek1963/lintrans/blob/'
+    url += 'v' + lintrans.__version__ if tags.has('include_compilation') else 'main'
+    url += f'/src{url_filename}#L{first_line}-L{last_line}'
+    return url
