@@ -6,8 +6,8 @@
 
 """This package provides widgets for the visualization plot in the main window and the visual definition dialog."""
 
-from .classes import BackgroundPlot, VectorGridPlot
+from .classes import BackgroundPlot, VectorGridPlot, VisualizeTransformationPlot
 from .widgets import DefinePolygonWidget, DefineMatrixVisuallyWidget, VisualizeTransformationWidget
 
 __all__ = ['BackgroundPlot', 'DefinePolygonWidget', 'DefineMatrixVisuallyWidget',
-           'VectorGridPlot', 'VisualizeTransformationWidget']
+           'VectorGridPlot', 'VisualizeTransformationPlot', 'VisualizeTransformationWidget']

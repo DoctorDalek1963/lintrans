@@ -13,8 +13,9 @@ from math import ceil, dist, floor
 from typing import Iterable, List, Optional, Tuple
 
 import numpy as np
-from PyQt5.QtCore import QPoint, QRectF, Qt
-from PyQt5.QtGui import QBrush, QColor, QFont, QMouseEvent, QPainter, QPainterPath, QPaintEvent, QPen, QWheelEvent
+from PyQt5.QtCore import QPoint, QPointF, QRectF, Qt
+from PyQt5.QtGui import (QBrush, QColor, QFont, QMouseEvent, QPainter, QPainterPath,
+                         QPaintEvent, QPen, QPolygonF, QWheelEvent)
 from PyQt5.QtWidgets import QWidget
 
 from lintrans.typing_ import MatrixType, VectorType
@@ -55,6 +56,12 @@ class BackgroundPlot(QWidget):
 
     _PEN_POLYGON: QPen = QPen(QColor('#000000'), 1.5)
     """This is the pen used to draw the normal polygon."""
+
+    _BRUSH_NONE: QBrush = QBrush(Qt.NoBrush)
+    """This is a brush with ``Qt::NoBrush``. See :cpp:enum:`Qt::BrushStyle`."""
+
+    _BRUSH_SOLID_WHITE: QBrush = QBrush(QColor('#FFFFFF'), Qt.SolidPattern)
+    """This brush is just solid white. Used to draw the insides of circles."""
 
     def __init__(self, *args, **kwargs):
         """Create the widget and setup backend stuff for rendering.
@@ -182,7 +189,11 @@ class BackgroundPlot(QWidget):
 
 
 class InteractivePlot(BackgroundPlot):
-    """This class represents an interactive plot, which may allow the user to click and/or drag point(s)."""
+    """This class represents an interactive plot, which allows the user to click and/or drag point(s).
+
+    It declares the Qt methods needed for mouse cursor interaction to be abstract,
+    requiring all subclasses to implement these.
+    """
 
     _CURSOR_EPSILON: int = 5
     """This is the distance (in pixels) that the cursor needs to be from the point to drag it."""
@@ -235,7 +246,11 @@ class InteractivePlot(BackgroundPlot):
 
 
 class VectorGridPlot(BackgroundPlot):
-    """This class represents a background plot, with vectors and their grid drawn on top.
+    """This class represents a background plot, with vectors and their grid drawn on top. It provides utility methods.
+
+    .. note::
+        This is a simple superclass for vectors and is not for visualizing transformations.
+        See :class:`VisualizeTransformationPlot`.
 
     This class should be subclassed to be used for visualization and matrix definition widgets.
     All useful behaviour should be implemented by any subclass.
@@ -248,9 +263,6 @@ class VectorGridPlot(BackgroundPlot):
 
     _COLOUR_J = QColor('#e90000')
     """This is the colour of the `j` basis vector and associated transformed grid lines."""
-
-    _COLOUR_EIGEN = QColor('#13cf00')
-    """This is the colour of the eigenvectors and eigenlines (the spans of the eigenvectors)."""
 
     _COLOUR_TEXT = QColor('#000000')
     """This is the colour of the text."""
@@ -304,10 +316,7 @@ class VectorGridPlot(BackgroundPlot):
 
     @abstractmethod
     def paintEvent(self, event: QPaintEvent) -> None:
-        """Handle a :class:`QPaintEvent`.
-
-        .. note:: This method is abstract and must be overridden by all subclasses.
-        """
+        """Handle a :class:`QPaintEvent`."""
 
     def _draw_parallel_lines(self, painter: QPainter, vector: Tuple[float, float], point: Tuple[float, float]) -> None:
         """Draw a set of evenly spaced grid lines parallel to ``vector`` intersecting ``point``.
@@ -533,6 +542,70 @@ class VectorGridPlot(BackgroundPlot):
         self._draw_position_vector(painter, self.point_i, self._COLOUR_I)
         self._draw_position_vector(painter, self.point_j, self._COLOUR_J)
 
+    def _draw_basis_vector_labels(self, painter: QPainter) -> None:
+        """Label the basis vectors with `i` and `j`."""
+        font = self.font()
+        font.setItalic(True)
+        font.setStyleHint(QFont.Serif)
+
+        self._draw_text_at_vector_tip(painter, self.point_i, 'i', font)
+        self._draw_text_at_vector_tip(painter, self.point_j, 'j', font)
+
+    def _draw_text_at_vector_tip(
+        self,
+        painter: QPainter,
+        point: Tuple[float, float],
+        text: str,
+        font: Optional[QFont] = None
+    ) -> None:
+        """Draw the given text at the point as if it were the tip of a vector, using the custom font if given."""
+        offset = 3
+        top_left: QPoint
+        bottom_right: QPoint
+        alignment_flags: int
+        x, y = point
+
+        if x >= 0 and y >= 0:  # Q1
+            top_left = QPoint(self._canvas_x(x) + offset, 0)
+            bottom_right = QPoint(self.width(), self._canvas_y(y) - offset)
+            alignment_flags = Qt.AlignLeft | Qt.AlignBottom
+
+        elif x < 0 and y >= 0:  # Q2
+            top_left = QPoint(0, 0)
+            bottom_right = QPoint(self._canvas_x(x) - offset, self._canvas_y(y) - offset)
+            alignment_flags = Qt.AlignRight | Qt.AlignBottom
+
+        elif x < 0 and y < 0:  # Q3
+            top_left = QPoint(0, self._canvas_y(y) + offset)
+            bottom_right = QPoint(self._canvas_x(x) - offset, self.height())
+            alignment_flags = Qt.AlignRight | Qt.AlignTop
+
+        else:  # Q4
+            top_left = QPoint(self._canvas_x(x) + offset, self._canvas_y(y) + offset)
+            bottom_right = QPoint(self.width(), self.height())
+            alignment_flags = Qt.AlignLeft | Qt.AlignTop
+
+        original_font = painter.font()
+
+        if font is not None:
+            painter.setFont(font)
+
+        painter.setPen(QPen(self._COLOUR_TEXT, 1))
+        painter.drawText(QRectF(top_left, bottom_right), alignment_flags, text)
+
+        painter.setFont(original_font)
+
+
+class VisualizeTransformationPlot(VectorGridPlot):
+    """This class is a superclass for visualizing transformations. It provides utility methods."""
+
+    _COLOUR_EIGEN = QColor('#13cf00')
+    """This is the colour of the eigenvectors and eigenlines (the spans of the eigenvectors)."""
+
+    @abstractmethod
+    def paintEvent(self, event: QPaintEvent) -> None:
+        """Handle a :class:`QPaintEvent`."""
+
     def _draw_determinant_parallelogram(self, painter: QPainter) -> None:
         """Draw the parallelogram of the determinant of the matrix.
 
@@ -585,50 +658,6 @@ class VectorGridPlot(BackgroundPlot):
             f'{self._det:.2f}'
         )
 
-    def _draw_text_at_vector_tip(
-        self,
-        painter: QPainter,
-        point: Tuple[float, float],
-        text: str,
-        font: Optional[QFont] = None
-    ) -> None:
-        """Draw the given text at the point as if it were the tip of a vector, using the custom font if given."""
-        offset = 3
-        top_left: QPoint
-        bottom_right: QPoint
-        alignment_flags: int
-        x, y = point
-
-        if x >= 0 and y >= 0:  # Q1
-            top_left = QPoint(self._canvas_x(x) + offset, 0)
-            bottom_right = QPoint(self.width(), self._canvas_y(y) - offset)
-            alignment_flags = Qt.AlignLeft | Qt.AlignBottom
-
-        elif x < 0 and y >= 0:  # Q2
-            top_left = QPoint(0, 0)
-            bottom_right = QPoint(self._canvas_x(x) - offset, self._canvas_y(y) - offset)
-            alignment_flags = Qt.AlignRight | Qt.AlignBottom
-
-        elif x < 0 and y < 0:  # Q3
-            top_left = QPoint(0, self._canvas_y(y) + offset)
-            bottom_right = QPoint(self._canvas_x(x) - offset, self.height())
-            alignment_flags = Qt.AlignRight | Qt.AlignTop
-
-        else:  # Q4
-            top_left = QPoint(self._canvas_x(x) + offset, self._canvas_y(y) + offset)
-            bottom_right = QPoint(self.width(), self.height())
-            alignment_flags = Qt.AlignLeft | Qt.AlignTop
-
-        original_font = painter.font()
-
-        if font is not None:
-            painter.setFont(font)
-
-        painter.setPen(QPen(self._COLOUR_TEXT, 1))
-        painter.drawText(QRectF(top_left, bottom_right), alignment_flags, text)
-
-        painter.setFont(original_font)
-
     def _draw_eigenvectors(self, painter: QPainter) -> None:
         """Draw the eigenvectors of the displayed matrix transformation.
 
@@ -668,11 +697,39 @@ class VectorGridPlot(BackgroundPlot):
             else:
                 self._draw_oblique_line(painter, y / x, 0)
 
-    def _draw_basis_vector_labels(self, painter: QPainter) -> None:
-        """Label the basis vectors with `i` and `j`."""
-        font = self.font()
-        font.setItalic(True)
-        font.setStyleHint(QFont.Serif)
+    def _draw_polygon_from_points(self, painter: QPainter, points: List[Tuple[float, float]]) -> None:
+        """Draw a polygon from a given list of points.
 
-        self._draw_text_at_vector_tip(painter, self.point_i, 'i', font)
-        self._draw_text_at_vector_tip(painter, self.point_j, 'j', font)
+        This is a helper method for :meth:`_draw_untransformed_polygon` and :meth:`_draw_transformed_polygon`.
+        """
+        if len(points) > 2:
+            painter.drawPolygon(QPolygonF(
+                [QPointF(*self.canvas_coords(*p)) for p in points]
+            ))
+        elif len(points) == 2:
+            painter.drawLine(
+                *self.canvas_coords(*points[0]),
+                *self.canvas_coords(*points[1])
+            )
+
+    def _draw_untransformed_polygon(self, painter: QPainter) -> None:
+        """Draw the original untransformed polygon with a dashed line."""
+        pen = QPen(self._PEN_POLYGON)
+        pen.setDashPattern([4, 4])
+        painter.setPen(pen)
+
+        self._draw_polygon_from_points(painter, self.polygon_points)
+
+    def _draw_transformed_polygon(self, painter: QPainter) -> None:
+        """Draw the transformed version of the polygon."""
+        if len(self.polygon_points) == 0:
+            return
+
+        painter.setPen(self._PEN_POLYGON)
+
+        # This transpose trick lets us do one matrix multiplication to transform every point in the polygon
+        # I learned this from Phil. Thanks Phil
+        self._draw_polygon_from_points(
+            painter,
+            (self._matrix @ np.array(self.polygon_points).T).T
+        )
