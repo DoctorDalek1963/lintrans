@@ -94,7 +94,7 @@ class MainViewportWidget(VisualizeTransformationWidget, InteractivePlot):
     It extends :class:`VisualizeTransformationWidget` with input and output vectors.
     """
 
-    _COLOUR_OUTPUT_VECTOR = QColor('#efa00e')
+    _COLOUR_OUTPUT_VECTOR = QColor('#f7c216')
 
     def __init__(self, *args, **kwargs):
         """Create the main viewport widget with its input point."""
