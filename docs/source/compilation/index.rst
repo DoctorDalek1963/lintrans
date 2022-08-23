@@ -1,7 +1,7 @@
 .. _compilation:
 
-How to compile lintrans
-=======================
+How to compile lintrans (vVERSION_NUMBER)
+=========================================
 
 This is a tutorial on how to compile lintrans from its source code. This is necessary on some
 operating systems, but available for all of them. If you're on Windows, it's easier to just
