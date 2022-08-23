@@ -14,9 +14,9 @@
 ---
 
 ## NOTICE
-This project is still a work in progress and is not yet feature complete. It is actively being
-worked on. Version 1.0.0 should hopefully be out near the beginning of the new academic year in
-September.
+This project is still a work in progress. It is actively being worked on.
+
+Version 1.0.0 should hopefully be out near the beginning of the new academic year in September.
 
 ---
 
@@ -43,8 +43,6 @@ PDF can also be downloaded from [my GitHub pages site](https://doctordalek1963.g
 ---
 
 ## Usage
-
-Currently, this project is not feature complete.
 
 I recommend downloading a pre-built executable file from the [releases
 page](https://github.com/DoctorDalek1963/lintrans/releases/latest).
