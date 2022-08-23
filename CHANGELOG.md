@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2022-08-23
+
 ### Added
 
 - Qt5 and PyQt5 version numbers to the *About* dialog box
@@ -97,7 +99,8 @@ instead, I'll just summarize the features.
 - Ability to zoom in and out of the viewport
 - Add dialog to change display settings
 
-[Unreleased]: https://github.com/DoctorDalek1963/lintrans/compare/v0.2.2...main
+[Unreleased]: https://github.com/DoctorDalek1963/lintrans/compare/v0.3.0...main
+[0.3.0]: https://github.com/DoctorDalek1963/lintrans/compare/v0.2.2...v0.3.0
 [0.2.2]: https://github.com/DoctorDalek1963/lintrans/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/DoctorDalek1963/lintrans/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/DoctorDalek1963/lintrans/compare/13600cc6ff6299dc4a8101a367bc52fe08607554...v0.2.0

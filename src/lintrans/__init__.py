@@ -8,6 +8,6 @@
 
 from . import crash_reporting, global_settings, gui, matrices, typing_
 
-__version__ = '0.3.0-alpha'
+__version__ = '0.3.0'
 
 __all__ = ['crash_reporting', 'global_settings', 'gui', 'matrices', 'typing_', '__version__']
