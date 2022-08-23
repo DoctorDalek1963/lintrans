@@ -9,6 +9,7 @@
 from __future__ import annotations
 
 import operator
+from abc import abstractmethod
 from math import dist
 from typing import List, Optional, Tuple
 
@@ -37,22 +38,19 @@ class VisualizeTransformationWidget(VisualizeTransformationPlot):
     def plot_matrix(self, matrix: MatrixType) -> None:
         """Plot the given matrix on the grid by setting the basis vectors.
 
-        .. warning:: This method does not call ``update()``. This must be done by the caller.
+        .. warning:: This method does not call :meth:`QWidget.update()`. This must be done by the caller.
 
         :param MatrixType matrix: The matrix to plot
         """
         self.point_i = (matrix[0][0], matrix[1][0])
         self.point_j = (matrix[0][1], matrix[1][1])
 
-    def paintEvent(self, event: QPaintEvent) -> None:
-        """Handle a :class:`QPaintEvent` by drawing the background grid and the transformed grid.
+    def _draw_scene(self, painter: QPainter) -> None:
+        """Draw the default scene of the transformation.
 
-        The transformed grid is defined by the basis vectors i and j, which can be controlled
-        with the :meth:`plot_matrix` method.
+        This method exists to make it easier to split the main viewport from visual definitions while
+        not using multiple :class:`QPainter` objects from a single :meth:`paintEvent` call in a subclass.
         """
-        painter = QPainter()
-        painter.begin(self)
-
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setBrush(Qt.NoBrush)
 
@@ -85,6 +83,30 @@ class VisualizeTransformationWidget(VisualizeTransformationPlot):
         if self.display_settings.draw_transformed_polygon:
             self._draw_transformed_polygon(painter)
 
+    @abstractmethod
+    def paintEvent(self, event: QPaintEvent) -> None:
+        """Paint the scene of the transformation."""
+
+
+class MainViewportWidget(VisualizeTransformationWidget):
+    """This is the widget for the main viewport.
+
+    It extends :class:`VisualizeTransformationWidget` with input and output vectors.
+    """
+
+    def __init__(self, *args, **kwargs):
+        """Create the main viewport widget with its input point."""
+        super().__init__(*args,  **kwargs)
+
+        self._point_input: Tuple[float, float] = (1, 1)
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        """Paint the scene by just calling :meth:`_draw_scene` and drawing the I/O vectors."""
+        painter = QPainter()
+        painter.begin(self)
+
+        self._draw_scene(painter)
+
         painter.end()
         event.accept()
 
@@ -101,6 +123,16 @@ class DefineMatrixVisuallyWidget(VisualizeTransformationWidget, InteractivePlot)
         super().__init__(*args, display_settings=display_settings, polygon_points=polygon_points, **kwargs)
 
         self._dragged_point: Tuple[float, float] | None = None
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        """Paint the scene by just calling :meth:`_draw_scene`."""
+        painter = QPainter()
+        painter.begin(self)
+
+        self._draw_scene(painter)
+
+        painter.end()
+        event.accept()
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
         """Set the dragged point if the cursor is within :attr:`_CURSOR_EPSILON`."""
@@ -267,7 +299,7 @@ class DefinePolygonWidget(InteractivePlot):
         for point in self.points:
             x, y = self.canvas_coords(*point)
 
-            painter.setPen(self._PEN_NONE)
+            painter.setPen(Qt.NoPen)
             painter.drawPie(
                 x - self._CURSOR_EPSILON,
                 y - self._CURSOR_EPSILON,
@@ -287,7 +319,7 @@ class DefinePolygonWidget(InteractivePlot):
                 16 * 360
             )
 
-        painter.setBrush(self._BRUSH_NONE)
+        painter.setBrush(Qt.NoBrush)
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """Draw the polygon on the canvas."""

@@ -11,8 +11,9 @@ These dialogs are for defining new matrices in different ways and editing settin
 
 from .define_new_matrix import (DefineAsExpressionDialog, DefineMatrixDialog,
                                 DefineNumericallyDialog, DefineVisuallyDialog)
-from .misc import AboutDialog, FileSelectDialog, InfoPanelDialog
+from .misc import AboutDialog, DefinePolygonDialog, FileSelectDialog, InfoPanelDialog
 from .settings import DisplaySettingsDialog
 
-__all__ = ['AboutDialog', 'DefineAsExpressionDialog', 'DefineMatrixDialog', 'DefineNumericallyDialog',
-           'DefineVisuallyDialog', 'DisplaySettingsDialog', 'FileSelectDialog', 'InfoPanelDialog']
+__all__ = ['AboutDialog', 'DefineAsExpressionDialog', 'DefineMatrixDialog',
+           'DefineNumericallyDialog', 'DefinePolygonDialog', 'DefineVisuallyDialog',
+           'DisplaySettingsDialog', 'FileSelectDialog', 'InfoPanelDialog']

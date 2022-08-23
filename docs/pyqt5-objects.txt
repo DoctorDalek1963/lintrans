@@ -22,8 +22,9 @@ qApp         py:class 1 qapplication.html#qApp -
 # === Methods
 
 QCoreApplication.instance py:method 1 qcoreapplication.html#instance QCoreApplication.instance()
-QPainter.drawLine:iiii    py:method 1 qpainter.html#drawLine-2       QPainter.drawLine()
 QDialog.open              py:method 1 qdialog.html#open              QDialog.open()
+QPainter.drawLine:iiii    py:method 1 qpainter.html#drawLine-2       QPainter.drawLine()
+QWidget.update            py:method 1 qwidget.html#update            update()
 
 # === Signals
 

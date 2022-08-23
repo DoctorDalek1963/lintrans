@@ -24,16 +24,9 @@ from lintrans.typing_ import MatrixType, VectorType
 class BackgroundPlot(QWidget):
     """This class provides a background for plotting, as well as setup for a Qt widget.
 
-    This class provides a background (untransformed) plane, and all the backend
-    details for a Qt application, but does not provide useful functionality. To
-    be useful, this class must be subclassed and behaviour must be implemented
-    by the subclass.
-
-    .. warning:: This class should never be directly instantiated, only subclassed.
-
-    .. note::
-       I would make this class have ``metaclass=abc.ABCMeta``, but I can't because it subclasses :class:`QWidget`,
-       and every superclass of a class must have the same metaclass, and :class:`QWidget` is not an abstract class.
+    This class provides a background (untransformed) plane, and all the backend details
+    for a Qt application, but does not provide useful functionality. To be useful,
+    this class must be subclassed and behaviour must be implemented by the subclass.
     """
 
     DEFAULT_GRID_SPACING: int = 85
@@ -51,14 +44,8 @@ class BackgroundPlot(QWidget):
     _WIDTH_BACKGROUND_GRID: float = 0.3
     """This is the width of the background grid lines, as a multiple of the :class:`QPainter` line width."""
 
-    _PEN_NONE: QPen = QPen(Qt.NoPen)
-    """This is a pen with ``Qt::NoPen``. See :cpp:enum:`Qt::PenStyle`."""
-
     _PEN_POLYGON: QPen = QPen(QColor('#000000'), 1.5)
     """This is the pen used to draw the normal polygon."""
-
-    _BRUSH_NONE: QBrush = QBrush(Qt.NoBrush)
-    """This is a brush with ``Qt::NoBrush``. See :cpp:enum:`Qt::BrushStyle`."""
 
     _BRUSH_SOLID_WHITE: QBrush = QBrush(QColor('#FFFFFF'), Qt.SolidPattern)
     """This brush is just solid white. Used to draw the insides of circles."""

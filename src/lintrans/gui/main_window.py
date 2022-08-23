@@ -28,15 +28,14 @@ from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QHBoxLayout, QM
 
 import lintrans
 from lintrans.global_settings import global_settings
-from lintrans.gui.dialogs.misc import DefinePolygonDialog
 from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.matrices.utility import polar_coords, rotate_coord
 from lintrans.typing_ import MatrixType, VectorType
-from .dialogs import (AboutDialog, DefineAsExpressionDialog, DefineMatrixDialog, DefineNumericallyDialog,
-                      DefineVisuallyDialog, FileSelectDialog, InfoPanelDialog)
-from .dialogs.settings import DisplaySettingsDialog
-from .plots import VisualizeTransformationWidget
+from .dialogs import (AboutDialog, DefineAsExpressionDialog, DefineMatrixDialog,
+                      DefineNumericallyDialog, DefinePolygonDialog, DefineVisuallyDialog,
+                      DisplaySettingsDialog, FileSelectDialog, InfoPanelDialog)
+from .plots import MainViewportWidget
 from .session import Session
 from .settings import DisplaySettings
 from .utility import qapp
@@ -172,7 +171,7 @@ class LintransMainWindow(QMainWindow):
 
         # Left layout: the plot and input box
 
-        self._plot = VisualizeTransformationWidget(self, display_settings=DisplaySettings(), polygon_points=[])
+        self._plot = MainViewportWidget(self, display_settings=DisplaySettings(), polygon_points=[])
 
         self._lineedit_expression_box = QtWidgets.QLineEdit(self)
         self._lineedit_expression_box.setPlaceholderText('Enter matrix expression...')
