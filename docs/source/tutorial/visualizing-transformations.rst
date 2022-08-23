@@ -85,7 +85,21 @@ non-commutative.
 Using input and output vectors
 ------------------------------
 
-.. note:: I/O vectors are currently not implemented.
+It is often helpful to imagine a single point and how it would get transformed by a given
+transformation. lintrans provides an input vector that you can drag around the viewport, and see
+the associated output vector - the input vector transformed by the matrix.
+
+It is useful to drag this input vector around and see where it lines up with the output vector.
+This is helpful for finding invariant lines. You can then enable :ref:`eigenlines
+<configuring-display-settings.eigenvectors-and-eigenlines>` to see where these invariant lines
+actually are, and the eigenvectors will let you see the scale factors associated with these lines.
+See the display setting linked previously for details.
+
+.. figure:: _images/visualizing/io-vectors.gif
+   :alt: The input and output vectors
+   :align: center
+
+   The input and output vectors shown for ``0.5B (I - 0.1C^-1)``
 
 .. _visualizing-transformations.defining-custom-polygons:
 

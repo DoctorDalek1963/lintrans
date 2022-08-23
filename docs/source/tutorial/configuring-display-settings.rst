@@ -88,6 +88,8 @@ can tell if orientation has been flipped even if you've got the numeric label tu
 
    The determinant parallelogram shown for ``A^-1rot(90),Brot(45)``.
 
+.. _configuring-display-settings.eigenvectors-and-eigenlines:
+
 Eigenvectors and eigenlines
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -96,8 +98,8 @@ points in the direction of an invariant line. Not all matrices have invariant li
 invariant lines that do exist must go through the origin (because the origin is fixed), so there
 must be a set of vectors from the origin (position vectors) that lie along each invariant line. We
 take one of these possible vectors to be "the" eigenvector associated with the invariant line.
-Sometimes people choose a unit vector with length 1, but lintrans choose an eigenvector with length
-equal to its associated eigenvalue.
+Sometimes people choose a unit vector with length 1, but lintrans chooses an eigenvector with
+length equal to its associated eigenvalue.
 
 An eigenvalue is essentially a scale factor associated with an invariant line, and thus with an
 eigenvector. If you take a point on an invariant line with eigenvalue :math:`\lambda`, then after
@@ -131,3 +133,10 @@ settings.
 
 See :ref:`Visualizing transformations<visualizing-transformations.defining-custom-polygons>` to see
 what these polygons look like.
+
+Input/output vectors
+--------------------
+
+lintrans supports the ability to drag an input vector and see how it gets transformed by the
+currently displayed transformation. The display settings allow you to show or hide this pair of
+input and output vectors.
