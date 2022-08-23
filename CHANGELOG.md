@@ -25,6 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`Help` > `Give feedback`)
 - The user can now define an arbitrary polygon and see its transformation
 - Saved sessions should now work between lintrans versions
+- Add usage tutorial
+- Add compilation tutorial
+- The user can now drag an input vector in the main viewport and see its transformed output
 
 ### Fixed
 
