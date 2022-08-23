@@ -101,6 +101,7 @@ class MainViewportWidget(VisualizeTransformationWidget, InteractivePlot):
         super().__init__(*args,  **kwargs)
 
         self._point_input: Tuple[float, float] = (1, 1)
+        self._dragging_vector: bool = False
 
     def _draw_input_vector(self, painter: QPainter) -> None:
         """Draw the input vector."""
@@ -162,6 +163,39 @@ class MainViewportWidget(VisualizeTransformationWidget, InteractivePlot):
         painter.end()
         event.accept()
 
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        """Check if the user has clicked on the input vector."""
+        cursor_pos = (event.x(), event.y())
+
+        if event.button() != Qt.LeftButton:
+            event.ignore()
+            return
+
+        if self._is_within_epsilon(cursor_pos, self._point_input):
+            self._dragging_vector = True
+
+        event.accept()
+
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
+        """Stop dragging the input vector."""
+        if event.button() == Qt.LeftButton:
+            self._dragging_vector = False
+            event.accept()
+        else:
+            event.ignore()
+
+    def mouseMoveEvent(self, event: QMouseEvent) -> None:
+        """Drag the input vector if the user has clicked on it."""
+        if not self._dragging_vector:
+            event.ignore()
+            return
+
+        x, y = self._round_to_int_coord(self._grid_coords(event.x(), event.y()))
+        self._point_input = (x, y)
+
+        self.update()
+        event.accept()
+
 
 class DefineMatrixVisuallyWidget(VisualizeTransformationWidget, InteractivePlot):
     """This widget allows the user to visually define a matrix.
@@ -189,9 +223,8 @@ class DefineMatrixVisuallyWidget(VisualizeTransformationWidget, InteractivePlot)
     def mousePressEvent(self, event: QMouseEvent) -> None:
         """Set the dragged point if the cursor is within :attr:`_CURSOR_EPSILON`."""
         cursor_pos = (event.x(), event.y())
-        button = event.button()
 
-        if button != Qt.LeftButton:
+        if event.button() != Qt.LeftButton:
             event.ignore()
             return
 
@@ -226,7 +259,6 @@ class DefineMatrixVisuallyWidget(VisualizeTransformationWidget, InteractivePlot)
         self._dragged_point = x, y
 
         self.update()
-
         event.accept()
 
 
@@ -307,7 +339,6 @@ class DefinePolygonWidget(InteractivePlot):
                     break
 
         self.update()
-
         event.accept()
 
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
