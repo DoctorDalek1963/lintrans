@@ -211,6 +211,13 @@ class DisplaySettingsDialog(SettingsDialog):
         self._checkbox_draw_transformed_polygon.setToolTip('Draw the transformed version of the polygon')
         self._dict_checkboxes['p'] = self._checkbox_draw_transformed_polygon
 
+        # Input/output vectors
+
+        self._checkbox_draw_io_vectors = QCheckBox(self)
+        self._checkbox_draw_io_vectors.setText('Draw the vect&ors')
+        self._checkbox_draw_io_vectors.setToolTip('Draw the input and output vectors (only in the viewport)')
+        self._dict_checkboxes['o'] = self._checkbox_draw_io_vectors
+
         # === Arrange the widgets in QGroupBoxes
 
         # Basic stuff
@@ -267,6 +274,15 @@ class DisplaySettingsDialog(SettingsDialog):
         groupbox_polygon = QGroupBox('Polygon', self)
         groupbox_polygon.setLayout(vlay_groupbox_polygon)
 
+        # Input/output vectors
+
+        vlay_groupbox_io_vectors = QVBoxLayout()
+        vlay_groupbox_io_vectors.setSpacing(20)
+        vlay_groupbox_io_vectors.addWidget(self._checkbox_draw_io_vectors)
+
+        groupbox_io_vectors = QGroupBox('Input/output vectors', self)
+        groupbox_io_vectors.setLayout(vlay_groupbox_io_vectors)
+
         # Now arrange the groupboxes
         vlay_left = QVBoxLayout()
         vlay_left.setSpacing(20)
@@ -278,6 +294,7 @@ class DisplaySettingsDialog(SettingsDialog):
         vlay_right.addWidget(groupbox_matrix_info)
         vlay_right.addWidget(groupbox_polygon)
         vlay_right.addItem(QSpacerItem(100, 2, hPolicy=QSizePolicy.Minimum, vPolicy=QSizePolicy.Expanding))
+        vlay_right.addWidget(groupbox_io_vectors)
 
         options_layout = QHBoxLayout()
         options_layout.setSpacing(20)
@@ -314,6 +331,9 @@ class DisplaySettingsDialog(SettingsDialog):
         self._checkbox_draw_untransformed_polygon.setChecked(self.display_settings.draw_untransformed_polygon)
         self._checkbox_draw_transformed_polygon.setChecked(self.display_settings.draw_transformed_polygon)
 
+        # Input/output vectors
+        self._checkbox_draw_io_vectors.setChecked(self.display_settings.draw_io_vectors)
+
     def _confirm_settings(self) -> None:
         """Build a :class:`~lintrans.gui.settings.DisplaySettings` object and assign it."""
         # Basic stuff
@@ -337,6 +357,9 @@ class DisplaySettingsDialog(SettingsDialog):
         # Polygon
         self.display_settings.draw_untransformed_polygon = self._checkbox_draw_untransformed_polygon.isChecked()
         self.display_settings.draw_transformed_polygon = self._checkbox_draw_transformed_polygon.isChecked()
+
+        # Input/output vectors
+        self.display_settings.draw_io_vectors = self._checkbox_draw_io_vectors.isChecked()
 
         self.accept()
 

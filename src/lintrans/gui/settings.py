@@ -81,3 +81,8 @@ class DisplaySettings:
 
     draw_transformed_polygon: bool = True
     """This controls whether we should draw the transformed version of the user-defined polygon."""
+
+    # === Input/output vectors
+
+    draw_io_vectors: bool = True
+    """This controls whether we should draw the input and output vectors in the main viewport."""
