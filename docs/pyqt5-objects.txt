@@ -33,8 +33,6 @@ QDialog.accepted    py:method 1 qdialog.html#accepted    -
 
 # === Misc
 
-Qt::BrushStyle       cpp:enum 1 qt.html#BrushStyle-enum      -
-Qt::PenStyle         cpp:enum 1 qt.html#PenStyle-enum        -
 Qt::WA_DeleteOnClose cpp:enum 1 qt.html#WidgetAttribute-enum -
 
 # === Full forms
