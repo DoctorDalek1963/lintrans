@@ -12,6 +12,13 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'src/**'
+      - 'compile.py'
+      - 'setup.py'
+      - 'setup.cfg'
+      - 'pyproject.toml'
+      - 'requirements.txt'
 
 jobs:
   compile:
