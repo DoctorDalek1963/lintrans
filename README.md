@@ -3,7 +3,7 @@
 [![Documentation Status](https://readthedocs.org/projects/lintrans/badge/?version=stable)](https://lintrans.readthedocs.io/en/stable/?badge=stable)
 ![Tests](https://github.com/DoctorDalek1963/lintrans/actions/workflows/tests.yaml/badge.svg)
 ![Linting](https://github.com/DoctorDalek1963/lintrans/actions/workflows/linting.yaml/badge.svg)
-![Type Checks](https://github.com/DoctorDalek1963/lintrans/actions/workflows/type_checks.yaml/badge.svg)
+![Type Checks](https://github.com/DoctorDalek1963/lintrans/actions/workflows/type-checks.yaml/badge.svg)
 ![Docstrings](https://github.com/DoctorDalek1963/lintrans/actions/workflows/docstrings.yaml/badge.svg)
 
 ![GPLv3 License](https://img.shields.io/github/license/DoctorDalek1963/lintrans?style=flat-square)
