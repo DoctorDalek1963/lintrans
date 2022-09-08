@@ -11,7 +11,20 @@ create_desktop_file() {
 	echo "Icon=$HOME/.lintrans/icons/128.xpm"       >> doctordalek1963-lintrans.desktop
 	echo "Exec='$1' %f"                             >> doctordalek1963-lintrans.desktop
 	echo "Terminal=false"                           >> doctordalek1963-lintrans.desktop
+	echo "MimeType=application/lintrans-session"    >> doctordalek1963-lintrans.desktop
 	echo "Categories=Education"                     >> doctordalek1963-lintrans.desktop
+}
+
+create_mime_type_file() {
+	rm -f doctordalek1963-lintrans-session.xml
+	touch doctordalek1963-lintrans-session.xml
+	echo '<?xml version="1.0"?>'                                                     >> doctordalek1963-lintrans-session.xml
+	echo '<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">' >> doctordalek1963-lintrans-session.xml
+	echo '  <mime-type type="application/lintrans-session">'                         >> doctordalek1963-lintrans-session.xml
+	echo '    <comment>lintrans session save file</comment>'                         >> doctordalek1963-lintrans-session.xml
+	echo '    <glob pattern="*.lt"/>'                                                >> doctordalek1963-lintrans-session.xml
+	echo '  </mime-type>'                                                            >> doctordalek1963-lintrans-session.xml
+	echo '</mime-info>'                                                              >> doctordalek1963-lintrans-session.xml
 }
 
 download_icons() {
@@ -64,6 +77,12 @@ chmod +x "$filename"
 echo
 echo "Now downloading the icons..."
 download_icons "$latest_version"
+
+echo
+echo "Now registering the XDG MIME type..."
+create_mime_type_file
+xdg-mime install --mode user doctordalek1963-lintrans-session.xml
+rm -f doctordalek1963-lintrans-session.xml
 
 echo
 echo "Now installing the XDG .desktop file..."
