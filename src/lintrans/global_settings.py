@@ -66,6 +66,11 @@ class _GlobalSettings:
         """Return the default directory for crash reports."""
         return os.path.join(self._directory, 'crash_reports')
 
+    def get_executable_path(self) -> str:
+        """Return the path to the binary executable, or an empty string if lintrans is not technically installed."""
+        # TODO: Implement a settings.conf file for this and the update method
+        return '/home/dyson/.local/bin/lintrans'
+
 
 global_settings = _GlobalSettings()
 """This attribute is the only way that global settings should be accessed.

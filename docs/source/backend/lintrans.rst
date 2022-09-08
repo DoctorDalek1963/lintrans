@@ -38,3 +38,8 @@ lintrans.global_settings module
    .. autoclass:: _GlobalSettings
       :no-special-members:
       :exclude-members: _instance
+
+lintrans.updating module
+------------------------
+
+.. automodule:: lintrans.updating
