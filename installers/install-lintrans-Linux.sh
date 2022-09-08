@@ -34,10 +34,10 @@ download_icons() {
 		mkdir -p "$dest"
 	fi
 
-	wget -q --show-progress "https://github.com/DoctorDalek1963/lintrans/raw/v$1/src/lintrans/gui/assets/16.jpg" -O "$dest/16.jpg"
-	wget -q --show-progress "https://github.com/DoctorDalek1963/lintrans/raw/v$1/src/lintrans/gui/assets/32.jpg" -O "$dest/32.jpg"
-	wget -q --show-progress "https://github.com/DoctorDalek1963/lintrans/raw/v$1/src/lintrans/gui/assets/64.jpg" -O "$dest/64.jpg"
-	wget -q --show-progress "https://github.com/DoctorDalek1963/lintrans/raw/v$1/src/lintrans/gui/assets/128.jpg" -O "$dest/128.jpg"
+	wget -q --show-progress "https://github.com/DoctorDalek1963/lintrans/raw/v$1/src/lintrans/gui/assets/16.xpm" -O "$dest/16.xpm"
+	wget -q --show-progress "https://github.com/DoctorDalek1963/lintrans/raw/v$1/src/lintrans/gui/assets/32.xpm" -O "$dest/32.xpm"
+	wget -q --show-progress "https://github.com/DoctorDalek1963/lintrans/raw/v$1/src/lintrans/gui/assets/64.xpm" -O "$dest/64.xpm"
+	wget -q --show-progress "https://github.com/DoctorDalek1963/lintrans/raw/v$1/src/lintrans/gui/assets/128.xpm" -O "$dest/128.xpm"
 }
 
 echo "Welcome to the lintrans installer!"
