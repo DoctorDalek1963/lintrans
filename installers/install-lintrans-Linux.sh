@@ -23,6 +23,7 @@ create_mime_type_file() {
 	echo '  <mime-type type="application/lintrans-session">'                         >> doctordalek1963-lintrans-session.xml
 	echo '    <comment>lintrans session save file</comment>'                         >> doctordalek1963-lintrans-session.xml
 	echo '    <glob pattern="*.lt"/>'                                                >> doctordalek1963-lintrans-session.xml
+	echo '    <icon name="application-lintrans-session"/>'                           >> doctordalek1963-lintrans-session.xml
 	echo '  </mime-type>'                                                            >> doctordalek1963-lintrans-session.xml
 	echo '</mime-info>'                                                              >> doctordalek1963-lintrans-session.xml
 }
@@ -83,6 +84,13 @@ echo "Now registering the XDG MIME type..."
 create_mime_type_file
 xdg-mime install --mode user doctordalek1963-lintrans-session.xml
 rm -f doctordalek1963-lintrans-session.xml
+
+echo
+echo "Now registering all the icons for XDG..."
+xdg-icon-resource install --mode user --context mimetypes --size 16 "$HOME/.lintrans/icons/16.xpm" application-lintrans-session
+xdg-icon-resource install --mode user --context mimetypes --size 32 "$HOME/.lintrans/icons/32.xpm" application-lintrans-session
+xdg-icon-resource install --mode user --context mimetypes --size 64 "$HOME/.lintrans/icons/64.xpm" application-lintrans-session
+xdg-icon-resource install --mode user --context mimetypes --size 128 "$HOME/.lintrans/icons/128.xpm" application-lintrans-session
 
 echo
 echo "Now installing the XDG .desktop file..."
