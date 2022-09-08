@@ -16,11 +16,11 @@ import os
 import re
 import shlex
 import shutil
+import subprocess
 import tempfile
 from packaging import version
 from urllib.request import urlopen
 
-import lintrans
 from lintrans.global_settings import global_settings
 
 
@@ -51,10 +51,23 @@ def update_lintrans() -> None:
         return
 
     latest_version = version.parse(match.group(0))
-    current_version = version.parse(lintrans.__version__)
 
-    if latest_version <= current_version:
-        return
+    # If the executable doesn't exist, then we definitely want to update it
+    if os.path.isfile(executable_path):
+        version_output = subprocess.run(
+            [shlex.quote(executable_path), '--version'],
+            stdout=subprocess.PIPE
+        ).stdout.decode()
+
+        match = re.search(r'(?<=lintrans \(version )\d+\.\d+\.\d+(?=\))', version_output)
+
+        if match is None:
+            return
+
+        current_version = version.parse(match.group(0))
+
+        if latest_version <= current_version:
+            return
 
     # We now know that the latest version is newer, and where the executable is,
     # so we can begin the replacement process
