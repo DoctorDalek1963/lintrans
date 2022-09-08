@@ -215,7 +215,7 @@ class Compiler:
 
     def _get_pyi_args(self) -> List[str]:
         """Return the common args for PyInstaller."""
-        path_to_icon = os.path.join(os.path.dirname(__file__), 'src', 'lintrans', 'gui', 'assets', 'icon.jpg')
+        path_to_icon = os.path.join(os.path.dirname(__file__), 'src', 'lintrans', 'gui', 'assets', '32.jpg')
         icon_dest = os.path.join('.', 'lintrans', 'gui', 'assets')
 
         return [
