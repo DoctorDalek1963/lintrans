@@ -19,10 +19,12 @@ echo "Welcome to the lintrans installer!"
 latest_version="$(curl -sL https://github.com/DoctorDalek1963/lintrans/releases/latest | \grep -Po '(?<=/DoctorDalek1963/lintrans/releases/download/v)\d+\.\d+\.\d+(?=/lintrans-Linux)')"
 binary_url="https://github.com/DoctorDalek1963/lintrans/releases/download/v${latest_version}/lintrans-Linux-${latest_version}"
 
-echo "The latest release is lintrans v${latest_version}\n"
+echo "The latest release is lintrans v${latest_version}"
+echo
 
 prefix="$HOME/.local/bin"
-read -p "Please enter an installation prefix (leave empty for ${prefix}): " prefix_input
+echo -n "Please enter an installation prefix (leave empty for ${prefix}): "
+read prefix_input
 
 if [ -n "$prefix_input" ]; then
 	prefix="$prefix_input"
@@ -34,20 +36,24 @@ if [ -x "$filename" ]; then
 	current_version="$($filename --version | \grep -Po '(?<=lintrans \(version )\d+\.\d+\.\d+(?=\))')"
 
 	if [ "$current_version" = "$latest_version" ]; then
-		echo "\nYou've got the latest version of lintrans installed there already!"
+		echo
+		echo "You've got the latest version of lintrans installed there already!"
 		exit 0
 	fi
 fi
 
-echo "\nNow downloading the lintrans binary..."
+echo
+echo "Now downloading the lintrans binary..."
 wget "$binary_url" -O lintrans-binary -q --show-progress
 
 mv lintrans-binary "$filename"
 chmod +x "$filename"
 
-echo "\nNow installing the XDG .desktop file..."
+echo
+echo "Now installing the XDG .desktop file..."
 create_desktop_file "$filename"
 xdg-desktop-menu install --mode user doctordalek1963-lintrans.desktop
 rm -f doctordalek1963-lintrans.desktop
 
-echo "\nThanks for installing lintrans!"
+echo
+echo "Thanks for installing lintrans!"
