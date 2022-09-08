@@ -8,7 +8,7 @@ create_desktop_file() {
 	echo "Version=1.5"                              >> doctordalek1963-lintrans.desktop
 	echo "Name=lintrans"                            >> doctordalek1963-lintrans.desktop
 	echo "Comment=Linear transformation visualizer" >> doctordalek1963-lintrans.desktop
-	echo "Icon=$HOME/.lintrans/icons/128.jpg"       >> doctordalek1963-lintrans.desktop
+	echo "Icon=$HOME/.lintrans/icons/128.xpm"       >> doctordalek1963-lintrans.desktop
 	echo "Exec='$1' %f"                             >> doctordalek1963-lintrans.desktop
 	echo "Terminal=false"                           >> doctordalek1963-lintrans.desktop
 	echo "Categories=Education"                     >> doctordalek1963-lintrans.desktop

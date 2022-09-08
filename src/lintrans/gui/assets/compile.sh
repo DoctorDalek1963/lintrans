@@ -1,7 +1,14 @@
 #!/usr/bin/env sh
 
+make_img() {
+	convert -density $1 icon.pdf $1.jpg
+	convert $1.jpg $1.xpm
+	rm $1.jpg
+}
+
 pdflatex -shell-escape icon.tex
-convert -density 16 icon.pdf 16.jpg
-convert -density 32 icon.pdf 32.jpg
-convert -density 64 icon.pdf 64.jpg
-convert -density 128 icon.pdf 128.jpg
+
+make_img 16
+make_img 32
+make_img 64
+make_img 128
