@@ -8,10 +8,22 @@ create_desktop_file() {
 	echo "Version=1.5"                              >> doctordalek1963-lintrans.desktop
 	echo "Name=lintrans"                            >> doctordalek1963-lintrans.desktop
 	echo "Comment=Linear transformation visualizer" >> doctordalek1963-lintrans.desktop
-	echo "#Icon=TODO"                               >> doctordalek1963-lintrans.desktop
+	echo "Icon=$HOME/.lintrans/icons/128.jpg"       >> doctordalek1963-lintrans.desktop
 	echo "Exec='$1' %f"                             >> doctordalek1963-lintrans.desktop
 	echo "Terminal=false"                           >> doctordalek1963-lintrans.desktop
 	echo "Categories=Education"                     >> doctordalek1963-lintrans.desktop
+}
+
+download_icons() {
+	dest="$HOME/.lintrans/icons"
+	if [ ! -d "$dest" ]; then
+		mkdir -p "$dest"
+	fi
+
+	wget -q --show-progress "https://github.com/DoctorDalek1963/lintrans/raw/v$1/src/lintrans/gui/assets/16.jpg" -O "$dest/16.jpg"
+	wget -q --show-progress "https://github.com/DoctorDalek1963/lintrans/raw/v$1/src/lintrans/gui/assets/32.jpg" -O "$dest/32.jpg"
+	wget -q --show-progress "https://github.com/DoctorDalek1963/lintrans/raw/v$1/src/lintrans/gui/assets/64.jpg" -O "$dest/64.jpg"
+	wget -q --show-progress "https://github.com/DoctorDalek1963/lintrans/raw/v$1/src/lintrans/gui/assets/128.jpg" -O "$dest/128.jpg"
 }
 
 echo "Welcome to the lintrans installer!"
@@ -44,10 +56,14 @@ fi
 
 echo
 echo "Now downloading the lintrans binary..."
-wget "$binary_url" -O lintrans-binary -q --show-progress
+wget -q --show-progress "$binary_url" -O lintrans-binary
 
 mv lintrans-binary "$filename"
 chmod +x "$filename"
+
+echo
+echo "Now downloading the icons..."
+download_icons "$latest_version"
 
 echo
 echo "Now installing the XDG .desktop file..."
