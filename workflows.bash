@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Don't run compile-for-release.yaml locally, because that won't work properly
-for file in .github/workflows/docstrings.yaml .github/workflows/linting.yaml .github/workflows/tests.yaml .github/workflows/type_checks.yaml; do
+for file in .github/workflows/docstrings.yaml .github/workflows/linting.yaml .github/workflows/tests.yaml .github/workflows/type-checks.yaml; do
 	IFS=$'\n'
 
 	for command in $(cat $file | grep -Po '(?<=run: )[^|]+'); do
