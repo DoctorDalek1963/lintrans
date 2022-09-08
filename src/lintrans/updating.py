@@ -18,6 +18,7 @@ import shlex
 import shutil
 import subprocess
 import tempfile
+from multiprocessing import Process
 from packaging import version
 from urllib.request import urlopen
 
@@ -92,3 +93,9 @@ def update_lintrans() -> None:
 
     if os.name == 'posix':
         os.system('chmod +x ' + shlex.quote(executable_path))
+
+
+def update_lintrans_in_background() -> None:
+    """Use multiprocessing to run :func:`update_lintrans` in the background."""
+    p = Process(target=update_lintrans)
+    p.start()
