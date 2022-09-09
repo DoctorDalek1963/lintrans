@@ -118,6 +118,11 @@ def update_lintrans() -> None:
 
     temp_file = os.path.join(tempfile.gettempdir(), 'lintrans-temp.dat')
 
+    # If the temp file already exists, then another instance of lintrans (probably
+    # in a background thread) is currently updating, so we don't want to interfere
+    if os.path.isfile(temp_file):
+        return
+
     with open(temp_file, 'wb') as f:
         f.write(urlopen(url).read())
 
