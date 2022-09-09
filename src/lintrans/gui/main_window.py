@@ -32,6 +32,7 @@ from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.matrices.utility import polar_coords, rotate_coord
 from lintrans.typing_ import MatrixType, VectorType
+from lintrans.updating import update_lintrans_in_background
 from .dialogs import (AboutDialog, DefineAsExpressionDialog, DefineMatrixDialog,
                       DefineNumericallyDialog, DefinePolygonDialog, DefineVisuallyDialog,
                       DisplaySettingsDialog, FileSelectDialog, InfoPanelDialog)
@@ -889,6 +890,19 @@ class LintransMainWindow(QMainWindow):
             self._save_filename = filename
             self._save_session()
 
+    def check_for_updates(self) -> None:
+        """Update lintrans depending on the user's choice of update type."""
+        update_type = global_settings.get_update_type()
+
+        if update_type == 'never':
+            return
+
+        if update_type == 'auto':
+            update_lintrans_in_background()
+            return
+
+        # If we get here, then update_type must be 'prompt'
+
 
 def main(filename: Optional[str]) -> None:
     """Run the GUI by creating and showing an instance of :class:`LintransMainWindow`.
@@ -903,6 +917,7 @@ def main(filename: Optional[str]) -> None:
 
     window = LintransMainWindow()
     window.show()
+    window.check_for_updates()
 
     if filename:
         window.open_session_file(filename)
