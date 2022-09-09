@@ -70,6 +70,18 @@ class _GlobalSettings:
         for sub_directory in sub_directories:
             os.makedirs(os.path.join(self._directory, sub_directory), exist_ok=True)
 
+        executable_path = sys.executable
+        if os.path.isfile(executable_path):
+            version_output = subprocess.run(
+                [shlex.quote(executable_path), '--version'],
+                stdout=subprocess.PIPE
+            ).stdout.decode()
+
+            if 'lintrans' in version_output:
+                self._executable_path = executable_path
+
+        self._executable_path = ''
+
         config_file = os.path.join(self._directory, 'settings.ini')
         config = configparser.ConfigParser()
         config.read(config_file)
@@ -95,17 +107,7 @@ class _GlobalSettings:
 
     def get_executable_path(self) -> str:
         """Return the path to the binary executable, or an empty string if lintrans is not installed standalone."""
-        executable_path = sys.executable
-        if os.path.isfile(executable_path):
-            version_output = subprocess.run(
-                [shlex.quote(executable_path), '--version'],
-                stdout=subprocess.PIPE
-            ).stdout.decode()
-
-            if 'lintrans' in version_output:
-                return executable_path
-
-        return ''
+        return self._executable_path
 
     def get_update_type(self) -> Literal['auto', 'prompt', 'never']:
         """Return the update type defined in the settings file.
