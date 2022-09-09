@@ -25,15 +25,65 @@ from urllib.request import urlopen
 from lintrans.global_settings import global_settings
 
 
+def new_version_exists() -> bool:
+    """Check if the latest version of lintrans is newer than the current version.
+
+    .. note::
+       This function will default to False if it can't get the current or latest version, but True
+       if the executable path is defined but the executable doesn't actually exist.
+
+       This second behaviour is mostly to make testing easier by spoofing
+       :meth:`~lintrans.global_settings._GlobalSettings.get_executable_path`.
+    """
+    executable_path = global_settings.get_executable_path()
+    if executable_path == '':
+        return False
+
+    try:
+        html: str = urlopen('https://github.com/DoctorDalek1963/lintrans/releases/latest').read().decode()
+    except UnicodeDecodeError:
+        return False
+
+    match = re.search(
+        r'(?<=/DoctorDalek1963/lintrans/releases/download/v)\d+\.\d+\.\d+(?=/lintrans)',
+        html
+    )
+    if match is None:
+        return False
+
+    latest_version = version.parse(match.group(0))
+
+    # If the executable doesn't exist, then we definitely want to update it
+    if not os.path.isfile(executable_path):
+        return True
+
+    # Now check the current version
+    version_output = subprocess.run(
+        [shlex.quote(executable_path), '--version'],
+        stdout=subprocess.PIPE
+    ).stdout.decode()
+
+    match = re.search(r'(?<=lintrans \(version )\d+\.\d+\.\d+(?=\))', version_output)
+
+    if match is None:
+        return False
+
+    current_version = version.parse(match.group(0))
+
+    return latest_version > current_version
+
+
 def update_lintrans() -> None:
     """Update the lintrans binary executable, failing silently.
 
     This function only makes sense if lintrans was installed, rather than being used as an executable.
     We ask the :attr:`~lintrans.global_settings.global_settings` object where the executable is and,
-    if it exists, we check if a newer version is available. If it is, then we replace the old executable
-    with the new one.
+    if it exists, then we replace the old executable with the new one. This means that the next time
+    lintrans gets run, it will use the most recent version.
 
-    This means that the next time lintrans gets run, it will use the most recent version.
+    .. note::
+       This function doesn't care if the latest version on GitHub is actually newer than the current
+       version. Use :func:`new_version_exists` to check.
     """
     executable_path = global_settings.get_executable_path()
     if executable_path == '':
@@ -52,23 +102,6 @@ def update_lintrans() -> None:
         return
 
     latest_version = version.parse(match.group(0))
-
-    # If the executable doesn't exist, then we definitely want to update it
-    if os.path.isfile(executable_path):
-        version_output = subprocess.run(
-            [shlex.quote(executable_path), '--version'],
-            stdout=subprocess.PIPE
-        ).stdout.decode()
-
-        match = re.search(r'(?<=lintrans \(version )\d+\.\d+\.\d+(?=\))', version_output)
-
-        if match is None:
-            return
-
-        current_version = version.parse(match.group(0))
-
-        if latest_version <= current_version:
-            return
 
     # We now know that the latest version is newer, and where the executable is,
     # so we can begin the replacement process
@@ -95,7 +128,14 @@ def update_lintrans() -> None:
         os.system('chmod +x ' + shlex.quote(executable_path))
 
 
-def update_lintrans_in_background() -> None:
+def update_lintrans_in_background(*, check: bool) -> None:
     """Use multiprocessing to run :func:`update_lintrans` in the background."""
-    p = Process(target=update_lintrans)
+    def func() -> None:
+        if check:
+            if new_version_exists():
+                update_lintrans()
+        else:
+            update_lintrans()
+
+    p = Process(target=func)
     p.start()
