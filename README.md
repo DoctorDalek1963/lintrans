@@ -1,6 +1,6 @@
 # lintrans
 
-[![Documentation Status](https://readthedocs.org/projects/lintrans/badge/?version=stable)](https://lintrans.readthedocs.io/en/stable/?badge=stable)
+[![Documentation Status](https://readthedocs.org/projects/lintrans/badge/?version=latest)](https://lintrans.readthedocs.io/en/latest/)
 ![Tests](https://github.com/DoctorDalek1963/lintrans/actions/workflows/tests.yaml/badge.svg)
 ![Linting](https://github.com/DoctorDalek1963/lintrans/actions/workflows/linting.yaml/badge.svg)
 ![Type Checks](https://github.com/DoctorDalek1963/lintrans/actions/workflows/type-checks.yaml/badge.svg)
