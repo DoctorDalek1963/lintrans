@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import configparser
 import os
-import shlex
 import subprocess
 import sys
 from typing import Literal
@@ -73,8 +72,9 @@ class _GlobalSettings:
         executable_path = sys.executable
         if os.path.isfile(executable_path):
             version_output = subprocess.run(
-                [shlex.quote(executable_path), '--version'],
-                stdout=subprocess.PIPE
+                [executable_path, '--version'],
+                stdout=subprocess.PIPE,
+                shell=True
             ).stdout.decode()
 
             if 'lintrans' in version_output:
