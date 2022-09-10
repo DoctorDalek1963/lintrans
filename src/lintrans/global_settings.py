@@ -66,6 +66,8 @@ class GlobalSettings():
         for sub_directory in sub_directories:
             os.makedirs(os.path.join(self._directory, sub_directory), exist_ok=True)
 
+        self._executable_path = ''
+
         executable_path = sys.executable
         if os.path.isfile(executable_path):
             version_output = subprocess.run(
@@ -76,8 +78,6 @@ class GlobalSettings():
 
             if 'lintrans' in version_output:
                 self._executable_path = executable_path
-
-        self._executable_path = ''
 
         config_file = os.path.join(self._directory, 'settings.ini')
         config = configparser.ConfigParser()
