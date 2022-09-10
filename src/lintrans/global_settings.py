@@ -19,7 +19,7 @@ from singleton_decorator import singleton
 _DEFAULT_CONFIG = '''
 [General]
 # Valid options are "auto", "prompt", or "never"
-# An unknown option will default to never
+# An unknown option will default to "never"
 Updates = prompt
 '''[1:]
 
