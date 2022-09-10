@@ -74,7 +74,7 @@ class _GlobalSettings:
             version_output = subprocess.run(
                 [executable_path, '--version'],
                 stdout=subprocess.PIPE,
-                shell=True
+                shell=(os.name == 'nt')
             ).stdout.decode()
 
             if 'lintrans' in version_output:

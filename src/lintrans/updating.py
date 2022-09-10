@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import os
 import re
-import shlex
 import shutil
 import subprocess
 import tempfile
@@ -59,8 +58,9 @@ def new_version_exists() -> bool:
 
     # Now check the current version
     version_output = subprocess.run(
-        [shlex.quote(executable_path), '--version'],
-        stdout=subprocess.PIPE
+        [executable_path, '--version'],
+        stdout=subprocess.PIPE,
+        shell=(os.name == 'nt')
     ).stdout.decode()
 
     match = re.search(r'(?<=lintrans \(version )\d+\.\d+\.\d+(?=\))', version_output)
@@ -130,7 +130,7 @@ def update_lintrans() -> None:
     shutil.move(temp_file, executable_path)
 
     if os.name == 'posix':
-        os.system('chmod +x ' + shlex.quote(executable_path))
+        subprocess.run(['chmod', '+x', executable_path])
 
 
 def update_lintrans_in_background(*, check: bool) -> None:
