@@ -70,7 +70,7 @@ def new_version_exists() -> Tuple[bool, Optional[str]]:
         shell=(os.name == 'nt')
     ).stdout.decode()
 
-    match = re.search(r'(?<=lintrans \(version )\d+\.\d+\.\d+(?=\))', version_output)
+    match = re.search(r'(?<=lintrans \(version )\d+\.\d+\.\d+(-\w+(-?\d+))?(?=\))', version_output)
 
     if match is None:
         return False, None
