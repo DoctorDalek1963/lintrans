@@ -18,43 +18,50 @@ import shutil
 import subprocess
 import tempfile
 from multiprocessing import Process
+from typing import Optional, Tuple
 from packaging import version
 from urllib.request import urlopen
 
 from lintrans.global_settings import global_settings
 
 
-def new_version_exists() -> bool:
+def new_version_exists() -> Tuple[bool, Optional[str]]:
     """Check if the latest version of lintrans is newer than the current version.
 
-    .. note::
-       This function will default to False if it can't get the current or latest version, but True
-       if the executable path is defined but the executable doesn't actually exist.
+    This function either returns (False, None) or (True, str) where the string is the new version.
 
-       This second behaviour is mostly to make testing easier by spoofing
+    .. note::
+       This function will default to False if it can't get the current or latest version, or if
+       :meth:`~lintrans.global_settings._GlobalSettings.get_executable_path` returns ''
+       (probablybecause lintrans is being run as a Python package)
+
+       However, it will return True if the executable path is defined but the executable doesn't actually exist.
+
+       This last behaviour is mostly to make testing easier by spoofing
        :meth:`~lintrans.global_settings._GlobalSettings.get_executable_path`.
     """
     executable_path = global_settings.get_executable_path()
     if executable_path == '':
-        return False
+        return False, None
 
     try:
         html: str = urlopen('https://github.com/DoctorDalek1963/lintrans/releases/latest').read().decode()
     except UnicodeDecodeError:
-        return False
+        return False, None
 
     match = re.search(
         r'(?<=/DoctorDalek1963/lintrans/releases/download/v)\d+\.\d+\.\d+(?=/lintrans)',
         html
     )
     if match is None:
-        return False
+        return False, None
 
-    latest_version = version.parse(match.group(0))
+    latest_version_str = match.group(0)
+    latest_version = version.parse(latest_version_str)
 
     # If the executable doesn't exist, then we definitely want to update it
     if not os.path.isfile(executable_path):
-        return True
+        return True, latest_version_str
 
     # Now check the current version
     version_output = subprocess.run(
@@ -66,11 +73,14 @@ def new_version_exists() -> bool:
     match = re.search(r'(?<=lintrans \(version )\d+\.\d+\.\d+(?=\))', version_output)
 
     if match is None:
-        return False
+        return False, None
 
     current_version = version.parse(match.group(0))
 
-    return latest_version > current_version
+    if latest_version > current_version:
+        return True, latest_version_str
+
+    return False, None
 
 
 def update_lintrans() -> None:
@@ -137,7 +147,7 @@ def update_lintrans_in_background(*, check: bool) -> None:
     """Use multiprocessing to run :func:`update_lintrans` in the background."""
     def func() -> None:
         if check:
-            if new_version_exists():
+            if new_version_exists()[0]:
                 update_lintrans()
         else:
             update_lintrans()

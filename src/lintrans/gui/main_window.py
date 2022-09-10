@@ -46,7 +46,7 @@ from .validate import MatrixExpressionValidator
 class _UpdateChecker(QObject):
     """A simple class to act as a worker for a :class:`QThread`."""
 
-    signal_prompt_update = pyqtSignal()
+    signal_prompt_update = pyqtSignal(str)
     finished = pyqtSignal()
 
     def check_for_updates_and_emit(self) -> None:
@@ -54,8 +54,9 @@ class _UpdateChecker(QObject):
 
         This method exists to be run in a background thread to trigger a prompt if a new version is found.
         """
-        if updating.new_version_exists():
-            self.signal_prompt_update.emit()
+        new, version = updating.new_version_exists()
+        if new:
+            self.signal_prompt_update.emit(version)
 
         self.finished.emit()
 
@@ -919,10 +920,10 @@ class LintransMainWindow(QMainWindow):
             self._save_filename = filename
             self._save_session()
 
-    @pyqtSlot()
-    def _prompt_update(self) -> None:
+    @pyqtSlot(str)
+    def _prompt_update(self, version: str) -> None:
         """Open a modal dialog to prompt the user to update lintrans."""
-        print('UPDATE PROMPTED')
+        print(f'UPDATE PROMPTED. NEW VERSION: {version}')
 
     def check_for_updates_and_prompt(self) -> None:
         """Update lintrans depending on the user's choice of update type.
