@@ -46,14 +46,28 @@ from .validate import MatrixExpressionValidator
 class _UpdateChecker(QObject):
     """A simple class to act as a worker for a :class:`QThread`."""
 
-    signal_prompt_update = pyqtSignal(str)
-    finished = pyqtSignal()
+    signal_prompt_update: pyqtSignal = pyqtSignal(str)
+    """A signal that is emitted if a new version is found. The argument is the new version string."""
+
+    finished: pyqtSignal = pyqtSignal()
+    """A signal that is emitted when the worker has finished. Intended to be used for cleanup."""
 
     def check_for_updates_and_emit(self) -> None:
-        """Check for updates, and emit :attr:`_signal_prompt_update` if there's a new version.
+        """Check for updates, and emit :attr:`signal_prompt_update` if there's a new version.
 
         This method exists to be run in a background thread to trigger a prompt if a new version is found.
         """
+        update_type = GlobalSettings().get_update_type()
+
+        if update_type == 'never':
+            return
+
+        if update_type == 'auto':
+            updating.update_lintrans_in_background(check=True)
+            return
+
+        # If we get here, then update_type must be 'prompt',
+        # so we can check for updates and possibly prompt the user
         new, version = updating.new_version_exists()
         if new:
             self.signal_prompt_update.emit(version)
@@ -928,20 +942,9 @@ class LintransMainWindow(QMainWindow):
     def check_for_updates_and_prompt(self) -> None:
         """Update lintrans depending on the user's choice of update type.
 
-        If they chose 'prompt', then this method will open a prompt dialog
-        (after checking if a new version actually exists).
+        If they chose 'prompt', then this method will open a prompt dialog (after checking
+        if a new version actually exists). See :meth:`_prompt_update`.
         """
-        update_type = global_settings.get_update_type()
-
-        if update_type == 'never':
-            return
-
-        if update_type == 'auto':
-            updating.update_lintrans_in_background(check=True)
-            return
-
-        # If we get here, then update_type must be 'prompt',
-        # so we can check for updates and possibly prompt the user
         self._thread_updates.start()
 
 
