@@ -4,7 +4,7 @@
 # This program is licensed under GNU GPLv3, available here:
 # <https://www.gnu.org/licenses/gpl-3.0.html>
 
-"""This module provides the :attr:`global_settings` attribute, which should be used to access global settings."""
+"""This module provides the :class:`GlobalSettings` class, which is used to access global settings."""
 
 from __future__ import annotations
 
@@ -14,6 +14,8 @@ import subprocess
 import sys
 from typing import Literal
 
+from singleton_decorator import singleton
+
 _DEFAULT_CONFIG = '''
 [General]
 # Valid options are "auto", "prompt", or "never"
@@ -22,25 +24,20 @@ Updates = prompt
 '''[1:]
 
 
-class _GlobalSettings:
-    """A class to provide global settings that can be shared throughout the app.
+@singleton
+class GlobalSettings():
+    """A singleton class to provide global settings that can be shared throughout the app.
+
+    .. note::
+       This is a singleton class because we only want :meth:`__init__` to be called once
+       to reduce processing time. We also can't cache it as a global variable because that
+       would be created at import time, leading to infinite process recursion when lintrans
+       tries to call its own executable to find out if it's compiled or interpreted.
 
     The directory methods are split up into things like :meth:`get_save_directory` and
     :meth:`get_crash_reports_directory` to make sure the directories exist and discourage
     the use of other directories in the root one.
-
-    .. warning::
-       This class should never be directly used and should only be
-       accessed through the :attr:`global_settings` attribute.
     """
-
-    def __new__(cls) -> _GlobalSettings:
-        """Override :meth:`__new__` to implement a singleton. This class will only be created once."""
-        # Only create a new instance if we don't already have one
-        if not hasattr(cls, '_instance'):
-            cls._instance = super(_GlobalSettings, cls).__new__(cls)
-
-        return cls._instance
 
     def __init__(self) -> None:
         """Create the global settings object and initialize state."""
@@ -128,10 +125,3 @@ class _GlobalSettings:
             return 'prompt'
 
         return 'never'
-
-
-global_settings = _GlobalSettings()
-"""This attribute is the only way that global settings should be accessed.
-
-For the private class, see :class:`_GlobalSettings`.
-"""

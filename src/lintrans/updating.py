@@ -22,7 +22,7 @@ from typing import Optional, Tuple
 from packaging import version
 from urllib.request import urlopen
 
-from lintrans.global_settings import global_settings
+from lintrans.global_settings import GlobalSettings
 
 
 def new_version_exists() -> Tuple[bool, Optional[str]]:
@@ -32,15 +32,15 @@ def new_version_exists() -> Tuple[bool, Optional[str]]:
 
     .. note::
        This function will default to False if it can't get the current or latest version, or if
-       :meth:`~lintrans.global_settings._GlobalSettings.get_executable_path` returns ''
+       :meth:`~lintrans.global_settings.GlobalSettings.get_executable_path` returns ''
        (probablybecause lintrans is being run as a Python package)
 
        However, it will return True if the executable path is defined but the executable doesn't actually exist.
 
        This last behaviour is mostly to make testing easier by spoofing
-       :meth:`~lintrans.global_settings._GlobalSettings.get_executable_path`.
+       :meth:`~lintrans.global_settings.GlobalSettings.get_executable_path`.
     """
-    executable_path = global_settings.get_executable_path()
+    executable_path = GlobalSettings().get_executable_path()
     if executable_path == '':
         return False, None
 
@@ -87,7 +87,7 @@ def update_lintrans() -> None:
     """Update the lintrans binary executable, failing silently.
 
     This function only makes sense if lintrans was installed, rather than being used as an executable.
-    We ask the :attr:`~lintrans.global_settings.global_settings` object where the executable is and,
+    We ask the :class:`~lintrans.global_settings.GlobalSettings` singleton where the executable is and,
     if it exists, then we replace the old executable with the new one. This means that the next time
     lintrans gets run, it will use the most recent version.
 
@@ -95,7 +95,7 @@ def update_lintrans() -> None:
        This function doesn't care if the latest version on GitHub is actually newer than the current
        version. Use :func:`new_version_exists` to check.
     """
-    executable_path = global_settings.get_executable_path()
+    executable_path = GlobalSettings().get_executable_path()
     if executable_path == '':
         return
 

@@ -28,7 +28,7 @@ from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QHBoxLayout, QM
 
 import lintrans
 from lintrans import updating
-from lintrans.global_settings import global_settings
+from lintrans.global_settings import GlobalSettings
 from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.matrices.utility import polar_coords, rotate_coord
@@ -868,7 +868,7 @@ class LintransMainWindow(QMainWindow):
         dialog = QFileDialog(
             self,
             'Open a session',
-            global_settings.get_save_directory(),
+            GlobalSettings().get_save_directory(),
             'lintrans sessions (*.lt)'
         )
         dialog.setAcceptMode(QFileDialog.AcceptOpen)
@@ -907,7 +907,7 @@ class LintransMainWindow(QMainWindow):
         dialog = FileSelectDialog(
             self,
             'Save this session',
-            global_settings.get_save_directory(),
+            GlobalSettings().get_save_directory(),
             'lintrans sessions (*.lt)'
         )
         dialog.setAcceptMode(QFileDialog.AcceptSave)

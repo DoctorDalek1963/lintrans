@@ -28,7 +28,7 @@ from PyQt5.QtWidgets import QApplication
 
 import lintrans
 from lintrans.typing_ import is_matrix_type
-from .global_settings import global_settings
+from .global_settings import GlobalSettings
 from .gui.main_window import LintransMainWindow
 
 
@@ -209,7 +209,7 @@ def _report_crash(
     datetime_string = _get_datetime_string()
 
     filename = os.path.join(
-        global_settings.get_crash_reports_directory(),
+        GlobalSettings().get_crash_reports_directory(),
         datetime_string.replace(" ", "_") + '.log'
     )
     report = _get_crash_report(
