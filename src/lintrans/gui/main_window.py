@@ -749,6 +749,7 @@ class LintransMainWindow(QMainWindow):
 
         if dialog.exec() == QMessageBox.Yes:
             self._matrix_wrapper = MatrixWrapper()
+            self._plot.polygon_points = []
 
             self._lineedit_expression_box.setText('I')
             self._render_expression()
