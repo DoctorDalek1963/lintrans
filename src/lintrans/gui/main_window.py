@@ -59,14 +59,14 @@ class _UpdateChecker(QObject):
         """
         update_type = GlobalSettings().get_update_type()
 
-        if update_type == 'never':
+        if update_type == GlobalSettings().UpdateType.never:
             return
 
-        if update_type == 'auto':
+        if update_type == GlobalSettings().UpdateType.auto:
             updating.update_lintrans_in_background(check=True)
             return
 
-        # If we get here, then update_type must be 'prompt',
+        # If we get here, then update_type must be prompt,
         # so we can check for updates and possibly prompt the user
         new, version = updating.new_version_exists()
         if new:

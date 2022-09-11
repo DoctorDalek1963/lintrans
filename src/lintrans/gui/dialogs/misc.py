@@ -397,14 +397,15 @@ class PromptUpdateDialog(FixedSizeDialog):
 
     def _save_choice_and_update(self, update_now: bool) -> None:
         """Save the user's choice of how to update and optionally trigger an update now."""
+        gs = GlobalSettings()
         if self._radio_button_auto.isChecked():
-            GlobalSettings().set_update_type('auto')
+            gs.set_update_type(gs.UpdateType.auto)
 
         elif self._radio_button_prompt.isChecked():
-            GlobalSettings().set_update_type('prompt')
+            gs.set_update_type(gs.UpdateType.prompt)
 
         elif self._radio_button_never.isChecked():
-            GlobalSettings().set_update_type('never')
+            gs.set_update_type(gs.UpdateType.never)
 
         if update_now:
             # We don't need to check because we'll only get here if we know a new version is available

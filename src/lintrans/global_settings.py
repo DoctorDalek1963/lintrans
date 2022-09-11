@@ -12,8 +12,8 @@ import configparser
 import os
 import subprocess
 import sys
+from enum import Enum
 from pathlib import Path
-from typing import Literal
 
 from singleton_decorator import singleton
 
@@ -39,6 +39,8 @@ class GlobalSettings():
     :meth:`get_crash_reports_directory` to make sure the directories exist and discourage
     the use of other directories in the root one.
     """
+
+    UpdateType = Enum('UpdateType', 'auto prompt never')
 
     def __init__(self) -> None:
         """Create the global settings object and initialize state."""
@@ -107,33 +109,29 @@ class GlobalSettings():
         """Return the path to the binary executable, or an empty string if lintrans is not installed standalone."""
         return self._executable_path
 
-    def get_update_type(self) -> Literal['auto', 'prompt', 'never']:
-        """Return the update type defined in the settings file.
-
-        The update type is guaranteed to be ``'auto'``, ``'prompt'``, or ``'never'``. I could've
-        used an enum but then I'd have to import that enum type just to check the return value.
-        """
+    def get_update_type(self) -> UpdateType:
+        """Return the update type defined in the settings file."""
         try:
             update_type = self._general_settings['Updates'].lower()
         except KeyError:
-            return 'never'
+            return self.UpdateType.never
 
         # This is just to satisfy mypy and ensure that we return the Literal
         if update_type == 'auto':
-            return 'auto'
+            return self.UpdateType.auto
 
         if update_type == 'prompt':
-            return 'prompt'
+            return self.UpdateType.prompt
 
-        return 'never'
+        return self.UpdateType.never
 
-    def set_update_type(self, type: Literal['auto', 'prompt', 'never']) -> None:
+    def set_update_type(self, update_type: UpdateType) -> None:
         """Set the update type in the settings file to the given type."""
-        self._general_settings['Updates'] = type
+        self._general_settings['Updates'] = update_type.name
 
         new_settings_file = _DEFAULT_CONFIG.replace(
             'Updates = prompt',
-            f'Updates = {type}'
+            f'Updates = {update_type.name}'
         )
 
         with open(self._settings_file, 'w', encoding='utf-8') as f:
