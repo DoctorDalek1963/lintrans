@@ -14,14 +14,16 @@ from typing import List, Tuple, Union
 
 from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR, Qt, pyqtSlot
 from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import (QDialog, QFileDialog, QGridLayout, QHBoxLayout, QLabel, QPushButton,
-                             QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import (QDialog, QFileDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QPushButton,
+                             QRadioButton, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
 
 import lintrans
+from lintrans.global_settings import GlobalSettings
 from lintrans.gui.plots import DefinePolygonWidget
 from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.utility import round_float
 from lintrans.typing_ import MatrixType, is_matrix_type
+from lintrans.updating import update_lintrans_in_background
 
 
 class FixedSizeDialog(QDialog):
@@ -313,3 +315,108 @@ class DefinePolygonDialog(FixedSizeDialog):
         """Confirm the polygon that the user has defined."""
         self.polygon_points = self._polygon_widget.points
         self.accept()
+
+
+class PromptUpdateDialog(FixedSizeDialog):
+    """A simple dialog to ask the user if they want to upgrade their lintrans installation."""
+
+    # signal_update_decision: pyqtSignal = pyqtSignal(bool, str)
+    # """A signal to send when the user decides what they want to do about the update.
+
+    # The first argument is a :class:`bool` that is True if they want to update now, and False if they don't.
+    # The second argument is a :class:`str` that is one of ``'auto'``, ``'prompt'``, or ``'never'`` to
+    # indicate the user's choice for how they want to handle future updates.
+    # """
+
+    def __init__(self, *args, new_version: str, **kwargs) -> None:
+        """Create the dialog with all its widgets."""
+        super().__init__(*args, **kwargs)
+
+        if new_version.startswith('v'):
+            new_version = new_version[1:]
+
+        self.setWindowTitle('Update available')
+
+        # === Create the widgets
+
+        label_info = QLabel(self)
+        label_info.setText(
+            'A new version of lintrans is available!\n'
+            f'({lintrans.__version__} -> {new_version})\n\n'
+            'Would you like to update now?'
+        )
+        label_info.setAlignment(Qt.AlignCenter)
+
+        label_explanation = QLabel(self)
+        label_explanation.setText(
+            'The update will run silently in the background, so you can keep using lintrans uninterrupted.\n'
+            f'You can change your choice at any time by editing {GlobalSettings().get_settings_file()}'
+        )
+        label_explanation.setAlignment(Qt.AlignCenter)
+
+        font = label_explanation.font()
+        font.setPointSize(int(0.9 * font.pointSize()))
+        font.setItalic(True)
+        label_explanation.setFont(font)
+
+        groupbox_radio_buttons = QGroupBox(self)
+
+        self._radio_button_auto = QRadioButton('Always update automatically', groupbox_radio_buttons)
+        self._radio_button_prompt = QRadioButton('Always ask to update', groupbox_radio_buttons)
+        self._radio_button_never = QRadioButton('Never update', groupbox_radio_buttons)
+
+        # If this prompt is even appearing, then the update type must be 'prompt'
+        self._radio_button_prompt.setChecked(True)
+
+        button_remind_me_later = QPushButton('Remind me later', self)
+        button_remind_me_later.clicked.connect(lambda: self._save_choice_and_update(False))
+        button_remind_me_later.setShortcut(Qt.Key_Escape)
+        button_remind_me_later.setFocus()
+
+        button_update_now = QPushButton('Update now', self)
+        button_update_now.clicked.connect(lambda: self._save_choice_and_update(True))
+
+        # === Arrange the widgets
+
+        self.setContentsMargins(10, 10, 10, 10)
+
+        hlay_buttons = QHBoxLayout()
+        hlay_buttons.setSpacing(20)
+        hlay_buttons.addWidget(button_remind_me_later)
+        hlay_buttons.addWidget(button_update_now)
+
+        vlay = QVBoxLayout()
+        vlay.setSpacing(20)
+        vlay.addWidget(label_info)
+
+        vlay_radio_buttons = QVBoxLayout()
+        vlay_radio_buttons.setSpacing(10)
+        vlay_radio_buttons.addWidget(self._radio_button_auto)
+        vlay_radio_buttons.addWidget(self._radio_button_prompt)
+        vlay_radio_buttons.addWidget(self._radio_button_never)
+
+        groupbox_radio_buttons.setLayout(vlay_radio_buttons)
+
+        vlay.addWidget(groupbox_radio_buttons)
+        vlay.addWidget(label_explanation)
+        vlay.addLayout(hlay_buttons)
+
+        self.setLayout(vlay)
+
+    def _save_choice_and_update(self, update_now: bool) -> None:
+        """Save the user's choice of how to update and optionally trigger an update now."""
+        if self._radio_button_auto.isChecked():
+            GlobalSettings().set_update_type('auto')
+
+        elif self._radio_button_prompt.isChecked():
+            GlobalSettings().set_update_type('prompt')
+
+        elif self._radio_button_never.isChecked():
+            GlobalSettings().set_update_type('never')
+
+        if update_now:
+            # We don't need to check because we'll only get here if we know a new version is available
+            update_lintrans_in_background(check=False)
+            self.accept()
+        else:
+            self.reject()

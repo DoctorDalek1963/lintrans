@@ -35,7 +35,7 @@ from lintrans.matrices.utility import polar_coords, rotate_coord
 from lintrans.typing_ import MatrixType, VectorType
 from .dialogs import (AboutDialog, DefineAsExpressionDialog, DefineMatrixDialog,
                       DefineNumericallyDialog, DefinePolygonDialog, DefineVisuallyDialog,
-                      DisplaySettingsDialog, FileSelectDialog, InfoPanelDialog)
+                      DisplaySettingsDialog, FileSelectDialog, InfoPanelDialog, PromptUpdateDialog)
 from .plots import MainViewportWidget
 from .session import Session
 from .settings import DisplaySettings
@@ -937,7 +937,8 @@ class LintransMainWindow(QMainWindow):
     @pyqtSlot(str)
     def _prompt_update(self, version: str) -> None:
         """Open a modal dialog to prompt the user to update lintrans."""
-        print(f'UPDATE PROMPTED. NEW VERSION: {version}')
+        dialog = PromptUpdateDialog(self, new_version=version)
+        dialog.open()
 
     def check_for_updates_and_prompt(self) -> None:
         """Update lintrans depending on the user's choice of update type.

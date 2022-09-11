@@ -80,18 +80,18 @@ class GlobalSettings():
             if 'lintrans' in version_output:
                 self._executable_path = executable_path
 
-        config_file = os.path.join(self._directory, 'settings.ini')
+        self._settings_file = os.path.join(self._directory, 'settings.ini')
         config = configparser.ConfigParser()
-        config.read(config_file)
+        config.read(self._settings_file)
 
         try:
             self._general_settings = config['General']
         except KeyError:
-            with open(config_file, 'w', encoding='utf-8') as f:
+            with open(self._settings_file, 'w', encoding='utf-8') as f:
                 f.write(_DEFAULT_CONFIG)
 
             default_config = configparser.ConfigParser()
-            default_config.read(config_file)
+            default_config.read(self._settings_file)
 
             self._general_settings = default_config['General']
 
@@ -126,6 +126,22 @@ class GlobalSettings():
             return 'prompt'
 
         return 'never'
+
+    def set_update_type(self, type: Literal['auto', 'prompt', 'never']) -> None:
+        """Set the update type in the settings file to the given type."""
+        self._general_settings['Updates'] = type
+
+        new_settings_file = _DEFAULT_CONFIG.replace(
+            'Updates = prompt',
+            f'Updates = {type}'
+        )
+
+        with open(self._settings_file, 'w', encoding='utf-8') as f:
+            f.write(new_settings_file)
+
+    def get_settings_file(self) -> str:
+        """Return the full path of the settings file."""
+        return self._settings_file
 
     def get_update_download_filename(self) -> str:
         """Return a name for a temporary file next to the executable.
