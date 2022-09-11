@@ -320,14 +320,6 @@ class DefinePolygonDialog(FixedSizeDialog):
 class PromptUpdateDialog(FixedSizeDialog):
     """A simple dialog to ask the user if they want to upgrade their lintrans installation."""
 
-    # signal_update_decision: pyqtSignal = pyqtSignal(bool, str)
-    # """A signal to send when the user decides what they want to do about the update.
-
-    # The first argument is a :class:`bool` that is True if they want to update now, and False if they don't.
-    # The second argument is a :class:`str` that is one of ``'auto'``, ``'prompt'``, or ``'never'`` to
-    # indicate the user's choice for how they want to handle future updates.
-    # """
-
     def __init__(self, *args, new_version: str, **kwargs) -> None:
         """Create the dialog with all its widgets."""
         super().__init__(*args, **kwargs)
