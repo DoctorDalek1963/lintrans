@@ -18,6 +18,7 @@ import subprocess
 from multiprocessing import Process
 from typing import Optional, Tuple
 from packaging import version
+from urllib.error import URLError
 from urllib.request import urlopen
 
 from lintrans.global_settings import GlobalSettings
@@ -44,7 +45,7 @@ def new_version_exists() -> Tuple[bool, Optional[str]]:
 
     try:
         html: str = urlopen('https://github.com/DoctorDalek1963/lintrans/releases/latest').read().decode()
-    except UnicodeDecodeError:
+    except (UnicodeDecodeError, URLError):
         return False, None
 
     match = re.search(
@@ -99,7 +100,7 @@ def update_lintrans() -> None:
 
     try:
         html: str = urlopen('https://github.com/DoctorDalek1963/lintrans/releases/latest').read().decode()
-    except UnicodeDecodeError:
+    except (UnicodeDecodeError, URLError):
         return
 
     match = re.search(
@@ -132,7 +133,10 @@ def update_lintrans() -> None:
         return
 
     with open(temp_file, 'wb') as f:
-        f.write(urlopen(url).read())
+        try:
+            f.write(urlopen(url).read())
+        except URLError:
+            return
 
     os.rename(temp_file, executable_path)
 
