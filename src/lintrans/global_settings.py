@@ -149,4 +149,4 @@ class GlobalSettings():
         requires the src and dest to be on the same partition, but also allows us to replace
         the running executable.
         """
-        return str(Path(self._executable_path).parent / 'temp.dat')
+        return str(Path(self._executable_path).parent / 'lintrans-update-temp.dat')
