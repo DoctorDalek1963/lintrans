@@ -15,7 +15,7 @@ import webbrowser
 from copy import deepcopy
 from pathlib import Path
 from pickle import UnpicklingError
-from typing import List, Optional, Tuple, Type
+from typing import List, NoReturn, Optional, Tuple, Type
 
 import numpy as np
 from numpy import linalg
@@ -948,7 +948,7 @@ class LintransMainWindow(QMainWindow):
         self._thread_updates.start()
 
 
-def main(filename: Optional[str]) -> None:
+def main(filename: Optional[str]) -> NoReturn:
     """Run the GUI by creating and showing an instance of :class:`LintransMainWindow`.
 
     :param Optional[str] filename: A session file to optionally open at startup
