@@ -14,9 +14,7 @@ from __future__ import annotations
 
 import os
 import re
-import shutil
 import subprocess
-import tempfile
 from multiprocessing import Process
 from typing import Optional, Tuple
 from packaging import version
@@ -126,7 +124,7 @@ def update_lintrans() -> None:
     else:
         return
 
-    temp_file = os.path.join(tempfile.gettempdir(), 'lintrans-temp.dat')
+    temp_file = GlobalSettings().get_update_download_filename()
 
     # If the temp file already exists, then another instance of lintrans (probably
     # in a background thread) is currently updating, so we don't want to interfere
@@ -136,8 +134,7 @@ def update_lintrans() -> None:
     with open(temp_file, 'wb') as f:
         f.write(urlopen(url).read())
 
-    # os.rename() can fail on POSIX systems if /tmp is in a different partition to that of the destination
-    shutil.move(temp_file, executable_path)
+    os.rename(temp_file, executable_path)
 
     if os.name == 'posix':
         subprocess.run(['chmod', '+x', executable_path])

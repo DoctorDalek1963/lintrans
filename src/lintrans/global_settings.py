@@ -12,6 +12,7 @@ import configparser
 import os
 import subprocess
 import sys
+from pathlib import Path
 from typing import Literal
 
 from singleton_decorator import singleton
@@ -109,8 +110,8 @@ class GlobalSettings():
     def get_update_type(self) -> Literal['auto', 'prompt', 'never']:
         """Return the update type defined in the settings file.
 
-        The update type is guaranteed to be 'auto', 'prompt', or 'never'. I could've used
-        an enum but then I'd have to import that enum type just to check the return value.
+        The update type is guaranteed to be ``'auto'``, ``'prompt'``, or ``'never'``. I could've
+        used an enum but then I'd have to import that enum type just to check the return value.
         """
         try:
             update_type = self._general_settings['Updates'].lower()
@@ -125,3 +126,13 @@ class GlobalSettings():
             return 'prompt'
 
         return 'never'
+
+    def get_update_download_filename(self) -> str:
+        """Return a name for a temporary file next to the executable.
+
+        This method is used when downloading a new version of lintrans into a temporary file.
+        This is needed to allow :func:`os.rename` instead of :func:`shutil.move`. The first
+        requires the src and dest to be on the same partition, but also allows us to replace
+        the running executable.
+        """
+        return str(Path(self._executable_path).parent / 'temp.dat')
