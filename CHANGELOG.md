@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Input and output vectors can now be shown or hidden independently
+
 ### Fixed
 
 - Reset the polygon when the session is reset
