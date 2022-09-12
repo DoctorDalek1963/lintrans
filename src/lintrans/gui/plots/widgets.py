@@ -157,8 +157,10 @@ class MainViewportWidget(VisualizeTransformationWidget, InteractivePlot):
 
         self._draw_scene(painter)
 
-        if self.display_settings.draw_io_vectors:
+        if self.display_settings.draw_output_vector:
             self._draw_output_vector(painter)
+
+        if self.display_settings.draw_input_vector:
             self._draw_input_vector(painter)
 
         painter.end()

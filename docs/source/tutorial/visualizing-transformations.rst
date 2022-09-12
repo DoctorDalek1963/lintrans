@@ -95,6 +95,10 @@ This is helpful for finding invariant lines. You can then enable :ref:`eigenline
 actually are, and the eigenvectors will let you see the scale factors associated with these lines.
 See the display setting linked previously for details.
 
+It is also useful to have an input vector in the viewport and ask your students to find its image
+under the displayed transformation. It is easy to verify their answers by just displaying the
+output vector.
+
 .. figure:: _images/visualizing/io-vectors.gif
    :alt: The input and output vectors
    :align: center

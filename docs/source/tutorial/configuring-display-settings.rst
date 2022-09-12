@@ -139,4 +139,4 @@ Input/output vectors
 
 lintrans supports the ability to drag an input vector and see how it gets transformed by the
 currently displayed transformation. The display settings allow you to show or hide this pair of
-input and output vectors.
+input and output vectors individually.

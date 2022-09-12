@@ -84,5 +84,8 @@ class DisplaySettings:
 
     # === Input/output vectors
 
-    draw_io_vectors: bool = True
-    """This controls whether we should draw the input and output vectors in the main viewport."""
+    draw_input_vector: bool = True
+    """This controls whether we should draw the input vector in the main viewport."""
+
+    draw_output_vector: bool = True
+    """This controls whether we should draw the output vector in the main viewport."""
