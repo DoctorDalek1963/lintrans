@@ -40,63 +40,110 @@ download_icons() {
 	wget -q --show-progress "https://github.com/DoctorDalek1963/lintrans/raw/v$1/src/lintrans/gui/assets/128.xpm" -O "$dest/128.xpm"
 }
 
-echo "Welcome to the lintrans installer!"
+install_lintrans() {
+	echo "Welcome to the lintrans installer!"
 
-latest_version="$(curl -sL https://github.com/DoctorDalek1963/lintrans/releases/latest | \grep -Po '(?<=/DoctorDalek1963/lintrans/releases/download/v)\d+\.\d+\.\d+(?=/lintrans-Linux)')"
-binary_url="https://github.com/DoctorDalek1963/lintrans/releases/download/v${latest_version}/lintrans-Linux-${latest_version}"
+	latest_version="$(curl -sL https://github.com/DoctorDalek1963/lintrans/releases/latest | \grep -Po '(?<=/DoctorDalek1963/lintrans/releases/download/v)\d+\.\d+\.\d+(?=/lintrans-Linux)')"
+	binary_url="https://github.com/DoctorDalek1963/lintrans/releases/download/v${latest_version}/lintrans-Linux-${latest_version}"
 
-echo "The latest release is lintrans v${latest_version}"
-echo
+	echo "The latest release is lintrans v${latest_version}"
+	echo
 
-prefix="$HOME/.local/bin"
-echo -n "Please enter an installation prefix (leave empty for ${prefix}): "
-read prefix_input
+	prefix="$HOME/.local/bin"
+	echo -n "Please enter an installation prefix (leave empty for ${prefix}): "
+	read prefix_input
 
-if [ -n "$prefix_input" ]; then
-	prefix="$prefix_input"
-fi
-
-filename="${prefix}/lintrans"
-
-if [ -x "$filename" ]; then
-	current_version="$($filename --version | \grep -Po '(?<=lintrans \(version )\d+\.\d+\.\d+(?=\))')"
-
-	if [ "$current_version" = "$latest_version" ]; then
-		echo
-		echo "You've got the latest version of lintrans installed there already!"
-		exit 0
+	if [ -n "$prefix_input" ]; then
+		prefix="$prefix_input"
 	fi
+
+	filename="${prefix}/lintrans"
+
+	if [ -x "$filename" ]; then
+		current_version="$($filename --version | \grep -Po '(?<=lintrans \(version )\d+\.\d+\.\d+(?=\))')"
+
+		if [ "$current_version" = "$latest_version" ]; then
+			echo
+			echo "You've got the latest version of lintrans installed there already!"
+			exit 0
+		fi
+	fi
+
+	echo
+	echo "Now downloading the lintrans binary..."
+	wget -q --show-progress "$binary_url" -O lintrans-binary
+
+	mv lintrans-binary "$filename"
+	chmod +x "$filename"
+
+	echo
+	echo "Now downloading the icons..."
+	download_icons "$latest_version"
+
+	echo
+	echo "Now registering the XDG MIME type..."
+	create_mime_type_file
+	xdg-mime install --mode user doctordalek1963-lintrans-session.xml
+	rm -f doctordalek1963-lintrans-session.xml
+
+	echo
+	echo "Now registering all the icons for XDG..."
+	xdg-icon-resource install --mode user --context mimetypes --size 16 "$HOME/.lintrans/icons/16.xpm" application-lintrans-session
+	xdg-icon-resource install --mode user --context mimetypes --size 32 "$HOME/.lintrans/icons/32.xpm" application-lintrans-session
+	xdg-icon-resource install --mode user --context mimetypes --size 64 "$HOME/.lintrans/icons/64.xpm" application-lintrans-session
+	xdg-icon-resource install --mode user --context mimetypes --size 128 "$HOME/.lintrans/icons/128.xpm" application-lintrans-session
+
+	echo
+	echo "Now installing the XDG .desktop file..."
+	create_desktop_file "$filename"
+	xdg-desktop-menu install --mode user doctordalek1963-lintrans.desktop
+	rm -f doctordalek1963-lintrans.desktop
+
+	echo
+	echo "Thanks for installing lintrans!"
+}
+
+uninstall_lintrans() {
+	echo "Welcome to the lintrans uninstaller!"
+	echo
+
+	prefix="$HOME/.local/bin"
+	echo -n "Please enter the installation prefix where you installed lintrans (leave empty for ${prefix}): "
+	read prefix_input
+
+	if [ -n "$prefix_input" ]; then
+		prefix="$prefix_input"
+	fi
+
+	filename="${prefix}/lintrans"
+
+	[ -x "$filename" ] && rm "$filename"
+	[ -d "$HOME/.lintrans" ] && rm -rf "$HOME/.lintrans"
+
+	create_mime_type_file
+	xdg-mime uninstall --mode user doctordalek1963-lintrans-session.xml
+	rm -f doctordalek1963-lintrans-session.xml
+
+	xdg-icon-resource uninstall --mode user --context mimetypes --size 16 application-lintrans-session
+	xdg-icon-resource uninstall --mode user --context mimetypes --size 32 application-lintrans-session
+	xdg-icon-resource uninstall --mode user --context mimetypes --size 64 application-lintrans-session
+	xdg-icon-resource uninstall --mode user --context mimetypes --size 128 application-lintrans-session
+
+	create_desktop_file "$filename"
+	xdg-desktop-menu uninstall --mode user doctordalek1963-lintrans.desktop
+	rm -f doctordalek1963-lintrans.desktop
+
+	echo
+	echo "Successfully uninstalled lintrans!"
+}
+
+if [ "$#" -lt 1 ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+	echo "Usage: $0 [--help] < install | uninstall >"
+	exit 1
 fi
 
-echo
-echo "Now downloading the lintrans binary..."
-wget -q --show-progress "$binary_url" -O lintrans-binary
-
-mv lintrans-binary "$filename"
-chmod +x "$filename"
-
-echo
-echo "Now downloading the icons..."
-download_icons "$latest_version"
-
-echo
-echo "Now registering the XDG MIME type..."
-create_mime_type_file
-xdg-mime install --mode user doctordalek1963-lintrans-session.xml
-rm -f doctordalek1963-lintrans-session.xml
-
-echo
-echo "Now registering all the icons for XDG..."
-xdg-icon-resource install --mode user --context mimetypes --size 16 "$HOME/.lintrans/icons/16.xpm" application-lintrans-session
-xdg-icon-resource install --mode user --context mimetypes --size 32 "$HOME/.lintrans/icons/32.xpm" application-lintrans-session
-xdg-icon-resource install --mode user --context mimetypes --size 64 "$HOME/.lintrans/icons/64.xpm" application-lintrans-session
-xdg-icon-resource install --mode user --context mimetypes --size 128 "$HOME/.lintrans/icons/128.xpm" application-lintrans-session
-
-echo
-echo "Now installing the XDG .desktop file..."
-create_desktop_file "$filename"
-xdg-desktop-menu install --mode user doctordalek1963-lintrans.desktop
-rm -f doctordalek1963-lintrans.desktop
-
-echo
-echo "Thanks for installing lintrans!"
+if [ "$1" = "install" ]; then
+	install_lintrans
+elif [ "$1" = "uninstall" ]; then
+	uninstall_lintrans
+fi
