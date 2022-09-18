@@ -93,7 +93,7 @@ class LintransMainWindow(QMainWindow):
         self.setWindowTitle('lintrans')
         self.setMinimumSize(1000, 750)
 
-        path = Path(__file__).parent.absolute() / 'assets' / '32.xpm'
+        path = Path(__file__).parent.absolute() / 'assets' / 'icon.jpg'
         self.setWindowIcon(QIcon(str(path)))
 
         self._animating: bool = False
