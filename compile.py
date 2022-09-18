@@ -237,13 +237,20 @@ class Compiler:
         """Compile for macOS."""
         run_pyi(self._get_pyi_args())
 
-        os.rename(os.path.join('dist', self.filename + '.app'), self.filename + '.app')
+        new_path = self.filename + '.app'
+        if os.path.isfile(new_path):
+            os.remove(new_path)
+
+        os.rename(os.path.join('dist', self.filename + '.app'), new_path)
 
         self._macos_replace_info_plist()
 
     def _compile_linux(self) -> None:
         """Compile for Linux."""
         run_pyi(self._get_pyi_args())
+
+        if os.path.isfile(self.filename):
+            os.remove(self.filename)
 
         os.rename(os.path.join('dist', self.filename), self.filename)
 
@@ -261,7 +268,11 @@ class Compiler:
 
         os.remove('version_info.txt')
 
-        os.rename(os.path.join('dist', self.filename + '.exe'), self.filename + '.exe')
+        new_path = self.filename + '.exe'
+        if os.path.isfile(new_path):
+            os.remove(new_path)
+
+        os.rename(os.path.join('dist', self.filename + '.exe'), new_path)
 
     def compile(self) -> None:
         """Compile for the appropriate operating system."""
