@@ -9,7 +9,9 @@ make_img() {
 pdflatex -shell-escape icon.tex
 
 convert -density 100 icon.pdf icon.jpg
-convert icon.jpg -define icon:auto-resize=64 icon.ico
+
+convert icon.jpg -define icon:auto-resize=64 lintrans.ico
+mv lintrans.ico ../../../../installers/
 
 make_img 16
 make_img 32

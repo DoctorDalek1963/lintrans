@@ -129,7 +129,6 @@ jobs:
       - name: Setup NSIS script
         run: |
           mv lintrans.exe installers/
-          cp src/lintrans/gui/assets/icon.ico installers/lintrans.ico
         shell: bash
 
       - name: Compile NSIS script
