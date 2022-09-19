@@ -15,7 +15,7 @@ from __future__ import annotations
 import os
 import re
 import subprocess
-from multiprocessing import Process
+from threading import Thread
 from typing import Optional, Tuple
 from packaging import version
 from urllib.error import URLError
@@ -145,7 +145,7 @@ def update_lintrans() -> None:
 
 
 def update_lintrans_in_background(*, check: bool) -> None:
-    """Use multiprocessing to run :func:`update_lintrans` in the background."""
+    """Use multithreading to run :func:`update_lintrans` in the background."""
     def func() -> None:
         if check:
             if new_version_exists()[0]:
@@ -153,5 +153,5 @@ def update_lintrans_in_background(*, check: bool) -> None:
         else:
             update_lintrans()
 
-    p = Process(target=func)
+    p = Thread(target=func)
     p.start()
