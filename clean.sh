@@ -29,8 +29,8 @@ rm -f *.synctex.gz
 rm -f *.dpth
 rm -f *.md5
 rm -f *.auxlock
-
 rm -f sections/processed_*.tex
 rm -f sections/development/processed_*.tex
 
 rm -rf _minted-main/
+rm -rf tikz-imgs/
