@@ -49,7 +49,7 @@ def new_version_exists() -> Tuple[bool, Optional[str]]:
         return False, None
 
     match = re.search(
-        r'(?<=/DoctorDalek1963/lintrans/releases/download/v)\d+\.\d+\.\d+(?=/lintrans)',
+        r'(?<=DoctorDalek1963/lintrans/releases/tag/v)\d+\.\d+\.\d+(?=;)',
         html
     )
     if match is None:
@@ -104,7 +104,7 @@ def update_lintrans() -> None:
         return
 
     match = re.search(
-        r'(?<=/DoctorDalek1963/lintrans/releases/download/v)\d+\.\d+\.\d+(?=/lintrans)',
+        r'(?<=DoctorDalek1963/lintrans/releases/tag/v)\d+\.\d+\.\d+(?=;)',
         html
     )
     if match is None:
