@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+icons_downloaded=false
+
 create_desktop_file() {
 	rm -f doctordalek1963-lintrans.desktop
 	touch doctordalek1963-lintrans.desktop
@@ -28,7 +30,7 @@ create_mime_type_file() {
 	echo '</mime-info>'                                                              >> doctordalek1963-lintrans-session.xml
 }
 
-download_icons() {
+_download_icons() {
 	dest="$HOME/.lintrans/icons"
 	if [ ! -d "$dest" ]; then
 		mkdir -p "$dest"
@@ -40,10 +42,19 @@ download_icons() {
 	wget -q --show-progress "https://github.com/DoctorDalek1963/lintrans/raw/v$1/src/lintrans/gui/assets/128.xpm" -O "$dest/128.xpm"
 }
 
+download_icons() {
+	if [ $icons_downloaded = false ]; then
+		echo
+		echo "Now downloading the icons..."
+		_download_icons "$1"
+		icons_downloaded=true
+	fi
+}
+
 install_lintrans() {
 	echo "Welcome to the lintrans installer!"
 
-	latest_version="$(curl -sL https://github.com/DoctorDalek1963/lintrans/releases/latest | \grep -Po '(?<=/DoctorDalek1963/lintrans/releases/download/v)\d+\.\d+\.\d+(?=/lintrans-Linux)')"
+	latest_version="$(curl -sL https://github.com/DoctorDalek1963/lintrans/releases/latest | \grep -Po '(?<=DoctorDalek1963/lintrans/releases/tag/v)\d+\.\d+\.\d+(?=;)' | head -1)"
 	binary_url="https://github.com/DoctorDalek1963/lintrans/releases/download/v${latest_version}/lintrans-Linux-${latest_version}"
 
 	echo "The latest release is lintrans v${latest_version}"
@@ -76,28 +87,50 @@ install_lintrans() {
 	mv lintrans-binary "$filename"
 	chmod +x "$filename"
 
+	add_to_desktop_apps=false
 	echo
-	echo "Now downloading the icons..."
-	download_icons "$latest_version"
+	echo -n "Would you like to add lintrans to your desktop apps? (this creates a .desktop file, not a desktop shortcut) [y/N] "
+	read atda_input
 
-	echo
-	echo "Now registering the XDG MIME type..."
-	create_mime_type_file
-	xdg-mime install --mode user doctordalek1963-lintrans-session.xml
-	rm -f doctordalek1963-lintrans-session.xml
+	if [ "$atda_input" = "y" ] || [ "$atda_input" = "Y" ]; then
+		add_to_desktop_apps=true
+	fi
 
-	echo
-	echo "Now registering all the icons for XDG..."
-	xdg-icon-resource install --mode user --context mimetypes --size 16 "$HOME/.lintrans/icons/16.xpm" application-lintrans-session
-	xdg-icon-resource install --mode user --context mimetypes --size 32 "$HOME/.lintrans/icons/32.xpm" application-lintrans-session
-	xdg-icon-resource install --mode user --context mimetypes --size 64 "$HOME/.lintrans/icons/64.xpm" application-lintrans-session
-	xdg-icon-resource install --mode user --context mimetypes --size 128 "$HOME/.lintrans/icons/128.xpm" application-lintrans-session
+	if [ $add_to_desktop_apps = true ]; then
+		download_icons "$latest_version"
 
+		echo
+		echo "Now installing the XDG .desktop file..."
+		create_desktop_file "$filename"
+		xdg-desktop-menu install --mode user doctordalek1963-lintrans.desktop
+		rm -f doctordalek1963-lintrans.desktop
+	fi
+
+	register_mime_type=false
 	echo
-	echo "Now installing the XDG .desktop file..."
-	create_desktop_file "$filename"
-	xdg-desktop-menu install --mode user doctordalek1963-lintrans.desktop
-	rm -f doctordalek1963-lintrans.desktop
+	echo -n "Would you like to register the MIME type for .lt files? [y/N] "
+	read rmt_input
+
+	if [ "$rmt_input" = "y" ] || [ "$rmt_input" = "Y" ]; then
+		register_mime_type=true
+	fi
+
+	if [ $register_mime_type = true ]; then
+		download_icons "$latest_version"
+
+		echo
+		echo "Now registering the XDG MIME type..."
+		create_mime_type_file
+		xdg-mime install --mode user doctordalek1963-lintrans-session.xml
+		rm -f doctordalek1963-lintrans-session.xml
+
+		echo
+		echo "Now registering all XDG MIME type icons..."
+		xdg-icon-resource install --mode user --context mimetypes --size 16 "$HOME/.lintrans/icons/16.xpm" application-lintrans-session
+		xdg-icon-resource install --mode user --context mimetypes --size 32 "$HOME/.lintrans/icons/32.xpm" application-lintrans-session
+		xdg-icon-resource install --mode user --context mimetypes --size 64 "$HOME/.lintrans/icons/64.xpm" application-lintrans-session
+		xdg-icon-resource install --mode user --context mimetypes --size 128 "$HOME/.lintrans/icons/128.xpm" application-lintrans-session
+	fi
 
 	echo
 	echo "Thanks for installing lintrans!"
