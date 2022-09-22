@@ -43,78 +43,93 @@ I have deliberately broken this problem down into parts that can be easily trans
 
 \subsection{Structure of the solution\label{design:structure-of-the-solution}}
 
-\subsubsection{The main project\label{design:structure-of-the-solution:the-main-project}}
-
 I have decomposed my solution like so:
 
+\begin{figure}[H]
+\begin{minipage}{0.35\linewidth}
 \begin{center}
 \begin{tikzpicture}[
-	every node/.style={rectangle, minimum size=6mm, draw=black, font=\ttfamily, align=center, very thick},
+	every node/.append style={
+		rectangle,
+		minimum size=6mm,
+		draw=black,
+		font=\ttfamily,
+		align=center,
+		very thick,
+		anchor=west
+	},
 	every path/.style={very thick},
 	root/.style={rectangle, text=white, fill=black},
 	package/.style={text=white, fill=gray},
-	subpackages label/.style={text=white, fill=gray},
-	module/.style={text=black, grow=down, anchor=west, edge from parent path={\tikzparentnode.south |- \tikzchildnode.west}},
-	vertical/.style={grow=down, xshift=1em, anchor=west, edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}, level distance={#1*6ex}},
-	level 1/.style={sibling distance=9.5em},
+	module/.style={text=black},
+	grow via three points={one child at (0.5,-0.8) and two children at (0.5,-0.8) and (0.5,-1.6)},
+	edge from parent path={(\tikzparentnode\tikzparentanchor) |- (\tikzchildnode\tikzchildanchor)}
 ]
-\node [root] {lintrans} [grow=down, level distance=7ex] [edge from parent fork down]
+\node [root] {lintrans}
 	child {node [module] {\_\_main\_\_}}
-	child {node [package] {matrices}
-		child [vertical=1] {node [module] {parse}}
-		child [vertical=2] {node [module] {wrapper}}
-	}
+	child {node [module] {global\_settings}}
 	child {node [package] {gui}
-		child [vertical=1] {node [module] {main\_window}}
-		child [vertical=2] {node [module] {settings}}
-		child [vertical=3] {node [subpackages label] {dialogs...}}
-		child [vertical=4] {node [subpackages label] {plots...}}
-	};
-\end{tikzpicture}
-\end{center}
-
-The \texttt{lintrans} node is simply the root of the whole project. \texttt{\_\_main\_\_} is the Python way to make the project executable as \texttt{python -m lintrans} on the command line. For release, I will package it into a standalone binary executable.
-
-\texttt{matrices} is the package that will allow the user to define, validate, parse, evaluate, and use matrices. The \texttt{parse} module will contain functions to validate matrix expressions - likely using regular expressions - and functions to parse matrix expressions. It will not know which matrices are defined, so validation will be na\"{i}ve and evaluation will be elsewhere. The \texttt{wrapper} module will contain a \texttt{MatrixWrapper} class, which will hold a dictionary of matrix names and values. It is this class which will have aware validation - making sure that all matrices are actually defined - as well the ability to evaluate matrix expressions, in addition to its basic behaviour of setting and getting matrices. This \texttt{matrices} package will also have a \texttt{create\_rotation\_matrix} function that will generate a rotation matrix from an angle using the formula $\begin{psmallmatrix}\cos\theta & -\sin\theta\\\sin\theta & \cos\theta\end{psmallmatrix}$. It will be in the \texttt{wrapper} module since it's related to defining and manipulating matrices, but it will be exported and accessible as \texttt{lintrans.matrices.create\_rotation\_matrix}.
-
-\texttt{gui} is the package that will contain all the frontend code for everything GUI-related. \texttt{main\_window} is the module that will contain a \texttt{LintransMainWindow} class, which will act as the main window of the application and have an instance of \texttt{MatrixWrapper} to keep track of which matrices are defined and allow for evaluation of matrix expressions. It will also have methods for rendering and animating matrix expressions, which will be connected to buttons in the GUI. This module will also contain a simple \texttt{main()} function to instantiate and launch the application GUI.
-
-The \texttt{settings} module will contain a \texttt{DisplaySettings} dataclass\footnote{This is the Python equivalent of a \texttt{struct} or \texttt{record} in other languages} that will represent the settings for visualizing transformations. The \texttt{LintransMainWindow} class will have an instance of this class and check against it when rendering things. The user will be able to open a dialog to change these display settings, which will update the main window's instance of this class.
-
-The \texttt{settings} module will also have a \texttt{GlobalSettings} class, which will represent the global settings for the application, such as the logging level, where to save the logs, whether to ask the user if they want to be prompted with a tutorial whenever they open the app, etc. This class will have defaults for everything, but the constructor will try to read these settings from a config file if possible. This allows for persistent settings between sessions. This config file will be \texttt{\textasciitilde/.config/lintrans.conf} on Unix-like systems, including macOS, and \texttt{C:{\textbackslash}Users{\textbackslash}\%USER\%{\textbackslash}AppData{\textbackslash}Roaming{\textbackslash}lintrans{\textbackslash}config.txt} on Windows. This difference is to remain consistent with operating system conventions\footnote{And also to avoid confusing Windows users with a \texttt{.conf} file}.
-
-\subsubsection{The \texttt{gui} subpackages\label{design:structure-of-the-solution:the-gui-subpackages}}
-
-\begin{center}
-\begin{tikzpicture}[
-	every node/.style={rectangle, minimum size=6mm, draw=black, font=\ttfamily, align=center, very thick},
-	every path/.style={very thick},
-	root/.style={rectangle, text=white, fill=black},
-	package/.style={text=white, fill=gray},
-	subpackages label/.style={text=white, fill=gray},
-	module/.style={text=black, grow=down, anchor=west, edge from parent path={\tikzparentnode.south |- \tikzchildnode.west}},
-	vertical/.style={grow=down, xshift=1em, anchor=west, edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}, level distance={#1*6ex}},
-	level 1/.style={sibling distance=12.5em},
-]
-\node [package] {gui} [grow=down, level distance=7ex] [edge from parent fork down]
-	child {node [package] {dialogs}
-		child [vertical=1] {node [module] {define\_new\_matrix}}
-		child [vertical=2] {node [module] {settings}}
+		child {node [module] {main\_window}}
+		child {node [module] {session}}
+		child {node [module] {settings}}
+		child {node [package] {dialogs}
+			child {node [module] {define\_new\_matrix}}
+			child {node [module] {misc}}
+			child {node [module] {settings}}
+		}
+		child [missing] {}
+		child [missing] {}
+		child [missing] {}
+		child {node [package] {plots}
+			child {node [module] {classes}}
+			child {node [module] {widgets}}
+		}
+		child [missing] {}
+		child [missing] {}
 	}
-	child {node [package] {plots}
-		child [vertical=1] {node [module] {classes}}
-		child [vertical=2] {node [module] {widgets}}
+	child [missing] {}
+	child [missing] {}
+	child [missing] {}
+	child [missing] {}
+	child [missing] {}
+	child [missing] {}
+	child [missing] {}
+	child [missing] {}
+	child [missing] {}
+	child [missing] {}
+	child {node [package] {matrices}
+		child {node [module] {parse}}
+		child {node [module] {utility}}
+		child {node [module] {wrapper}}
 	};
 \end{tikzpicture}
 \end{center}
+\end{minipage}\hfill
+\begin{minipage}{0.55\linewidth}
+\setlength{\parskip}{1em}
+The \texttt{lintrans} node is simply the root of the whole project. \texttt{\_\_main\_\_} is the Python way to make the project executable as \texttt{python -m lintrans} on the command line. For release, I will package it into a standalone binary executable, using this module as the entry point.
 
-The \texttt{dialogs} subpackage will contain modules with different dialog classes. It will have a \texttt{define\_new\_matrices} module, which will have a \texttt{DefineDialog} abstract superclass. It will also contain classes that inherit from this superclass and provide dialogs for defining new matrices visually, numerically, and as an expression in terms of other matrices. Additionally, this subpackage will contain a \texttt{settings} module, which will provide a \texttt{SettingsDialog} superclass and a \texttt{DisplaySettingsDialog} class, which will allow the user to configure the aforementioned display settings. It will also have a \texttt{GlobalSettingsDialog} class, which will similarly allow the user to configure the app's global settings through a dialog.
+The \texttt{global\_settings} module will define a \texttt{GlobalSettings} singleton class. This class will manage global settings and variables - things like where to save sessions by default, etc. I'm not entirely sure what I want to put in here, but I expect that I'll want global settings in the future. Having this class will allow me to easily read and write these settings to a file to have them persist between sessions.
 
-The \texttt{plots} subpackage will have a \texttt{classes} module and a \texttt{widgets} module. The \texttt{classes} module will have the abstract superclasses \texttt{BackgroundPlot} and \texttt{VectorGridPlot}. The former will provide helped methods to convert between coordinate systems and draw the background grid, while the latter will provide helper methods to draw transformations and their components. It will have \texttt{point\_i} and \texttt{point\_j} attributes and will provide methods to draw the transformed version of the grid, the vectors and their arrowheads, the eigenlines of the transformation, etc. These methods can then be called from the Qt5 \texttt{paintEvent} handler which will be declared abstract and must therefore be implemented by all subclasses.
+\texttt{matrices} is the package that will allow the user to define, validate, parse, evaluate, and use matrices. The \texttt{matrices.parse} module will contain functions to validate matrix expressions - likely using regular expressions - and functions to parse matrix expressions. It will not know which matrices are defined, so validation will be na\"{i}ve and evaluation will be in the \texttt{matrices.wrapper} module. This \texttt{wrapper} module will contain a \texttt{MatrixWrapper} class, which will hold a dictionary of matrix names and values. It is this class which will have aware validation - making sure that all the matrices used in an expression are actually defined in the wrapper - as well the ability to evaluate matrix expressions, in addition to its basic behaviour of setting and getting matrices by name. There will also be a \texttt{matrices.utility} module, which will contain some simple functions for simple functionality. Functions like \texttt{create\_rotation\_matrix()}, which will generate a rotation matrix from an angle using the formula $\begin{psmallmatrix}\cos\theta & -\sin\theta\\\sin\theta & \cos\theta\end{psmallmatrix}$.
+\end{minipage}
+\end{figure}
 
-The \texttt{plots} subpackage will also contain a \texttt{widgets} module, which will have the classes \texttt{VisualizeTransformationWidget} and \texttt{DefineVisuallyWidget}, both of which will inherit from \texttt{VectorGridPlot}. They will both implement their own \texttt{paintEvent} handler to actually draw the respective widgets, and \texttt{DefineVisuallyWidget} will also implement handlers for mouse events, allowing the user to drag around the basis vectors.
+\texttt{gui} is the package that will contain all the frontend code for everything GUI-related. \texttt{gui.main\_window} is the module that will define the \texttt{LintransMainWindow} class, which will act as the main window of the application and have an instance of \texttt{MatrixWrapper} to keep track of which matrices are defined and allow for evaluation of matrix expressions. It will also have methods for rendering and animating matrix expressions, which will be connected to buttons in the GUI. The most important part of the main window is the viewport, which will be discussed shortly. This module will also contain a simple \texttt{main()} function to instantiate and launch the application GUI.
 
-It's also worth noting here that I don't currently know how I'm going to implement the transformation of arbitrary polygons. It will likely consist of an attribute in \texttt{VisualizeTransformationWidget} which is a list of points, and these points can be dragged around with mouse event handlers and then the transformed versions can be rendered, but I'm not yet sure about how I'm going to implement it.
+The \texttt{gui.session} module will contain functions to save and load a session from a file. A session will consist of the \texttt{MatrixWrapper}, along with perhaps the display settings and maybe some other things. I know that saving the wrapper will be essential, but I'll see what else should be saved as the project evolves.
+
+The \texttt{gui.settings} module will contain a \texttt{DisplaySettings} dataclass\footnote{This is the Python equivalent of a \texttt{struct} or \texttt{record} in other languages} that will represent the settings for visualizing transformations. The viewport class will have an instance of this class and check against it when rendering things. The user will be able to open a dialog to change these display settings, which will update the main window's instance of this class.
+
+The \texttt{gui.dialogs} subpackage will contain modules with different dialog classes. It will have a \texttt{gui.dialogs.define\_new\_matrices} module, which will have a \texttt{DefineDialog} abstract superclass. It will then contain classes that inherit from this superclass and provide dialogs for defining new matrices visually, numerically, and as an expression in terms of other matrices. Additionally, it will contain a \texttt{gui.dialogs.settings} module, which will provide a \texttt{SettingsDialog} superclass and a \texttt{DisplaySettingsDialog} class, which will allow the user to configure the aforementioned display settings. It may also have a \texttt{GlobalSettingsDialog} class in the future, which would similarly allow the user to configure the app's global settings through a dialog. This will only be implemented once I've actually got global settings to configure.
+
+The \texttt{gui.dialogs.misc} module will contain small miscellaneous dialog boxes - things like the about box which are very simple and don't need a dedicated module.
+
+The \texttt{gui.plots} subpackage will have a \texttt{gui.plots.classes} module and a \texttt{gui.plots.widgets} module. The \texttt{classes} module will have the abstract superclasses \texttt{BackgroundPlot} and \texttt{VectorGridPlot}. The former will provide helper methods to convert between coordinate systems and draw the background grid, while the latter will provide helper methods to draw transformations and their components. It will have \texttt{point\_i} and \texttt{point\_j} attributes and will provide methods to draw the transformed version of the grid, the vectors and their arrowheads, the eigenlines of the transformation, etc. These methods can then be called from the Qt5 \texttt{paintEvent} handler which will be declared abstract and must therefore be implemented by all subclasses.
+
+The \texttt{gui.plots.widgets} module will have the classes \texttt{VisualizeTransformationWidget} and \texttt{DefineVisuallyWidget}, which will both inherit from \texttt{VectorGridPlot}. They will both implement their own \texttt{paintEvent} handler to actually draw the respective widgets, and \texttt{DefineVisuallyWidget} will also implement handlers for mouse events, allowing the user to drag around the basis vectors.
+
+I also want the user to be able to define arbitrary polygons and view their transformations. I imagine this polygon definition will happen in a separate dialog, but I don't know where that's going to fit just yet. I'll probably have the widget in \texttt{gui.plots.widgets}, but possibly elsewhere.
 
 \subsection{Algorithm design\label{design:algorithm-design}}
 
@@ -136,7 +151,7 @@ I will also have hotkeys for everything that can have hotkeys - buttons, checkbo
 
 \subsection{Variables and validation\label{design:variables-and-validation}}
 
-This project won't actually have many variables. The main ones will be instance attributes on the \texttt{LintransMainWindow} class. It will have a \texttt{MatrixWrapper} instance, a \texttt{DisplaySettings} instance, and a \texttt{GlobalSettings} instance. These will handle the matrices and various settings respectively. Having these as instance attributes allows them to be referenced from any method in the class, and Qt5 uses lots of slots (basically callback methods) and handlers, so it's good to be able to access the attributes I need right there rather than having to pass them around from method to method.
+The most important variables in the project will be instance attributes on the \texttt{LintransMainWindow} class. It will have a \texttt{MatrixWrapper} instance, a \texttt{DisplaySettings} instance, and most importantly, a \texttt{VisualizeTransformationWidget} instance. These will handle the matrices and various settings respectively. Having these as instance attributes allows them to be referenced from any method in the class, and Qt5 uses lots of slots (basically callback methods) and handlers, so it's good to be able to access the attributes I need right there rather than having to pass them around from method to method.
 
 The \texttt{MatrixWrapper} class will have a dictionary of names and matrices. The names will be single letters\footnote{I would make these \texttt{char} but Python only has a \texttt{str} type for strings} and the matrices will be of type \texttt{MatrixType}. This will be a custom type alias representing a $2 \times 2$ \texttt{numpy} array of floats. When setting the values for these matrices, I will have to manually check the types. This is because Python has weak typing, and if we got, say, an integer in place of a matrix, then operations would fail when trying to evaluate a matrix expression, and the program would crash. To prevent this, we have to validate the type of every matrix when it's set. I have chosen to use a dictionary here because it makes accessing a matrix by its name easier. We don't have to check against a list of letters and another list of matrices, we just index into the dictionary.
 
