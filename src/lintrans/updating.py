@@ -138,10 +138,27 @@ def update_lintrans() -> None:
         except URLError:
             return
 
-    os.rename(temp_file, executable_path)
-
     if os.name == 'posix':
+        os.rename(temp_file, executable_path)
         subprocess.run(['chmod', '+x', executable_path])
+
+    elif os.name == 'nt':
+        # On Windows, we need to leave a process running in the background to automatically
+        # replace the exe file when lintrans stops running
+        script = '@echo off\n' \
+            ':loop\n\n' \
+            'timeout 5 >nul\n' \
+            'tasklist /fi "IMAGENAME eq lintrans.exe" /fo csv 2>nul | find /I "lintrans.exe" >nul\n' \
+            'if "%ERRORLEVEL%"=="0" goto :loop\n\n' \
+            f'del "{executable_path}"\n' \
+            f'rename "{temp_file}" lintrans.exe\n\n' \
+            'start /b "" cmd /c del "%~f0"&exit /b'
+
+        replace_bat = GlobalSettings().get_update_replace_bat_filename()
+        with open(replace_bat, 'w', encoding='utf-8') as f:
+            f.write(script)
+
+        subprocess.Popen(['start', '/min', replace_bat], shell=True)
 
 
 def update_lintrans_in_background(*, check: bool) -> None:

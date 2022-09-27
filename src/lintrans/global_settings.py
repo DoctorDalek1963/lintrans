@@ -150,3 +150,10 @@ class GlobalSettings():
         the running executable.
         """
         return str(Path(self._executable_path).parent / 'lintrans-update-temp.dat')
+
+    def get_update_replace_bat_filename(self) -> str:
+        """Return the full path of the ``replace.bat`` file needed to update on Windows.
+
+        See :meth:`get_update_download_filename`.
+        """
+        return str(Path(self._executable_path).parent / 'replace.bat')
