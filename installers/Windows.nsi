@@ -51,6 +51,10 @@ Section "Add to Start Menu" AddToStartMenu
 	CreateShortcut "$SMPROGRAMS\lintrans.lnk" "$INSTDIR\lintrans.exe"
 SectionEnd
 
+Section "Create Desktop shortcut" CreateDesktopShortcut
+	CreateShortcut "$DESKTOP\lintrans.lnk" "$INSTDIR\lintrans.exe"
+SectionEnd
+
 Section "Associate with .lt files" AssociateWithLtFiles
 	WriteRegStr HKCU "Software\Classes\.lt" "" "lintransSession"
 
@@ -60,16 +64,19 @@ SectionEnd
 
 # Describe the optional components
 LangString DESC_AddToStartMenu ${LANG_ENGLISH} "Allow lintrans to be run from the Start Menu."
+LangString DESC_CreateDesktopShortcut ${LANG_ENGLISH} "Create a shortcut to lintrans on your desktop."
 LangString DESC_AssociateWithLtFiles ${LANG_ENGLISH} "Open .lt files (lintrans sessions save files) with lintrans when you double-click them."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${AddToStartMenu} $(DESC_AddToStartMenu)
+	!insertmacro MUI_DESCRIPTION_TEXT ${CreateDesktopShortcut} $(DESC_CreateDesktopShortcut)
 	!insertmacro MUI_DESCRIPTION_TEXT ${AssociateWithLtFiles} $(DESC_AssociateWithLtFiles)
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 # The uninstaller section
 Section "uninstall"
 	Delete "$SMPROGRAMS\lintrans.lnk"
+	Delete "$DESKTOP\lintrans.lnk"
 
 	DeleteRegKey HKCU "Software\lintrans"
 	DeleteRegKey HKCU "Software\Classes\.lt"
