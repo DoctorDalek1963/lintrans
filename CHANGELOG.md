@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Input and output vectors can now be shown or hidden independently
+- Installers for Windows and Linux
+- The option to let lintrans update itself in the background
 
 ### Fixed
 
