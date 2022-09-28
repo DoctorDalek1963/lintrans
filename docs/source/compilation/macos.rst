@@ -16,7 +16,7 @@ If you've already got Python 3.8 or higher, then you just need to find out wheth
    johndoe@mac-name ~ % python3 -V
    3.10.6
 
-If you don't already have Python 3.8 or newer, download the latest release from `here
+If you don't already have Python 3.8 or newer, download the latest release from `python.org
 <https://www.python.org/downloads/>`_. Make sure to download the macOS installer, and then just run
 it.
 

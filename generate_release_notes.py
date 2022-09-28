@@ -19,9 +19,15 @@ I *highly* recommend reading the tutorial, available [here](https://lintrans.rea
 
 ---
 
-The Windows `.exe` file should work fine, but you might get a warning that the program might be unsafe. This is expected and it's safe to ignore it. The only way to get rid of it would be to pay Microsoft. On macOS, I would need to pay Apple to allow other people to run it at all.
+The recommended way to use `lintrans` is to install it with the relevant installer for your platform.
+
+The Windows installer is completely safe, but you might get a warning that it might not be. This is expected and it's safe to ignore the warning. The only way to get rid of it would be to pay Microsoft. On macOS, I would need to pay Apple to allow other people to run any of my code at all.
 
 If this warning bothers you or if you want to use `lintrans` on macOS, then you can compile the program from its source code. This is a relatively simple process and the tutorial for doing that is available [here](https://lintrans.readthedocs.io/en/VERSION_RTD/compilation/).
+
+---
+
+If you don't want to install `lintrans`, then you can download and run the standalone executable for your platform (the Windows one has another warning which is safe to ignore), or you can compile it from source. See the tutorial above.
 
 The Linux binary is a dynamically linked ELF compiled on Ubuntu 20.04 and may or may not work on other distros. Compiling is also an option for Linux. See the tutorial above.
 

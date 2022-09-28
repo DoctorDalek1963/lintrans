@@ -13,6 +13,7 @@ QLabel       py:class 1 qlabel.html            -
 QMouseEvent  py:class 1 qmouseevent.html       -
 QPainter     py:class 1 qpainter.html          -
 QPaintEvent  py:class 1 qpaintevent.html       -
+QThread      py:class 1 qthread.html           -
 QWheelEvent  py:class 1 qwheelevent.html       -
 QWidget      py:class 1 qwidget.html           -
 

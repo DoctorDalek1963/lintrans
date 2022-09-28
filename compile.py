@@ -28,6 +28,7 @@ def check_dependencies() -> None:
     dependencies = [
         ('nptyping', 'nptyping==1.4.4', '__version__'),
         ('numpy', 'numpy==1.23.0', '__version__'),
+        ('packaging', 'packaging==21.3', '__version__'),
         ('PIL', 'Pillow==9.2.0', '__version__'),
         ('PyInstaller', 'pyinstaller==5.3', '__version__'),
         ('PyQt5.QtCore', 'pyqt5==5.15.6', 'PYQT_VERSION_STR')
@@ -237,13 +238,20 @@ class Compiler:
         """Compile for macOS."""
         run_pyi(self._get_pyi_args())
 
-        os.rename(os.path.join('dist', self.filename + '.app'), self.filename + '.app')
+        new_path = self.filename + '.app'
+        if os.path.isfile(new_path):
+            os.remove(new_path)
+
+        os.rename(os.path.join('dist', self.filename + '.app'), new_path)
 
         self._macos_replace_info_plist()
 
     def _compile_linux(self) -> None:
         """Compile for Linux."""
         run_pyi(self._get_pyi_args())
+
+        if os.path.isfile(self.filename):
+            os.remove(self.filename)
 
         os.rename(os.path.join('dist', self.filename), self.filename)
 
@@ -261,7 +269,11 @@ class Compiler:
 
         os.remove('version_info.txt')
 
-        os.rename(os.path.join('dist', self.filename + '.exe'), self.filename + '.exe')
+        new_path = self.filename + '.exe'
+        if os.path.isfile(new_path):
+            os.remove(new_path)
+
+        os.rename(os.path.join('dist', self.filename + '.exe'), new_path)
 
     def compile(self) -> None:
         """Compile for the appropriate operating system."""

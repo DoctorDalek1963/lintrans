@@ -106,8 +106,44 @@ jobs:
           name: ${{ runner.os }}-binary
           path: lintrans*
 
+  compile-windows-installer:
+    needs: test
+    runs-on: windows-2019
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+
+      - name: Compile lintrans
+        run: |
+          pip install --upgrade pip
+          pip install -e '.[compile]'
+          choco install upx
+          python compile.py
+        shell: bash
+
+      - name: Setup NSIS script
+        run: |
+          mv lintrans.exe installers/
+        shell: bash
+
+      - name: Compile NSIS script
+        uses: joncloud/makensis-action@v3.7
+        with:
+          script-file: installers/Windows.nsi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: install-lintrans-Windows.exe
+          path: installers/install-lintrans-Windows.exe
+
   publish:
-    needs: compile
+    needs: [compile, compile-windows-installer]
     runs-on: ubuntu-latest
 
     steps:
@@ -121,6 +157,12 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: Windows-binary
+          path: dist/
+
+      - name: Download Windows installer
+        uses: actions/download-artifact@v3
+        with:
+          name: install-lintrans-Windows.exe
           path: dist/
 
       - name: Download Linux binary
@@ -149,7 +191,10 @@ jobs:
           prerelease: false
           draft: true
           body_path: release_notes.md
-          files: dist/lintrans*
+          files: |
+            dist/lintrans*
+            dist/install-lintrans-Windows.exe
+            installers/install-lintrans-Linux.sh
 
       - name: Upload binaries (pre-release)
         if: steps.checkprerelease.outputs.isprerelease == 1
@@ -159,4 +204,7 @@ jobs:
           prerelease: true
           draft: true
           body_path: release_notes.md
-          files: dist/lintrans*
+          files: |
+            dist/lintrans*
+            dist/install-lintrans-Windows.exe
+            installers/install-lintrans-Linux.sh

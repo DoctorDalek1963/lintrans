@@ -16,7 +16,7 @@ If you've already got Python 3.8 or higher, then you just need to find out wheth
    PS C:\Users\johndoe> python -V
    3.10.6
 
-If you don't already have Python 3.8 or newer, download the latest release from `here
+If you don't already have Python 3.8 or newer, download the latest release from `python.org
 <https://www.python.org/downloads/>`_.
 
 Make sure to download the installer. You'll probably want the 64-bit one (if you've got ``Program
@@ -61,10 +61,23 @@ install all the dependencies and compile lintrans.
    Compiling for platform=win32
    etc...
 
-You should now have an exe file called ``lintrans`` in the current folder. I would
-recommend moving this file, either to your desktop or some other folder where you keep small
-programs, and then you can delete the ``lintrans-VERSION_NUMBER`` folder from your
-Downloads folder.
+You should now have an exe file called ``lintrans`` in the current folder and you can either keep
+it somewhere, or use it to create the installer to install lintrans properly. If you choose to keep
+the standalone exe, then you can delete the ``lintrans-VERSION_NUMBER`` folder from your Downloads
+folder.
+
+
+Install lintrans (optional)
+---------------------------
+
+The lintrans installer for Windows is automatically generated using a program called NSIS. You
+first need to install version 3 or above from `here <https://nsis.sourceforge.io/Download>`_.
+
+Then you need to move the ``lintrans.exe`` file into the ``installers`` folder. Right click on
+the ``Windows.nsi`` file and select "Compile NSIS Script".
+
+Wait for the compilation to complete and then run ``install-lintrans-Windows.exe``. Once lintrans
+is installed, you can delete the ``lintrans-VERSION_NUMBER`` folder from your Downloads folder.
 
 -----
 

@@ -15,31 +15,64 @@ import webbrowser
 from copy import deepcopy
 from pathlib import Path
 from pickle import UnpicklingError
-from typing import List, Optional, Tuple, Type
+from typing import List, NoReturn, Optional, Tuple, Type
 
 import numpy as np
 from numpy import linalg
 from numpy.linalg import LinAlgError
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import pyqtSlot, QThread
+from PyQt5.QtCore import pyqtSignal, pyqtSlot, QObject, QThread
 from PyQt5.QtGui import QCloseEvent, QIcon, QKeySequence
 from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QHBoxLayout, QMainWindow, QMenu, QMessageBox,
                              QPushButton, QShortcut, QSizePolicy, QSpacerItem, QStyleFactory, QVBoxLayout)
 
 import lintrans
-from lintrans.global_settings import global_settings
+from lintrans import updating
+from lintrans.global_settings import GlobalSettings
 from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.matrices.utility import polar_coords, rotate_coord
 from lintrans.typing_ import MatrixType, VectorType
 from .dialogs import (AboutDialog, DefineAsExpressionDialog, DefineMatrixDialog,
                       DefineNumericallyDialog, DefinePolygonDialog, DefineVisuallyDialog,
-                      DisplaySettingsDialog, FileSelectDialog, InfoPanelDialog)
+                      DisplaySettingsDialog, FileSelectDialog, InfoPanelDialog, PromptUpdateDialog)
 from .plots import MainViewportWidget
 from .session import Session
 from .settings import DisplaySettings
 from .utility import qapp
 from .validate import MatrixExpressionValidator
+
+
+class _UpdateChecker(QObject):
+    """A simple class to act as a worker for a :class:`QThread`."""
+
+    signal_prompt_update: pyqtSignal = pyqtSignal(str)
+    """A signal that is emitted if a new version is found. The argument is the new version string."""
+
+    finished: pyqtSignal = pyqtSignal()
+    """A signal that is emitted when the worker has finished. Intended to be used for cleanup."""
+
+    def check_for_updates_and_emit(self) -> None:
+        """Check for updates, and emit :attr:`signal_prompt_update` if there's a new version.
+
+        This method exists to be run in a background thread to trigger a prompt if a new version is found.
+        """
+        update_type = GlobalSettings().get_update_type()
+
+        if update_type == GlobalSettings().UpdateType.never:
+            return
+
+        if update_type == GlobalSettings().UpdateType.auto:
+            updating.update_lintrans_in_background(check=True)
+            return
+
+        # If we get here, then update_type must be prompt,
+        # so we can check for updates and possibly prompt the user
+        new, version = updating.new_version_exists()
+        if new:
+            self.signal_prompt_update.emit(version)
+
+        self.finished.emit()
 
 
 class LintransMainWindow(QMainWindow):
@@ -69,6 +102,18 @@ class LintransMainWindow(QMainWindow):
 
         self._save_filename: Optional[str] = None
         self._changed_since_save: bool = False
+
+        # Set up thread and worker to check for updates
+
+        self._thread_updates = QThread()
+        self._worker_updates = _UpdateChecker()
+        self._worker_updates.moveToThread(self._thread_updates)
+
+        self._thread_updates.started.connect(self._worker_updates.check_for_updates_and_emit)
+        self._worker_updates.signal_prompt_update.connect(self._prompt_update)
+        self._worker_updates.finished.connect(self._thread_updates.quit)
+        self._worker_updates.finished.connect(self._worker_updates.deleteLater)
+        self._thread_updates.finished.connect(self._thread_updates.deleteLater)
 
         # === Create menubar
 
@@ -838,7 +883,7 @@ class LintransMainWindow(QMainWindow):
         dialog = QFileDialog(
             self,
             'Open a session',
-            global_settings.get_save_directory(),
+            GlobalSettings().get_save_directory(),
             'lintrans sessions (*.lt)'
         )
         dialog.setAcceptMode(QFileDialog.AcceptOpen)
@@ -877,7 +922,7 @@ class LintransMainWindow(QMainWindow):
         dialog = FileSelectDialog(
             self,
             'Save this session',
-            global_settings.get_save_directory(),
+            GlobalSettings().get_save_directory(),
             'lintrans sessions (*.lt)'
         )
         dialog.setAcceptMode(QFileDialog.AcceptSave)
@@ -890,8 +935,22 @@ class LintransMainWindow(QMainWindow):
             self._save_filename = filename
             self._save_session()
 
+    @pyqtSlot(str)
+    def _prompt_update(self, version: str) -> None:
+        """Open a modal dialog to prompt the user to update lintrans."""
+        dialog = PromptUpdateDialog(self, new_version=version)
+        dialog.open()
 
-def main(filename: Optional[str]) -> None:
+    def check_for_updates_and_prompt(self) -> None:
+        """Update lintrans depending on the user's choice of update type.
+
+        If they chose 'prompt', then this method will open a prompt dialog (after checking
+        if a new version actually exists). See :meth:`_prompt_update`.
+        """
+        self._thread_updates.start()
+
+
+def main(filename: Optional[str]) -> NoReturn:
     """Run the GUI by creating and showing an instance of :class:`LintransMainWindow`.
 
     :param Optional[str] filename: A session file to optionally open at startup
@@ -904,6 +963,7 @@ def main(filename: Optional[str]) -> None:
 
     window = LintransMainWindow()
     window.show()
+    window.check_for_updates_and_prompt()
 
     if filename:
         window.open_session_file(filename)

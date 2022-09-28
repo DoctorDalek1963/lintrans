@@ -6,4 +6,4 @@ global-exclude py.typed
 prune src/lintrans.egg-info
 
 prune src/lintrans/gui/assets
-include src/lintrans/gui/assets/icon.jpg
+include src/lintrans/gui/assets/32.xpm

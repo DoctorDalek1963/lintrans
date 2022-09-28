@@ -21,14 +21,14 @@ from datetime import datetime
 from signal import SIGABRT, SIGFPE, SIGILL, SIGSEGV, SIGTERM
 from textwrap import indent
 from types import FrameType, TracebackType
-from typing import Type
+from typing import NoReturn, Type
 
 from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR
 from PyQt5.QtWidgets import QApplication
 
 import lintrans
 from lintrans.typing_ import is_matrix_type
-from .global_settings import global_settings
+from .global_settings import GlobalSettings
 from .gui.main_window import LintransMainWindow
 
 
@@ -199,7 +199,7 @@ def _report_crash(
     traceback: TracebackType | None = None,
     signal_number: int | None = None,
     stack_frame: FrameType | None = None
-) -> None:
+) -> NoReturn:
     """Generate a crash report and write it to a log file and stderr.
 
     See :func:`_get_error_origin` for an explanation of the arguments. Everything is
@@ -209,7 +209,7 @@ def _report_crash(
     datetime_string = _get_datetime_string()
 
     filename = os.path.join(
-        global_settings.get_crash_reports_directory(),
+        GlobalSettings().get_crash_reports_directory(),
         datetime_string.replace(" ", "_") + '.log'
     )
     report = _get_crash_report(

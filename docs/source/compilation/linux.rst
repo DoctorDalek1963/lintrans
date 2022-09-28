@@ -16,7 +16,7 @@ to check). We'll need that for later.
    johndoe@pc-name:~$ python -V
    3.10.6
 
-If you don't already have Python 3.8 or newer, download the latest release from `here
+If you don't already have Python 3.8 or newer, download the latest release from `python.org
 <https://www.python.org/downloads/>`_. For Linux, you'll need to download the source tarball.
 
 I highly recommend installing Python to your home directory to avoid messing with any other
