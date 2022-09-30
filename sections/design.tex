@@ -133,9 +133,115 @@ I also want the user to be able to define arbitrary polygons and view their tran
 
 \subsection{Algorithm design\label{design:algorithm-design}}
 
-% TODO: Write pseudocode and/or create flowcharts for this shit
+The project will have many algorithms but a lot of them will be related to drawing transformations on the canvas itself, and almost all of the algorithms will evolve over time. In this section, I will present pseudocode for some of the most interesting parts of the project. My pseudocode is actually Python, purely to allow for syntax highlighting.
 
-This section will be completed later.
+The \texttt{lintrans.matrices.utility} module will look like this:
+
+\begin{minted}{python}
+import numpy as np
+
+def create_rotation_matrix(angle: float, *, degrees: bool = True) -> MatrixType:
+    """Create a matrix representing a rotation (anticlockwise) by the given angle."""
+    rad = np.deg2rad(angle % 360) if degrees else angle % (2 * np.pi)
+    return np.array([
+        [np.cos(rad), -1 * np.sin(rad)],
+        [np.sin(rad), np.cos(rad)]
+    ])
+\end{minted}
+
+And the \texttt{lintrans.matrices.wrapper} module will look like this:
+
+\begin{minted}{python}
+import re
+import numpy as np
+
+# The `.utility` syntax means that the utility module is next to this one in the tree
+from .utility import create_rotation_matrix
+
+class MatrixWrapper:
+    def __init__(self):
+        # This dictionary maps all letters of the alphabet to an optional matrix
+        self._matrices: Dict[str, Optional[Union[MatrixType, str]]] = {
+            'A': None, 'B': None, 'C': None, 'D': None,
+            'E': None, 'F': None, 'G': None, 'H': None,
+            'I': np.eye(2),  # I is always defined as the identity matrix
+            'J': None, 'K': None, 'L': None, 'M': None,
+            'N': None, 'O': None, 'P': None, 'Q': None,
+            'R': None, 'S': None, 'T': None, 'U': None,
+            'V': None, 'W': None, 'X': None, 'Y': None,
+            'Z': None
+        }
+
+    def __getitem__(self, name: str) -> Optional[MatrixType]:
+        """Get the matrix with the given name.
+
+        If it is a simple name, it will just be fetched from the dictionary. If the name is ``rot(x)``, with
+        a given angle in degrees, then we return a new matrix representing a rotation by that angle.
+
+        Using ``__getitem__`` here allows for syntax like ``wrapper['A']`` as if it was a dictionary.
+        """
+        # Return a new rotation matrix
+        if (match := re.match(r'^rot\((-?\d*\.?\d*)\)$', name)) is not None:
+            return create_rotation_matrix(float(match.group(1)))
+
+        if name not in self._matrices:
+            raise NameError(f'Unrecognised matrix name "{name}"')
+
+        # We copy the matrix before we return it so the user can't accidentally mutate the matrix
+        matrix = copy(self._matrices[name])
+
+        return matrix
+
+    def __setitem__(self, name: str, new_matrix: Optional[MatrixType]) -> None:
+        """Set the value of matrix ``name`` with the new_matrix.
+
+        If ``new_matrix`` is None, then that effectively unsets the matrix name.
+
+        Using ``__getitem__`` here allows for syntax like ``wrapper['A'] = matrix`` as if it was a dictionary.
+        """
+        if not (name in self._matrices and name != 'I'):
+            raise NameError('Matrix name is illegal')
+
+        if new_matrix is None:
+            self._matrices[name] = None
+            return
+
+        if not is_matrix_type(new_matrix):
+            raise TypeError('Matrix must be a 2x2 NumPy array')
+
+        # All matrices must have float entries
+        a = float(new_matrix[0][0])
+        b = float(new_matrix[0][1])
+        c = float(new_matrix[1][0])
+        d = float(new_matrix[1][1])
+
+        self._matrices[name] = np.array([[a, b], [c, d]])
+\end{minted}
+
+These modules handle the creation, storage, and use of matrices. Their implementations are deliberately simple, since they don't have to do much. I will eventually extend the \texttt{MatrixWrapper} class to allow strings as matrices, so they can be defined as expressions, but this is unnecessary for now. It will simply be more conditions in \texttt{\_\_getitem\_\_} and \texttt{\_\_setitem\_\_} and a method to evaluate expressions.
+
+Parsing matrix expressions will be quite tricky and I don't really know how I'm going to do it. I think it will be possible with regular expressions, since I won't support nested expressions at first. But adding support for nested expressions may require something more complicated. I will have a function to validate a matrix expression, which can definitely be done with regular expressions, and I'll have another public function to parse matrix expressions, although this one may use some private functions to implement it properly.
+
+I'm not sure on any algorithms yet, but here's the full BNF specification for matrix expressions (including nested expressions):
+
+\begin{minted}{bnf}
+expression        ::=  [ "-" ] matrices { ( "+" | "-" ) matrices };
+matrices          ::=  matrix { matrix };
+matrix            ::=  [ real_number ] matrix_identifier [ index ] | "(" expression ")";
+matrix_identifier ::=  "A" .. "Z" | "rot(" [ "-" ] real_number ")";
+index             ::=  "^{" index_content "}" | "^" index_content;
+index_content     ::=  [ "-" ] integer_not_zero | "T";
+
+digit_no_zero     ::=  "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
+digit             ::=  "0" | digit_no_zero;
+digits            ::=  digit | digits digit;
+integer_not_zero  ::=  digit_no_zero [ digits ];
+real_number       ::=  ( integer_not_zero [ "." digits ] | "0" "." digits );
+\end{minted}
+
+Obviously the data structure returned by the parser is very important. I have decided to use \texttt{list[list[tuple[str, str, str]]]}. Each tuple represents a real number multiplier, a matrix identifier, and an index. The multiplier and index may be empty strings. These tuples are contained in lists which represent matrices to be multiplied together, in order. Those lists are contained in a top level list, which represents multiplication groups which should be summed.
+
+This type makes the structure of the input clear, and makes it very easy for the \texttt{MatrixWrapper} to evaluate a parsed expression.
 
 \subsection{Usability features\label{design:usability-features}}
 
@@ -167,9 +273,7 @@ I will also apply this matrix expression validation to the textbox in the dialog
 
 \subsection{Iterative test data\label{design:iterative-test-data}}
 
-% TODO: Improve this
-
-In unit testing, I will test the validation, parsing, and generation of rotation matrices from an angle. I will also unit test the utility functions for the GUI, like \texttt{is\_valid\_float}.
+In unit testing, I will test the validation, parsing, and generation of rotation matrices from an angle. I will also unit test the utility functions for the GUI, like \texttt{is\_valid\_float}, which is needed to verify input when defining a matrix visually.
 
 For the validation of matrix expressions, I will have data like the following:
 \begin{center}
@@ -195,7 +299,7 @@ Valid & Invalid\\
 \hline
 \texttt{"2B\textasciicircum2+A\textasciicircum TC\textasciicircum\{-1\}"} & \texttt{"--A"}\\
 \hline
-\texttt{"3.5A\textasciicircum{4}5.6rot(19.2\textasciicircum T-B\textasciicircum{-1}4.1C\textasciicircum5"} & \texttt{"A--B"}\\
+\texttt{"3.5A\textasciicircum\{4\}5.6rot(19.2\textasciicircum T-B\textasciicircum\{-1\}4.1C\textasciicircum5"} & \texttt{"A--B"}\\
 \hline
 \end{tabular}
 \end{center}
@@ -230,7 +334,7 @@ which should parse to give:
 \texttt{[[("2.14", "A", "3"), ("4.5", "rot(14.5)", "-1")], [("8.5", "B", "T"), ("5.97", "C", "14")], [("-3.14", "D", "-1"), ("6.7", "E", "T")]]}
 \end{center}
 
-Any invalid expression will also raise a parse error, so I will check every invalid input previously mentioned and make sure it raises the appropriate error.
+Any invalid expression will also raise a \texttt{MatrixParseError}, so I will check every invalid input previously mentioned and make sure it raises the appropriate error.
 
 Again, this section is brief to save space and time. All unit tests are included in appendix \ref{appendix:testing-code}.
 
