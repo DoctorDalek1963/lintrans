@@ -91,7 +91,7 @@ class LintransMainWindow(QMainWindow):
         self._matrix_wrapper = MatrixWrapper()
 
         self.setWindowTitle('lintrans')
-        self.setMinimumSize(1000, 750)
+        self.setMinimumSize(800, 650)
 
         path = Path(__file__).parent.absolute() / 'assets' / 'icon.jpg'
         self.setWindowIcon(QIcon(str(path)))
