@@ -100,7 +100,7 @@ class MainViewportWidget(VisualizeTransformationWidget, InteractivePlot):
         """Create the main viewport widget with its input point."""
         super().__init__(*args,  **kwargs)
 
-        self._point_input: Tuple[float, float] = (1, 1)
+        self.point_input_vector: Tuple[float, float] = (1, 1)
         self._dragging_vector: bool = False
 
     def _draw_input_vector(self, painter: QPainter) -> None:
@@ -108,7 +108,7 @@ class MainViewportWidget(VisualizeTransformationWidget, InteractivePlot):
         pen = QPen(QColor('#000000'), self._WIDTH_VECTOR_LINE)
         painter.setPen(pen)
 
-        x, y = self.canvas_coords(*self._point_input)
+        x, y = self.canvas_coords(*self.point_input_vector)
         painter.drawLine(*self._canvas_origin, x, y)
 
         painter.setBrush(self._BRUSH_SOLID_WHITE)
@@ -138,7 +138,7 @@ class MainViewportWidget(VisualizeTransformationWidget, InteractivePlot):
         painter.setPen(QPen(self._COLOUR_OUTPUT_VECTOR, self._WIDTH_VECTOR_LINE))
         painter.setBrush(QBrush(self._COLOUR_OUTPUT_VECTOR, Qt.SolidPattern))
 
-        x, y = self.canvas_coords(*(self._matrix @ self._point_input))
+        x, y = self.canvas_coords(*(self._matrix @ self.point_input_vector))
 
         painter.drawLine(*self._canvas_origin, x, y)
         painter.drawPie(
@@ -174,7 +174,7 @@ class MainViewportWidget(VisualizeTransformationWidget, InteractivePlot):
             event.ignore()
             return
 
-        if self._is_within_epsilon(cursor_pos, self._point_input):
+        if self._is_within_epsilon(cursor_pos, self.point_input_vector):
             self._dragging_vector = True
 
         event.accept()
@@ -194,7 +194,7 @@ class MainViewportWidget(VisualizeTransformationWidget, InteractivePlot):
             return
 
         x, y = self._round_to_int_coord(self._grid_coords(event.x(), event.y()))
-        self._point_input = (x, y)
+        self.point_input_vector = (x, y)
 
         self.update()
         event.accept()

@@ -846,6 +846,12 @@ class LintransMainWindow(QMainWindow):
             self._plot.display_settings = DisplaySettings()  # type: ignore[unreachable]
             missing_parts = True
 
+        if session.input_vector is not None:
+            self._plot.point_input_vector = session.input_vector
+        else:
+            self._plot.point_input_vector = (1, 1)  # type: ignore[unreachable]
+            missing_parts = True
+
         if missing_parts:
             if version != lintrans.__version__:
                 info = f"This may be a version conflict. This file was saved with lintrans v{version} " \
@@ -915,6 +921,7 @@ class LintransMainWindow(QMainWindow):
             matrix_wrapper=self._matrix_wrapper,
             polygon_points=self._plot.polygon_points,
             display_settings=self._plot.display_settings,
+            input_vector=self._plot.point_input_vector,
         ).save_to_file(self._save_filename)
 
         self._changed_since_save = False
