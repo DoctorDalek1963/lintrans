@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Reset the polygon when the session is reset
+- Definition dialogs now choose the first undefined matrix by default
 
 ## [0.3.0] - 2022-08-23
 

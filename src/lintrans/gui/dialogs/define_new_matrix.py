@@ -29,6 +29,16 @@ from lintrans.typing_ import MatrixType
 _ALPHABET_NO_I = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
 
+def get_first_undefined_matrix(wrapper: MatrixWrapper) -> str:
+    """Return the letter of the first undefined matrix in the given wrapper, or ``A`` if all matrices are defined."""
+    defined_matrices = [x for x, _ in wrapper.get_defined_matrices()]
+    for letter in _ALPHABET_NO_I:
+        if letter not in defined_matrices:
+            return letter
+
+    return 'A'
+
+
 class DefineMatrixDialog(FixedSizeDialog):
     """An abstract superclass for definitions dialogs.
 
@@ -70,6 +80,7 @@ class DefineMatrixDialog(FixedSizeDialog):
             self._combobox_letter.addItem(letter)
 
         self._combobox_letter.activated.connect(self._load_matrix)
+        self._combobox_letter.setCurrentText(get_first_undefined_matrix(self.matrix_wrapper))
 
         # === Arrange the widgets
 
