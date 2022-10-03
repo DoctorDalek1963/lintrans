@@ -831,12 +831,14 @@ class LintransMainWindow(QMainWindow):
         if session.matrix_wrapper is not None:
             self._matrix_wrapper = session.matrix_wrapper
         else:
-            missing_parts = True  # type: ignore[unreachable]
+            self._matrix_wrapper = MatrixWrapper()  # type: ignore[unreachable]
+            missing_parts = True
 
         if session.polygon_points is not None:
             self._plot.polygon_points = session.polygon_points
         else:
-            missing_parts = True  # type: ignore[unreachable]
+            self._plot.polygon_points = []  # type: ignore[unreachable]
+            missing_parts = True
 
         if missing_parts:
             if version != lintrans.__version__:

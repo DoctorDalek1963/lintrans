@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Reset the polygon when the session is reset
 - Definition dialogs now choose the first undefined matrix by default
+- When loading a session file, lintrans will now use defaults for any missing parts
 
 ## [0.3.0] - 2022-08-23
 
