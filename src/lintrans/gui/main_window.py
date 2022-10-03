@@ -101,7 +101,6 @@ class LintransMainWindow(QMainWindow):
         self._reset_during_animation: bool = False
 
         self._save_filename: Optional[str] = None
-        self._changed_since_save: bool = False
 
         # Set up thread and worker to check for updates
 
@@ -355,7 +354,7 @@ class LintransMainWindow(QMainWindow):
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """Handle a :class:`QCloseEvent` by confirming if the user wants to save, and cancelling animation."""
-        if self._save_filename is None or not self._changed_since_save:
+        if self._save_filename is None or not self.isWindowModified():
             self._animating = False
             self._animating_sequence = False
             event.accept()
@@ -693,7 +692,7 @@ class LintransMainWindow(QMainWindow):
         self._lineedit_expression_box.setFocus()
         self._update_render_buttons()
 
-        self._changed_since_save = True
+        self.setWindowModified(True)
         self._update_window_title()
 
     @pyqtSlot()
@@ -726,7 +725,7 @@ class LintransMainWindow(QMainWindow):
         self._lineedit_expression_box.setFocus()
         self._update_render_buttons()
 
-        self._changed_since_save = True
+        self.setWindowModified(True)
         self._update_window_title()
 
     def _show_error_message(self, title: str, text: str, info: str | None = None, *, warning: bool = False) -> None:
@@ -775,10 +774,7 @@ class LintransMainWindow(QMainWindow):
         title = 'lintrans'
 
         if self._save_filename:
-            title = os.path.split(self._save_filename)[-1] + ' - ' + title
-
-            if self._changed_since_save:
-                title = '*' + title
+            title = os.path.split(self._save_filename)[-1] + '[*] - ' + title
 
         self.setWindowTitle(title)
 
@@ -805,7 +801,7 @@ class LintransMainWindow(QMainWindow):
             self._update_render_buttons()
 
             self._save_filename = None
-            self._changed_since_save = False
+            self.setWindowModified(False)
             self._update_window_title()
 
     def open_session_file(self, filename: str) -> None:
@@ -890,7 +886,7 @@ class LintransMainWindow(QMainWindow):
 
         # Set this as the default filename if we could read it properly
         self._save_filename = filename
-        self._changed_since_save = False
+        self.setWindowModified(False)
         self._update_window_title()
 
     @pyqtSlot()
@@ -926,7 +922,7 @@ class LintransMainWindow(QMainWindow):
             input_vector=self._plot.point_input_vector,
         ).save_to_file(self._save_filename)
 
-        self._changed_since_save = False
+        self.setWindowModified(False)
         self._update_window_title()
 
     @pyqtSlot()
