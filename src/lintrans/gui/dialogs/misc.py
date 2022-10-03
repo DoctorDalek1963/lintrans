@@ -153,8 +153,9 @@ class InfoPanelDialog(FixedSizeDialog):
 
     def _undefine_matrix(self, name: str) -> None:
         """Undefine the given matrix and redraw the dialog."""
-        self.matrix_wrapper.undefine_matrix(name)
-        self._matrices[name] = None
+        for x in self.matrix_wrapper.undefine_matrix(name):
+            self._matrices[x] = None
+
         self._draw_ui()
 
     def _get_full_matrix_widget(self, name: str, value: Union[MatrixType, str]) -> QWidget:

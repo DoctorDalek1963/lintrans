@@ -20,6 +20,8 @@ from lintrans.typing_ import is_matrix_type, MatrixType
 from .parse import get_matrix_identifiers, parse_matrix_expression, validate_matrix_expression
 from .utility import create_rotation_matrix
 
+_ALPHABET_NO_I = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+
 
 class MatrixWrapper:
     """A wrapper class to hold all possible matrices and allow access to them.
@@ -302,10 +304,20 @@ class MatrixWrapper:
 
         return matrices
 
-    def undefine_matrix(self, name: str) -> None:
+    def undefine_matrix(self, name: str) -> Set[str]:
         """Safely undefine the given matrix by also undefining any matrices that depend on it."""
         if not (name in self._matrices and name != 'I'):
             raise NameError('Matrix name is illegal')
 
-        # TODO: Undefine dependents
+        # This maps each matrix to all the matrices that depend on it
+        dependents_map = {
+            x: set(y for y in _ALPHABET_NO_I if x in self.get_matrix_dependencies(y))
+            for x in _ALPHABET_NO_I
+        }
+
+        s: Set[str] = set(name)
         self[name] = None
+        for x in dependents_map[name]:
+            s.update(self.undefine_matrix(x))
+
+        return s

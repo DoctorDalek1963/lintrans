@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Installers for Windows and Linux
 - The option to let lintrans update itself in the background
 - The display settings and input vector position are now saved as part of the session file
+- Matrices can now be undefined from the *Show defined matrices* dialog
 
 ### Fixed
 
