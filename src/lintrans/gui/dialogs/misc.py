@@ -10,12 +10,12 @@ from __future__ import annotations
 
 import os
 import platform
-from typing import List, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR, Qt, pyqtSlot
 from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import (QDialog, QFileDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QPushButton,
-                             QRadioButton, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
+                             QRadioButton, QShortcut, QSizePolicy, QSpacerItem, QStackedLayout, QVBoxLayout, QWidget)
 
 import lintrans
 from lintrans.global_settings import GlobalSettings
@@ -117,63 +117,95 @@ class InfoPanelDialog(FixedSizeDialog):
     def __init__(self, matrix_wrapper: MatrixWrapper, *args, **kwargs):
         """Create the dialog box with all the widgets needed to show the information."""
         super().__init__(*args, **kwargs)
+        self.matrix_wrapper = matrix_wrapper
+
+        self._matrices: Dict[str, Optional[Union[MatrixType, str]]] = {
+            name: value
+            for name, value in self.matrix_wrapper.get_defined_matrices()
+        }
 
         self.setWindowTitle('Defined matrices')
+        self.setContentsMargins(10, 10, 10, 10)
 
+        self._stacked_layout = QStackedLayout(self)
+        self.setLayout(self._stacked_layout)
+
+        self._draw_ui()
+
+    def _draw_ui(self) -> None:
         grid_layout = QGridLayout()
         grid_layout.setSpacing(20)
 
+        for i, (name, value) in enumerate(self._matrices.items()):
+            if value is None:
+                continue
+
+            grid_layout.addWidget(
+                self._get_full_matrix_widget(name, value),
+                i % 4,
+                i // 4,
+                Qt.AlignCenter
+            )
+
+        container = QWidget(self)
+        container.setLayout(grid_layout)
+        self._stacked_layout.setCurrentIndex(self._stacked_layout.addWidget(container))
+
+    def _undefine_matrix(self, name: str) -> None:
+        """Undefine the given matrix and redraw the dialog."""
+        self.matrix_wrapper.undefine_matrix(name)
+        self._matrices[name] = None
+        self._draw_ui()
+
+    def _get_full_matrix_widget(self, name: str, value: Union[MatrixType, str]) -> QWidget:
+        """Return a :class:`QWidget` containing the whole matrix widget composition.
+
+        Each defined matrix will get a widget group. Each group will be a label for the name,
+        a label for '=', and a container widget to either show the matrix numerically, or to
+        show the expression that it's defined as.
+
+        See :meth:`_get_matrix_data_widget`.
+        """
         bold_font = self.font()
         bold_font.setBold(True)
 
-        name_value_pair: tuple[str, Union[MatrixType, str]]
+        label_name = QLabel(self)
+        label_name.setText(name)
+        label_name.setFont(bold_font)
 
-        # Each defined matrix will get a widget group. Each group will be a label for the name,
-        # a label for '=', and a container widget to either show the matrix numerically, or to
-        # show the expression that it's defined as
-        for i, name_value_pair in enumerate(matrix_wrapper.get_defined_matrices()):
-            name, value = name_value_pair
+        widget_matrix = self._get_matrix_data_widget(value)
 
-            # Create all the widgets first
-            label_name = QLabel(self)
-            label_name.setText(name)
-            label_name.setFont(bold_font)
+        hlay = QHBoxLayout()
+        hlay.setSpacing(10)
+        hlay.addWidget(label_name)
+        hlay.addWidget(QLabel('=', self))
+        hlay.addWidget(widget_matrix)
 
-            label_equals = QLabel(self)
-            label_equals.setText('=')
+        vlay = QVBoxLayout()
+        vlay.setSpacing(10)
+        vlay.addLayout(hlay)
 
-            widget_matrix = self._get_matrix_widget(value)
+        if name != 'I':
+            button_undefine = QPushButton(self)
+            button_undefine.setText('Undefine')
+            button_undefine.clicked.connect(lambda: self._undefine_matrix(name))
 
-            # We want columns of at most 6 widget groups
-            # This column variable manages which column of defined matrices we're on
-            # It's multiplied by 3 because all the widgets are in a single grid layout
-            # I could factor out each triplet of widgets for a defined matrix into a container widget,
-            # but I prefer to keep the widget count lower to reduce any possible lag
-            column = 3 * (i // 6)
+            vlay.addWidget(button_undefine)
 
-            grid_layout.addWidget(
-                label_name,
-                i - 2 * column,
-                column,
-                Qt.AlignCenter
-            )
-            grid_layout.addWidget(
-                label_equals,
-                i - 2 * column,
-                column + 1,
-                Qt.AlignCenter
-            )
-            grid_layout.addWidget(
-                widget_matrix,
-                i - 2 * column,
-                column + 2,
-                Qt.AlignCenter
-            )
+        groupbox = QGroupBox(self)
+        groupbox.setContentsMargins(10, 10, 10, 10)
+        groupbox.setLayout(vlay)
 
-        self.setContentsMargins(10, 10, 10, 10)
-        self.setLayout(grid_layout)
+        lay = QVBoxLayout()
+        lay.setSpacing(0)
+        lay.addWidget(groupbox)
 
-    def _get_matrix_widget(self, matrix: Union[MatrixType, str]) -> QWidget:
+        container = QWidget(self)
+        container.setLayout(lay)
+
+        return container
+
+    def _get_matrix_data_widget(self, matrix: Union[MatrixType, str]) -> QWidget:
         """Return a :class:`QWidget` containing the value of the matrix.
 
         If the matrix is defined as an expression, it will be a simple :class:`QLabel`.

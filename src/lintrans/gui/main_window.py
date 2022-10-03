@@ -282,12 +282,7 @@ class LintransMainWindow(QMainWindow):
 
         self._button_info_panel = QPushButton(self)
         self._button_info_panel.setText('Show defined matrices')
-        self._button_info_panel.clicked.connect(
-            # We have to use a lambda instead of 'InfoPanelDialog(self.matrix_wrapper, self).open' here
-            # because that would create an unnamed instance of InfoPanelDialog when LintransMainWindow is
-            # constructed, but we need to create a new instance every time to keep self.matrix_wrapper up to date
-            lambda: InfoPanelDialog(self._matrix_wrapper, self).open()
-        )
+        self._button_info_panel.clicked.connect(self._open_info_panel)
         self._button_info_panel.setToolTip(
             'Open an info panel with all matrices that have been defined in this session<br><b>(Ctrl + M)</b>'
         )
@@ -649,6 +644,13 @@ class LintransMainWindow(QMainWindow):
 
         self._animating = False
         self._reset_during_animation = False
+
+    @pyqtSlot()
+    def _open_info_panel(self) -> None:
+        """Open the info panel and register a callback to undefine matrices."""
+        dialog = InfoPanelDialog(self._matrix_wrapper, self)
+        dialog.open()
+        dialog.finished.connect(self._assign_matrix_wrapper)
 
     @pyqtSlot(DefineMatrixDialog)
     def _dialog_define_matrix(self, dialog_class: Type[DefineMatrixDialog]) -> None:

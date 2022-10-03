@@ -301,3 +301,11 @@ class MatrixWrapper:
                 matrices.append((name, value))
 
         return matrices
+
+    def undefine_matrix(self, name: str) -> None:
+        """Safely undefine the given matrix by also undefining any matrices that depend on it."""
+        if not (name in self._matrices and name != 'I'):
+            raise NameError('Matrix name is illegal')
+
+        # TODO: Undefine dependents
+        self[name] = None
