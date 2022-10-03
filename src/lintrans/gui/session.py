@@ -16,6 +16,7 @@ from typing import Any, DefaultDict, List, Tuple
 
 import lintrans
 from lintrans.matrices import MatrixWrapper
+from lintrans.gui.settings import DisplaySettings
 
 
 def _return_none() -> None:
@@ -29,17 +30,22 @@ def _return_none() -> None:
 class Session:
     """Hold information about a session and provide methods to save and load that data."""
 
-    __slots__ = ('matrix_wrapper', 'polygon_points')
+    __slots__ = ('matrix_wrapper', 'polygon_points', 'display_settings')
+    matrix_wrapper: MatrixWrapper
+    polygon_points: List[Tuple[float, float]]
+    display_settings: DisplaySettings
 
     def __init__(
         self,
         *,
         matrix_wrapper: MatrixWrapper,
-        polygon_points: List[Tuple[float, float]]
+        polygon_points: List[Tuple[float, float]],
+        display_settings: DisplaySettings,
     ) -> None:
         """Create a :class:`Session` object with the given data."""
         self.matrix_wrapper = matrix_wrapper
         self.polygon_points = polygon_points
+        self.display_settings = display_settings
 
     def save_to_file(self, filename: str) -> None:
         """Save the session state to a file, creating parent directories as needed."""
@@ -76,7 +82,8 @@ class Session:
 
         session = cls(
             matrix_wrapper=data_dict['matrix_wrapper'],
-            polygon_points=data_dict['polygon_points']
+            polygon_points=data_dict['polygon_points'],
+            display_settings=data_dict['display_settings'],
         )
 
         # Check if the file has more attributes than we expect
