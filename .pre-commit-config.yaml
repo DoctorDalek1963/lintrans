@@ -15,20 +15,20 @@ repos:
     rev: 5.0.4
     hooks:
       - id: flake8
-        files: ^(src|tests).*$
+        files: ^(src|tests)/.*$
 
   - repo: https://github.com/PyCQA/pydocstyle
     rev: 6.1.1
     hooks:
       - id: pydocstyle
-        files: ^(src|tests).*$
+        files: ^(src|tests)/.*$
         additional_dependencies: [toml==0.10.2]
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v0.981
     hooks:
       - id: mypy
-        files: ^(src|tests).*$
+        files: ^(src|tests)/.*$
 
   - repo: local
     hooks:
@@ -36,7 +36,7 @@ repos:
         name: pytest
         entry: pytest
         language: system
-        files: ^(src|tests).*$
+        files: ^(src|tests)/.*$
         pass_filenames: false
 
       - id: pytest-doctests
@@ -44,4 +44,10 @@ repos:
         entry: pytest
         language: system
         files: ^src/.*$
-        args: [--doctest-modules]
+        args: [--doctest-modules, --suppress-no-test-exit-code]
+
+      - id: pycodestyle
+        name: pycodestyle
+        entry: pycodestyle
+        language: system
+        files: ^(src|tests)/.*$
