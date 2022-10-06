@@ -33,7 +33,6 @@ from glob import glob
 
 import sphobjinv as soi
 
-
 pattern = re.compile(r'^(\S+)\s+([^:\s]+):([^:\s]+)\s+(-?\d+)\s+(\S+)\s+(\S+)$')
 
 
@@ -64,7 +63,6 @@ def generate_objects_inv(prefix: str) -> None:
         inv.version = re.match(r'^VERSION=([^v][\d.]+)$', text[1]).group(1)
     except (AttributeError, IndexError):
         raise ValueError(f'The second line of {prefix}-objects.txt must be of the form "VERSION=version_number"')
-
 
     for line in text[2:]:
         if (match := re.match(pattern, line)) is None:

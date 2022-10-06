@@ -16,8 +16,10 @@ from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 import numpy as np
 
-from lintrans.typing_ import is_matrix_type, MatrixType
-from .parse import get_matrix_identifiers, parse_matrix_expression, validate_matrix_expression
+from lintrans.typing_ import MatrixType, is_matrix_type
+
+from .parse import (get_matrix_identifiers, parse_matrix_expression,
+                    validate_matrix_expression)
 from .utility import create_rotation_matrix
 
 _ALPHABET_NO_I = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'

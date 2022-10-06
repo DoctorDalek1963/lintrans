@@ -9,14 +9,13 @@
 from typing import Type
 
 import pytest
+from conftest import get_open_widget, is_widget_class_open
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog
 from pytestqt.qtbot import QtBot
 
 from lintrans.gui.dialogs import DisplaySettingsDialog, InfoPanelDialog
 from lintrans.gui.main_window import LintransMainWindow
-
-from conftest import get_open_widget, is_widget_class_open
 
 
 @pytest.mark.parametrize(

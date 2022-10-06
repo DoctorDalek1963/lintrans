@@ -15,8 +15,8 @@ from collections import defaultdict
 from typing import Any, DefaultDict, List, Tuple
 
 import lintrans
-from lintrans.matrices import MatrixWrapper
 from lintrans.gui.settings import DisplaySettings
+from lintrans.matrices import MatrixWrapper
 
 
 def _return_none() -> None:

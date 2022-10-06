@@ -17,8 +17,8 @@ from __future__ import annotations
 from sys import version_info
 from typing import Any, List, Tuple
 
+from nptyping import Float, NDArray
 from numpy import ndarray
-from nptyping import NDArray, Float
 
 if version_info >= (3, 10):
     from typing import TypeAlias, TypeGuard

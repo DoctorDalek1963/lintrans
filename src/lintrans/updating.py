@@ -17,9 +17,10 @@ import re
 import subprocess
 from threading import Thread
 from typing import Optional, Tuple
-from packaging import version
 from urllib.error import URLError
 from urllib.request import urlopen
+
+from packaging import version
 
 from lintrans.global_settings import GlobalSettings
 

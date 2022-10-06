@@ -7,13 +7,14 @@
 """Test the :class:`DefineDialog` boxes in :class:`LintransMainWindow`."""
 
 import numpy as np
+from conftest import get_open_widget, is_widget_class_open
 from PyQt5.QtCore import Qt
 from pytestqt.qtbot import QtBot
 
-from lintrans.gui.dialogs import DefineAsExpressionDialog, DefineNumericallyDialog, DefineVisuallyDialog
+from lintrans.gui.dialogs import (DefineAsExpressionDialog,
+                                  DefineNumericallyDialog,
+                                  DefineVisuallyDialog)
 from lintrans.gui.main_window import LintransMainWindow
-
-from conftest import get_open_widget, is_widget_class_open
 
 ALPHABET_NO_I = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 

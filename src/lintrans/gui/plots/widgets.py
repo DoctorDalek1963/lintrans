@@ -13,11 +13,13 @@ from abc import abstractmethod
 from math import dist
 from typing import List, Optional, Tuple
 
-from PyQt5.QtCore import Qt, QPointF, pyqtSlot
-from PyQt5.QtGui import QBrush, QColor, QMouseEvent, QPainter, QPaintEvent, QPen, QPolygonF
+from PyQt5.QtCore import QPointF, Qt, pyqtSlot
+from PyQt5.QtGui import (QBrush, QColor, QMouseEvent, QPainter, QPaintEvent,
+                         QPen, QPolygonF)
 
-from lintrans.typing_ import MatrixType
 from lintrans.gui.settings import DisplaySettings
+from lintrans.typing_ import MatrixType
+
 from .classes import InteractivePlot, VisualizeTransformationPlot
 
 

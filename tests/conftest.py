@@ -19,7 +19,6 @@ from pytestqt.qtbot import QtBot
 from lintrans.gui.main_window import LintransMainWindow
 from lintrans.matrices import MatrixWrapper
 
-
 T = TypeVar('T', bound=QWidget)
 
 

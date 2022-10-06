@@ -10,8 +10,10 @@ from typing import List, Tuple
 
 import pytest
 
-from lintrans.matrices.parse import (MatrixParseError, find_sub_expressions, get_matrix_identifiers,
-                                     parse_matrix_expression, validate_matrix_expression)
+from lintrans.matrices.parse import (MatrixParseError, find_sub_expressions,
+                                     get_matrix_identifiers,
+                                     parse_matrix_expression,
+                                     validate_matrix_expression)
 from lintrans.typing_ import MatrixParseList
 
 expected_sub_expressions: List[Tuple[str, List[str]]] = [

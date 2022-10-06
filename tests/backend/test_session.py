@@ -8,12 +8,12 @@
 
 from pathlib import Path
 
+from conftest import get_test_wrapper
+
 import lintrans
 from lintrans.gui.session import Session
 from lintrans.gui.settings import DisplaySettings
 from lintrans.matrices.wrapper import MatrixWrapper
-
-from conftest import get_test_wrapper
 
 
 def test_save_and_load(tmp_path: Path, test_wrapper: MatrixWrapper) -> None:

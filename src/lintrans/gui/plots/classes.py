@@ -14,8 +14,9 @@ from typing import Iterable, List, Optional, Tuple
 
 import numpy as np
 from PyQt5.QtCore import QPoint, QPointF, QRectF, Qt
-from PyQt5.QtGui import (QBrush, QColor, QFont, QMouseEvent, QPainter, QPainterPath,
-                         QPaintEvent, QPen, QPolygonF, QWheelEvent)
+from PyQt5.QtGui import (QBrush, QColor, QFont, QMouseEvent, QPainter,
+                         QPainterPath, QPaintEvent, QPen, QPolygonF,
+                         QWheelEvent)
 from PyQt5.QtWidgets import QWidget
 
 from lintrans.typing_ import MatrixType, VectorType

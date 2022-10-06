@@ -2,10 +2,6 @@
 
 from __future__ import annotations
 
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
-
 import inspect
 import os
 from importlib import import_module

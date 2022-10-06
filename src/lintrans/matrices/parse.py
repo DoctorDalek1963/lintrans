@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from typing import List, Pattern, Tuple, Set
+from typing import List, Pattern, Set, Tuple
 
 from lintrans.typing_ import MatrixParseList
 

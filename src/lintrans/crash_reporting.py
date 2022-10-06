@@ -28,6 +28,7 @@ from PyQt5.QtWidgets import QApplication
 
 import lintrans
 from lintrans.typing_ import is_matrix_type
+
 from .global_settings import GlobalSettings
 from .gui.main_window import LintransMainWindow
 

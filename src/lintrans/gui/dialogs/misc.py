@@ -14,8 +14,10 @@ from typing import Dict, List, Optional, Tuple, Union
 
 from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR, Qt, pyqtSlot
 from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import (QDialog, QFileDialog, QGridLayout, QGroupBox, QHBoxLayout, QLabel, QPushButton,
-                             QRadioButton, QShortcut, QSizePolicy, QSpacerItem, QStackedLayout, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import (QDialog, QFileDialog, QGridLayout, QGroupBox,
+                             QHBoxLayout, QLabel, QPushButton, QRadioButton,
+                             QShortcut, QSizePolicy, QSpacerItem,
+                             QStackedLayout, QVBoxLayout, QWidget)
 
 import lintrans
 from lintrans.global_settings import GlobalSettings

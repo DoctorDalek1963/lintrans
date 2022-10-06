@@ -14,7 +14,8 @@ from typing import Dict
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIntValidator, QKeyEvent, QKeySequence
-from PyQt5.QtWidgets import QCheckBox, QGroupBox, QHBoxLayout, QLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
+from PyQt5.QtWidgets import (QCheckBox, QGroupBox, QHBoxLayout, QLayout,
+                             QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout)
 
 from lintrans.gui.dialogs.misc import FixedSizeDialog
 from lintrans.gui.settings import DisplaySettings

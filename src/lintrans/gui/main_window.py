@@ -21,10 +21,12 @@ import numpy as np
 from numpy import linalg
 from numpy.linalg import LinAlgError
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QObject, QThread
+from PyQt5.QtCore import QObject, Qt, QThread, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QCloseEvent, QIcon, QKeyEvent, QKeySequence
-from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QHBoxLayout, QMainWindow, QMenu, QMessageBox,
-                             QPushButton, QShortcut, QSizePolicy, QSpacerItem, QStyleFactory, QVBoxLayout)
+from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QHBoxLayout,
+                             QMainWindow, QMenu, QMessageBox, QPushButton,
+                             QShortcut, QSizePolicy, QSpacerItem,
+                             QStyleFactory, QVBoxLayout)
 
 import lintrans
 from lintrans import updating
@@ -33,9 +35,12 @@ from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.matrices.utility import polar_coords, rotate_coord
 from lintrans.typing_ import MatrixType, VectorType
-from .dialogs import (AboutDialog, DefineAsExpressionDialog, DefineMatrixDialog,
-                      DefineNumericallyDialog, DefinePolygonDialog, DefineVisuallyDialog,
-                      DisplaySettingsDialog, FileSelectDialog, InfoPanelDialog, PromptUpdateDialog)
+
+from .dialogs import (AboutDialog, DefineAsExpressionDialog,
+                      DefineMatrixDialog, DefineNumericallyDialog,
+                      DefinePolygonDialog, DefineVisuallyDialog,
+                      DisplaySettingsDialog, FileSelectDialog, InfoPanelDialog,
+                      PromptUpdateDialog)
 from .plots import MainViewportWidget
 from .session import Session
 from .settings import DisplaySettings

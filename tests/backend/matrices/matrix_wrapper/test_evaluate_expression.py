@@ -7,19 +7,17 @@
 """Test the MatrixWrapper evaluate_expression() method."""
 
 import numpy as np
-from numpy import linalg as la
 import pytest
+from conftest import get_test_wrapper
+from numpy import linalg as la
 from pytest import approx
 
 from lintrans.matrices import MatrixWrapper, create_rotation_matrix
 from lintrans.typing_ import MatrixType
 
-from conftest import get_test_wrapper
-
 
 def test_simple_matrix_addition(test_wrapper: MatrixWrapper) -> None:
     """Test simple addition and subtraction of two matrices."""
-
     # NOTE: We assert that all of these values are not None just to stop mypy complaining
     # These values will never actually be None because they're set in the wrapper() fixture
     # There's probably a better way  do this, because this method is a bit of a bodge, but this works for now

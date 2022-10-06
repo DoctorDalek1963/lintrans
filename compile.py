@@ -81,7 +81,6 @@ from PyInstaller.__main__ import run as run_pyi
 
 import lintrans
 
-
 OS_NAME_DICT = {
     'darwin': 'macOS',
     'linux': 'Linux',

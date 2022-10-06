@@ -15,8 +15,9 @@ from numpy import array
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QDoubleValidator, QKeySequence
-from PyQt5.QtWidgets import (QGridLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
-                             QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout)
+from PyQt5.QtWidgets import (QGridLayout, QHBoxLayout, QLabel, QLineEdit,
+                             QPushButton, QShortcut, QSizePolicy, QSpacerItem,
+                             QVBoxLayout)
 
 from lintrans.gui.dialogs.misc import FixedSizeDialog
 from lintrans.gui.plots import DefineMatrixVisuallyWidget
