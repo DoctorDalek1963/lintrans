@@ -29,3 +29,19 @@ repos:
     hooks:
       - id: mypy
         files: ^(src|tests).*$
+
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: pytest
+        language: system
+        files: ^(src|tests).*$
+        pass_filenames: false
+
+      - id: pytest-doctests
+        name: pytest-doctests
+        entry: pytest
+        language: system
+        files: ^src/.*$
+        args: [--doctest-modules]
