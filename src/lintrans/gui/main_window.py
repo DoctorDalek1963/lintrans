@@ -488,7 +488,6 @@ class LintransMainWindow(QMainWindow):
         self._extend_expression_history(text)
 
         if self._is_matrix_too_big(matrix):
-            self._show_error_message('Matrix too big', "This matrix doesn't fit on the canvas.")
             return
 
         self._plot.plot_matrix(matrix)
@@ -675,7 +674,6 @@ class LintransMainWindow(QMainWindow):
             matrix_to_render = self._get_animation_frame(matrix_start, matrix_target, i / steps)
 
             if self._is_matrix_too_big(matrix_to_render):
-                self._show_error_message('Matrix too big', "This matrix doesn't fit on the canvas.")
                 self._animating = False
                 self._animating_sequence = False
                 return
@@ -809,17 +807,23 @@ class LintransMainWindow(QMainWindow):
         dialog.finished.connect(self._update_render_buttons)
 
     def _is_matrix_too_big(self, matrix: MatrixType) -> bool:
-        """Check if the given matrix will actually fit onto the canvas.
+        """Check if the given matrix will actually fit on the grid.
 
-        Convert the elements of the matrix to canvas coords and make sure they fit within Qt's 32-bit integer limit.
+        We're checking against a 1000x1000 grid here, which is far less than the actual space we have available.
+        But even when fully zoomed out 1080p monitor, the grid is only roughly 170x90, so 1000x1000 is plenty.
 
         :param MatrixType matrix: The matrix to check
         :returns bool: Whether the matrix is too big to fit on the canvas
         """
-        coords: List[Tuple[int, int]] = [self._plot.canvas_coords(*vector) for vector in matrix.T]
-
-        for x, y in coords:
-            if not (-2147483648 <= x <= 2147483647 and -2147483648 <= y <= 2147483647):
+        for x, y in matrix.T:
+            if not (-1000 <= x <= 1000 and -1000 <= y <= 1000):
+                self._show_error_message(
+                    'Matrix too big',
+                    "This matrix doesn't fit on the grid.",
+                    'This grid is only 1000x1000, and this matrix\n'
+                    f'[{int(matrix[0][0])} {int(matrix[0][1])}; {int(matrix[1][0])} {int(matrix[1][1])}]\n'
+                    " doesn't fit."
+                )
                 return True
 
         return False
@@ -849,8 +853,9 @@ class LintransMainWindow(QMainWindow):
             self._matrix_wrapper = MatrixWrapper()
             self._plot.polygon_points = []
 
-            self._lineedit_expression_box.setText('I')
-            self._render_expression()
+            self._reset_transformation()
+            self._expression_history = []
+            self._expression_history_index = None
             self._lineedit_expression_box.setText('')
             self._lineedit_expression_box.setFocus()
             self._update_render_buttons()
@@ -933,8 +938,9 @@ class LintransMainWindow(QMainWindow):
                 warning=True
             )
 
-        self._lineedit_expression_box.setText('I')
-        self._render_expression()
+        self._reset_transformation()
+        self._expression_history = []
+        self._expression_history_index = None
         self._lineedit_expression_box.setText('')
         self._lineedit_expression_box.setFocus()
         self._update_render_buttons()
