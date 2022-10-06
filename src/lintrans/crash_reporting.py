@@ -143,6 +143,8 @@ def _get_post_mortem() -> str:
 
     try:
         matrix_wrapper = window._matrix_wrapper
+        expression_history = window._expression_history
+        exp_hist_index = window._expression_history_index
         plot = window._plot
         point_i = plot.point_i
         point_j = plot.point_j
@@ -165,6 +167,12 @@ def _get_post_mortem() -> str:
     post_mortem += f'\nExpression box: "{window._lineedit_expression_box.text()}"'
     post_mortem += f'\nCurrently displayed: [{point_i[0]} {point_j[0]}; {point_i[1]} {point_j[1]}]'
     post_mortem += f'\nAnimating (sequence): {window._animating} ({window._animating_sequence})\n'
+
+    post_mortem += f'\nExpression history (index={exp_hist_index}):'
+    post_mortem += '\n  ['
+    for item in expression_history:
+        post_mortem += f'\n    {item!r},'
+    post_mortem += '\n  ]\n'
 
     post_mortem += f'\nGrid spacing: {plot.grid_spacing}'
     post_mortem += f'\nWindow size: {window.width()} x {window.height()}'
