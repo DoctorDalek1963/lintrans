@@ -15,7 +15,7 @@ import webbrowser
 from copy import deepcopy
 from pathlib import Path
 from pickle import UnpicklingError
-from typing import List, NoReturn, Optional, Tuple, Type
+from typing import List, NoReturn, Optional, Type
 
 import numpy as np
 from numpy import linalg
