@@ -79,7 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.1] - 2022-03-22
 
-### Added 
+### Added
 
 - Explicit `@pyqtSlot` decorators
 - Link to Qt5 docs in project docs with intersphinx
