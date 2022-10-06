@@ -21,8 +21,8 @@ import numpy as np
 from numpy import linalg
 from numpy.linalg import LinAlgError
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import pyqtSignal, pyqtSlot, QObject, QThread
-from PyQt5.QtGui import QCloseEvent, QIcon, QKeySequence
+from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QObject, QThread
+from PyQt5.QtGui import QCloseEvent, QIcon, QKeyEvent, QKeySequence
 from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QHBoxLayout, QMainWindow, QMenu, QMessageBox,
                              QPushButton, QShortcut, QSizePolicy, QSpacerItem, QStyleFactory, QVBoxLayout)
 
@@ -89,6 +89,9 @@ class LintransMainWindow(QMainWindow):
         super().__init__()
 
         self._matrix_wrapper = MatrixWrapper()
+
+        self._expression_history: List[str] = []
+        self._expression_history_index: Optional[int] = None
 
         self.setWindowTitle('lintrans')
         self.setMinimumSize(800, 650)
@@ -379,6 +382,47 @@ class LintransMainWindow(QMainWindow):
         else:
             event.ignore()
 
+    def keyPressEvent(self, event: QKeyEvent) -> None:
+        """Handle a :class:`QKeyEvent` by scrolling through expression history."""
+        key = event.key()
+
+        # Load previous expression
+        if key == Qt.Key_Up:
+            if self._expression_history_index is None:
+                if len(self._expression_history) == 0:
+                    event.ignore()
+                    return
+
+                # If the index is none and we've got a history, set the index to -1
+                self._expression_history_index = -1
+
+            # If the index is in range of the list (the index is always negative), then decrement it
+            elif self._expression_history_index > -len(self._expression_history):
+                self._expression_history_index -= 1
+
+            self._lineedit_expression_box.setText(self._expression_history[self._expression_history_index])
+
+        # Load next expression
+        elif key == Qt.Key_Down:
+            if self._expression_history_index is None:
+                event.ignore()
+                return
+
+            self._expression_history_index += 1
+
+            # The index is always negative, so if we've reached 0, then we need to stop
+            if self._expression_history_index == 0:
+                self._expression_history_index = None
+                self._lineedit_expression_box.setText('')
+            else:
+                self._lineedit_expression_box.setText(self._expression_history[self._expression_history_index])
+
+        else:
+            event.ignore()
+            return
+
+        event.accept()
+
     def _update_render_buttons(self) -> None:
         """Enable or disable the render and animate buttons according to whether the matrix expression is valid."""
         text = self._lineedit_expression_box.text()
@@ -405,6 +449,12 @@ class LintransMainWindow(QMainWindow):
 
             self._button_render.setEnabled(valid)
             self._button_animate.setEnabled(valid)
+
+    def _extend_expression_history(self, text: str) -> None:
+        """Extend the expression history with the given expression."""
+        if len(self._expression_history) == 0 or self._expression_history[-1] != text:
+            self._expression_history.append(text)
+            self._expression_history_index = -1
 
     @pyqtSlot()
     def _reset_zoom(self) -> None:
@@ -434,6 +484,8 @@ class LintransMainWindow(QMainWindow):
             self._show_error_message('Singular matrix', 'Cannot take inverse of singular matrix.')
             return
 
+        self._extend_expression_history(matrix)
+
         if self._is_matrix_too_big(matrix):
             self._show_error_message('Matrix too big', "This matrix doesn't fit on the canvas.")
             return
@@ -453,6 +505,8 @@ class LintransMainWindow(QMainWindow):
         ])
 
         text = self._lineedit_expression_box.text()
+
+        self._extend_expression_history(text)
 
         # If there's commas in the expression, then we want to animate each part at a time
         if ',' in text:

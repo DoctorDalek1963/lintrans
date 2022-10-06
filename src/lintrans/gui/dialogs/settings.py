@@ -12,6 +12,7 @@ import abc
 from typing import Dict
 
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIntValidator, QKeyEvent, QKeySequence
 from PyQt5.QtWidgets import QCheckBox, QGroupBox, QHBoxLayout, QLayout, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout
 
@@ -403,12 +404,15 @@ class DisplaySettingsDialog(SettingsDialog):
             self._dict_checkboxes[letter].animateClick()
 
         # Return or keypad enter
-        elif key == 0x01000004 or key == 0x01000005:
+        elif key == Qt.Key_Return or key == Qt.Key_Enter:
             self._button_confirm.click()
 
         # Escape
-        elif key == 0x01000000:
+        elif key == Qt.Key_Escape:
             self._button_cancel.click()
 
         else:
             event.ignore()
+            return
+
+        event.accept()
