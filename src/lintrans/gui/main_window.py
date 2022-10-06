@@ -478,13 +478,14 @@ class LintransMainWindow(QMainWindow):
     def _render_expression(self) -> None:
         """Render the transformation given by the expression in the input box."""
         try:
-            matrix = self._matrix_wrapper.evaluate_expression(self._lineedit_expression_box.text())
+            text = self._lineedit_expression_box.text()
+            matrix = self._matrix_wrapper.evaluate_expression(text)
 
         except LinAlgError:
             self._show_error_message('Singular matrix', 'Cannot take inverse of singular matrix.')
             return
 
-        self._extend_expression_history(matrix)
+        self._extend_expression_history(text)
 
         if self._is_matrix_too_big(matrix):
             self._show_error_message('Matrix too big', "This matrix doesn't fit on the canvas.")
