@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The display settings and input vector position are now saved as part of the session file
 - Matrices can now be undefined from the *Show defined matrices* dialog
 - You can now go back through previously used expressions using the up and down arrow keys
+- You can now use anonymous matrices (using numerical entries directly without needing to define a
+  named matrix). See the tutorial for details
 
 ### Fixed
 
