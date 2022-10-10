@@ -103,10 +103,12 @@ class MatrixWrapper:
         return hash(self._matrices)
 
     def __getitem__(self, name: str) -> Optional[MatrixType]:
-        """Get the matrix with the given name.
+        """Get the matrix with the given identifier.
 
-        If it is a simple name, it will just be fetched from the dictionary. If the name is ``rot(x)``, with
-        a given angle in degrees, then we return a new matrix representing a rotation by that angle.
+        If it is a simple name, it will just be fetched from the dictionary. If the identifier is ``rot(x)``, with
+        a given angle in degrees, then we return a new matrix representing a rotation by that angle. If the identifier
+        is something like ``[1 2;3 4]``, then we will evaluate this matrix (we assume it will have whitespace exactly
+        like the example; see :func:`lintrans.matrices.parse.strip_whitespace`).
 
         .. note::
            If the named matrix is defined as an expression, then this method will return its evaluation.
@@ -120,6 +122,16 @@ class MatrixWrapper:
         # Return a new rotation matrix
         if (match := re.match(r'^rot\((-?\d*\.?\d*)\)$', name)) is not None:
             return create_rotation_matrix(float(match.group(1)))
+
+        if (match := re.match(
+                r'\[(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?);(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)\]',
+                name
+        )) is not None:
+            a = float(match.group(1))
+            b = float(match.group(2))
+            c = float(match.group(3))
+            d = float(match.group(4))
+            return np.array([[a, b], [c, d]])
 
         if name not in self._matrices:
             if validate_matrix_expression(name):

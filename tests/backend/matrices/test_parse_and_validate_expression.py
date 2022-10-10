@@ -12,7 +12,7 @@ import pytest
 
 from lintrans.matrices.parse import (MatrixParseError, find_sub_expressions,
                                      get_matrix_identifiers,
-                                     parse_matrix_expression,
+                                     parse_matrix_expression, strip_whitespace,
                                      validate_matrix_expression)
 from lintrans.typing_ import MatrixParseList
 
@@ -33,6 +33,20 @@ def test_find_sub_expressions() -> None:
         assert find_sub_expressions(inp) == output
 
 
+expected_stripped_whitespace: List[Tuple[str, str]] = [
+    ('[ 1 2 ; 3 4 ]', '[1 2;3 4]'),
+    ('[-3.4 6; 1.2 -9 ]', '[-3.4 6;1.2 -9]'),
+    ('A    4  [   43      -653.23   ;  32523    -4.3  ]  Z^2', 'A4[43 -653.23;32523 -4.3]Z^2'),
+    ('[  1  2; -4   3.64]    [ -5 6; 8.3 2]', '[1 2;-4 3.64][-5 6;8.3 2]')
+]
+
+
+def test_strip_whitespace() -> None:
+    """Test the :func:`lintrans.matrices.parse.strip_whitespace` function."""
+    for inp, output in expected_stripped_whitespace:
+        assert strip_whitespace(inp) == output
+
+
 valid_inputs: List[str] = [
     'A', 'AB', '3A', '1.2A', '-3.4A', 'A^2', 'A^-1', 'A^{-1}',
     'A^12', 'A^T', 'A^{5}', 'A^{T}', '4.3A^7', '9.2A^{18}', '0.1A'
@@ -51,14 +65,18 @@ valid_inputs: List[str] = [
     '3.5A^{4}5.6rot(19.2)^T-B^{-1}4.1C^5',
 
     '(A)', '(AB)^-1', '2.3(3B^TA)^2', '-3.4(9D^{2}3F^-1)^T+C', '(AB)(C)',
-    '3(rot(34)^-7A)^-1+B', '3A^2B+4A(B+C)^-1D^T-A(C(D+E)B)'
+    '3(rot(34)^-7A)^-1+B', '3A^2B+4A(B+C)^-1D^T-A(C(D+E)B)',
+
+    '[1 2; 3 4]', '4[1 -2;12 5]^3', '[1     -2;         3.1          -4.1365]', 'A[1 -3; 4 5]^-1',
+    'rot(45)[-13.2 9;1.414 0]^2M^T', '([1 2; 3 4])', '3A^2(M-B^T)^{-1}18([13.2 -6.4; -11 0.2]+F)^2'
 ]
 
 invalid_inputs: List[str] = [
     '', 'rot()', 'A^', 'A^1.2', 'A^2 3.4B', 'A^23.4B', 'A^-1 2.3B', 'A^{3.4}', '1,2A', 'ro(12)', '5', '12^2',
     '^T', '^{12}', '.1A', 'A^{13', 'A^3}', 'A^A', '^2', 'A--B', '--A', '+A', '--1A', 'A--B', 'A--1B',
     '.A', '1.A', '2.3AB)^T', '(AB+)', '-4.6(9A', '-2(3.4A^{-1}-C^)^2', '9.2)', '3A^2B+4A(B+C)^-1D^T-A(C(D+EB)',
-    '3()^2', '4(your mum)^T', 'rot()', 'rot(10.1.1)', 'rot(--2)',
+    '3()^2', '4(your mum)^T', 'rot()', 'rot(10.1.1)', 'rot(--2)', '[]', '[1 2]', '[-1;3]', '[2 3; 5.6]',
+    '1 2; 3 4', '[1 2; 34]',
 
     'This is 100% a valid matrix expression, I swear'
 ]
@@ -112,7 +130,15 @@ expressions_and_parsed_expressions: List[Tuple[str, MatrixParseList]] = [
     ('-3(A+B)^2-C(B^TA)^-1', [[('-3', 'A+B', '2')], [('-1', 'C', ''), ('', 'B^{T}A', '-1')]]),
     ('2.3(3B^TA)^2', [[('2.3', '3B^{T}A', '2')]]),
     ('-3.4(9D^{2}3F^-1)^T+C', [[('-3.4', '9D^{2}3F^{-1}', 'T')], [('', 'C', '')]]),
-    ('2.39(3.1A^{-1}2.3B(CD)^-1)^T + (AB^T)^-1', [[('2.39', '3.1A^{-1}2.3B(CD)^{-1}', 'T')], [('', 'AB^{T}', '-1')]])
+    ('2.39(3.1A^{-1}2.3B(CD)^-1)^T + (AB^T)^-1', [[('2.39', '3.1A^{-1}2.3B(CD)^{-1}', 'T')], [('', 'AB^{T}', '-1')]]),
+
+    # Anonymous matrices
+    ('[1 2; 3 4]', [[('', '[1 2;3 4]', '')]]),
+    ('A[-3 4; 16.2 87.93]', [[('', 'A', ''), ('', '[-3 4;16.2 87.93]', '')]]),
+    (
+        '3A^2(M-[  1 2   ;   5 4 ]^T)^{-1}18([13.2    -6.4;       -11     0.2]+F)^2+Z',
+        [[('3', 'A', '2'), ('', 'M-[1 2;5 4]^{T}', '-1'), ('18', '[13.2 -6.4;-11 0.2]+F', '2')], [('', 'Z', '')]]
+    )
 ]
 
 
@@ -121,7 +147,7 @@ def test_parse_matrix_expression() -> None:
     for expression, parsed_expression in expressions_and_parsed_expressions:
         # Test it with and without whitespace
         assert parse_matrix_expression(expression) == parsed_expression
-        assert parse_matrix_expression(expression.replace(' ', '')) == parsed_expression
+        assert parse_matrix_expression(strip_whitespace(expression)) == parsed_expression
 
     for expression in valid_inputs:
         # Assert that it doesn't raise MatrixParseError
