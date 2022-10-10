@@ -299,6 +299,12 @@ class ExpressionParser:
 
             self._parse_rot_identifier()
 
+        elif self._char == '[':
+            if self._current_token.identifier != '':
+                return False
+
+            self._parse_anonymous_identifer()
+
         elif self._char == '(':
             if self._current_token.identifier != '':
                 return False
@@ -359,6 +365,25 @@ class ExpressionParser:
         else:
             raise MatrixParseError(
                 f'Invalid rot-identifier "{self._expression[self._pointer : self._pointer + 15]}..."'
+            )
+
+    def _parse_anonymous_identifer(self) -> None:
+        # """"""
+        if match := re.match(
+            r'^\[(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?);(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)\]',
+            self._expression[self._pointer:]
+        ):
+            for n in range(1, 4 + 1):
+                try:
+                    float(match.group(n))
+                except ValueError as e:
+                    raise MatrixParseError(f'Invalid matrix entry "{match.group(1)}" in anonymous matrix') from e
+
+                self._current_token.identifier = match.group(0)
+                self._pointer += len(match.group(0))
+        else:
+            raise MatrixParseError(
+                f'Invalid anonymous matrix "{self._expression[self._pointer : self._pointer + 15]}..."'
             )
 
     def _parse_sub_expression(self) -> None:

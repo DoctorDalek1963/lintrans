@@ -134,7 +134,7 @@ expressions_and_parsed_expressions: List[Tuple[str, MatrixParseList]] = [
 
     # Anonymous matrices
     ('[1 2; 3 4]', [[('', '[1 2;3 4]', '')]]),
-    ('A[-3 4; 16.2 87.93]', [[('', 'A', ''), ('', '[-3 4; 16.2 87.93]', '')]]),
+    ('A[-3 4; 16.2 87.93]', [[('', 'A', ''), ('', '[-3 4;16.2 87.93]', '')]]),
     (
         '3A^2(M-[  1 2   ;   5 4 ]^T)^{-1}18([13.2    -6.4;       -11     0.2]+F)^2+Z',
         [[('3', 'A', '2'), ('', 'M-[1 2;5 4]^{T}', '-1'), ('18', '[13.2 -6.4;-11 0.2]+F', '2')], [('', 'Z', '')]]
@@ -142,13 +142,12 @@ expressions_and_parsed_expressions: List[Tuple[str, MatrixParseList]] = [
 ]
 
 
-@pytest.mark.skip(reason='anonymous matrices cannot be parsed yet')
 def test_parse_matrix_expression() -> None:
     """Test the parse_matrix_expression() function."""
     for expression, parsed_expression in expressions_and_parsed_expressions:
         # Test it with and without whitespace
         assert parse_matrix_expression(expression) == parsed_expression
-        assert parse_matrix_expression(expression.replace(' ', '')) == parsed_expression
+        assert parse_matrix_expression(strip_whitespace(expression)) == parsed_expression
 
     for expression in valid_inputs:
         # Assert that it doesn't raise MatrixParseError
