@@ -16,7 +16,7 @@ from lintrans.typing_ import MatrixParseList
 
 _ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-NAIVE_CHARACTER_CLASS = r'[-+\sA-Z0-9.rot()^{}]'
+NAIVE_CHARACTER_CLASS = r'[-+\sA-Z0-9.rot()^{}\[\];]'
 """This is a RegEx character class that just holds all the valid characters for an expression.
 
 See :func:`validate_matrix_expression` to actually validate matrix expressions.
@@ -34,9 +34,11 @@ def compile_naive_expression_pattern() -> Pattern[str]:
     integer_no_zero = digit_no_zero + '(' + digits + ')?'
     real_number = f'({integer_no_zero}(\\.{digits})?|0\\.{digits})'
 
+    anonymous_matrix = r'\[(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?);(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)\]'
+
     index_content = f'(-?{integer_no_zero}|T)'
     index = f'(\\^{{{index_content}}}|\\^{index_content})'
-    matrix_identifier = f'([A-Z]|rot\\(-?{real_number}\\)|\\({NAIVE_CHARACTER_CLASS}+\\))'
+    matrix_identifier = f'([A-Z]|rot\\(-?{real_number}\\)|{anonymous_matrix}|\\({NAIVE_CHARACTER_CLASS}+\\))'
     matrix = '(' + real_number + '?' + matrix_identifier + index + '?)'
     expression = f'^-?{matrix}+((\\+-?|-){matrix}+)*$'
 
@@ -91,6 +93,23 @@ def find_sub_expressions(expression: str) -> List[str]:
     return sub_expressions
 
 
+def strip_whitespace(expression: str) -> str:
+    """Strip the whitespace from the given expression, preserving whitespace in anonymous matrices.
+
+    Whitespace in anonymous matrices is preserved such that there is exactly one space in the middle of each pair of
+    numbers, but no space after the semi-colon, like so: ``[1 -2;3.4 5]``.
+    """
+    # We replace the necessary whitespace with null bytes to preserve it
+    expression = re.sub(
+        r'\[\s*(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s*;\s*(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s*\]',
+        r'[\g<1> \g<2>;\g<3> \g<4>]'.replace(' ', '\x00'),
+        expression
+    )
+
+    expression = re.sub(r'\s', '', expression)
+    return re.sub('\x00', ' ', expression)
+
+
 def validate_matrix_expression(expression: str) -> bool:
     """Validate the given matrix expression.
 
@@ -104,7 +123,7 @@ def validate_matrix_expression(expression: str) -> bool:
     :returns bool: Whether the expression is valid according to the schema
     """
     # Remove all whitespace
-    expression = re.sub(r'\s', '', expression)
+    expression = strip_whitespace(expression)
     match = _naive_expression_pattern.match(expression)
 
     if match is None:
@@ -158,7 +177,7 @@ class ExpressionParser:
     def __init__(self, expression: str):
         """Create an instance of the parser with the given expression and initialise variables to use during parsing."""
         # Remove all whitespace
-        expression = re.sub(r'\s', '', expression)
+        expression = strip_whitespace(expression)
 
         # Check if it's valid
         if not validate_matrix_expression(expression):
