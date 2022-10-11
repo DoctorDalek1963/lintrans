@@ -61,6 +61,8 @@ def find_sub_expressions(expression: str) -> List[str]:
     paren_depth = 0
     pointer = 0
 
+    expression = strip_whitespace(expression)
+
     while True:
         char = expression[pointer]
 
