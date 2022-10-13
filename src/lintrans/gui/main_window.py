@@ -732,7 +732,8 @@ class LintransMainWindow(QMainWindow):
                 self,
                 matrix_wrapper=deepcopy(self._matrix_wrapper),
                 display_settings=self._plot.display_settings,
-                polygon_points=self._plot.polygon_points
+                polygon_points=self._plot.polygon_points,
+                input_vector=self._plot.point_input_vector
             )
         else:
             dialog = dialog_class(self, matrix_wrapper=deepcopy(self._matrix_wrapper))

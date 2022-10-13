@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import operator
 from abc import abstractmethod
+from copy import copy
 from math import dist
 from typing import List, Optional, Tuple
 
@@ -29,6 +30,8 @@ class VisualizeTransformationWidget(VisualizeTransformationPlot):
     It handles all the rendering itself, and the only method that the user needs to care about
     is :meth:`plot_matrix`, which allows you to visualize the given matrix transformation.
     """
+
+    _COLOUR_OUTPUT_VECTOR = QColor('#f7c216')
 
     def __init__(self, *args, display_settings: DisplaySettings, polygon_points: List[Tuple[float, float]], **kwargs):
         """Create the widget and assign its display settings, passing ``*args`` and ``**kwargs`` to super."""
@@ -95,8 +98,6 @@ class MainViewportWidget(VisualizeTransformationWidget, InteractivePlot):
 
     It extends :class:`VisualizeTransformationWidget` with input and output vectors.
     """
-
-    _COLOUR_OUTPUT_VECTOR = QColor('#f7c216')
 
     def __init__(self, *args, **kwargs):
         """Create the main viewport widget with its input point."""
@@ -209,11 +210,70 @@ class DefineMatrixVisuallyWidget(VisualizeTransformationWidget, InteractivePlot)
     :class:`~lintrans.gui.dialogs.define_new_matrix.DefineVisuallyDialog`.
     """
 
-    def __init__(self, *args, display_settings: DisplaySettings, polygon_points: List[Tuple[float, float]], **kwargs):
+    def __init__(
+        self,
+        *args,
+        display_settings: DisplaySettings,
+        polygon_points: List[Tuple[float, float]],
+        input_vector: Tuple[float, float],
+        **kwargs
+    ) -> None:
         """Create the widget and enable mouse tracking. ``*args`` and ``**kwargs`` are passed to ``super()``."""
         super().__init__(*args, display_settings=display_settings, polygon_points=polygon_points, **kwargs)
 
+        self._input_vector = input_vector
         self._dragged_point: Tuple[float, float] | None = None
+
+    def _draw_input_vector(self, painter: QPainter) -> None:
+        """Draw the input vector."""
+        color = QColor('#000000')
+        color.setAlpha(0x88)
+        pen = QPen(color, self._WIDTH_VECTOR_LINE)
+        painter.setPen(pen)
+
+        x, y = self.canvas_coords(*self._input_vector)
+        painter.drawLine(*self._canvas_origin, x, y)
+
+        painter.setBrush(self._BRUSH_SOLID_WHITE)
+
+        painter.setPen(Qt.NoPen)
+        painter.drawPie(
+            x - self._CURSOR_EPSILON,
+            y - self._CURSOR_EPSILON,
+            2 * self._CURSOR_EPSILON,
+            2 * self._CURSOR_EPSILON,
+            0,
+            16 * 360
+        )
+
+        painter.setPen(pen)
+        painter.drawArc(
+            x - self._CURSOR_EPSILON,
+            y - self._CURSOR_EPSILON,
+            2 * self._CURSOR_EPSILON,
+            2 * self._CURSOR_EPSILON,
+            0,
+            16 * 360
+        )
+
+    def _draw_output_vector(self, painter: QPainter) -> None:
+        """Draw the output vector."""
+        color = copy(self._COLOUR_OUTPUT_VECTOR)
+        color.setAlpha(0x88)
+        painter.setPen(QPen(color, self._WIDTH_VECTOR_LINE))
+        painter.setBrush(QBrush(self._COLOUR_OUTPUT_VECTOR, Qt.SolidPattern))
+
+        x, y = self.canvas_coords(*(self._matrix @ self._input_vector))
+
+        painter.drawLine(*self._canvas_origin, x, y)
+        painter.drawPie(
+            x - self._CURSOR_EPSILON,
+            y - self._CURSOR_EPSILON,
+            2 * self._CURSOR_EPSILON,
+            2 * self._CURSOR_EPSILON,
+            0,
+            16 * 360
+        )
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """Paint the scene by just calling :meth:`_draw_scene`."""
@@ -221,6 +281,12 @@ class DefineMatrixVisuallyWidget(VisualizeTransformationWidget, InteractivePlot)
         painter.begin(self)
 
         self._draw_scene(painter)
+
+        if self.display_settings.draw_output_vector:
+            self._draw_output_vector(painter)
+
+        if self.display_settings.draw_input_vector:
+            self._draw_input_vector(painter)
 
         painter.end()
         event.accept()

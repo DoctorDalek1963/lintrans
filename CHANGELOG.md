@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - You can now go back through previously used expressions using the up and down arrow keys
 - You can now use anonymous matrices (using numerical entries directly without needing to define a
   named matrix). See the tutorial for details
+- The input and output vectors now appear in the visual definition dialog, and are translucent
 
 ### Fixed
 

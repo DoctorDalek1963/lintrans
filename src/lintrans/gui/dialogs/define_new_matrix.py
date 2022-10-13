@@ -146,6 +146,7 @@ class DefineVisuallyDialog(DefineMatrixDialog):
             matrix_wrapper: MatrixWrapper,
             display_settings: DisplaySettings,
             polygon_points: List[Tuple[float, float]],
+            input_vector: Tuple[float, float],
             **kwargs
     ):
         """Create the widgets and layout of the dialog.
@@ -161,7 +162,8 @@ class DefineVisuallyDialog(DefineMatrixDialog):
         self._plot = DefineMatrixVisuallyWidget(
             self,
             display_settings=display_settings,
-            polygon_points=polygon_points
+            polygon_points=polygon_points,
+            input_vector=input_vector
         )
 
         # === Arrange the widgets
