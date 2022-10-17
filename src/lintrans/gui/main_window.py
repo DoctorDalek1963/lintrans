@@ -98,7 +98,7 @@ class LintransMainWindow(QMainWindow):
         self._expression_history: List[str] = []
         self._expression_history_index: Optional[int] = None
 
-        self.setWindowTitle('lintrans')
+        self.setWindowTitle('[*]lintrans')
         self.setMinimumSize(800, 650)
 
         path = Path(__file__).parent.absolute() / 'assets' / 'icon.jpg'
@@ -362,16 +362,21 @@ class LintransMainWindow(QMainWindow):
 
     def closeEvent(self, event: QCloseEvent) -> None:
         """Handle a :class:`QCloseEvent` by confirming if the user wants to save, and cancelling animation."""
-        if self._save_filename is None or not self.isWindowModified():
+        if not self.isWindowModified():
             self._animating = False
             self._animating_sequence = False
             event.accept()
             return
 
+        if self._save_filename is not None:
+            text = f"If you don't save, then changes made to {self._save_filename} will be lost."
+        else:
+            text = "If you don't save, then changes made will be lost."
+
         dialog = QMessageBox(self)
         dialog.setIcon(QMessageBox.Question)
         dialog.setWindowTitle('Save changes?')
-        dialog.setText(f"If you don't save, then changes made to {self._save_filename} will be lost.")
+        dialog.setText(text)
         dialog.setStandardButtons(QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel)
         dialog.setDefaultButton(QMessageBox.Save)
 
@@ -836,10 +841,10 @@ class LintransMainWindow(QMainWindow):
 
     def _update_window_title(self) -> None:
         """Update the window title to reflect whether the session has changed since it was last saved."""
-        title = 'lintrans'
-
         if self._save_filename:
-            title = os.path.split(self._save_filename)[-1] + '[*] - ' + title
+            title = os.path.split(self._save_filename)[-1] + '[*] - lintrans'
+        else:
+            title = '[*]lintrans'
 
         self.setWindowTitle(title)
 
