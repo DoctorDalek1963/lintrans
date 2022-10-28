@@ -27,7 +27,7 @@ def check_dependencies() -> None:
     # PyQt5 seems to be a bit complicated, so we look for PyQt5.QtCore to make sure the pacakge is properly installed
     dependencies = [
         ('nptyping', 'nptyping==1.4.4', '__version__'),
-        ('numpy', 'numpy==1.23.0', '__version__'),
+        ('numpy', 'numpy==1.23.4', '__version__'),
         ('packaging', 'packaging==21.3', '__version__'),
         ('PIL', 'Pillow==9.2.0', '__version__'),
         ('PyInstaller', 'pyinstaller==5.6', '__version__'),
