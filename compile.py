@@ -30,7 +30,7 @@ def check_dependencies() -> None:
         ('numpy', 'numpy==1.23.0', '__version__'),
         ('packaging', 'packaging==21.3', '__version__'),
         ('PIL', 'Pillow==9.2.0', '__version__'),
-        ('PyInstaller', 'pyinstaller==5.3', '__version__'),
+        ('PyInstaller', 'pyinstaller==5.6', '__version__'),
         ('PyQt5.QtCore', 'pyqt5==5.15.6', 'PYQT_VERSION_STR')
     ]
     unmet = []
