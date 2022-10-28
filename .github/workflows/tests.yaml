@@ -6,6 +6,7 @@ on:
       - main
       - dev/*
     paths:
+      - '.github/workflows/tests.yaml'
       - 'src/**/*.py'
       - 'tests/**/*.py'
 

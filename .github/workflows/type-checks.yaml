@@ -6,6 +6,7 @@ on:
       - main
       - dev/*
     paths:
+      - '.github/workflows/type-checks.yaml'
       - 'src/**/*.py'
       - 'tests/**/*.py'
 

@@ -6,6 +6,7 @@ on:
       - main
       - dev/*
     paths:
+      - '.github/workflows/docstrings.yaml'
       - 'src/**/*.py'
       - 'tests/**/*.py'
 
