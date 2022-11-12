@@ -4,24 +4,24 @@ macOS
 Install Python
 --------------
 
-I highly recommend using the latest version of Python, which at the time of writing is 3.10.
-Anything 3.8 or higher should suffice, but the latest version is recommended.
+I highly recommend using the latest version of Python, which at the time of writing is 3.11.
+Anything 3.10 or higher should suffice, but the latest version is recommended.
 
-If you've already got Python 3.8 or higher, then you just need to find out whether you use
+If you've already got Python 3.10 or higher, then you just need to find out whether you use
 ``python``, ``python3``, or ``python3.X`` (where ``X`` is a number) in `Terminal` (use ``python
 -V`` to check). We'll need that for later.
 
 .. code-block:: shell-session
 
    johndoe@mac-name ~ % python3 -V
-   3.10.6
+   3.11.0
 
-If you don't already have Python 3.8 or newer, download the latest release from `python.org
+If you don't already have Python 3.10 or newer, download the latest release from `python.org
 <https://www.python.org/downloads/>`_. Make sure to download the macOS installer, and then just run
 it.
 
 Follow all of the instructions and at the end, run ``Install Certificates.command`` and ``Update
-Shell Profile.command`` (available in ``/Applications/Python 3.10`` if it doesn't show up
+Shell Profile.command`` (available in ``/Applications/Python 3.11`` if it doesn't show up
 automatically).
 
 Then open `Terminal` from Spotlight Search and check that ``python3 -V`` says the version that you
