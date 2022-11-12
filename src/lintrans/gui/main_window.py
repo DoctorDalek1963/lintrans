@@ -30,7 +30,8 @@ from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QHBoxLayout,
 
 import lintrans
 from lintrans import updating
-from lintrans.global_settings import GlobalSettings
+from lintrans.global_settings import GlobalSettings, UpdateType
+from lintrans.gui.dialogs.settings import GlobalSettingsDialog
 from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.parse import validate_matrix_expression
 from lintrans.matrices.utility import polar_coords, rotate_coord
@@ -62,12 +63,12 @@ class _UpdateChecker(QObject):
 
         This method exists to be run in a background thread to trigger a prompt if a new version is found.
         """
-        update_type = GlobalSettings().get_update_type()
+        update_type = GlobalSettings().get_data().update_type
 
-        if update_type == GlobalSettings().UpdateType.never:
+        if update_type == UpdateType.never:
             return
 
-        if update_type == GlobalSettings().UpdateType.auto:
+        if update_type == UpdateType.auto:
             updating.update_lintrans_in_background(check=True)
             return
 
@@ -131,6 +132,10 @@ class LintransMainWindow(QMainWindow):
 
         menu_help = QMenu(menubar)
         menu_help.setTitle('&Help')
+
+        action_global_settings = QAction(self)
+        action_global_settings.setText('Settings')
+        action_global_settings.triggered.connect(self._dialog_change_global_settings)
 
         action_reset_session = QAction(self)
         action_reset_session.setText('Reset session')
@@ -199,6 +204,8 @@ class LintransMainWindow(QMainWindow):
         action_about.setText('&About')
         action_about.triggered.connect(lambda: AboutDialog(self).open())
 
+        menu_file.addAction(action_global_settings)
+        menu_file.addSeparator()
         menu_file.addAction(action_reset_session)
         menu_file.addAction(action_open)
         menu_file.addSeparator()
@@ -666,7 +673,7 @@ class LintransMainWindow(QMainWindow):
         if det_b == 0:
             return matrix_a
 
-        scalar = 1 + proportion * (np.sqrt(abs(det_target / det_b)) - 1)
+        scalar: float = 1 + proportion * (np.sqrt(abs(det_target / det_b)) - 1)
         return scalar * matrix_b
 
     def _animate_between_matrices(self, matrix_start: MatrixType, matrix_target: MatrixType) -> None:
@@ -758,6 +765,13 @@ class LintransMainWindow(QMainWindow):
 
         self.setWindowModified(True)
         self._update_window_title()
+
+    @pyqtSlot()
+    def _dialog_change_global_settings(self) -> None:
+        """Open the dialog to change the global settings."""
+        dialog = GlobalSettingsDialog(self)
+        dialog.open()
+        dialog.accepted.connect(self._plot.update)
 
     @pyqtSlot()
     def _dialog_change_display_settings(self) -> None:

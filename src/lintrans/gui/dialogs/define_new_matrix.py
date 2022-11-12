@@ -11,7 +11,7 @@ from __future__ import annotations
 import abc
 from typing import List, Tuple
 
-from numpy import array
+from numpy import array, eye
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QDoubleValidator, QKeySequence
@@ -195,9 +195,10 @@ class DefineVisuallyDialog(DefineMatrixDialog):
         matrix = self.matrix_wrapper[self._selected_letter]
 
         if matrix is None:
-            matrix = self.matrix_wrapper['I']
+            self._plot.plot_matrix(eye(2))
+        else:
+            self._plot.plot_matrix(matrix)
 
-        self._plot.plot_matrix(matrix)
         self._plot.update()
 
     @pyqtSlot()

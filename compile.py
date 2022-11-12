@@ -26,7 +26,7 @@ def check_dependencies() -> None:
     # We look for the import_name spec and if we can't find it, then we require the user to install package_name
     # PyQt5 seems to be a bit complicated, so we look for PyQt5.QtCore to make sure the pacakge is properly installed
     dependencies = [
-        ('nptyping', 'nptyping==1.4.4', '__version__'),
+        ('nptyping', 'nptyping==2.3.1', '__version__'),
         ('numpy', 'numpy==1.23.4', '__version__'),
         ('packaging', 'packaging==21.3', '__version__'),
         ('PIL', 'Pillow==9.2.0', '__version__'),

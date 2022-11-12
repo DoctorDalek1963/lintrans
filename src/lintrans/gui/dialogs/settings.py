@@ -13,10 +13,14 @@ from typing import Dict
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIntValidator, QKeyEvent, QKeySequence
-from PyQt5.QtWidgets import (QCheckBox, QGroupBox, QHBoxLayout, QLayout,
-                             QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout)
+from PyQt5.QtGui import (QDoubleValidator, QIntValidator, QKeyEvent,
+                         QKeySequence)
+from PyQt5.QtWidgets import (QCheckBox, QGroupBox, QHBoxLayout, QLabel,
+                             QLayout, QLineEdit, QRadioButton, QShortcut,
+                             QSizePolicy, QSpacerItem, QVBoxLayout)
 
+from lintrans.global_settings import (GlobalSettings, GlobalSettingsData,
+                                      UpdateType)
 from lintrans.gui.dialogs.misc import FixedSizeDialog
 from lintrans.gui.settings import DisplaySettings
 
@@ -155,23 +159,23 @@ class DisplaySettingsDialog(SettingsDialog):
         )
         self._dict_checkboxes['a'] = self._checkbox_applicative_animation
 
-        label_animation_time = QtWidgets.QLabel(self)
+        label_animation_time = QLabel(self)
         label_animation_time.setText('Total animation length (ms)')
         label_animation_time.setToolTip(
             'How long it takes for an animation to complete'
         )
 
-        self._lineedit_animation_time = QtWidgets.QLineEdit(self)
+        self._lineedit_animation_time = QLineEdit(self)
         self._lineedit_animation_time.setValidator(QIntValidator(1, 9999, self))
         self._lineedit_animation_time.textChanged.connect(self._update_gui)
 
-        label_animation_pause_length = QtWidgets.QLabel(self)
+        label_animation_pause_length = QLabel(self)
         label_animation_pause_length.setText('Animation pause length (ms)')
         label_animation_pause_length.setToolTip(
             'How many milliseconds to pause for in comma-separated animations'
         )
 
-        self._lineedit_animation_pause_length = QtWidgets.QLineEdit(self)
+        self._lineedit_animation_pause_length = QLineEdit(self)
         self._lineedit_animation_pause_length.setValidator(QIntValidator(1, 999, self))
 
         # Matrix info
@@ -417,3 +421,124 @@ class DisplaySettingsDialog(SettingsDialog):
             return
 
         event.accept()
+
+
+class GlobalSettingsDialog(SettingsDialog):
+    """The dialog to allow the user to edit the display settings."""
+
+    def __init__(self, *args, **kwargs):
+        """Create the widgets and layout of the dialog."""
+        super().__init__(*args, resettable=True, **kwargs)
+
+        self._data: GlobalSettingsData = GlobalSettings().get_data()
+        self.setWindowTitle('Change global settings')
+
+        # === Create the widgets
+
+        groupbox_update_types = QGroupBox('Update prompt type', self)
+        self._radio_button_auto = QRadioButton('Always update automatically', groupbox_update_types)
+        self._radio_button_prompt = QRadioButton('Always ask to update', groupbox_update_types)
+        self._radio_button_never = QRadioButton('Never update', groupbox_update_types)
+
+        label_cursor_epsilon = QLabel(self)
+        label_cursor_epsilon.setText('Cursor drag proximity (pixels)')
+        label_cursor_epsilon.setToolTip(
+            'The maximum distance (in pixels) from a draggable point before it will be dragged'
+        )
+
+        self._lineedit_cursor_epsilon = QLineEdit(self)
+        self._lineedit_cursor_epsilon.setValidator(QIntValidator(1, 99, self))
+        self._lineedit_cursor_epsilon.setText(str(self._data.cursor_epsilon))
+        self._lineedit_cursor_epsilon.textChanged.connect(self._update_gui)
+
+        label_snap_dist = QLabel(self)
+        label_snap_dist.setText('Snap distance (grid units)')
+        label_snap_dist.setToolTip(
+            'The minimum distacne (in grid units) that a draggable point '
+            'must be from an integer coordinate to snap to it'
+        )
+
+        self._lineedit_snap_dist = QLineEdit(self)
+        self._lineedit_snap_dist.setValidator(QDoubleValidator(0.0, 0.99, 2, self))
+        self._lineedit_snap_dist.setText(str(self._data.snap_dist))
+        self._lineedit_snap_dist.textChanged.connect(self._update_gui)
+
+        # === Arrange the widgets
+
+        vlay_update_type = QVBoxLayout()
+        vlay_update_type.addWidget(self._radio_button_auto)
+        vlay_update_type.addWidget(self._radio_button_prompt)
+        vlay_update_type.addWidget(self._radio_button_never)
+        groupbox_update_types.setLayout(vlay_update_type)
+
+        hlay_cursor_epsilon = QHBoxLayout()
+        hlay_cursor_epsilon.addWidget(label_cursor_epsilon)
+        hlay_cursor_epsilon.addWidget(self._lineedit_cursor_epsilon)
+
+        hlay_snap_dist = QHBoxLayout()
+        hlay_snap_dist.addWidget(label_snap_dist)
+        hlay_snap_dist.addWidget(self._lineedit_snap_dist)
+
+        vlay_dist = QVBoxLayout()
+        vlay_dist.setSpacing(20)
+        vlay_dist.addLayout(hlay_cursor_epsilon)
+        vlay_dist.addLayout(hlay_snap_dist)
+
+        groupbox_dist = QGroupBox('Distances', self)
+        groupbox_dist.setLayout(vlay_dist)
+
+        options_layout = QVBoxLayout()
+        options_layout.setSpacing(20)
+        options_layout.addWidget(groupbox_update_types)
+        options_layout.addWidget(groupbox_dist)
+
+        self._load_settings()
+        self._setup_layout(options_layout)
+
+    def _update_gui(self) -> None:
+        """Update the GUI according to other widgets in the GUI."""
+        if self._lineedit_cursor_epsilon.text() == '':
+            cursor_epsilon = False
+        else:
+            cursor_epsilon = 0 <= int(self._lineedit_cursor_epsilon.text()) <= 99
+
+        if self._lineedit_snap_dist.text() == '':
+            snap_dist = False
+        else:
+            snap_dist = 0.0 <= float(self._lineedit_snap_dist.text()) <= 1.0
+
+        self._button_confirm.setEnabled(cursor_epsilon and snap_dist)
+
+    def _load_settings(self) -> None:
+        """Load the current display settings into the widgets."""
+        if self._data.update_type == UpdateType.auto:
+            self._radio_button_auto.setChecked(True)
+        elif self._data.update_type == UpdateType.prompt:
+            self._radio_button_prompt.setChecked(True)
+        elif self._data.update_type == UpdateType.never:
+            self._radio_button_never.setChecked(True)
+
+        self._lineedit_cursor_epsilon.setText(str(self._data.cursor_epsilon))
+        self._lineedit_snap_dist.setText(str(self._data.snap_dist))
+
+    def _confirm_settings(self) -> None:
+        """Set the global settings."""
+        if self._radio_button_auto.isChecked():
+            self._data.update_type = UpdateType.auto
+        elif self._radio_button_prompt.isChecked():
+            self._data.update_type = UpdateType.prompt
+        elif self._radio_button_never.isChecked():
+            self._data.update_type = UpdateType.never
+
+        self._data.cursor_epsilon = int(self._lineedit_cursor_epsilon.text())
+        self._data.snap_dist = float(self._lineedit_snap_dist.text())
+
+        GlobalSettings().set_data(self._data)
+
+        self.accept()
+
+    def _reset_settings(self) -> None:
+        """Reset the internal data values to their defaults."""
+        self._data = GlobalSettingsData()
+        self._load_settings()
+        self._update_gui()

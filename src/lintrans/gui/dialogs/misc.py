@@ -20,7 +20,7 @@ from PyQt5.QtWidgets import (QDialog, QFileDialog, QGridLayout, QGroupBox,
                              QStackedLayout, QVBoxLayout, QWidget)
 
 import lintrans
-from lintrans.global_settings import GlobalSettings
+from lintrans.global_settings import GlobalSettings, UpdateType
 from lintrans.gui.plots import DefinePolygonWidget
 from lintrans.matrices import MatrixWrapper
 from lintrans.matrices.utility import round_float
@@ -377,7 +377,7 @@ class PromptUpdateDialog(FixedSizeDialog):
         label_explanation = QLabel(self)
         label_explanation.setText(
             'The update will run silently in the background, so you can keep using lintrans uninterrupted.\n'
-            f'You can change your choice at any time by editing {GlobalSettings().get_settings_file()}'
+            'You can change your choice at any time in File > Settings.'
         )
         label_explanation.setAlignment(Qt.AlignCenter)
 
@@ -434,13 +434,13 @@ class PromptUpdateDialog(FixedSizeDialog):
         """Save the user's choice of how to update and optionally trigger an update now."""
         gs = GlobalSettings()
         if self._radio_button_auto.isChecked():
-            gs.set_update_type(gs.UpdateType.auto)
+            gs.set_update_type(UpdateType.auto)
 
         elif self._radio_button_prompt.isChecked():
-            gs.set_update_type(gs.UpdateType.prompt)
+            gs.set_update_type(UpdateType.prompt)
 
         elif self._radio_button_never.isChecked():
-            gs.set_update_type(gs.UpdateType.never)
+            gs.set_update_type(UpdateType.never)
 
         if update_now:
             # We don't need to check because we'll only get here if we know a new version is available

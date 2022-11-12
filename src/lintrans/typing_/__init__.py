@@ -17,7 +17,7 @@ from __future__ import annotations
 from sys import version_info
 from typing import Any, List, Tuple
 
-from nptyping import Float, NDArray
+from nptyping import Float, NDArray, Shape
 from numpy import ndarray
 
 if version_info >= (3, 10):
@@ -25,10 +25,10 @@ if version_info >= (3, 10):
 
 __all__ = ['is_matrix_type', 'MatrixType', 'MatrixParseList', 'VectorType']
 
-MatrixType: TypeAlias = 'NDArray[(2, 2), Float]'
+MatrixType: TypeAlias = NDArray[Shape['2, 2'], Float]
 """This type represents a 2x2 matrix as a NumPy array."""
 
-VectorType: TypeAlias = 'NDArray[(2,), Float]'
+VectorType: TypeAlias = NDArray[Shape['2'], Float]
 """This type represents a 2D vector as a NumPy array, for use with :attr:`MatrixType`."""
 
 MatrixParseList: TypeAlias = List[List[Tuple[str, str, str]]]

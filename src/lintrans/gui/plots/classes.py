@@ -19,6 +19,7 @@ from PyQt5.QtGui import (QBrush, QColor, QFont, QMouseEvent, QPainter,
                          QWheelEvent)
 from PyQt5.QtWidgets import QWidget
 
+from lintrans.global_settings import GlobalSettings
 from lintrans.typing_ import MatrixType, VectorType
 
 
@@ -183,16 +184,11 @@ class InteractivePlot(BackgroundPlot):
     requiring all subclasses to implement these.
     """
 
-    _CURSOR_EPSILON: int = 5
-    """This is the distance (in pixels) that the cursor needs to be from the point to drag it."""
-
-    _SNAP_DIST = 0.1
-    """This is the distance (in grid coords) that the cursor needs to be from an integer point to snap to it."""
-
     def _round_to_int_coord(self, point: Tuple[float, float]) -> Tuple[float, float]:
-        """Take a coordinate in grid coords and round it to an integer coordinate if it's within :attr:`_SNAP_DIST`.
+        """Take a coordinate in grid coords and round it to an integer coordinate if it's within the snapping distance.
 
         If the point is not close enough, we just return the original point.
+        See :attr:`lintrans.global_settings.GlobalSettingsData.snap_dist`.
         """
         x, y = point
 
@@ -209,7 +205,7 @@ class InteractivePlot(BackgroundPlot):
         ]
 
         for snap_dist, coord in snap_distances:
-            if snap_dist < self._SNAP_DIST:
+            if snap_dist < GlobalSettings().get_data().snap_dist:
                 x, y = coord
 
         return x, y
@@ -218,7 +214,8 @@ class InteractivePlot(BackgroundPlot):
         """Check if the cursor position (in canvas coords) is within range of the given point."""
         mx, my = cursor_pos
         px, py = self.canvas_coords(*point)
-        return (abs(px - mx) <= self._CURSOR_EPSILON and abs(py - my) <= self._CURSOR_EPSILON)
+        cursor_epsilon = GlobalSettings().get_data().cursor_epsilon
+        return (abs(px - mx) <= cursor_epsilon and abs(py - my) <= cursor_epsilon)
 
     @abstractmethod
     def mousePressEvent(self, event: QMouseEvent) -> None:

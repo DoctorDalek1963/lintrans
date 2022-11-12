@@ -18,6 +18,7 @@ from PyQt5.QtCore import QPointF, Qt, pyqtSlot
 from PyQt5.QtGui import (QBrush, QColor, QMouseEvent, QPainter, QPaintEvent,
                          QPen, QPolygonF)
 
+from lintrans.global_settings import GlobalSettings
 from lintrans.gui.settings import DisplaySettings
 from lintrans.typing_ import MatrixType
 
@@ -115,23 +116,24 @@ class MainViewportWidget(VisualizeTransformationWidget, InteractivePlot):
         painter.drawLine(*self._canvas_origin, x, y)
 
         painter.setBrush(self._BRUSH_SOLID_WHITE)
+        cursor_epsilon = GlobalSettings().get_data().cursor_epsilon
 
         painter.setPen(Qt.NoPen)
         painter.drawPie(
-            x - self._CURSOR_EPSILON,
-            y - self._CURSOR_EPSILON,
-            2 * self._CURSOR_EPSILON,
-            2 * self._CURSOR_EPSILON,
+            x - cursor_epsilon,
+            y - cursor_epsilon,
+            2 * cursor_epsilon,
+            2 * cursor_epsilon,
             0,
             16 * 360
         )
 
         painter.setPen(pen)
         painter.drawArc(
-            x - self._CURSOR_EPSILON,
-            y - self._CURSOR_EPSILON,
-            2 * self._CURSOR_EPSILON,
-            2 * self._CURSOR_EPSILON,
+            x - cursor_epsilon,
+            y - cursor_epsilon,
+            2 * cursor_epsilon,
+            2 * cursor_epsilon,
             0,
             16 * 360
         )
@@ -142,13 +144,14 @@ class MainViewportWidget(VisualizeTransformationWidget, InteractivePlot):
         painter.setBrush(QBrush(self._COLOUR_OUTPUT_VECTOR, Qt.SolidPattern))
 
         x, y = self.canvas_coords(*(self._matrix @ self.point_input_vector))
+        cursor_epsilon = GlobalSettings().get_data().cursor_epsilon
 
         painter.drawLine(*self._canvas_origin, x, y)
         painter.drawPie(
-            x - self._CURSOR_EPSILON,
-            y - self._CURSOR_EPSILON,
-            2 * self._CURSOR_EPSILON,
-            2 * self._CURSOR_EPSILON,
+            x - cursor_epsilon,
+            y - cursor_epsilon,
+            2 * cursor_epsilon,
+            2 * cursor_epsilon,
             0,
             16 * 360
         )
@@ -235,23 +238,24 @@ class DefineMatrixVisuallyWidget(VisualizeTransformationWidget, InteractivePlot)
         painter.drawLine(*self._canvas_origin, x, y)
 
         painter.setBrush(self._BRUSH_SOLID_WHITE)
+        cursor_epsilon = GlobalSettings().get_data().cursor_epsilon
 
         painter.setPen(Qt.NoPen)
         painter.drawPie(
-            x - self._CURSOR_EPSILON,
-            y - self._CURSOR_EPSILON,
-            2 * self._CURSOR_EPSILON,
-            2 * self._CURSOR_EPSILON,
+            x - cursor_epsilon,
+            y - cursor_epsilon,
+            2 * cursor_epsilon,
+            2 * cursor_epsilon,
             0,
             16 * 360
         )
 
         painter.setPen(pen)
         painter.drawArc(
-            x - self._CURSOR_EPSILON,
-            y - self._CURSOR_EPSILON,
-            2 * self._CURSOR_EPSILON,
-            2 * self._CURSOR_EPSILON,
+            x - cursor_epsilon,
+            y - cursor_epsilon,
+            2 * cursor_epsilon,
+            2 * cursor_epsilon,
             0,
             16 * 360
         )
@@ -264,13 +268,14 @@ class DefineMatrixVisuallyWidget(VisualizeTransformationWidget, InteractivePlot)
         painter.setBrush(QBrush(self._COLOUR_OUTPUT_VECTOR, Qt.SolidPattern))
 
         x, y = self.canvas_coords(*(self._matrix @ self._input_vector))
+        cursor_epsilon = GlobalSettings().get_data().cursor_epsilon
 
         painter.drawLine(*self._canvas_origin, x, y)
         painter.drawPie(
-            x - self._CURSOR_EPSILON,
-            y - self._CURSOR_EPSILON,
-            2 * self._CURSOR_EPSILON,
-            2 * self._CURSOR_EPSILON,
+            x - cursor_epsilon,
+            y - cursor_epsilon,
+            2 * cursor_epsilon,
+            2 * cursor_epsilon,
             0,
             16 * 360
         )
@@ -292,7 +297,10 @@ class DefineMatrixVisuallyWidget(VisualizeTransformationWidget, InteractivePlot)
         event.accept()
 
     def mousePressEvent(self, event: QMouseEvent) -> None:
-        """Set the dragged point if the cursor is within :attr:`_CURSOR_EPSILON`."""
+        """Set the dragged point if the cursor is within the cursor epsilon.
+
+        See :attr:`lintrans.global_settings.GlobalSettingsData.cursor_epsilon`.
+        """
         cursor_pos = (event.x(), event.y())
 
         if event.button() != Qt.LeftButton:
@@ -449,26 +457,27 @@ class DefinePolygonWidget(InteractivePlot):
             )
 
         painter.setBrush(self._BRUSH_SOLID_WHITE)
+        cursor_epsilon = GlobalSettings().get_data().cursor_epsilon
 
         for point in self.points:
             x, y = self.canvas_coords(*point)
 
             painter.setPen(Qt.NoPen)
             painter.drawPie(
-                x - self._CURSOR_EPSILON,
-                y - self._CURSOR_EPSILON,
-                2 * self._CURSOR_EPSILON,
-                2 * self._CURSOR_EPSILON,
+                x - cursor_epsilon,
+                y - cursor_epsilon,
+                2 * cursor_epsilon,
+                2 * cursor_epsilon,
                 0,
                 16 * 360
             )
 
             painter.setPen(self._PEN_POLYGON)
             painter.drawArc(
-                x - self._CURSOR_EPSILON,
-                y - self._CURSOR_EPSILON,
-                2 * self._CURSOR_EPSILON,
-                2 * self._CURSOR_EPSILON,
+                x - cursor_epsilon,
+                y - cursor_epsilon,
+                2 * cursor_epsilon,
+                2 * cursor_epsilon,
                 0,
                 16 * 360
             )
