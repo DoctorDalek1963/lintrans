@@ -41,7 +41,7 @@ class GlobalSettingsData:
     """This is the distance in grid coords that the cursor needs to be from an integer point to snap to it."""
 
     def save_to_file(self, filename: str) -> None:
-        """Save the session state to a file, creating parent directories as needed."""
+        """Save the global settings data to a file, creating parent directories as needed."""
         parent_dir = pathlib.Path(os.path.expanduser(filename)).parent.absolute()
 
         if not os.path.isdir(parent_dir):
@@ -54,11 +54,9 @@ class GlobalSettingsData:
 
     @classmethod
     def load_from_file(cls, filename: str) -> Tuple[str, GlobalSettingsData]:
-        """Return the session state that was previously saved to ``filename`` along with some extra information.
+        """Return the global settings data that was previously saved to ``filename`` along with some extra information.
 
-        The tuple we return has the :class:`Session` object (with some possibly None arguments),
-        the lintrans version that the file was saved under, and whether the file had any extra
-        attributes that this version doesn't support.
+        The tuple we return has the version of lintrans that was used to save the file, and the data itself.
 
         :raises EOFError: If the file doesn't contain a pickled Python object
         :raises FileNotFoundError: If the file doesn't exist
