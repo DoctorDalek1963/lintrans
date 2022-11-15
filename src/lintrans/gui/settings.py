@@ -130,6 +130,12 @@ class DisplaySettings:
         # Create a default object and overwrite the fields that we have
         data = cls()
         for attr in file_data[1].__slots__:
-            setattr(data, attr, getattr(file_data[1], attr))
+            # Try to get the attribute from the old data, but don't worry if we can't,
+            # because that means it's from an older version, so we can use the default
+            # values from `cls()`
+            try:
+                setattr(data, attr, getattr(file_data[1], attr))
+            except AttributeError:
+                pass
 
         return file_data[0], data

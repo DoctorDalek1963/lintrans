@@ -40,6 +40,9 @@ class GlobalSettingsData:
     snap_dist: float = 0.1
     """This is the distance in grid coords that the cursor needs to be from an integer point to snap to it."""
 
+    snap_to_int_coords: bool = True
+    """This decides whether or not vectors should snap to integer coordinates when being dragged around."""
+
     def save_to_file(self, filename: str) -> None:
         """Save the global settings data to a file, creating parent directories as needed."""
         parent_dir = pathlib.Path(os.path.expanduser(filename)).parent.absolute()
@@ -74,7 +77,13 @@ class GlobalSettingsData:
         # Create a default object and overwrite the fields that we have
         data = cls()
         for attr in file_data[1].__slots__:
-            setattr(data, attr, getattr(file_data[1], attr))
+            # Try to get the attribute from the old data, but don't worry if we can't,
+            # because that means it's from an older version, so we can use the default
+            # values from `cls()`
+            try:
+                setattr(data, attr, getattr(file_data[1], attr))
+            except AttributeError:
+                pass
 
         return file_data[0], data
 

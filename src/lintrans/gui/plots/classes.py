@@ -205,7 +205,7 @@ class InteractivePlot(BackgroundPlot):
         ]
 
         for snap_dist, coord in snap_distances:
-            if snap_dist < GlobalSettings().get_data().snap_dist:
+            if GlobalSettings().get_data().snap_to_int_coords and snap_dist < GlobalSettings().get_data().snap_dist:
                 x, y = coord
 
         return x, y

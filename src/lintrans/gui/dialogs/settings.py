@@ -451,6 +451,13 @@ class GlobalSettingsDialog(SettingsDialog):
         self._lineedit_cursor_epsilon.setText(str(self._data.cursor_epsilon))
         self._lineedit_cursor_epsilon.textChanged.connect(self._update_gui)
 
+        self._checkbox_snap_to_int_coords = QCheckBox(self)
+        self._checkbox_snap_to_int_coords.setText('Snap to integer coordinates')
+        self._checkbox_snap_to_int_coords.setToolTip(
+            'Whether vectors should snap the integer coordinates when dragging them'
+        )
+        self._checkbox_snap_to_int_coords.clicked.connect(self._update_gui)
+
         label_snap_dist = QLabel(self)
         label_snap_dist.setText('Snap distance (grid units)')
         label_snap_dist.setToolTip(
@@ -482,6 +489,7 @@ class GlobalSettingsDialog(SettingsDialog):
         vlay_dist = QVBoxLayout()
         vlay_dist.setSpacing(20)
         vlay_dist.addLayout(hlay_cursor_epsilon)
+        vlay_dist.addWidget(self._checkbox_snap_to_int_coords)
         vlay_dist.addLayout(hlay_snap_dist)
 
         groupbox_dist = QGroupBox('Distances', self)
@@ -493,6 +501,7 @@ class GlobalSettingsDialog(SettingsDialog):
         options_layout.addWidget(groupbox_dist)
 
         self._load_settings()
+        self._update_gui()
         self._setup_layout(options_layout)
 
     def _update_gui(self) -> None:
@@ -507,6 +516,7 @@ class GlobalSettingsDialog(SettingsDialog):
         else:
             snap_dist = 0.0 <= float(self._lineedit_snap_dist.text()) <= 1.0
 
+        self._lineedit_snap_dist.setEnabled(self._checkbox_snap_to_int_coords.isChecked())
         self._button_confirm.setEnabled(cursor_epsilon and snap_dist)
 
     def _load_settings(self) -> None:
@@ -519,6 +529,7 @@ class GlobalSettingsDialog(SettingsDialog):
             self._radio_button_never.setChecked(True)
 
         self._lineedit_cursor_epsilon.setText(str(self._data.cursor_epsilon))
+        self._checkbox_snap_to_int_coords.setChecked(self._data.snap_to_int_coords)
         self._lineedit_snap_dist.setText(str(self._data.snap_dist))
 
     def _confirm_settings(self) -> None:
@@ -531,6 +542,7 @@ class GlobalSettingsDialog(SettingsDialog):
             self._data.update_type = UpdateType.never
 
         self._data.cursor_epsilon = int(self._lineedit_cursor_epsilon.text())
+        self._data.snap_to_int_coords = self._checkbox_snap_to_int_coords.isChecked()
         self._data.snap_dist = float(self._lineedit_snap_dist.text())
 
         GlobalSettings().set_data(self._data)
