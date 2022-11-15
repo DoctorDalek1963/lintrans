@@ -230,7 +230,11 @@ class LintransMainWindow(QMainWindow):
 
         # Left layout: the plot and input box
 
-        self._plot = MainViewportWidget(self, display_settings=DisplaySettings(), polygon_points=[])
+        self._plot = MainViewportWidget(
+            self,
+            display_settings=GlobalSettings().get_display_settings(),
+            polygon_points=[]
+        )
 
         self._lineedit_expression_box = QtWidgets.QLineEdit(self)
         self._lineedit_expression_box.setPlaceholderText('Enter matrix expression...')
@@ -372,6 +376,7 @@ class LintransMainWindow(QMainWindow):
         if not self.isWindowModified():
             self._animating = False
             self._animating_sequence = False
+            GlobalSettings().save_display_settings(self._plot.display_settings)
             event.accept()
             return
 
@@ -395,6 +400,7 @@ class LintransMainWindow(QMainWindow):
         if pressed_button in (QMessageBox.Save, QMessageBox.Discard):
             self._animating = False
             self._animating_sequence = False
+            GlobalSettings().save_display_settings(self._plot.display_settings)
             event.accept()
         else:
             event.ignore()
@@ -877,6 +883,7 @@ class LintransMainWindow(QMainWindow):
         if dialog.exec() == QMessageBox.Yes:
             self._matrix_wrapper = MatrixWrapper()
             self._plot.polygon_points = []
+            self._plot.display_settings = GlobalSettings().get_display_settings()
 
             self._reset_transformation()
             self._expression_history = []

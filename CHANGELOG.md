@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The input and output vectors now appear in the visual definition dialog, and are translucent
 - You are now always prompted to save the session upon exiting, even if you hadn't already saved
 - You can now edit the size of draggable points and the snapping distance for integer coordinates
+- Display settings now persist between sessions, but can still be reset to defaults
 
 ### Fixed
 

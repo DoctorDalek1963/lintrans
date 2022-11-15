@@ -8,10 +8,16 @@
 
 from __future__ import annotations
 
+import os
+import pathlib
+import pickle
 from dataclasses import dataclass
+from typing import Tuple
+
+import lintrans
 
 
-@dataclass
+@dataclass(slots=True)
 class DisplaySettings:
     """This class simply holds some attributes to configure display."""
 
@@ -89,3 +95,41 @@ class DisplaySettings:
 
     draw_output_vector: bool = True
     """This controls whether we should draw the output vector in the main viewport."""
+
+    def save_to_file(self, filename: str) -> None:
+        """Save the display settings to a file, creating parent directories as needed."""
+        parent_dir = pathlib.Path(os.path.expanduser(filename)).parent.absolute()
+
+        if not os.path.isdir(parent_dir):
+            os.makedirs(parent_dir)
+
+        data: Tuple[str, DisplaySettings] = (lintrans.__version__, self)
+
+        with open(filename, 'wb') as f:
+            pickle.dump(data, f, protocol=4)
+
+    @classmethod
+    def load_from_file(cls, filename: str) -> Tuple[str, DisplaySettings]:
+        """Return the display settings that were previously saved to ``filename`` along with some extra information.
+
+        The tuple we return has the version of lintrans that was used to save the file, and the data itself.
+
+        :raises EOFError: If the file doesn't contain a pickled Python object
+        :raises FileNotFoundError: If the file doesn't exist
+        :raises ValueError: If the file contains a pickled object of the wrong type
+        """
+        if not os.path.isfile(filename):
+            return lintrans.__version__, cls()
+
+        with open(filename, 'rb') as f:
+            file_data = pickle.load(f)
+
+        if not isinstance(file_data, tuple):
+            raise ValueError(f'File {filename} contains pickled object of the wrong type (must be tuple)')
+
+        # Create a default object and overwrite the fields that we have
+        data = cls()
+        for attr in file_data[1].__slots__:
+            setattr(data, attr, getattr(file_data[1], attr))
+
+        return file_data[0], data

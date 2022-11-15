@@ -124,8 +124,7 @@ class GlobalSettings:
         self._executable_path: Optional[str] = None
 
         self._settings_file = os.path.join(self._directory, 'settings.dat')
-        # config = configparser.ConfigParser()
-        # config.read(self._settings_file)
+        self._display_settings_file = os.path.join(self._directory, 'display_settings.dat')
 
         try:
             self._data = GlobalSettingsData.load_from_file(self._settings_file)[1]
@@ -166,6 +165,14 @@ class GlobalSettings:
     def get_settings_file(self) -> str:
         """Return the full path of the settings file."""
         return self._settings_file
+
+    def save_display_settings(self, settings: lintrans.gui.settings.DisplaySettings) -> None:
+        """Save the given display settings to the default file."""
+        settings.save_to_file(self._display_settings_file)
+
+    def get_display_settings(self) -> lintrans.gui.settings.DisplaySettings:
+        """Get the display settings from the default file, using the defaults for anything that's not available."""
+        return lintrans.gui.settings.DisplaySettings.load_from_file(self._display_settings_file)[1]
 
     def get_update_download_filename(self) -> str:
         """Return a name for a temporary file next to the executable.
