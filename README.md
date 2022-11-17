@@ -13,13 +13,6 @@
 
 ---
 
-## NOTICE
-This project is still a work in progress. It is actively being worked on.
-
-Version 1.0.0 should hopefully be out near the beginning of the new academic year in September.
-
----
-
 This is the `lintrans` project. It is a Python package with a GUI. This project aims to provide an
 easy way to visualize matrices as linear transformations. The user can define 2x2 matrices and
 visualize them in 2D space. The user can also visualize compositions of defined matrices - addition
