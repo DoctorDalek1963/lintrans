@@ -12,12 +12,14 @@ Expression syntax
 -----------------
 
 .. note::
-   All whitespace is ignored.
+   All whitespace is ignored, except the whitespace between numbers in anonymous matrices.
 
 Documentation on correct expression syntax is given here. This is a basic summary:
 
-- A single matrix is written as a capital letter like ``A``, or as ``rot(x)``, where ``x`` is a
-  real number
+- A single matrix is written as a capital letter like ``A``, ``rot(x)``, where ``x`` is a real
+  number, or as an anonymous matrix
+- An anonymous matrix is of the form ``[a b; c d]`` where ``a``, ``b``, ``c``, and ``d`` are real
+  numbers
 - When a matrix is given as ``rot(x)``, this means that it represents an anticlockwise rotation by
   ``x`` degrees
 - Matrix A multiplied by matrix B is written as ``AB``
