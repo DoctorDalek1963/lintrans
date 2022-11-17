@@ -135,6 +135,7 @@ class LintransMainWindow(QMainWindow):
 
         action_global_settings = QAction(self)
         action_global_settings.setText('Settings')
+        action_global_settings.setShortcut('Ctrl+Alt+S')
         action_global_settings.triggered.connect(self._dialog_change_global_settings)
 
         action_reset_session = QAction(self)
