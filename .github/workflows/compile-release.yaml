@@ -112,12 +112,16 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Compile lintrans
+      - name: Install dependencies
         run: |
           pip install --upgrade pip wheel
           pip install -e '.[compile]'
-          choco install upx
-          python compile.py
+
+      - name: Install UPX
+        run: choco install upx
+
+      - name: Compile lintrans
+        run: python compile.py
         shell: bash
 
       - name: Setup NSIS script

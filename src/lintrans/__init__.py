@@ -9,6 +9,6 @@
 from . import (crash_reporting, global_settings, gui, matrices, typing_,
                updating)
 
-__version__ = '0.4.0-alpha'
+__version__ = '0.4.0'
 
 __all__ = ['crash_reporting', 'global_settings', 'gui', 'matrices', 'typing_', 'updating', '__version__']
