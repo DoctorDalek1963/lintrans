@@ -131,12 +131,13 @@ lintrans allows you to see a custom defined polygon before and after any given t
 can show or hide both the transformed and untransformed versions separately with these display
 settings.
 
-See :ref:`Visualizing transformations<visualizing-transformations.defining-custom-polygons>` to see
-what these polygons look like.
+See :ref:`Visualizing transformations<visualizing-transformations.defining-custom-polygons>` to
+learn more about these polygons.
 
 Input/output vectors
 --------------------
 
 lintrans supports the ability to drag an input vector and see how it gets transformed by the
 currently displayed transformation. The display settings allow you to show or hide this pair of
-input and output vectors individually.
+input and output vectors individually. See
+:ref:`Visualizing transformations<visualizing-transformations.using-io-vectors>`.

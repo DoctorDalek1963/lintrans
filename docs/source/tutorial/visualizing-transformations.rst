@@ -9,6 +9,10 @@ crux of the app.
 The reset button simply resets the position of the basis vectors to the identity. It does not reset
 the zoom level, display settings, or polygon. These are done separately.
 
+The text box along the bottom is the `expression input box`, which is where your expressions go
+when you want to visualize them. You can then use the up and down arrow keys to scroll through
+previously used expressions.
+
 Render
 ------
 
@@ -81,6 +85,8 @@ non-commutative.
    :align: center
 
    Animating ``B,rot(45)`` with Applicative animation
+
+.. _visualizing-transformations.using-io-vectors:
 
 Using input and output vectors
 ------------------------------

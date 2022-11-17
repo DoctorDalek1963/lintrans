@@ -9,8 +9,8 @@ Usefulness in teaching
 As a teacher, it is often useful to plan a lesson in advance. Defining a whole set of matrices at
 the start of a lesson is boring and time consuming, so lintrans allows you to define a set of
 matrices beforehand, save the whole session to a file, and then open that saved session for the
-lesson. This session file saves all the matrices you've defined, as well as the polygon if you've
-defined one [#]_.
+lesson. This session file saves all the matrices you've defined, the display settings, position of
+the input vector, as well as the polygon if you've defined one.
 
 When you open a previously saved session, you can view all the matrices you had defined by clicking
 the `Show defined matrices` button. However, I would recommend writing down some separate notes to
@@ -33,6 +33,9 @@ defined a new matrix or changed the polygon) without having saved since that cha
 be prompted to save your session before exiting. You can exit and discard your changes if you want
 to, but I would recommend saving.
 
+You will also be prompted to save the session when exiting lintrans even if you hadn't already
+saved it somewhere.
+
 Loading
 -------
 
@@ -40,8 +43,3 @@ To open a previously saved session, go to ``File`` > ``Open`` or press ``Ctrl+O`
 shown all the lintrans session save files in the special folder, and you can just double click on
 the one you want. If you saved your session elsewhere, then you can simply navigate to wherever you
 saved it just like you would with any other file.
-
-.. rubric:: Footnotes
-
-.. [#] If you don't want the polygon to be saved, just reset it before saving. This will
-   effectively delete the polygon.

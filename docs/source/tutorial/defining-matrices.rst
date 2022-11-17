@@ -11,6 +11,8 @@ to one of 25 valid names. These are all the capital letters, except :math:`\math
 reserved for the identity matrix). To select a name when defining a matrix, use the drop-down menu
 on the left to select a letter.
 
+.. _defining-matrices.numerically:
+
 Numerically
 -----------
 
@@ -71,10 +73,16 @@ Viewing defined matrices
 ------------------------
 
 Once you've defined several matrices, it's useful to be able to see what you've defined so far. To
-do this, click the button labelled `Show defined matrices`.
+do this, click the button labelled `Show defined matrices`. This menu also allows you to "undefine"
+a matrix, which will delete it and make it invalid.
+
+.. warning::
+   If you delete a matrix that another matrix depends on, then the matrices that depend on it will
+   also be deleted. In this example, if we undefine :math:`\mathbf{A}`, then :math:`\mathbf{C}`
+   will be undefined as well, because it needed :math:`\mathbf{A}`.
 
 The matrix :math:`\mathbf{I}` is reserved for the identity matrix and you cannot
-assign a new matrix to this name.
+assign a new matrix to this name, or undefine it.
 
 .. image:: _images/defining/info.png
    :alt: The defined matrices info dialog

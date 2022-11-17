@@ -3,6 +3,14 @@
 Expression syntax
 =================
 
+Matrices are defined separate from their usage. See :ref:`Defining matrices<defining-matrices>`.
+
+It's easier to talk about how to combine these pre-defined matrices into expressions first, and
+then talk about anonymous matrices.
+
+Composition
+-----------
+
 The `expression input box` and :ref:`expression definition dialog<defining-matrices.as-expression>`
 allow you to compose matrices using multiplication (scalar and matrix), addition, exponentiation,
 brackets, and transposes. Obviously you can't easily type something like
@@ -66,6 +74,25 @@ Examples
 I recommend to always put exponents in braces. I haven't done it here, just to show when it's
 technically necessary, but it makes things easier to read, so it's good practice to use it all the
 time.
+
+Anonymous matrices
+------------------
+
+It is often useful to use a simple numerically defined matrix once or twice as part of an example,
+but it can be a hassle to define a matrix and then only use it once or twice.
+
+To fix this problem, you can use anonymous matrices. Anonymous matrices are those which don't have
+a name. If you've used `MATLAB <https://en.wikipedia.org/wiki/MATLAB>`_ or `GNU Octave
+<https://octave.org/index#>`_ before, then the syntax should seem familiar.
+
+A matrix of the form :math:`\begin{pmatrix}a & b\\ c & d\end{pmatrix}` would be represented as
+``[a b; c d]``. The spaces are necessary.
+
+An anonymous matrix can be used anywhere in an expression that a pre-defined matrix can. For
+example, in :ref:`Defining matrices<defining-matrices.numerically>`, we defined :math:`\mathbf{A}`
+as being :math:`\begin{pmatrix}2 & -3.2\\ -1.9 & 0.63\end{pmatrix}`. If we only wanted this matrix
+once, then instead of using something like ``4A^2`` in an expression, we could use ``4[2 -3.2; -1.9
+0.63]^2``.
 
 .. rubric:: Footnotes
 
