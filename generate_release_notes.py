@@ -19,7 +19,7 @@ I *highly* recommend reading the tutorial, available [here](https://lintrans.rea
 
 ---
 
-The recommended way to use `lintrans` is to install it with the relevant installer for your platform.
+The recommended way to use `lintrans` is to install it with the relevant installer for your platform. This will allow lintrans to update itself whenever a new version is available. This is configurable.
 
 The Windows installer is completely safe, but you might get a warning that it might not be. This is expected and it's safe to ignore the warning. The only way to get rid of it would be to pay Microsoft. On macOS, I would need to pay Apple to allow other people to run any of my code at all.
 
