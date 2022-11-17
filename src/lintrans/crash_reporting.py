@@ -124,9 +124,10 @@ def _get_error_origin(
 
 def _get_display_settings() -> str:
     """Return a string representing all of the display settings."""
+    raw_settings = _get_main_window()._plot.display_settings
     display_settings = {
-        k: v
-        for k, v in _get_main_window()._plot.display_settings.__dict__.items()
+        k: getattr(raw_settings, k)
+        for k in raw_settings.__slots__
         if not k.startswith('_')
     }
 
