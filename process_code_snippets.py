@@ -27,7 +27,7 @@ from textwrap import dedent
 
 import git
 
-COMMENT_PATTERN = re.compile(r'(?<=\n)%: ([0-9a-f]+)\n%: ([^\s:]+)(:\d+-\d+)?( strip)?')
+COMMENT_PATTERN = re.compile(r'(?<=\n)%: ([0-9a-f]+)\n%: ([^\s:]+)(:\d+-\d+|:\d+)?( strip)?')
 
 COPYRIGHT_COMMENT = '''# lintrans - The linear transformation visualizer
 # Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
@@ -77,8 +77,18 @@ def process_snippets(filename: str) -> None:
 
         # If we've got line numbers, use them. If not, use the whole file
         if lines:
-            first, last = [int(x) for x in lines[1:].split('-')]
-            snippet = '\n'.join(snippet_file_text.splitlines()[first - 1:last])
+            if (match := re.match(r':(\d+)-(\d+)', lines)) is not None:
+                first = int(match.group(1))
+                last = int(match.group(2))
+                snippet = '\n'.join(snippet_file_text.splitlines()[first - 1:last])
+
+            elif (match := re.match(r':(\d+)', lines)) is not None:
+                first = int(match.group(1))
+                snippet = snippet_file_text.splitlines()[first - 1]
+
+            else:
+                first = 1
+                snippet = snippet_file_text
 
         else:
             first = 1
