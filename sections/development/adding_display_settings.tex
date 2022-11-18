@@ -35,7 +35,7 @@ Display settings are good, but useless on their own. My next step was to add a s
 
 I first had to create the dialog class itself, so I created the \texttt{SettingsDialog} superclass first, so that I could use it for global settings in the future, as well as the specific \texttt{DisplaySettingsDialog} subclass now.
 
-As far as I know, a dialog in Qt can't really return a value when it's closed, so the dialog keeps a public instance attribute for the \texttt{DisplaySettings} class itself, and then the main window can copy that instance attribute when the dialog is closed.
+As far as I know, a dialog in Qt can't really return a value when it's closed\footnote{This is because Qt uses a system of event loops, so the main window continues executing its main loop while the dialog is doing the same. That means that the main window can't wait around for the dialog to close, so nothing can be returned from it.}, so the dialog keeps a public instance attribute for the \texttt{DisplaySettings} class itself, and then the main window can copy that instance attribute when the dialog is closed.
 
 %: e4d3aa7eab70daecd16814972a281745110d64a5
 %: src/lintrans/gui/dialogs/settings.py
@@ -46,5 +46,14 @@ I then just had to enable the button in the main GUI and implement the method to
 %: src/lintrans/gui/main_window.py:425-434
 
 The \pyinline{dialog.finished} signal on line 429 should really be \pyinline{dialog.accepted}. Currently, we re-assign the display settings whenever the dialog is closed in any way. Really, we should only re-assign them when the user hits the confirm button, but trying to cancel the changes will currently save them. This was a silly mistake and I fixed it along with some similar signal-related bugs a few weeks later.
+
+\subsubsection{Fixing a bug with transitional animation\label{development:adding-display-settings:fixing-a-bug-with-transitional-animation}}
+
+While playing around with these new display settings, I encountered a bug with transitional animation. When you animate an expression with transitional animation and then animate the same thing again, nothing happens. This is because the app tries to transition from the starting position to the target position, but they are the same position, so nothing moves.
+
+To fix this, I had to check if the start and target matrices were the same (within floating point error), and then reset the viewport to the identity first, before animating to the target as requested.
+
+%: fa4a65540749e84b750ddea8abfd36a86c224b47
+%: src/lintrans/gui/main_window.py:328-338
 
 \end{document}
