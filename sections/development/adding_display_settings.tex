@@ -45,7 +45,7 @@ I then just had to enable the button in the main GUI and implement the method to
 %: b1ba4adc3c7723c95b490e831e651a7781af7d99
 %: src/lintrans/gui/main_window.py:436-444
 
-The \pyinline{dialog.finished} signal on line 429 should really be \pyinline{dialog.accepted}. Currently, we re-assign the display settings whenever the dialog is closed in any way. Really, we should only re-assign them when the user hits the confirm button, but trying to cancel the changes will currently save them. This was a silly mistake and I fixed it along with some similar signal-related bugs a few weeks later.
+\fsbsl{development/b1ba4adc3c7723c95b490e831e651a7781af7d99/settings-dialog.png}{The display settings dialog}{The \pyinline{dialog.finished} signal on line 429 should really be \pyinline{dialog.accepted}. Currently, we re-assign the display settings whenever the dialog is closed in any way. Really, we should only re-assign them when the user hits the confirm button, but trying to cancel the changes will currently save them. This was a silly mistake and I fixed it along with some similar signal-related bugs a few weeks later.}
 
 \subsubsection{Fixing a bug with transitional animation\label{development:adding-display-settings:fixing-a-bug-with-transitional-animation}}
 
@@ -80,5 +80,23 @@ I then wanted to change the determinant parallelogram to be blue when it's posit
 
 %: cc75c7dc85e941540f7e98fe027d0657ad5462b8
 %: src/lintrans/gui/plots/classes.py:385-404
+
+I then had the determinant parallelogram for positive and negative determinants.
+
+\begin{figure}[H]
+\begin{minipage}{0.48\linewidth}
+	\centering
+	\includegraphics[width=\linewidth]{development/cc75c7dc85e941540f7e98fe027d0657ad5462b8/blue.png}
+	\caption{The blue parallelogram}
+	\label{fig:development:cc75c7dc85e941540f7e98fe027d0657ad5462b8:blue.png}
+\end{minipage}\hfill
+\begin{minipage}{0.48\linewidth}
+	\centering
+	\includegraphics[width=\linewidth]{development/cc75c7dc85e941540f7e98fe027d0657ad5462b8/red.png}
+	\caption{The red parallelogram}
+	\label{fig:development:cc75c7dc85e941540f7e98fe027d0657ad5462b8:red.png}
+\end{minipage}
+\vspace{-1em}
+\end{figure}
 
 \end{document}
