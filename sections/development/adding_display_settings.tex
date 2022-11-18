@@ -61,4 +61,24 @@ I later found a bug on line 330. If we subtract the start and target matrices an
 %: 3c490c48a0f4017ab8ee9cf471a65c251817b00e
 %: src/lintrans/gui/main_window.py:333
 
+\subsubsection{Adding the determinant parallelogram\label{development:adding-display-settings:adding-the-determinant-parallelogram}}
+
+The determinant can be represented as the area of the parallelogram formed by the basis vectors. This would be good to visualize in the app.
+
+To do that, I had to add a setting to the display settings, create a function to actually draw it in \pyinline{VectorGridPlot}, and call that function from \pyinline{paintEvent()}.
+
+%: e9e76c1d4f28452efc6ae18afb936616006fd04a
+%: src/lintrans/gui/settings.py:26-27
+
+%: e9e76c1d4f28452efc6ae18afb936616006fd04a
+%: src/lintrans/gui/plots/classes.py:385-394
+
+%: e9e76c1d4f28452efc6ae18afb936616006fd04a
+%: src/lintrans/gui/plots/widgets.py:42-62
+
+I then wanted to change the determinant parallelogram to be blue when it's positive and red when it's negative. I did this by just checking the sign of the determinant and changing the colour accordingly.
+
+%: cc75c7dc85e941540f7e98fe027d0657ad5462b8
+%: src/lintrans/gui/plots/classes.py:385-404
+
 \end{document}
