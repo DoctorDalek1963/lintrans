@@ -1,0 +1,491 @@
+//! This simple binary crate will process code snippet comments in LaTeX source code to produce
+//! `minted` environments with the snippet bodies.
+//!
+//! Code snippets are written as TeX comments with a : following the %.
+//!
+//! For example:
+//!
+//!   %: 29ec1fedbf307e3b7ca731c4a381535fec899b0b
+//!   %: src/lintrans/matrices/wrapper.py:11-22
+//!
+//! Would reference lines 11-22 of the file src/lintrans/matrices/wrapper.py in commit
+//! 29ec1fedbf307e3b7ca731c4a381535fec899b0b on the main branch of lintrans. Line numbers are
+//! optional. If omitted, the whole file is included.
+
+use git2::{Oid, Repository};
+use itertools::Itertools;
+use lazy_static::lazy_static;
+use regex::Regex;
+use std::{env, fs, path::Path};
+
+/// The copyright comment that appears at the top of newer files.
+const COPYRIGHT_COMMENT: &str = r"# lintrans - The linear transformation visualizer
+# Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
+
+# This program is licensed under GNU GPLv3, available here:
+# <https://www.gnu.org/licenses/gpl-3.0.html>
+";
+
+lazy_static! {
+    /// The regex for the snippet comments.
+    static ref COMMENT_PATTERN: Regex = Regex::new(concat!(
+        r"(?m)^%: (?P<hash>[0-9a-f]{40})\n",
+        r"%: (?P<filename>[^\s:]+)(:(?P<linenums>\d+-\d+|\d+))?$"
+    ))
+    .unwrap();
+
+    /// The regex for the linenumbers in the snippet comments.
+    static ref LINENUMS_PATTERN: Regex = Regex::new(r"^(?P<first>\d+)(-(?P<last>\d+))?$").unwrap();
+}
+
+/// A reference to a code snippet, as used in comments.
+#[derive(Clone, Debug, PartialEq)]
+struct SnippetRef<'s> {
+    /// The commit hash.
+    hash: Oid,
+
+    /// The file path.
+    filename: &'s Path,
+
+    /// The start and end lines of the snippet. If [`None`], then the whole file is implied.
+    line_range: Option<(u32, u32)>,
+}
+
+impl<'s> SnippetRef<'s> {
+    /// Create a snippet from a pair of snippet comments.
+    fn from_comment(comment: &'s str) -> Option<Self> {
+        let c = COMMENT_PATTERN.captures(comment)?;
+
+        let hash = Oid::from_str(c.name("hash")?.as_str()).ok()?;
+        let filename = Path::new(c.name("filename")?.as_str());
+
+        let line_range = c.name("linenums").map(|m| {
+            let text = m.as_str();
+            let c = LINENUMS_PATTERN
+                .captures(text)
+                .expect("If we can get here, then the LINENUMS_PATTERN should match the text");
+
+            let first = c
+                .name("first")
+                .unwrap()
+                .as_str()
+                .parse::<u32>()
+                .ok()
+                .unwrap();
+
+            let last = match c.name("last") {
+                None => first,
+                Some(num) => num.as_str().parse::<u32>().ok().unwrap(),
+            };
+
+            (first, last)
+        });
+
+        Some(Self {
+            hash,
+            filename,
+            line_range,
+        })
+    }
+
+    /// Return the raw text of the snippet, removing the copyright comment if the whole file was
+    /// included.
+    ///
+    /// The string returned does not include a trailing newline.
+    fn get_text(&self, repo: &Repository) -> anyhow::Result<SnippetText<'s>> {
+        let x = repo
+            .find_commit(self.hash)?
+            .tree()?
+            .get_path(self.filename)?
+            .to_object(repo)?
+            .into_blob();
+
+        let content = match x {
+            Ok(ref blob) => std::str::from_utf8(blob.content())?,
+            Err(_) => return Err(anyhow::Error::msg("Couldn't convert object to blob")),
+        };
+
+        let (mut first, last) = self
+            .line_range
+            .unwrap_or_else(|| (1, content.lines().count() as u32));
+
+        #[allow(unstable_name_collisions)]
+        if first == 1
+            && content
+                .lines()
+                .take(6)
+                .intersperse("\n")
+                .collect::<String>()
+                == COPYRIGHT_COMMENT
+        {
+            first = 7;
+        }
+
+        #[allow(unstable_name_collisions)]
+        Ok(SnippetText {
+            hash: self.hash,
+            filename: self.filename,
+            body: content
+                .lines()
+                .skip((first - 1) as usize)
+                .take(1 + (last - first) as usize)
+                .intersperse("\n")
+                .collect(),
+            line_range: (first, last),
+        })
+    }
+}
+
+/// The text and metadata of an actual snippet.
+#[derive(Clone, Debug, PartialEq)]
+struct SnippetText<'s> {
+    /// The commit hash.
+    hash: Oid,
+
+    /// The file path.
+    filename: &'s Path,
+
+    /// The body of the snippet; the actual code that we want to include.
+    body: String,
+
+    /// The range of lines of the original file that this body comes from.
+    line_range: (u32, u32),
+}
+
+impl<'s> SnippetText<'s> {
+    /// Return the LaTeX code to embed the snippet as a `minted` environment with custom page numbers.
+    fn get_latex(&self) -> String {
+        let mut s = String::from(
+            r"{
+\renewcommand\theFancyVerbLine{
+	\ttfamily
+	\textcolor[rgb]{0.5,0.5,1}{
+		\footnotesize
+		\oldstylenums{",
+        );
+
+        s.push_str(
+            r"
+			\ifnum\value{FancyVerbLine}=-3 \else
+			\ifnum\value{FancyVerbLine}=-2 \else
+			\ifnum\value{FancyVerbLine}=-1
+				\setcounter{FancyVerbLine}{",
+        );
+        s.push_str(&format!("{}", self.line_range.0 - 1));
+        s.push_str(
+            r"}
+			\else
+			\arabic{FancyVerbLine}
+			\fi\fi\fi",
+        );
+        s.push('\n');
+
+        s.push_str("\t\t}\n\t}\n}\n");
+        s.push_str(r"\begin{minted}[firstnumber=-3]{python}");
+        s.push('\n');
+
+        s.push_str("# ");
+        s.push_str(&self.hash.to_string());
+        s.push('\n');
+
+        s.push_str("# ");
+        s.push_str(
+            self.filename
+                .to_str()
+                .expect("Filename should be UTF-8 encoded"),
+        );
+        s.push('\n');
+
+        s.push('\n');
+        s.push_str(&self.body);
+        s.push('\n');
+
+        s.push_str(r"\end{minted}");
+        s.push('\n');
+        s.push('}');
+        s
+    }
+}
+
+/// Process every snippet in the given file and write out a processed version under a new name with
+/// `processed_` prepended to the basename of the file.
+fn process_all_snippets(filename: &str, repo: &Repository) -> anyhow::Result<()> {
+    let file_string = fs::read_to_string(filename)?;
+    let comments_and_latex = COMMENT_PATTERN.find_iter(&file_string).map(|m| {
+        (
+            m.as_str(),
+            SnippetRef::from_comment(m.as_str())
+                .unwrap()
+                .get_text(repo)
+                .unwrap()
+                .get_latex(),
+        )
+    });
+
+    let mut body = file_string.clone();
+
+    for (comment, latex) in comments_and_latex {
+        body = body.replace(comment, &latex);
+    }
+
+    let new_filename = {
+        let p = Path::new(filename);
+        let parent = p.parent().unwrap();
+        let fname = String::from("processed_") + p.strip_prefix(parent)?.to_str().unwrap();
+        parent.join(fname)
+    };
+
+    fs::write(new_filename, body)?;
+
+    Ok(())
+}
+
+/// Process every file given as a command line argument.
+fn main() -> anyhow::Result<()> {
+    let repo = Repository::open(Path::new(env!("LINTRANS_DIR")))?;
+
+    if env::args().count() == 1 {
+        eprintln!("Please provide file names as command line arguments");
+        std::process::exit(1);
+    }
+
+    for filename in env::args().skip(1) {
+        process_all_snippets(&filename, &repo)?;
+    }
+
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    fn get_repo() -> Repository {
+        Repository::open(Path::new("../../lintrans/")).unwrap()
+    }
+
+    mod snippet_ref {
+        use super::*;
+
+        #[test]
+        fn from_comment_test() {
+            let comment =
+                "%: 29ec1fedbf307e3b7ca731c4a381535fec899b0b\n%: src/lintrans/matrices/wrapper.py";
+            let snip = SnippetRef {
+                hash: Oid::from_str("29ec1fedbf307e3b7ca731c4a381535fec899b0b").unwrap(),
+                filename: Path::new("src/lintrans/matrices/wrapper.py"),
+                line_range: None,
+            };
+            assert_eq!(SnippetRef::from_comment(comment).unwrap(), snip);
+
+            let comment =
+            "%: 29ec1fedbf307e3b7ca731c4a381535fec899b0b\n%: src/lintrans/matrices/wrapper.py:11-22";
+            let snip = SnippetRef {
+                hash: Oid::from_str("29ec1fedbf307e3b7ca731c4a381535fec899b0b").unwrap(),
+                filename: Path::new("src/lintrans/matrices/wrapper.py"),
+                line_range: Some((11, 22)),
+            };
+            assert_eq!(SnippetRef::from_comment(comment).unwrap(), snip);
+
+            let comment =
+            "%: 29ec1fedbf307e3b7ca731c4a381535fec899b0b\n%: src/lintrans/matrices/wrapper.py:11";
+            let snip = SnippetRef {
+                hash: Oid::from_str("29ec1fedbf307e3b7ca731c4a381535fec899b0b").unwrap(),
+                filename: Path::new("src/lintrans/matrices/wrapper.py"),
+                line_range: Some((11, 11)),
+            };
+            assert_eq!(SnippetRef::from_comment(comment).unwrap(), snip);
+        }
+
+        #[test]
+        fn get_text_test() {
+            const FILE: &str = r#""""A module containing a simple MatrixWrapper class to wrap matrices and context."""
+
+import numpy as np
+
+from lintrans.typing import MatrixType
+
+
+class MatrixWrapper:
+    """A simple wrapper class to hold all possible matrices and allow access to them."""
+
+    def __init__(self):
+        """Initialise a MatrixWrapper object with a matrices dict."""
+        self._matrices: dict[str, MatrixType | None] = {
+            'A': None, 'B': None, 'C': None, 'D': None,
+            'E': None, 'F': None, 'G': None, 'H': None,
+            'I': np.eye(2),  # I is always defined as the identity matrix
+            'J': None, 'K': None, 'L': None, 'M': None,
+            'N': None, 'O': None, 'P': None, 'Q': None,
+            'R': None, 'S': None, 'T': None, 'U': None,
+            'V': None, 'W': None, 'X': None, 'Y': None,
+            'Z': None
+        }
+
+    def __getitem__(self, name: str) -> MatrixType | None:
+        """Get the matrix with `name` from the dictionary.
+
+        Raises:
+            KeyError:
+                If there is no matrix with the given name
+        """
+        return self._matrices[name]
+
+    def __setitem__(self, name: str, new_matrix: MatrixType) -> None:
+        """Set the value of matrix `name` with the new_matrix.
+
+        Raises:
+            ValueError:
+                If `name` isn't a valid matrix name
+        """
+        name = name.upper()
+
+        if name == 'I' or name not in self._matrices:
+            raise NameError('Matrix name must be a capital letter and cannot be "I"')
+
+        self._matrices[name] = new_matrix"#;
+
+            const FILE_11_22: &str = r#"    def __init__(self):
+        """Initialise a MatrixWrapper object with a matrices dict."""
+        self._matrices: dict[str, MatrixType | None] = {
+            'A': None, 'B': None, 'C': None, 'D': None,
+            'E': None, 'F': None, 'G': None, 'H': None,
+            'I': np.eye(2),  # I is always defined as the identity matrix
+            'J': None, 'K': None, 'L': None, 'M': None,
+            'N': None, 'O': None, 'P': None, 'Q': None,
+            'R': None, 'S': None, 'T': None, 'U': None,
+            'V': None, 'W': None, 'X': None, 'Y': None,
+            'Z': None
+        }"#;
+
+            let repo = get_repo();
+
+            let snip = SnippetRef::from_comment(
+                "%: 29ec1fedbf307e3b7ca731c4a381535fec899b0b\n%: src/lintrans/matrices/wrapper.py",
+            )
+            .unwrap();
+            assert_eq!(snip.get_text(&repo).unwrap().body, FILE.to_string(),);
+            assert_eq!(snip.get_text(&repo).unwrap().line_range, (1, 45));
+
+            let snip = SnippetRef::from_comment(
+                "%: 29ec1fedbf307e3b7ca731c4a381535fec899b0b\n%: src/lintrans/matrices/wrapper.py:11-22",
+            )
+            .unwrap();
+            assert_eq!(snip.get_text(&repo).unwrap().body, FILE_11_22.to_string());
+            assert_eq!(snip.get_text(&repo).unwrap().line_range, (11, 22));
+
+            let snip = SnippetRef::from_comment(
+                "%: 29ec1fedbf307e3b7ca731c4a381535fec899b0b\n%: src/lintrans/matrices/wrapper.py:11",
+            )
+            .unwrap();
+            assert_eq!(
+                snip.get_text(&repo).unwrap().body,
+                "    def __init__(self):".to_string()
+            );
+            assert_eq!(snip.get_text(&repo).unwrap().line_range, (11, 11));
+        }
+    }
+
+    mod snippet_text {
+        use super::*;
+
+        #[test]
+        fn get_latex_test() {
+            let repo = get_repo();
+
+            const LATEX_1: &str = r#"{
+\renewcommand\theFancyVerbLine{
+	\ttfamily
+	\textcolor[rgb]{0.5,0.5,1}{
+		\footnotesize
+		\oldstylenums{
+			\ifnum\value{FancyVerbLine}=-3 \else
+			\ifnum\value{FancyVerbLine}=-2 \else
+			\ifnum\value{FancyVerbLine}=-1
+				\setcounter{FancyVerbLine}{202}
+			\else
+			\arabic{FancyVerbLine}
+			\fi\fi\fi
+		}
+	}
+}
+\begin{minted}[firstnumber=-3]{python}
+# cf05e09e5ebb6ea7a96db8660d0d8de6b946490a
+# src/lintrans/gui/plots/classes.py
+
+        else:  # If the line is not horizontal or vertical, then we can use y = mx + c
+            m = vector_y / vector_x
+            c = point_y - m * point_x
+
+            # For c = 0
+            painter.drawLine(
+                *self.trans_coords(
+                    -1 * max_x,
+                    m * -1 * max_x
+                ),
+                *self.trans_coords(
+                    max_x,
+                    m * max_x
+                )
+            )
+
+            # We keep looping and increasing the multiple of c until we stop drawing lines on the canvas
+            multiple_of_c = 1
+            while self.draw_pair_of_oblique_lines(painter, m, multiple_of_c * c):
+                multiple_of_c += 1
+\end{minted}
+}"#;
+            assert_eq!(
+                SnippetRef::from_comment(concat!(
+                    "%: cf05e09e5ebb6ea7a96db8660d0d8de6b946490a\n",
+                    "%: src/lintrans/gui/plots/classes.py:203-222"
+                ))
+                .unwrap()
+                .get_text(&repo)
+                .unwrap()
+                .get_latex(),
+                LATEX_1
+            );
+
+            const LATEX_2: &str = r#"{
+\renewcommand\theFancyVerbLine{
+	\ttfamily
+	\textcolor[rgb]{0.5,0.5,1}{
+		\footnotesize
+		\oldstylenums{
+			\ifnum\value{FancyVerbLine}=-3 \else
+			\ifnum\value{FancyVerbLine}=-2 \else
+			\ifnum\value{FancyVerbLine}=-1
+				\setcounter{FancyVerbLine}{6}
+			\else
+			\arabic{FancyVerbLine}
+			\fi\fi\fi
+		}
+	}
+}
+\begin{minted}[firstnumber=-3]{python}
+# 31220464635f6f889195d3dd5a1c38dd4cd13d3e
+# src/lintrans/__init__.py
+
+"""This is the top-level ``lintrans`` package, which contains all the subpackages of the project."""
+
+from . import crash_reporting, global_settings, gui, matrices, typing_, updating
+
+__version__ = '0.3.1-alpha'
+
+__all__ = ['crash_reporting', 'global_settings', 'gui', 'matrices', 'typing_', 'updating', '__version__']
+\end{minted}
+}"#;
+            assert_eq!(
+                SnippetRef::from_comment(concat!(
+                    "%: 31220464635f6f889195d3dd5a1c38dd4cd13d3e\n",
+                    "%: src/lintrans/__init__.py"
+                ))
+                .unwrap()
+                .get_text(&repo)
+                .unwrap()
+                .get_latex(),
+                LATEX_2
+            );
+        }
+    }
+}
