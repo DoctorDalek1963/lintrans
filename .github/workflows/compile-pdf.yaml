@@ -17,34 +17,35 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Download fonts
+        shell: bash
         run: |
-          mkdir -p .fonts
-          pushd .fonts
+          mkdir -p "$HOME/.local/share/fonts"
+          cd "$HOME/.local/share/fonts"
           wget https://github.com/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.zip
           unzip Hack-v3.003-ttf.zip
           rm Hack-v3.003-ttf.zip
-          popd
+          fc-cache -f
 
       - name: Set up Python 3.10
         uses: actions/setup-python@v2
         with:
           python-version: '3.10'
 
+      - name: Set up Rust stable
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+
+      - uses: extractions/setup-just@v1
+
       - name: Generate appendices and process snippets
         run: |
           git clone https://github.com/DoctorDalek1963/lintrans
-          pip install --upgrade pip
-          pip install gitpython
           python generate_appendices.py
-          python process_code_snippets.py
 
       - name: Compile main.tex
-        uses: xu-cheng/latex-action@v2
-        with:
-          pre_compile: mkdir -p tikz-imgs
-          root_file: main.tex
-          args: -lualatex -jobname=main -file-line-error -halt-on-error -interaction=batchmode -shell-escape -cd
-          extra_fonts: ./.fonts/ttf/Hack-*.ttf
+        run: just build
 
       - name: Put pdf in correct directory
         run: |
