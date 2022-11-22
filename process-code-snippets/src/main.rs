@@ -92,6 +92,7 @@ impl<'s> SnippetRef<'s> {
     /// included.
     ///
     /// The string returned does not include a trailing newline.
+    #[allow(unstable_name_collisions)]
     fn get_text(&self, repo: &Repository) -> anyhow::Result<SnippetText<'s>> {
         let x = repo
             .find_commit(self.hash)?
@@ -109,7 +110,6 @@ impl<'s> SnippetRef<'s> {
             .line_range
             .unwrap_or_else(|| (1, content.lines().count() as u32));
 
-        #[allow(unstable_name_collisions)]
         if first == 1
             && content
                 .lines()
@@ -121,10 +121,48 @@ impl<'s> SnippetRef<'s> {
             first = 7;
         }
 
-        #[allow(unstable_name_collisions)]
+        let scopes: Vec<(u32, String)> = {
+            let first_line_indentation: usize = content
+                .lines()
+                .nth(first as usize - 1)
+                .unwrap()
+                .chars()
+                .take_while(|&c| c == ' ')
+                .count();
+
+            content
+                .lines()
+                .enumerate()
+                .map(|(n, x)| (n + 1, x))
+                .take(first as usize - 1)
+                .map(|(n, s)| (n, s.to_string()))
+                .collect::<Vec<_>>()
+                .iter()
+                .rev()
+                .filter_map(|(n, line)| {
+                    let indentation = line.chars().take_while(|&c| c == ' ').count();
+
+                    if line.is_empty() || indentation >= first_line_indentation {
+                        None
+                    } else {
+                        Some((indentation, *n, line.clone()))
+                    }
+                })
+                .dedup_by(|x, y| x.0 == y.0)
+                .unique_by(|x| x.0)
+                .collect::<Vec<_>>()
+                .iter()
+                .cloned()
+                .rev()
+                .skip_while(|&(indent, _, _)| indent > 0)
+                .map(|(_, n, s)| (n as u32, s))
+                .collect::<Vec<_>>()
+        };
+
         Ok(SnippetText {
             hash: self.hash,
             filename: self.filename,
+            scopes,
             body: content
                 .lines()
                 .skip((first - 1) as usize)
@@ -145,6 +183,11 @@ struct SnippetText<'s> {
     /// The file path.
     filename: &'s Path,
 
+    /// A vec of `(line_number, text)` of the higher scopes, determined by less indentation.
+    ///
+    /// Should be ordered by ascending line numbers.
+    scopes: Vec<(u32, String)>,
+
     /// The body of the snippet; the actual code that we want to include.
     body: String,
 
@@ -155,29 +198,69 @@ struct SnippetText<'s> {
 impl<'s> SnippetText<'s> {
     /// Return the LaTeX code to embed the snippet as a `minted` environment with custom page numbers.
     fn get_latex(&self) -> String {
-        let mut s = String::from(
-            r"{
-\renewcommand\theFancyVerbLine{
-	\ttfamily
+        let line_num_pairs: Vec<(i32, i32)> = {
+            let mut line_nums: Vec<i32> = self.scopes.iter().map(|&(n, _)| n as i32).collect();
+            line_nums.push(self.line_range.0 as i32);
+
+            let prepended: Vec<i32> = {
+                let mut v = vec![-2];
+                for n in &line_nums {
+                    v.push(*n);
+                }
+                v
+            };
+
+            prepended
+                .iter()
+                .zip(line_nums)
+                .map(|(f, l)| (f + 1, l - 1))
+                .collect()
+        };
+
+        let line_number_hack: String = {
+            let mut s = String::from(
+                r"{
+\renewcommand\theFancyVerbLine{ \ttfamily
 	\textcolor[rgb]{0.5,0.5,1}{
 		\footnotesize
-		\oldstylenums{",
-        );
-
-        s.push_str(
-            r"
+		\oldstylenums{
 			\ifnum\value{FancyVerbLine}=-3 \else
-			\ifnum\value{FancyVerbLine}=-2 \else
-			\ifnum\value{FancyVerbLine}=-1
-				\setcounter{FancyVerbLine}{",
-        );
-        s.push_str(&format!("{}", self.line_range.0 - 1));
-        s.push_str(
-            r"}
-			\else
-			\arabic{FancyVerbLine}
-			\fi\fi\fi",
-        );
+			\ifnum\value{FancyVerbLine}=-2 \else",
+            );
+            s.push('\n');
+
+            s.push_str("\t\t\t");
+            s.push_str(&format!(
+                r"\ifnum\value{{FancyVerbLine}}={}\setcounter{{FancyVerbLine}}{{{}}}\else",
+                line_num_pairs.first().unwrap().0,
+                line_num_pairs.first().unwrap().1,
+            ));
+            s.push('\n');
+
+            for (a, b) in line_num_pairs.iter().skip(1) {
+                s.push_str("\t\t\t");
+                s.push_str(&format!(
+                    r"\ifnum\value{{FancyVerbLine}}={}\setcounter{{FancyVerbLine}}{{{}}}... \else",
+                    a, b
+                ));
+                s.push('\n');
+            }
+
+            s.push_str("\t\t\t\t");
+            s.push_str(
+                r"\arabic{FancyVerbLine}
+			\fi\fi",
+            );
+
+            for _ in line_num_pairs {
+                s.push_str(r"\fi");
+            }
+
+            s
+        };
+
+        let mut s = line_number_hack;
+
         s.push('\n');
 
         s.push_str("\t\t}\n\t}\n}\n");
@@ -197,6 +280,13 @@ impl<'s> SnippetText<'s> {
         s.push('\n');
 
         s.push('\n');
+
+        for (_, line) in &self.scopes {
+            s.push_str(line);
+            s.push('\n');
+            s.push('\n');
+        }
+
         s.push_str(&self.body);
         s.push('\n');
 
@@ -393,24 +483,27 @@ class MatrixWrapper:
             let repo = get_repo();
 
             const LATEX_1: &str = r#"{
-\renewcommand\theFancyVerbLine{
-	\ttfamily
+\renewcommand\theFancyVerbLine{ \ttfamily
 	\textcolor[rgb]{0.5,0.5,1}{
 		\footnotesize
 		\oldstylenums{
 			\ifnum\value{FancyVerbLine}=-3 \else
 			\ifnum\value{FancyVerbLine}=-2 \else
-			\ifnum\value{FancyVerbLine}=-1
-				\setcounter{FancyVerbLine}{202}
-			\else
-			\arabic{FancyVerbLine}
-			\fi\fi\fi
+			\ifnum\value{FancyVerbLine}=-1\setcounter{FancyVerbLine}{117}\else
+			\ifnum\value{FancyVerbLine}=119\setcounter{FancyVerbLine}{149}... \else
+			\ifnum\value{FancyVerbLine}=151\setcounter{FancyVerbLine}{202}... \else
+				\arabic{FancyVerbLine}
+			\fi\fi\fi\fi\fi
 		}
 	}
 }
 \begin{minted}[firstnumber=-3]{python}
 # cf05e09e5ebb6ea7a96db8660d0d8de6b946490a
 # src/lintrans/gui/plots/classes.py
+
+class VectorGridPlot(BackgroundPlot):
+
+    def draw_parallel_lines(self, painter: QPainter, vector: tuple[float, float], point: tuple[float, float]) -> None:
 
         else:  # If the line is not horizontal or vertical, then we can use y = mx + c
             m = vector_y / vector_x
@@ -447,17 +540,14 @@ class MatrixWrapper:
             );
 
             const LATEX_2: &str = r#"{
-\renewcommand\theFancyVerbLine{
-	\ttfamily
+\renewcommand\theFancyVerbLine{ \ttfamily
 	\textcolor[rgb]{0.5,0.5,1}{
 		\footnotesize
 		\oldstylenums{
 			\ifnum\value{FancyVerbLine}=-3 \else
 			\ifnum\value{FancyVerbLine}=-2 \else
-			\ifnum\value{FancyVerbLine}=-1
-				\setcounter{FancyVerbLine}{6}
-			\else
-			\arabic{FancyVerbLine}
+			\ifnum\value{FancyVerbLine}=-1\setcounter{FancyVerbLine}{6}\else
+				\arabic{FancyVerbLine}
 			\fi\fi\fi
 		}
 	}
@@ -485,6 +575,58 @@ __all__ = ['crash_reporting', 'global_settings', 'gui', 'matrices', 'typing_', '
                 .unwrap()
                 .get_latex(),
                 LATEX_2
+            );
+
+            const LATEX_3: &str = r#"{
+\renewcommand\theFancyVerbLine{ \ttfamily
+	\textcolor[rgb]{0.5,0.5,1}{
+		\footnotesize
+		\oldstylenums{
+			\ifnum\value{FancyVerbLine}=-3 \else
+			\ifnum\value{FancyVerbLine}=-2 \else
+			\ifnum\value{FancyVerbLine}=-1\setcounter{FancyVerbLine}{139}\else
+			\ifnum\value{FancyVerbLine}=141\setcounter{FancyVerbLine}{173}... \else
+			\ifnum\value{FancyVerbLine}=175\setcounter{FancyVerbLine}{187}... \else
+			\ifnum\value{FancyVerbLine}=189\setcounter{FancyVerbLine}{195}... \else
+				\arabic{FancyVerbLine}
+			\fi\fi\fi\fi\fi\fi
+		}
+	}
+}
+\begin{minted}[firstnumber=-3]{python}
+# 40bee6461d477a5c767ed132359cd511c0051e3b
+# src/lintrans/gui/plots/classes.py
+
+class VectorGridPlot(BackgroundPlot):
+
+    def draw_parallel_lines(self, painter: QPainter, vector: tuple[float, float], point: tuple[float, float]) -> None:
+
+        if abs(vector_x * point_y - vector_y * point_x) < 1e-12:
+
+            # If the matrix is rank 1, then we can draw the column space line
+            if rank == 1:
+                if abs(vector_x) < 1e-12:
+                    painter.drawLine(self.width() // 2, 0, self.width() // 2, self.height())
+                elif abs(vector_y) < 1e-12:
+                    painter.drawLine(0, self.height() // 2, self.width(), self.height() // 2)
+                else:
+                    self.draw_oblique_line(painter, vector_y / vector_x, 0)
+
+            # If the rank is 0, then we don't draw any lines
+            else:
+                return
+\end{minted}
+}"#;
+            assert_eq!(
+                SnippetRef::from_comment(concat!(
+                    "%: 40bee6461d477a5c767ed132359cd511c0051e3b\n",
+                    "%: src/lintrans/gui/plots/classes.py:196-207"
+                ))
+                .unwrap()
+                .get_text(&repo)
+                .unwrap()
+                .get_latex(),
+                LATEX_3
             );
         }
     }
