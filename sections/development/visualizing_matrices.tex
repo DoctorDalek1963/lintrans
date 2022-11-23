@@ -82,7 +82,7 @@ I then called this method from \texttt{draw\_transformed\_grid()}.
 \fsbsr{development/2ade98ac28d1c3f6691e4afa819142a3ab8e9fd9/gui.png}{Parallel lines being drawn for matrix $1.2\mathbf{I}$}{This worked quite well when the matrix involved no rotation, as seen on the right, but this didn't work with rotation. When trying \pyinline{'rot(45)'} for example, it looked the same as in Figure~\ref{fig:development:37e7c208a33d7cbbc8e0bb6c94cd889e2918c605:gui.png}.\par Also, the vectors aren't particularly clear. They'd be much better with arrowheads on their tips, but this is just a prototype. The arrowheads will come later.\par My next step was to make the transformed grid lines work with rotations.}
 
 %: 7dfe1e24729562501e2fd88a839dca6b653a3375
-%: src/lintrans/gui/plots/plot_widget.py:126-225 strip
+%: src/lintrans/gui/plots/plot_widget.py:126-225
 
 This code checks if $x$ or $y$ is zero\footnote{We actually check if they're less than $10^{-12}$ to allow for floating point errors} and if they're not, then we have to use the standard straight line equation $y = mx + c$ to create parallel lines. We find our value of $m$ and then iterate through all the values of $c$ that keep the line within the bounding box.
 
