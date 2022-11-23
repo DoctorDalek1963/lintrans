@@ -8,26 +8,25 @@ on:
 
 jobs:
   compile-latex:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Download fonts
-        shell: bash
         run: |
-          mkdir -p "$HOME/.local/share/fonts"
-          cd "$HOME/.local/share/fonts"
+          mkdir -p .fonts
+          pushd .fonts
           wget https://github.com/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.zip
           unzip Hack-v3.003-ttf.zip
           rm Hack-v3.003-ttf.zip
-          fc-cache -f
+          popd
 
       - name: Set up Python 3.10
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
@@ -37,15 +36,29 @@ jobs:
           profile: minimal
           toolchain: stable
 
-      - uses: extractions/setup-just@v1
+      - name: Install fd
+        run: cargo install fd-find
 
-      - name: Generate appendices and process snippets
+      - name: Install just
+        uses: extractions/setup-just@v1
+
+      - name: Clone lintrans
         run: |
           git clone https://github.com/DoctorDalek1963/lintrans
+
+      - name: Pre-compile
+        run: |
+          mkdir -p tikz-imgs
           python generate_appendices.py
+          just process-code-snippets
 
       - name: Compile main.tex
-        run: just build
+        uses: xu-cheng/latex-action@v2
+        with:
+          pre_compile: mkdir -p tikz-imgs
+          root_file: main.tex
+          args: -lualatex -jobname=main -file-line-error -halt-on-error -interaction=batchmode -shell-escape -cd
+          extra_fonts: ./.fonts/ttf/Hack-*.ttf
 
       - name: Put pdf in correct directory
         run: |
