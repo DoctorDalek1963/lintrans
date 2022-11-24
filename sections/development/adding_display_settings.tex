@@ -59,7 +59,7 @@ To fix this, I had to check if the start and target matrices were the same (with
 I later found a bug on line 330. If we subtract the start and target matrices and get a matrix of all negative numbers (rather than all zeroes, which is what I wanted to check for), then the if condition will still be true. That means that some completely different matrices can be considered the same, and the viewport will reset before animating them. To fix this, I can simply take the absolute value.
 
 %: 3c490c48a0f4017ab8ee9cf471a65c251817b00e
-%: src/lintrans/gui/main_window.py:333
+%: src/lintrans/gui/main_window.py:333 noscopes
 
 \subsubsection{Adding the determinant parallelogram\label{development:adding-display-settings:adding-the-determinant-parallelogram}}
 
