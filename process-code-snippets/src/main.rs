@@ -12,6 +12,7 @@
 //! 29ec1fedbf307e3b7ca731c4a381535fec899b0b on the main branch of lintrans. Line numbers are
 //! optional. If omitted, the whole file is included.
 
+use color_eyre::eyre::Result;
 use git2::{Oid, Repository};
 use itertools::Itertools;
 use lazy_static::lazy_static;
@@ -93,7 +94,7 @@ impl<'s> SnippetRef<'s> {
     ///
     /// The string returned does not include a trailing newline.
     #[allow(unstable_name_collisions)]
-    fn get_text(&self, repo: &Repository) -> anyhow::Result<SnippetText<'s>> {
+    fn get_text(&self, repo: &Repository) -> Result<SnippetText<'s>> {
         let x = repo
             .find_commit(self.hash)?
             .tree()?
@@ -103,7 +104,11 @@ impl<'s> SnippetRef<'s> {
 
         let content = match x {
             Ok(ref blob) => std::str::from_utf8(blob.content())?,
-            Err(_) => return Err(anyhow::Error::msg("Couldn't convert object to blob")),
+            Err(_) => {
+                return Err(color_eyre::eyre::Error::msg(
+                    "Couldn't convert object to blob",
+                ))
+            }
         };
 
         let (mut first, last) = self
@@ -299,7 +304,7 @@ impl<'s> SnippetText<'s> {
 
 /// Process every snippet in the given file and write out a processed version under a new name with
 /// `processed_` prepended to the basename of the file.
-fn process_all_snippets(filename: &str, repo: &Repository) -> anyhow::Result<()> {
+fn process_all_snippets(filename: &str, repo: &Repository) -> Result<()> {
     let file_string = fs::read_to_string(filename)?;
     let comments_and_latex = COMMENT_PATTERN.find_iter(&file_string).map(|m| {
         (
@@ -331,12 +336,15 @@ fn process_all_snippets(filename: &str, repo: &Repository) -> anyhow::Result<()>
 }
 
 /// Process every file given as a command line argument.
-fn main() -> anyhow::Result<()> {
+fn main() -> Result<()> {
+    color_eyre::install()?;
+
     let repo = Repository::open(Path::new(env!("LINTRANS_DIR")))?;
 
     if env::args().count() == 1 {
-        eprintln!("Please provide file names as command line arguments");
-        std::process::exit(1);
+        return Err(color_eyre::eyre::Error::msg(
+            "Please provide file names as command line arguments",
+        ));
     }
 
     for filename in env::args().skip(1) {
@@ -349,6 +357,7 @@ fn main() -> anyhow::Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     fn get_repo() -> Repository {
         Repository::open(Path::new("../../lintrans/")).unwrap()
     }

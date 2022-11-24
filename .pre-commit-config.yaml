@@ -18,3 +18,17 @@ repos:
         language: system
         types: [tex]
         pass_filenames: false
+
+      - id: cargo-build-release
+        name: cargo build release
+        entry: bash -c 'cd process-code-snippets && LINTRANS_DIR=../lintrans cargo build --release'
+        language: system
+        types: [rust]
+        pass_filenames: false
+
+      - id: cargo-test-release
+        name: cargo test release
+        entry: bash -c 'cd process-code-snippets && LINTRANS_DIR=../lintrans cargo test --release'
+        language: system
+        types: [rust]
+        pass_filenames: false
