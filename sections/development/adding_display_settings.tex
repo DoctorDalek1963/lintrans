@@ -45,7 +45,7 @@ I then just had to enable the button in the main GUI and implement the method to
 %: b1ba4adc3c7723c95b490e831e651a7781af7d99
 %: src/lintrans/gui/main_window.py:436-444
 
-\fsbsl{development/b1ba4adc3c7723c95b490e831e651a7781af7d99/settings-dialog.png}{The display settings dialog}{The \pyinline{dialog.finished} signal on line 429 should really be \pyinline{dialog.accepted}. Currently, we re-assign the display settings whenever the dialog is closed in any way. Really, we should only re-assign them when the user hits the confirm button, but trying to cancel the changes will currently save them. This was a silly mistake and I fixed it along with some similar signal-related bugs a few weeks later.}
+\fsbsl{development/b1ba4adc3c7723c95b490e831e651a7781af7d99/settings-dialog.png}{The display settings dialog}{The \pyinline{dialog.finished} signal on line 440 should really be \pyinline{dialog.accepted}. Currently, we re-assign the display settings whenever the dialog is closed in any way. Really, we should only re-assign them when the user hits the confirm button, but trying to cancel the changes will currently save them. This was a silly mistake and I fixed it along with some similar signal-related bugs a few weeks later.}
 
 \subsubsection{Fixing a bug with transitional animation\label{development:adding-display-settings:fixing-a-bug-with-transitional-animation}}
 
@@ -54,7 +54,7 @@ While playing around with these new display settings, I encountered a bug with t
 To fix this, I had to check if the start and target matrices were the same (within floating point error), and then reset the viewport to the identity first, before animating to the target as requested.
 
 %: fa4a65540749e84b750ddea8abfd36a86c224b47
-%: src/lintrans/gui/main_window.py:328-338
+%: src/lintrans/gui/main_window.py:328-337
 
 I later found a bug on line 330. If we subtract the start and target matrices and get a matrix of all negative numbers (rather than all zeroes, which is what I wanted to check for), then the if condition will still be true. That means that some completely different matrices can be considered the same, and the viewport will reset before animating them. To fix this, I can simply take the absolute value.
 
