@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 color-eyre = "0.6.2"
 git2 = { version = "0.15.0", default-features = false }
+hex = "0.4.3"
 itertools = "0.10.5"
 lazy_static = "1.4.0"
 regex = "1.7.0"

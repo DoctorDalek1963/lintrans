@@ -43,7 +43,7 @@ lazy_static! {
 /// A config struct to use for snippets. Defines some options that can be used in snippets.
 #[derive(Clone, Copy, Debug, PartialEq)]
 struct SnippetConfig {
-    // Whether to remove the copyright comment. Defaults to true.
+    /// Whether to remove the copyright comment. Defaults to true.
     remove_copyright_comment: bool,
 
     /// Whether to show containing scopes for the snippet. Defaults to true.
@@ -56,6 +56,25 @@ impl Default for SnippetConfig {
             remove_copyright_comment: true,
             use_scopes: true,
         }
+    }
+}
+
+impl SnippetConfig {
+    /// Return a string representing the config that the user would need to add to the snippet
+    /// comment to get this config.
+    ///
+    /// The string will be empty or contain a leading space.
+    fn details(&self) -> String {
+        let mut s = String::new();
+
+        if !self.remove_copyright_comment {
+            s.push_str(" keep_copyright_comment");
+        }
+        if !self.use_scopes {
+            s.push_str(" noscopes");
+        }
+
+        s
     }
 }
 
@@ -243,6 +262,28 @@ impl<'s> SnippetRef<'s> {
             line_range: (first, last),
         })
     }
+
+    /// Return a string containing the details of this snippet reference.
+    ///
+    /// The string contains the first 4 bytes of the hash, the filename, (possibly) linenumbers,
+    /// and the config. See [`SnippetConfig`].
+    fn details(&self) -> String {
+        let hash = hex::encode(&self.hash.as_bytes()[..4]);
+        let filename = self.filename.to_str().unwrap();
+        let linenums = match self.line_range {
+            None => "".to_string(),
+            Some((first, last)) => {
+                if first == last {
+                    format!(":{first}")
+                } else {
+                    format!(":{first}-{last}")
+                }
+            }
+        };
+        let config = self.config.details();
+
+        format!("{hash} {filename}{linenums}{config}")
+    }
 }
 
 /// The text and metadata of an actual snippet.
@@ -399,17 +440,14 @@ impl<'s> SnippetText<'s> {
 fn process_all_snippets_in_file(filename: &str, repo: &Repository) -> Result<()> {
     let file_string = fs::read_to_string(filename)?;
 
+    println!("{filename}");
+
     // Find all the snippet comments in the file and process each of them, to get an iterator of
     // tuples like `(comment, replacement_latex)`
     let comments_and_latex = COMMENT_PATTERN.find_iter(&file_string).map(|m| {
-        (
-            m.as_str(),
-            SnippetRef::from_comment(m.as_str())
-                .unwrap()
-                .get_text(repo)
-                .unwrap()
-                .get_latex(),
-        )
+        let snippet_ref = SnippetRef::from_comment(m.as_str()).unwrap();
+        println!("  {}", snippet_ref.details());
+        (m.as_str(), snippet_ref.get_text(repo).unwrap().get_latex())
     });
 
     // Copy the file contents and replace each snippet comment with its LaTeX replacement
@@ -427,6 +465,7 @@ fn process_all_snippets_in_file(filename: &str, repo: &Repository) -> Result<()>
     };
 
     fs::write(new_filename, body)?;
+    println!();
 
     Ok(())
 }
