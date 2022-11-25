@@ -99,4 +99,30 @@ I then had the determinant parallelogram for positive and negative determinants.
 \vspace{-1em}
 \end{figure}
 
+\subsubsection{Adding the determinant text\label{development:adding-display-settings:adding-the-determinant-text}}
+
+Seeing the determinant as a shape is one thing, but knowing its exact value is also often very useful. To do this, I had to add a variable in the \pyinline{DisplaySettings} for it, add a checkbox in the \pyinline{DisplaySettingsDialog}, and create a method to actually draw the text in the right place, which I can call from \pyinline{paintEvent()}.
+
+%: e344e50eccfd87c0834cfbdf459f0dd1d555fcd6
+%: src/lintrans/gui/settings.py:35-39
+
+%: e344e50eccfd87c0834cfbdf459f0dd1d555fcd6
+%: src/lintrans/gui/dialogs/settings.py:108-112
+
+%: e344e50eccfd87c0834cfbdf459f0dd1d555fcd6
+%: src/lintrans/gui/plots/classes.py:416-425
+
+It doesn't make much sense to show the text without also showing the parallelogram, so we should only show the text when the parallelogram is also being show, and the checkbox for the text should only be clickable when the parallelogram is enabled.
+
+To do this, I created an \pyinline{update_gui()} method which gets called when the parallelogram checkbox is clicked. This method will enable or disable the text checkbox appropriately.
+
+%: e344e50eccfd87c0834cfbdf459f0dd1d555fcd6
+%: src/lintrans/gui/plots/widgets.py:58-62
+
+%: 517773e1ace0dc4485c425134cd36ba482ba65df
+%: src/lintrans/gui/dialogs/settings.py:107
+
+%: 517773e1ace0dc4485c425134cd36ba482ba65df
+%: src/lintrans/gui/dialogs/settings.py:173-178
+
 \end{document}
