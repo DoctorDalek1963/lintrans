@@ -8,7 +8,7 @@
 
 \begin{document}
 
-\subsubsection{Creating the dataclass\label{development:adding-display-settings:creating-the-dataclass}}
+\subsubsection{Creating the dataclass (and implementing applicative animation)\label{development:adding-display-settings:creating-the-dataclass-(and-implementing-applicative-animation)}}
 
 The first step of adding display settings is creating a dataclass to hold all of the settings. This dataclass will hold attributes to manage how a matrix transformation is displayed. Things like whether to show eigenlines or the determinant parallelogram. It will also hold information for animation. We can factor out the code used to smoothen the determinant, as written in \S\ref{development:visualizing-matrices:preserving-determinants}, and make it dependant on a \pyinline{bool} attribute of the \texttt{DisplaySettings} dataclass.
 
@@ -23,6 +23,10 @@ Once I had the dataclass, I just had to add \enquote{\pyinline{from .settings im
 
 %: 2041c7a24d963d8d142d6f0f20ec3828ba8257c6
 %: src/lintrans/gui/main_window.py:286-331
+
+Lines 327 are very important here. I included applicative animation as an option in the display settings because once I'd implemented animating from one matrix to another, it was very easy to implement applicative animation.
+
+The user will input whatever matrix they wanted to apply to the current scene. Let's call that target matrix $\mathbf{T}$. The matrix representing the starting state of the viewport is $\mathbf{S}$. Animating from $\mathbf{S}$ to $\mathbf{T}$ is a transitional animation, but an applicative animation is simply animating from $\mathbf{S}$ to $\mathbf{T}\mathbf{S}$, so we can just say \pyinline{matrix_target = matrix_target @ matrix_start} on line 327 (where \texttt{@} is the matrix multiplication operator), and continue as normal.
 
 I also wrapped the main logic of \texttt{animate\_between\_matrices()} in an \pyinline{if} block to check if the user wants the determinant to be smoothed.
 
