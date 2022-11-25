@@ -195,7 +195,7 @@ impl<'s> SnippetRef<'s> {
                 .filter_map(|(n, line)| {
                     let indentation = line.chars().take_while(|&c| c == ' ').count();
 
-                    if line.is_empty() || indentation >= first_line_indentation {
+                    if line.is_empty() || indentation >= first_line_indentation || indentation % 4 != 0 {
                         None
                     } else {
                         Some((indentation, *n, line.clone()))
