@@ -1,0 +1,44 @@
+% lintrans - The linear transformation visualizer
+% Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
+
+% This program is licensed under GNU GPLv3, available here:
+% <https://www.gnu.org/licenses/gpl-3.0.html>
+
+\documentclass[../development.tex]{subfiles}
+
+\begin{document}
+
+\subsubsection{Fixing an animation crash\label{development:fixing-bugs-and-adding-polish:fixing-an-animation-crash}}
+
+The scaling logic in \ref{development:visualizing-matrices:preserving-determinants} creates a matrix $\mathbf{A}$ which is the start matrix plus some proportion of the difference between the target and start matrices. It then defines matrix $\mathbf{B}$ to be the matrix A normalised to have a determinant of 1. We then divide by $\det(\mathbf{B})$ to get matrix $\mathbf{C}$, which we then render.
+
+This works very well for most matrices, but if we're animating from $\mathbf{I}$ to $-\mathbf{I}$ for example, then we can get the following problem:
+
+When we're halfway through the animation, $p = \frac{1}{2}$.
+\begin{align*}
+\mathbf{A} &= \mathbf{S} + p (\mathbf{T} - \mathbf{S})\\
+&= \mathbf{I} + \frac{1}{2} (-\mathbf{I} - \mathbf{I})\\
+&= \mathbf{I} + \frac{-1}{\cancel{2}} \cancel{2} \mathbf{I}\\
+&= \mathbf{I} - \mathbf{I} = \mathbf{0}
+\end{align*}
+
+I'm using $\mathbf{I}$ as an example here, but this can happen with the right $p$ for many matrix pairs. Since $\mathbf{A} = \mathbf{0}$, $\det(\mathbf{A}) = 0$. We check for this case already when we find $c$:
+
+%: f7a91cdc35695f8fb9269b17bc103e42578072bd
+%: src/lintrans/gui/main_window.py:367-370 noscopes
+
+But if $\det(\mathbf{A}) = 0$, then $c = 0$ and $\det(\mathbf{B}) = 0$, so we also need to check that before we divide by it.
+
+Old:
+
+%: f7a91cdc35695f8fb9269b17bc103e42578072bd
+%: src/lintrans/gui/main_window.py:383-384 noscopes
+
+New:
+
+%: 4383808a4cc29d192c55aca56161d8affda8c9a7
+%: src/lintrans/gui/main_window.py:384-391 noscopes
+
+This change fixes a division by zero bug, which eliminates a possible crash here.
+
+\end{document}
