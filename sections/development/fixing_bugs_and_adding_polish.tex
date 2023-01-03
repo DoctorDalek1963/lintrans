@@ -41,4 +41,45 @@ New:
 
 This change fixes a division by zero bug, which eliminates a possible crash here.
 
+\subsubsection{Limiting parallel lines\label{development:fixing-bugs-and-adding-polish:limiting-parallel-lines}}
+
+If you try to render a matrix like \texttt{0.01Irot(45)}, then the app ends up drawing as many parallel lines as it can physically fit in the viewport. This leads to a lot of lag, especially when zoomed out far. To fix this, I just introduced a maximum number of parallel lines. I chose 150 as a number that was big enough to have enough parallel lines for matrices that need a lot, while also causing virtually no lag.
+
+%: bd9aaa2e3037214f65d0fc1d12d67db35af0e5ec
+%: src/lintrans/gui/plots/classes.py:169
+
+%: bd9aaa2e3037214f65d0fc1d12d67db35af0e5ec
+%: src/lintrans/gui/plots/classes.py:230-277
+
+The idea behind this code is just to limit the maximum number of parallel lines that get drawn. It works perfectly for oblique lines, but there's a small bug for orthogonal lines that I never noticed. I just forgot to test it.
+
+% TODO: Reference the section where I fix this
+On lines 234 and 252, I call the built-in \pyinline{max()} function with the maximum number of parallel lines and the total number of lines that could fit in the viewport. This should be a call to \pyinline{min()} instead. I fixed this before releasing it for my end users, but it took an embarrassingly long time to notice something this simple.
+
+\begin{figure}[H]
+	\hspace{0.005\linewidth}
+	\centering
+	\begin{minipage}{0.48\linewidth}
+		\centering
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=\linewidth]{development/bd9aaa2e3037214f65d0fc1d12d67db35af0e5ec/old.png}
+			\caption{The old version with too many parallel lines.}
+			\label{fig:development:bd9aaa2e3037214f65d0fc1d12d67db35af0e5ec:old.png}
+		\end{figure}
+	\end{minipage}%
+	\hspace{0.015\linewidth}
+	\begin{minipage}{0.48\linewidth}
+		\centering
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=\linewidth]{development/bd9aaa2e3037214f65d0fc1d12d67db35af0e5ec/new.png}
+			\caption{The fixed version with a maximum number of parallel lines.}
+			\label{fig:development:bd9aaa2e3037214f65d0fc1d12d67db35af0e5ec:new.png}
+		\end{figure}
+	\end{minipage}
+	\hspace{0.005\linewidth}
+	\vspace{-1em}
+\end{figure}
+
 \end{document}
