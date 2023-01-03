@@ -1,10 +1,14 @@
 //! This module contains code to deal with reading and interpreting LaTeX comments that refer to snippets.
 
 use super::{Config, Text};
-use crate::{COMMENT_PATTERN, LINENUMS_PATTERN};
+use crate::COMMENT_PATTERN;
 use color_eyre::eyre::Result;
 use git2::{Oid, Repository};
 use itertools::Itertools;
+use nom::{
+    branch::alt, bytes::complete::tag, character::complete, multi::separated_list1,
+    sequence::separated_pair, IResult, Parser,
+};
 use std::path::Path;
 
 /// The copyright comment that appears at the top of newer files.
@@ -24,11 +28,22 @@ pub struct Comment<'s> {
     /// The file path.
     filename: &'s Path,
 
-    /// The start and end lines of the snippet. If [`None`], then the whole file is implied.
-    line_range: Option<(u32, u32)>,
+    /// The start and end lines of each snippet. If [`None`], then the whole file is implied.
+    line_ranges: Option<Vec<(u32, u32)>>,
 
     /// The config for this snippet.
     config: Config,
+}
+
+/// Parse line ranges from the input.
+fn parse_line_ranges(input: &str) -> IResult<&str, Vec<(u32, u32)>> {
+    separated_list1(
+        tag(","),
+        alt((
+            separated_pair(complete::u32, tag("-"), complete::u32),
+            complete::u32.map(|n| (n, n)),
+        )),
+    )(input)
 }
 
 impl<'s> Comment<'s> {
@@ -42,21 +57,10 @@ impl<'s> Comment<'s> {
 
         // Parse the line numbers. If we don't have line numbers here, then they are `None`. This
         // will be resolved by [`get_text`] when getting the text from the commit with the repo
-        let line_range = c.name("linenums").map(|m| {
-            let text = m.as_str();
-            let c = LINENUMS_PATTERN
-                .captures(text)
-                .expect("If we can get here, then the LINENUMS_PATTERN should match the text");
-
-            // The call to `map()` that this closure is in means that we have at least one line
-            // number. If we've got both, use them. If we've only got one, then use that for both
-            let first = c.name("first").unwrap().as_str().parse::<u32>().unwrap();
-            let last = match c.name("last") {
-                None => first,
-                Some(num) => num.as_str().parse::<u32>().ok().unwrap(),
-            };
-
-            (first, last)
+        let line_ranges = c.name("linenums").map(|m| {
+            parse_line_ranges(m.as_str())
+                .expect("We should be able to parse line numbers if they've matched the regex")
+                .1
         });
 
         // Check the options and create a config struct for them.
@@ -68,7 +72,7 @@ impl<'s> Comment<'s> {
         Some(Self {
             hash,
             filename,
-            line_range,
+            line_ranges,
             config,
         })
     }
@@ -92,33 +96,65 @@ impl<'s> Comment<'s> {
             Err(_) => {
                 return Err(color_eyre::eyre::Error::msg(
                     "Couldn't convert object to blob",
-                ))
+                ));
             }
         };
 
+        let bodies: Vec<(String, u32, u32)> = match &self.line_ranges {
+            None => {
+                let mut first = 1;
+                let last = content.lines().count() as u32;
+
+                // If we've got a copyright comment, then remove it and update the line number accordingly
+                if self.config.remove_copyright_comment
+                    && first == 1
+                    && content
+                        .lines()
+                        .take(6)
+                        .intersperse("\n")
+                        .collect::<String>()
+                        == COPYRIGHT_COMMENT
+                {
+                    first = 7;
+                }
+
+                // The body is just the section of the content from the first line to the last line,
+                // interspersed with newlines
+                let body: String = content
+                    .lines()
+                    .skip((first - 1) as usize)
+                    .take(1 + (last - first) as usize)
+                    .intersperse("\n")
+                    .collect();
+
+                vec![(body, first, last)]
+            }
+            Some(ranges) => ranges
+                .iter()
+                .map(|&(first, last)| {
+                    (
+                        content
+                            .lines()
+                            .skip((first - 1) as usize)
+                            .take(1 + (last - first) as usize)
+                            .intersperse("\n")
+                            .collect(),
+                        first,
+                        last,
+                    )
+                })
+                .collect(),
+        };
+
         // Get the line range or use 1 to the end of the file
-        let (mut first, last) = self
-            .line_range
-            .unwrap_or_else(|| (1, content.lines().count() as u32));
-
-        // If we've got a copyright comment, then remove it and update the line number accordingly
-        if self.config.remove_copyright_comment
-            && first == 1
-            && content
-                .lines()
-                .take(6)
-                .intersperse("\n")
-                .collect::<String>()
-                == COPYRIGHT_COMMENT
-        {
-            first = 7;
-        }
-
         // We now calculate a vector that maps line numbers to line contents.
         // Each line is a line above the snippet which has less indentation, indicating that it is
         // an enclosing scope. This works because all the snippets are Python, which uses
         // meaningful whitespace for scoping
         let scopes: Vec<(u32, String)> = if self.config.use_scopes {
+            // The first line of any snippet body
+            let first = *bodies.iter().map(|(_, n, _)| n).min().unwrap();
+
             // Get the indentation of the first line of the snippet. We'll use this as a baseline
             // for the enclosing scopes. They will need less indentation than this
             let first_line_indentation: usize = content
@@ -182,21 +218,11 @@ impl<'s> Comment<'s> {
             vec![]
         };
 
-        // The body is just the section of the content from the first line to the last line,
-        // interspersed with newlines
-        let body: String = content
-            .lines()
-            .skip((first - 1) as usize)
-            .take(1 + (last - first) as usize)
-            .intersperse("\n")
-            .collect();
-
         Ok(Text {
             hash: self.hash,
             filename: self.filename,
             scopes,
-            body,
-            line_range: (first, last),
+            bodies,
         })
     }
 
@@ -207,14 +233,20 @@ impl<'s> Comment<'s> {
     pub fn details(&self) -> String {
         let hash = hex::encode(&self.hash.as_bytes()[..4]);
         let filename = self.filename.to_str().unwrap();
-        let linenums = match self.line_range {
+        let linenums = match &self.line_ranges {
             None => "".to_string(),
-            Some((first, last)) => {
-                if first == last {
-                    format!(":{first}")
-                } else {
-                    format!(":{first}-{last}")
-                }
+            Some(pairs) => {
+                String::from(":")
+                    + &pairs
+                        .iter()
+                        .map(|(first, last)| {
+                            if first == last {
+                                first.to_string()
+                            } else {
+                                format!("{first}-{last}")
+                            }
+                        })
+                        .join(",")
             }
         };
         let config = self.config.details();
@@ -230,13 +262,23 @@ mod tests {
     use pretty_assertions::assert_eq;
 
     #[test]
+    fn parse_line_ranges_test() {
+        assert_eq!(parse_line_ranges("123-234"), Ok(("", vec![(123, 234)])));
+        assert_eq!(
+            parse_line_ranges("123-234,250-300"),
+            Ok(("", vec![(123, 234), (250, 300)]))
+        );
+        assert_eq!(parse_line_ranges("123"), Ok(("", vec![(123, 123)])));
+    }
+
+    #[test]
     fn from_comment_test() {
         let comment =
             "%: 29ec1fedbf307e3b7ca731c4a381535fec899b0b\n%: src/lintrans/matrices/wrapper.py";
         let snip = Comment {
             hash: Oid::from_str("29ec1fedbf307e3b7ca731c4a381535fec899b0b").unwrap(),
             filename: Path::new("src/lintrans/matrices/wrapper.py"),
-            line_range: None,
+            line_ranges: None,
             config: Config::default(),
         };
         assert_eq!(Comment::from_latex_comment(comment).unwrap(), snip);
@@ -246,7 +288,7 @@ mod tests {
         let snip = Comment {
             hash: Oid::from_str("29ec1fedbf307e3b7ca731c4a381535fec899b0b").unwrap(),
             filename: Path::new("src/lintrans/matrices/wrapper.py"),
-            line_range: Some((11, 22)),
+            line_ranges: Some(vec![(11, 22)]),
             config: Config::default(),
         };
         assert_eq!(Comment::from_latex_comment(comment).unwrap(), snip);
@@ -256,7 +298,17 @@ mod tests {
         let snip = Comment {
             hash: Oid::from_str("29ec1fedbf307e3b7ca731c4a381535fec899b0b").unwrap(),
             filename: Path::new("src/lintrans/matrices/wrapper.py"),
-            line_range: Some((11, 11)),
+            line_ranges: Some(vec![(11, 11)]),
+            config: Config::default(),
+        };
+        assert_eq!(Comment::from_latex_comment(comment).unwrap(), snip);
+
+        let comment =
+            "%: 29ec1fedbf307e3b7ca731c4a381535fec899b0b\n%: src/lintrans/matrices/wrapper.py:11-20,24,31-40";
+        let snip = Comment {
+            hash: Oid::from_str("29ec1fedbf307e3b7ca731c4a381535fec899b0b").unwrap(),
+            filename: Path::new("src/lintrans/matrices/wrapper.py"),
+            line_ranges: Some(vec![(11, 20), (24, 24), (31, 40)]),
             config: Config::default(),
         };
         assert_eq!(Comment::from_latex_comment(comment).unwrap(), snip);
@@ -323,30 +375,61 @@ class MatrixWrapper:
             'Z': None
         }"#;
 
+        const FILE_31_40: &str = r#"        return self._matrices[name]
+
+    def __setitem__(self, name: str, new_matrix: MatrixType) -> None:
+        """Set the value of matrix `name` with the new_matrix.
+
+        Raises:
+            ValueError:
+                If `name` isn't a valid matrix name
+        """
+        name = name.upper()"#;
+
         let repo = get_repo();
 
         let snip = Comment::from_latex_comment(
             "%: 29ec1fedbf307e3b7ca731c4a381535fec899b0b\n%: src/lintrans/matrices/wrapper.py",
         )
         .unwrap();
-        assert_eq!(snip.get_text(&repo).unwrap().body, FILE.to_string(),);
-        assert_eq!(snip.get_text(&repo).unwrap().line_range, (1, 45));
+        assert_eq!(
+            snip.get_text(&repo).unwrap().bodies,
+            vec![(FILE.to_string(), 1, 45)]
+        );
 
         let snip = Comment::from_latex_comment(
                 "%: 29ec1fedbf307e3b7ca731c4a381535fec899b0b\n%: src/lintrans/matrices/wrapper.py:11-22",
             )
             .unwrap();
-        assert_eq!(snip.get_text(&repo).unwrap().body, FILE_11_22.to_string());
-        assert_eq!(snip.get_text(&repo).unwrap().line_range, (11, 22));
+        assert_eq!(
+            snip.get_text(&repo).unwrap().bodies,
+            vec![(FILE_11_22.to_string(), 11, 22)]
+        );
 
         let snip = Comment::from_latex_comment(
             "%: 29ec1fedbf307e3b7ca731c4a381535fec899b0b\n%: src/lintrans/matrices/wrapper.py:11",
         )
         .unwrap();
         assert_eq!(
-            snip.get_text(&repo).unwrap().body,
-            "    def __init__(self):".to_string()
+            snip.get_text(&repo).unwrap().bodies,
+            vec![("    def __init__(self):".to_string(), 11, 11)]
         );
-        assert_eq!(snip.get_text(&repo).unwrap().line_range, (11, 11));
+
+        let snip = Comment::from_latex_comment(
+            "%: 29ec1fedbf307e3b7ca731c4a381535fec899b0b\n%: src/lintrans/matrices/wrapper.py:11-22,24,31-40",
+        )
+        .unwrap();
+        assert_eq!(
+            snip.get_text(&repo).unwrap().bodies,
+            vec![
+                (FILE_11_22.to_string(), 11, 22),
+                (
+                    "    def __getitem__(self, name: str) -> MatrixType | None:".to_string(),
+                    24,
+                    24
+                ),
+                (FILE_31_40.to_string(), 31, 40)
+            ]
+        );
     }
 }

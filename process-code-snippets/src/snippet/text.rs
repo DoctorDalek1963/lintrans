@@ -1,6 +1,7 @@
 //! This module contains code to deal with converting snippet text taken from commits into LaTeX code.
 
 use git2::Oid;
+use itertools::Itertools;
 use std::path::Path;
 
 /// The text and metadata of an actual snippet.
@@ -17,39 +18,35 @@ pub struct Text<'s> {
     /// Must be ordered by ascending line numbers.
     pub scopes: Vec<(u32, String)>,
 
-    /// The body of the snippet; the actual code that we want to include.
-    pub body: String,
-
-    /// The range of lines of the original file that this body comes from.
-    pub line_range: (u32, u32),
+    /// The bodies of the snippet; the actual code that we want to include, along with the start of
+    /// end line of each body block.
+    pub bodies: Vec<(String, u32, u32)>,
 }
 
 impl<'s> Text<'s> {
     /// Return the LaTeX code to embed the snippet as a `minted` environment with custom page numbers.
+    #[allow(unstable_name_collisions)]
     pub fn get_latex(&self) -> String {
+        // Each element is a tuple (a, b) that says "when we encounter line a, show '...' and skip to
+        // line b". Line a is just after a line of interest, and line b is just before the next one.
         let line_num_pairs: Vec<(i32, i32)> = {
-            // This is a list of line numbers for each change in line numbers - all scope lines and
-            // the first line of the snippet
-            let mut line_nums: Vec<i32> = self.scopes.iter().map(|&(n, _)| n as i32).collect();
-            line_nums.push(self.line_range.0 as i32);
+            let mut lines = vec![];
+            let mut a = -1;
+            let mut b;
 
-            // Create a new vector which is the same as `line_nums`, but has a prepended `-2`
-            let prepended: Vec<i32> = {
-                let mut v = vec![-2];
-                for n in &line_nums {
-                    v.push(*n);
-                }
-                v
-            };
+            for (n, _) in &self.scopes {
+                b = *n as i32 - 1;
+                lines.push((a, b));
+                a = *n as i32 + 1;
+            }
 
-            // Zip the `prepended` vector with the `line_nums` vector, accounting for off-by-one errors.
-            // This creates a vector of tuples `(a, b)` where `a` is the number after the previous
-            // line that we cared about, and `b` is the number before the line number we care about
-            prepended
-                .iter()
-                .zip(line_nums)
-                .map(|(f, l)| (f + 1, l - 1))
-                .collect()
+            for (_, start, end) in &self.bodies {
+                b = *start as i32 - 1;
+                lines.push((a, b));
+                a = *end as i32 + 1;
+            }
+
+            lines
         };
 
         // Redefine the line number macro to handle the snippet comments and scope lines
@@ -140,7 +137,15 @@ impl<'s> Text<'s> {
         }
 
         // Add the snippet body
-        s.push_str(&self.body);
+        s.push_str(
+            &self
+                .bodies
+                .iter()
+                .map(|(s, _, _)| s)
+                .cloned()
+                .intersperse(String::from("\n\n"))
+                .collect::<String>(),
+        );
         s.push('\n');
 
         // Close everything
@@ -387,6 +392,156 @@ class VectorGridPlot(BackgroundPlot):
             .get_latex(),
             LATEX_5,
             "Testing noscopes option"
+        );
+
+        const LATEX_6: &str = r#"{
+\renewcommand\theFancyVerbLine{ \ttfamily
+	\textcolor[rgb]{0.5,0.5,1}{
+		\footnotesize
+		\oldstylenums{
+			\ifnum\value{FancyVerbLine}=-3 \else
+			\ifnum\value{FancyVerbLine}=-2 \else
+			\ifnum\value{FancyVerbLine}=-1\setcounter{FancyVerbLine}{26}\else
+			\ifnum\value{FancyVerbLine}=28\setcounter{FancyVerbLine}{433}... \else
+			\ifnum\value{FancyVerbLine}=442\setcounter{FancyVerbLine}{448}... \else
+				\arabic{FancyVerbLine}
+			\fi\fi\fi\fi\fi
+		}
+	}
+}
+\begin{minted}[firstnumber=-3]{python}
+# ba88521abd4e46048575a30330db4ed13821ecb0
+# src/lintrans/gui/main_window.py
+
+class LintransMainWindow(QMainWindow):
+
+    def assign_matrix_wrapper(self, matrix_wrapper: MatrixWrapper) -> None:
+        """Assign a new value to ``self.matrix_wrapper`` and give the expression box focus.
+
+        :param matrix_wrapper: The new value of the matrix wrapper to assign
+        :type matrix_wrapper: MatrixWrapper
+        """
+        self.matrix_wrapper = matrix_wrapper
+        self.lineedit_expression_box.setFocus()
+
+    def assign_display_settings(self, display_settings: DisplaySettings) -> None:
+        """Assign a new value to ``self.plot.display_settings`` and give the expression box focus."""
+        self.plot.display_settings = display_settings
+        self.plot.update()
+        self.lineedit_expression_box.setFocus()
+\end{minted}
+}"#;
+        assert_eq!(
+            Comment::from_latex_comment(concat!(
+                "%: ba88521abd4e46048575a30330db4ed13821ecb0\n",
+                "%: src/lintrans/gui/main_window.py:434-441,449-453"
+            ))
+            .unwrap()
+            .get_text(&repo)
+            .unwrap()
+            .get_latex(),
+            LATEX_6,
+            "Testing multiple snippet bodies"
+        );
+
+        const LATEX_7: &str = r#"{
+\renewcommand\theFancyVerbLine{ \ttfamily
+	\textcolor[rgb]{0.5,0.5,1}{
+		\footnotesize
+		\oldstylenums{
+			\ifnum\value{FancyVerbLine}=-3 \else
+			\ifnum\value{FancyVerbLine}=-2 \else
+			\ifnum\value{FancyVerbLine}=-1\setcounter{FancyVerbLine}{26}\else
+			\ifnum\value{FancyVerbLine}=28\setcounter{FancyVerbLine}{433}... \else
+			\ifnum\value{FancyVerbLine}=442\setcounter{FancyVerbLine}{445}... \else
+			\ifnum\value{FancyVerbLine}=447\setcounter{FancyVerbLine}{448}... \else
+				\arabic{FancyVerbLine}
+			\fi\fi\fi\fi\fi\fi
+		}
+	}
+}
+\begin{minted}[firstnumber=-3]{python}
+# ba88521abd4e46048575a30330db4ed13821ecb0
+# src/lintrans/gui/main_window.py
+
+class LintransMainWindow(QMainWindow):
+
+    def assign_matrix_wrapper(self, matrix_wrapper: MatrixWrapper) -> None:
+        """Assign a new value to ``self.matrix_wrapper`` and give the expression box focus.
+
+        :param matrix_wrapper: The new value of the matrix wrapper to assign
+        :type matrix_wrapper: MatrixWrapper
+        """
+        self.matrix_wrapper = matrix_wrapper
+        self.lineedit_expression_box.setFocus()
+
+        dialog.open()
+
+    def assign_display_settings(self, display_settings: DisplaySettings) -> None:
+        """Assign a new value to ``self.plot.display_settings`` and give the expression box focus."""
+        self.plot.display_settings = display_settings
+        self.plot.update()
+        self.lineedit_expression_box.setFocus()
+\end{minted}
+}"#;
+        assert_eq!(
+            Comment::from_latex_comment(concat!(
+                "%: ba88521abd4e46048575a30330db4ed13821ecb0\n",
+                "%: src/lintrans/gui/main_window.py:434-441,446,449-453"
+            ))
+            .unwrap()
+            .get_text(&repo)
+            .unwrap()
+            .get_latex(),
+            LATEX_7,
+            "Testing multiple snippet bodies with single line body in the middle"
+        );
+
+        const LATEX_8: &str = r#"{
+\renewcommand\theFancyVerbLine{ \ttfamily
+	\textcolor[rgb]{0.5,0.5,1}{
+		\footnotesize
+		\oldstylenums{
+			\ifnum\value{FancyVerbLine}=-3 \else
+			\ifnum\value{FancyVerbLine}=-2 \else
+			\ifnum\value{FancyVerbLine}=-1\setcounter{FancyVerbLine}{62}\else
+			\ifnum\value{FancyVerbLine}=64\setcounter{FancyVerbLine}{65}... \else
+			\ifnum\value{FancyVerbLine}=67\setcounter{FancyVerbLine}{106}... \else
+			\ifnum\value{FancyVerbLine}=108\setcounter{FancyVerbLine}{172}... \else
+				\arabic{FancyVerbLine}
+			\fi\fi\fi\fi\fi\fi
+		}
+	}
+}
+\begin{minted}[firstnumber=-3]{python}
+# 517773e1ace0dc4485c425134cd36ba482ba65df
+# src/lintrans/gui/dialogs/settings.py
+
+class DisplaySettingsDialog(SettingsDialog):
+
+    def __init__(self, display_settings: DisplaySettings, *args, **kwargs):
+
+        self.checkbox_draw_determinant_parallelogram.clicked.connect(self.update_gui)
+
+    def update_gui(self) -> None:
+        """Update the GUI according to other widgets in the GUI.
+
+        For example, this method updates which checkboxes are enabled based on the values of other checkboxes.
+        """
+        self.checkbox_draw_determinant_text.setEnabled(self.checkbox_draw_determinant_parallelogram.isChecked())
+\end{minted}
+}"#;
+        assert_eq!(
+            Comment::from_latex_comment(concat!(
+                "%: 517773e1ace0dc4485c425134cd36ba482ba65df\n",
+                "%: src/lintrans/gui/dialogs/settings.py:107,173-178"
+            ))
+            .unwrap()
+            .get_text(&repo)
+            .unwrap()
+            .get_latex(),
+            LATEX_8,
+            "Testing multiple snippet bodies with scopes"
         );
     }
 }
