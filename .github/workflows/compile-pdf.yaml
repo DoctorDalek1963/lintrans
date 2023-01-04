@@ -53,12 +53,17 @@ jobs:
           just process-code-snippets
 
       - name: Compile main.tex
+        id: compilePdf
         uses: xu-cheng/latex-action@v2
         with:
           pre_compile: mkdir -p tikz-imgs
           root_file: main.tex
           args: -lualatex -jobname=main -file-line-error -halt-on-error -interaction=batchmode -shell-escape -cd
           extra_fonts: ./.fonts/ttf/Hack-*.ttf
+
+      - name: cat main.log
+        if: always() && steps.compilePdf.outcome == 'failure'
+        run: cat main.log
 
       - name: Put pdf in correct directory
         run: |
