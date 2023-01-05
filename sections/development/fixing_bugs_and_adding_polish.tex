@@ -91,4 +91,13 @@ Additionally, it would be nice to update the render buttons at the same time. Th
 %: bd7f8ba18266a8a095549d815dcfe6f24de514b6
 %: src/lintrans/gui/main_window.py:438-446,454-459
 
+\subsubsection{Fixing a crash when animating singular matrices in sequence\label{development:fixing-bugs-and-adding-polish:fixing-a-crash-when-animating-singular-matrices-in-sequence}}
+
+If we have a matrix $\mathbf{A}$ defined as $\begin{pmatrix}1 & 2\\ 1 & 2\end{pmatrix}$, then when we try to render \texttt{A\^{}-1}, we get a pop-up dialog box saying that we can't take the inverse of a singular matrix. This is good, since if NumPy just took the inverse blindly, it would crash. When we try to animate \texttt{A\^{}-1}, we get the same pop-up box. When we try to use it in an animation sequence, however, like \texttt{rot(45),A\^{}-1}, we don't check if each element of the sequence for singularity, so NumPy takes the inverse blindly and the whole app crashes. This is bad.
+
+To fix this, we can simply catch the error when trying to evaluate the element in the sequence.
+
+%: 8db0df1d9d6a1be1f15a6f705e779d982db9ee29
+%: src/lintrans/gui/main_window.py:300-310
+
 \end{document}
