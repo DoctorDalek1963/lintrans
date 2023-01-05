@@ -86,7 +86,9 @@ On lines 234 and 252, I call the built-in \pyinline{max()} function with the max
 
 It would be quite nice to be able to just start typing an expression after defining a matrix or changing display settings. To do this, we can simply set the app's focus on the expression box after either of these actions.
 
-%: ba88521abd4e46048575a30330db4ed13821ecb0
-%: src/lintrans/gui/main_window.py:434-441,449-453
+Additionally, it would be nice to update the render buttons at the same time. That would allow the user to use a matrix in an expression, then define it, and be able to render the expression as soon as they close the dialog (assuming the expression is valid).
+
+%: bd7f8ba18266a8a095549d815dcfe6f24de514b6
+%: src/lintrans/gui/main_window.py:438-446,454-459
 
 \end{document}
