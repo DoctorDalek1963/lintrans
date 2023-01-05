@@ -100,4 +100,16 @@ To fix this, we can simply catch the error when trying to evaluate the element i
 %: 8db0df1d9d6a1be1f15a6f705e779d982db9ee29
 %: src/lintrans/gui/main_window.py:300-310
 
+\subsubsection{Allowing animations to be cancelled\label{development:fixing-bugs-and-adding-polish:allowing-animations-to-be-cancelled}}
+
+Currently, if you try to reset the viewport partway through an animation, it just resets the basis vectors for a tick, but then they start moving again, because the animation loop is still running. To fix this, we can track whether we should be animating using an instance variable, set it to false when the user hits reset, and break out of the animation loop when it's false.
+
+% Ideally, my snippet processing code would handle the scopes of these snippets automatically, but
+% some of them need to share scopes, which would be more effort to implement than it's probably worth
+
+%: b665bc59ec99664ed7b2c17f94e76ae49c6eb331
+%: src/lintrans/gui/main_window.py:45-46,269-274,292,304-329,360,365-370,429
+
+Here, \pyinline{self.animating_sequence} is whether a sequence is being animated, and \pyinline{self.animating} is whether an individual matrix is currently being animated. An individual matrix means a matrix on its own, or a single element in a sequence. That means that \pyinline{self.animating} can be set and unset multiple times in a single sequence.
+
 \end{document}
