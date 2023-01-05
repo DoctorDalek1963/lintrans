@@ -133,4 +133,44 @@ Qt5 lets you use a \texttt{\&} character in the text of a widget to act on the l
 %: 67d43a364ee2605b95b8caca9f1e4eb714cbb7c6
 %: src/lintrans/gui/dialogs/settings.py:63-155,188-210
 
+\subsubsection{Centering text in the determinant parallelogram\label{development:fixing-bugs-and-adding-polish:centering-text-in-the-determinant-parallelogram}}
+
+The text in the determinant parallelogram is the numerical value of the determinant. Currently, it's not centered. It's drawn by just writing the text at a point, chosen to be the centre of the parallelogram. The \pyinline{QPainter} class uses this point as the start of the baseline of the text, so it's effectively the bottom left corner.
+
+%: 67d43a364ee2605b95b8caca9f1e4eb714cbb7c6
+%: src/lintrans/gui/plots/classes.py:419-428
+
+Obviously, this text will look better if it's centered. To do this, we can create a bounding rectangle around the parallelogram and get the painter to draw the text in the centre of that rectangle.
+
+We build the rectangle by getting the coordinates of each vertex of the parallelogram. Then the top left corner is the minimum $x$ coordinate with the maximum $y$ coordinate, and the bottom right corner is the maximum $x$ with the minimum $y$.
+
+%: 9550416c0b273b16c90eb8d6319f5e17493ef9a8
+%: src/lintrans/gui/plots/classes.py:419-447
+
+\begin{figure}[H]
+	\hspace{0.05\linewidth}
+	\centering
+	\begin{minipage}{0.35\linewidth}
+		\centering
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=\linewidth]{development/9550416c0b273b16c90eb8d6319f5e17493ef9a8/old.png}
+			\caption{Text not centered.}
+			\label{fig:development:9550416c0b273b16c90eb8d6319f5e17493ef9a8:old.png}
+		\end{figure}
+	\end{minipage}%
+	\hspace{0.2\linewidth}
+	\begin{minipage}{0.35\linewidth}
+		\centering
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=\linewidth]{development/9550416c0b273b16c90eb8d6319f5e17493ef9a8/new.png}
+			\caption{Text centered.}
+			\label{fig:development:9550416c0b273b16c90eb8d6319f5e17493ef9a8:new.png}
+		\end{figure}
+	\end{minipage}
+	\hspace{0.05\linewidth}
+	\vspace{-1em}
+\end{figure}
+
 \end{document}
