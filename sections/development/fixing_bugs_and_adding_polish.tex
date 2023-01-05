@@ -124,4 +124,13 @@ It was at this point that I learned about the \pyinline{QValidator} class\cite{q
 %: f73575c017548d754e4171449344a52cb44b7ef4
 %: src/lintrans/gui/validate.py
 
+\subsubsection{Adding keyboard shortcuts\label{development:fixing-bugs-and-adding-polish:adding-keyboard-shortcuts}}
+
+Keyboard shortcuts are often very useful and can make the process of using software much more efficient if you get good at using the shortcuts. On this note, I decided to add keyboard shortcuts to the display settings dialog.
+
+Qt5 lets you use a \texttt{\&} character in the text of a widget to act on the letter following it. This letter becomes underlined in the text, and the user can hold \texttt{Alt} and press this letter to activate the widget. I also want to be able to toggle the checkboxes by just pressing the letter without holding \texttt{Alt}, so I had to implement this myself with a dictionary and custom override of \pyinline{keyPressEvent()}.
+
+%: 67d43a364ee2605b95b8caca9f1e4eb714cbb7c6
+%: src/lintrans/gui/dialogs/settings.py:63-155,188-210
+
 \end{document}
