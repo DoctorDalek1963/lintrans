@@ -112,4 +112,16 @@ Currently, if you try to reset the viewport partway through an animation, it jus
 
 Here, \pyinline{self.animating_sequence} is whether a sequence is being animated, and \pyinline{self.animating} is whether an individual matrix is currently being animated. An individual matrix means a matrix on its own, or a single element in a sequence. That means that \pyinline{self.animating} can be set and unset multiple times in a single sequence.
 
+\subsubsection{Validating expression input\label{development:fixing-bugs-and-adding-polish:validating-expression-input}}
+
+The user can only render or animate an expression if it's actually valid, as discussed in \S\ref{development:matrices-backend:simple-matrix-expression-validation}, and the render and animate buttons will be greyed out if the expression is invalid. But they can still type anything into the box.
+
+It was at this point that I learned about the \pyinline{QValidator} class\cite{qt5-docs-qvalidator}. This class allows me to control what the user can actually type. Using the implementation below, they can only enter characters that are allowed in valid matrix expressions.
+
+%: f73575c017548d754e4171449344a52cb44b7ef4
+%: src/lintrans/gui/main_window.py:125
+
+%: f73575c017548d754e4171449344a52cb44b7ef4
+%: src/lintrans/gui/validate.py
+
 \end{document}
