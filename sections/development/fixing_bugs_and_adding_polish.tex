@@ -124,6 +124,11 @@ It was at this point that I learned about the \pyinline{QValidator} class\cite{q
 %: f73575c017548d754e4171449344a52cb44b7ef4
 %: src/lintrans/gui/validate.py
 
+I also then added validators to the definition dialogs, to make sure that users can only enter valid input. Qt5 provides some basic validators already, for things like integers and floating point numbers (called \mintinline{C++}{double} in C++, equivalent to \pyinline{float} in Python).
+
+%: a2fd14b99fa752a18b42352a01142ffbc2600570
+%: src/lintrans/gui/dialogs/define_new_matrix.py:213,225-240,299,314-317,358,372-375 noscopes
+
 \subsubsection{Adding keyboard shortcuts\label{development:fixing-bugs-and-adding-polish:adding-keyboard-shortcuts}}
 
 Keyboard shortcuts are often very useful and can make the process of using software much more efficient if you get good at using the shortcuts. On this note, I decided to add keyboard shortcuts to the display settings dialog.
