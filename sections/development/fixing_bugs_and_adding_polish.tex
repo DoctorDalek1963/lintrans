@@ -173,4 +173,40 @@ We build the rectangle by getting the coordinates of each vertex of the parallel
 	\vspace{-1em}
 \end{figure}
 
+\subsubsection{Defining matrices as expressions\label{development:fixing-bugs-and-adding-polish:defining-matrices-as-expressions}}
+
+Currently, you can \enquote*{define} a matrix in terms of an expression, but it doesn't really define the matrix like that. Instead, it evaluates the expression immediately, and assigns that numerical result to the name you specified. It would be much better if the matrix could be actually defined as the expression, and then evaluated only when it needs to be used. Then, the user could have a matrix $\mathbf{M}$ defined as something like \texttt{0.5A\^{}-1rot(45)B}, and it would always have that value, even if the user has changed the definition of $\mathbf{A}$ or $\mathbf{B}$ since defining $\mathbf{M}$.
+
+To do this, I'll have to completely change how matrices are stored and retrieved. The \pyinline{MatrixWrapper} class contains a dictionary \pyinline{self._matrices}, which currently maps \pyinline{str} to \pyinline{Optional[MatrixType]}, meaning that a matrix could be a $2 \times 2$ NumPy array, or nothing. I'm going to change this type to \pyinline{Optional[Union[MatrixType, str]]}. This means that if a matrix exists, then it's either a $2 \times 2$ NumPy array or a string. We then check which one it is when we retrieve the matrix, and act accordingly. If it's an expression, then we evaluate and return the numerical result.
+
+Here's the relevant parts of the old \pyinline{MatrixWrapper} class:
+
+%: 9550416c0b273b16c90eb8d6319f5e17493ef9a8
+%: src/lintrans/matrices/wrapper.py:35-46,91-161
+
+And here's the new version, which supports matrices defined as expressions:
+
+%: 01e866a74cf0f02ecba6438763d43e6eb90fe218
+%: src/lintrans/matrices/wrapper.py:38-49,94-193
+
+One of the more subtle things added here is on lines 189-191. When checking if an expression is valid in the context of the wrapper, we have to make sure all the referenced matrices are actually defined, but if any of those matrices are defined as an expression, then obviously that expression has to be valid as well. This recursion means that all references to matrices must be valid, even traversing down through matrices that are defined as expressions. % TODO: Add footnote referencing section about circular references
+
+I also added some unit tests to automatically test this new feature.
+
+%: 239bcbfd1dde3f7623318d03e8544dd67dc02e3d
+%: tests/matrices/matrix_wrapper/test_setitem_and_getitem.py:42-199
+
+%: ea00703f19c13af86c39ae30170569819937fa31
+%: tests/matrices/matrix_wrapper/test_misc.py
+
+I then had to fix a small bug where the \pyinline{DefineAsAnExpressionDialog} would evaluate the expression before assigning it, so I had to change that to just assign the test instead.
+
+%: 54e10dbfd3a1f3a962955c7fa3908848f5bd95b0
+%: src/lintrans/gui/dialogs/define_new_matrix.py:388-391
+
+I also created a virtual method in the \pyinline{DefineDialog} superclass, which standardised how dialogs load a matrix when it's selected in the drop-down. The numerical and visual definition dialogs already did this, but it was inconsistent, so I made it the same across all subclasses, and added it to the expression dialog.
+
+%: d1b60b20666ab9297cdbf675b6226587fd2e417f
+%: src/lintrans/gui/dialogs/define_new_matrix.py:98-103,134-143,352,386-393
+
 \end{document}
