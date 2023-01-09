@@ -194,7 +194,7 @@ And here's the new version, which supports matrices defined as expressions:
 %: 01e866a74cf0f02ecba6438763d43e6eb90fe218
 %: src/lintrans/matrices/wrapper.py:38-49,94-193
 
-One of the more subtle things added here is on lines 189-191. When checking if an expression is valid in the context of the wrapper, we have to make sure all the referenced matrices are actually defined, but if any of those matrices are defined as an expression, then obviously that expression has to be valid as well. This recursion means that all references to matrices must be valid, even traversing down through matrices that are defined as expressions. % TODO: Add footnote referencing section about circular references
+One of the more subtle things added here is on lines 189-191. When checking if an expression is valid in the context of the wrapper, we have to make sure all the referenced matrices are actually defined, but if any of those matrices are defined as an expression, then obviously that expression has to be valid as well. This recursion means that all references to matrices must be valid, even traversing down through matrices that are defined as expressions.
 
 I also added some unit tests to automatically test this new feature.
 
@@ -213,5 +213,20 @@ I also created a virtual method in the \pyinline{DefineDialog} superclass, which
 
 %: d1b60b20666ab9297cdbf675b6226587fd2e417f
 %: src/lintrans/gui/dialogs/define_new_matrix.py:98-103,134-143,352,386-393
+
+Unfortunately, my initial implementation of this had a few bugs, and I noticed a few hours later that if you first define $\mathbf{A}$ as anything concrete, then you can define $\mathbf{A}$ to be the expression \texttt{A}. Then, when you put it in the expression box, the app just crashes. This is because it recurs forever, since it doesn't realise that the definition of $\mathbf{A}$ is self-referential\footnote{Obviously it doesn't actually recur forever, but Python stops recursion after 1000 levels and crashes the program.}.
+
+To fix this, I can check that the expression is valid and that it doesn't contain itself before assigning the expression to the matrix name.
+% TODO: Reference future sss in footnote about circular references
+
+%: 742e0955e344deab2c9302ba9a6c7298ec4583d4
+%: src/lintrans/gui/dialogs/define_new_matrix.py:395-398
+
+I also added this logic directly to the wrapper, so that there was no risk of me creating this kind of bug elsewhere.
+
+%: e56a5a90034f8335b046dd1bf76321eb48892050
+%: src/lintrans/matrices/wrapper.py:145-151
+
+While I was working with expressions so much, I realised that defining a matrix as a rotation was a bit redundant when you can just use an expression like \texttt{rot(45)}. I spoke to the teacher that's going to use \texttt{lintrans} when it's finished, and she said that radians aren't really needed. The radians checkbox was the only unique part of the \pyinline{DefineAsARotationDialog} class. Since it's not important, I decided to remove the whole dialog.
 
 \end{document}
