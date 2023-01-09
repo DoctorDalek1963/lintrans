@@ -54,7 +54,7 @@ jobs:
 
       - name: Compile main.tex
         id: compilePdf
-        uses: xu-cheng/latex-action@v2
+        uses: xu-cheng/latex-action@2.6.0
         with:
           pre_compile: mkdir -p tikz-imgs
           root_file: main.tex
