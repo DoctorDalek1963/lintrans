@@ -16,14 +16,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Download fonts
+      - name: Install fonts
         run: |
-          mkdir -p .fonts
-          pushd .fonts
+          mkdir -p "$HOME/.local/share/fonts"
+          pushd "$HOME/.local/share/fonts"
           wget https://github.com/source-foundry/Hack/releases/download/v3.003/Hack-v3.003-ttf.zip
           unzip Hack-v3.003-ttf.zip
           rm Hack-v3.003-ttf.zip
           popd
+          fc-cache -fv
 
       - name: Set up Python 3.10
         uses: actions/setup-python@v4
@@ -42,6 +43,9 @@ jobs:
       - name: Install just
         uses: extractions/setup-just@v1
 
+      - name: Install TeXlive
+        run: sudo apt install texlive-full
+
       - name: Clone lintrans
         run: |
           git clone https://github.com/DoctorDalek1963/lintrans
@@ -50,16 +54,10 @@ jobs:
         run: |
           mkdir -p tikz-imgs
           python generate_appendices.py
-          just process-code-snippets
 
       - name: Compile main.tex
         id: compilePdf
-        uses: xu-cheng/latex-action@2.6.0
-        with:
-          pre_compile: mkdir -p tikz-imgs
-          root_file: main.tex
-          args: -lualatex -jobname=main -file-line-error -halt-on-error -interaction=batchmode -shell-escape -cd
-          extra_fonts: ./.fonts/ttf/Hack-*.ttf
+        run: just build
 
       - name: cat main.log
         if: always() && steps.compilePdf.outcome == 'failure'
