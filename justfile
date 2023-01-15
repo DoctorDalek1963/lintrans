@@ -3,9 +3,8 @@ alias c := clean
 alias ca := clear-appendices
 alias w := watch
 
-# this is needed for TeXstudio to find all the files properly in ~/.texlive on my local install,
-# but we also need the $HOME hack to make it find cargo on the GitHub actions CI
-export PATH := env_var("HOME") + "/.texlive/2021/bin/x86_64-linux:" + env_var("HOME") + "/.cargo/bin:" + env_var("HOME") + "/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"
+# this is needed for TeXstudio to find all the files properly in ~/.texlive on my local install
+export PATH := env_var("HOME") + "/.texlive/2021/bin/x86_64-linux:" + env_var("PATH")
 
 # build the PDF
 build: process-code-snippets
