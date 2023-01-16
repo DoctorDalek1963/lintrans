@@ -548,6 +548,18 @@ class LintransMainWindow(QMainWindow):
 
                     if self._plot.display_settings.applicative_animation:
                         new_matrix = new_matrix @ current_matrix
+
+                    # If we want a transitional animation and we're animating the same matrix, then restart the
+                    # animation. We use this check rather than equality because of small floating point errors
+                    elif (abs(current_matrix - new_matrix) < 1e-12).all():
+                        current_matrix = self._matrix_wrapper['I']
+
+                        # We pause here for 200 ms to make the animation look a bit nicer
+                        self._plot.plot_matrix(current_matrix)
+                        self._plot.update()
+                        QApplication.processEvents()
+                        QThread.msleep(200)
+
                 except LinAlgError:
                     self._show_error_message('Singular matrix', 'Cannot take inverse of singular matrix.')
                     return
