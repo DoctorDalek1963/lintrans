@@ -261,6 +261,21 @@ def test_parenthesized_expressions(test_wrapper: MatrixWrapper) -> None:
             )).all()
 
 
+def test_anonymous_matrices(test_wrapper: MatrixWrapper) -> None:
+    """Test that anonymous matrices get evaluated correctly."""
+    assert test_wrapper['A'] is not None and test_wrapper['B'] is not None and test_wrapper['C'] is not None and \
+           test_wrapper['D'] is not None and test_wrapper['E'] is not None and test_wrapper['F'] is not None and \
+           test_wrapper['G'] is not None
+
+    assert (test_wrapper.evaluate_expression('[1 2; -3 -1]') == np.array([[1, 2], [-3, -1]])).all()
+    assert (test_wrapper.evaluate_expression('[1 2; -3 -1][-5 6; 8.3 2]') ==
+            np.array([[1, 2], [-3, -1]]) @ np.array([[-5, 6], [8.3, 2]])).all()
+    assert (test_wrapper.evaluate_expression('[1 2; -3 -1]^-1') == la.inv(np.array([[1, 2], [-3, -1]]))).all()
+    assert (test_wrapper.evaluate_expression('3A[1 2; -3 -1]^{2}-15[-5 6; 8.3 2]^TB') ==
+            3 * test_wrapper['A'] @ la.matrix_power(np.array([[1, 2], [-3, -1]]), 2)
+            - 15 * np.array([[-5, 8.3], [6, 2]]) @ test_wrapper['B']).all()
+
+
 def test_value_errors(test_wrapper: MatrixWrapper) -> None:
     """Test that evaluate_expression() raises a ValueError for any malformed input."""
     invalid_expressions = ['', '+', '-', 'This is not a valid expression', '3+4',

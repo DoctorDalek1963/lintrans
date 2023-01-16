@@ -189,10 +189,10 @@ class ExpressionParser:
         expression = re.sub(r'(?<=\^)(-?\d+|T)(?=[^}]|$)', r'{\g<0>}', expression)
 
         # Remove any standalone minuses
-        expression = re.sub(r'-(?=[A-Z])', '-1', expression)
+        expression = re.sub(r'-(?=[A-Z]|\[)', '-1', expression)
 
         # Replace subtractions with additions
-        expression = re.sub(r'-(?=\d+\.?\d*([A-Z]|rot))', '+-', expression)
+        expression = re.sub(r'-(?=\d+\.?\d*([A-Z]|rot|\[))', '+-', expression)
 
         # Get rid of a potential leading + introduced by the last step
         expression = re.sub(r'^\+', '', expression)
@@ -370,7 +370,7 @@ class ExpressionParser:
             )
 
     def _parse_anonymous_identifer(self) -> None:
-        # """"""
+        """Parse an anonymous matrix, including the square brackets."""
         if match := re.match(
             r'^\[(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?);(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)\]',
             self._expression[self._pointer:]
@@ -381,8 +381,8 @@ class ExpressionParser:
                 except ValueError as e:
                     raise MatrixParseError(f'Invalid matrix entry "{match.group(1)}" in anonymous matrix') from e
 
-                self._current_token.identifier = match.group(0)
-                self._pointer += len(match.group(0))
+            self._current_token.identifier = match.group(0)
+            self._pointer += len(match.group(0))
         else:
             raise MatrixParseError(
                 f'Invalid anonymous matrix "{self._expression[self._pointer : self._pointer + 15]}..."'
