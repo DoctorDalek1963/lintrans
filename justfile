@@ -34,3 +34,10 @@ clean-processed-files:
 clear-appendices:
 	sd -f ms '(\\begin\{document\}).+(\\end\{document\})' '$1\nProject code\n$2' sections/appendices/project_code.tex
 	sd -f ms '(\\begin\{document\}).+(\\end\{document\})' '$1\nTesting code\n$2' sections/appendices/testing_code.tex
+
+# build the PDF in the Docker container (very slow)
+build-docker:
+	docker build -t write-up-lintrans .
+	docker run --name wul write-up-lintrans
+	docker cp wul:/write-up-lintrans/main.pdf ./lintrans.pdf
+	docker rm wul
