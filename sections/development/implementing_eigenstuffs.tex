@@ -1,0 +1,40 @@
+% lintrans - The linear transformation visualizer
+% Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
+
+% This program is licensed under GNU GPLv3, available here:
+% <https://www.gnu.org/licenses/gpl-3.0.html>
+
+\documentclass[../development.tex]{subfiles}
+
+\begin{document}
+
+It's not universal, but the word \enquote{eigenstuffs} is common enough in mathematics that I'm comfortable using it here to mean eigenvalues, eigenvectors, and eigenlines, where an eigenline is the span of an eigenvector.
+
+\subsubsection{Drawing eigenvectors\label{development:implementing-eigenstuffs:drawing-eigenvectors}}
+
+An eigenvector $\mathbf{v}$ of a matrix $\mathbf{M}$ is a vector that satisfies the equation $\mathbf{Mv} = \lambda\mathbf{v}$ for some scalar $\lambda$. Thankfully, I don't have to worry about actually computing $\mathbf{v}$ or $\lambda$, since NumPy has the \pyinline{numpy.linalg.eig()} function\cite{numpy-docs-linalg-eig}.
+
+This function takes a square matrix and returns an array of eigenvalues ($\lambda$), and a matrix of their associated eigenvectors ($\mathbf{v}$). Some matrices don't have any real eigenvalues, but all $2 \times 2$ matrices will have 2 (possibly complex) eigenvalues, as a direct consequence of the Fundamental Theorem of Algebra\footnote{%
+	$\mathbf{Mv} = \lambda\mathbf{v} \implies \mathbf{Mv} = \lambda\mathbf{I}\mathbf{v} \implies (\mathbf{M} - \lambda\mathbf{I})\mathbf{v} = \mathbf{0} \implies \det(\mathbf{M} - \lambda\mathbf{I}) = 0\text{ (since we only want non-zero vectors)}\\%
+\implies \begin{vmatrix}a - \lambda & b\\ c & d - \lambda\end{vmatrix} = 0 \implies (a - \lambda)(d - \lambda) - bc = 0 \implies \lambda^2 - (a + d)\lambda + (ad - bc) = 0 \\%
+\implies \lambda$ has 2 solutions in $\mathbb{C}$ by the Fundamental Theorem of Algebra\cite{the-fundamental-theorem-of-algebra}%
+}. We don't want to try to render an eigenvector if its eigenvalue is complex, so we have to check and only render the real ones. Python doesn't distinguish really between \pyinline{float} and \pyinline{complex} types, so we can just check the \pyinline{.imag} property no matter what. If it's 0, then we keep the eigenvalue. NumPy normalizes the eigenvectors to have a length of 1, but I'd much prefer them to have a length equal to their associated eigenvalue. To do that, we can just multiply the eigenvectors by their eigenvalues.
+
+We then just draw a vector, consisting of a line and an arrowhead, from the origin to the extended eigenvector.
+
+%: b8614334de5cba4b1a6d92508b08fa8bd2fe77c0
+%: src/lintrans/gui/plots/classes.py:163,450-465
+
+%: b8614334de5cba4b1a6d92508b08fa8bd2fe77c0
+%: src/lintrans/gui/plots/widgets.py:58
+
+At this point in development, I didn't particularly care about the colours of various elements. It was more important to get things working first, so I ended up choosing \textcolor[RGB]{255, 249, 0}{this horrible yellow} for the eigenvectors. It's clearly an awful choice for text, and it's not very good for the eigenvectors either, since it makes them hard to see against the white background. I wasn't really considering the usability features discussed in \S\ref{design:usability-features}, but since I was the only user, and changing a few colours later on wouldn't be much work, I wasn't worried about it.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{development/b8614334de5cba4b1a6d92508b08fa8bd2fe77c0/gui.png}
+	\caption{The eigenvectors being displayed for an arbitrary matrix}
+	\label{fig:development:b8614334de5cba4b1a6d92508b08fa8bd2fe77c0:gui.png}
+\end{figure}
+
+\end{document}
