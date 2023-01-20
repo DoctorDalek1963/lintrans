@@ -37,4 +37,17 @@ At this point in development, I didn't particularly care about the colours of va
 	\label{fig:development:b8614334de5cba4b1a6d92508b08fa8bd2fe77c0:gui.png}
 \end{figure}
 
+\subsubsection{Adding display settings for eigenvectors\label{development:implementing-eigenstuffs:adding-display-settings-for-eigenvectors}}
+
+Once I'd got the eigenvectors working and being drawn, I wanted to be able to turn them on and off from the display settings. This was a simple case of just adding it to the \pyinline{DisplaySettings} dataclass, adding the checkbox to the dialog, and only drawing the eigenvectors if this display setting is true.
+
+%: 3ebb5997a7a887e751b5f4f717aa5161ed013e62
+%: src/lintrans/gui/settings.py:41-42
+
+%: 3ebb5997a7a887e751b5f4f717aa5161ed013e62
+%: src/lintrans/gui/dialogs/settings.py:123-126
+
+%: 3ebb5997a7a887e751b5f4f717aa5161ed013e62
+%: src/lintrans/gui/plots/widgets.py:58-59
+
 \end{document}
