@@ -59,4 +59,34 @@ Since I've now got several drawing methods that involve drawing vectors, I thoug
 
 When I was testing this refactor, I realised that the \pyinline{draw_transformed_grid()} method originally drew the bodies of the basis vectors and the caller had to draw the arrowheads separately. This is silly and was never planned that way; it was an unfortunate consequence of implementing the lines and arrowheads at different times. But now after this refactor, the caller has to call \pyinline{draw_basis_vectors()} to draw the whole basis vectors. So I had to add this call to \pyinline{VisualizeTransformationWidget.paintEvent()} and \pyinline{DefineVisuallyWidget.paintEvent()} in \texttt{src/lintrans/gui/plots/widgets.py} and remove the calls to \pyinline{draw_vector_arrowheads()}.
 
+\subsubsection{Adding eigenlines\label{development:implementing-eigenvectors:adding-eigenlines}}
+
+Drawing some eigenvectors that point in a general direction is fine, but drawing the whole span of the vector would be much more useful. These spans are called eigenlines, and are just lines in the direction of the vector. To implement these, I knew I would have to get the eigenvalues and eigenvectors, zip them, and iterate over them like I did in \S\ref{development:implementing-eigenstuffs:drawing-eigenvectors}. To make this simpler, I decided to factor out this zipping into a separate \pyinline{self.eigs} property\footnote{A \pyinline{@property} in Python is a value on a class which is dynamically evaluated only when it's needed. It functions just like a method with no arguments, but has more concise syntax for the caller.}.
+
+%: e1606f1e45ba93102dddb74b45ab22649a63fa53
+%: src/lintrans/gui/plots/classes.py:187-194,465-474
+
+I could then create a new method to find the gradient of the vector line and draw an orthogonal or oblique line respectively. Like before, we only want to render the eigenlines for real-valued eigenvectors, so we have to check their imaginary part.
+
+%: 8d4d41fc4780cc037be39a0e574158e6cd34e997
+%: src/lintrans/gui/plots/classes.py:476-498
+
+I then just had to put these new eigenlines behind a display setting.
+
+%: 12cfabde606ebd3d48b2c3efaad0412f6100c3c5
+%: src/lintrans/gui/settings.py:44-45
+
+%: 12cfabde606ebd3d48b2c3efaad0412f6100c3c5
+%: src/lintrans/gui/dialogs/settings.py:128-131
+
+%: 12cfabde606ebd3d48b2c3efaad0412f6100c3c5
+%: src/lintrans/gui/plots/widgets.py:58-59
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{development/12cfabde606ebd3d48b2c3efaad0412f6100c3c5/gui.png}
+	\caption{The eigenvectors being displayed for a similar matrix as in Figure~\ref{fig:development:b8614334de5cba4b1a6d92508b08fa8bd2fe77c0:gui.png}}
+	\label{fig:development:12cfabde606ebd3d48b2c3efaad0412f6100c3c5:gui.png}
+\end{figure}
+
 \end{document}
