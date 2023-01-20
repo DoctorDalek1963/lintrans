@@ -50,4 +50,13 @@ Once I'd got the eigenvectors working and being drawn, I wanted to be able to tu
 %: 3ebb5997a7a887e751b5f4f717aa5161ed013e62
 %: src/lintrans/gui/plots/widgets.py:58-59
 
+\subsubsection{Refactoring drawing vectors\label{development:implementing-eigenvectors:refactoring-drawing-vectors}}
+
+Since I've now got several drawing methods that involve drawing vectors, I thought I should factor out this functionality into a separate utility method which I could call from all these places.
+
+%: 754eba0318a682b068a8a5d5ca451decbaa204ce
+%: src/lintrans/gui/plots/classes.py:388-406,454-466
+
+When I was testing this refactor, I realised that the \pyinline{draw_transformed_grid()} method originally drew the bodies of the basis vectors and the caller had to draw the arrowheads separately. This is silly and was never planned that way; it was an unfortunate consequence of implementing the lines and arrowheads at different times. But now after this refactor, the caller has to call \pyinline{draw_basis_vectors()} to draw the whole basis vectors. So I had to add this call to \pyinline{VisualizeTransformationWidget.paintEvent()} and \pyinline{DefineVisuallyWidget.paintEvent()} in \texttt{src/lintrans/gui/plots/widgets.py} and remove the calls to \pyinline{draw_vector_arrowheads()}.
+
 \end{document}
