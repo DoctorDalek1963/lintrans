@@ -50,7 +50,7 @@ Once I'd got the eigenvectors working and being drawn, I wanted to be able to tu
 %: 3ebb5997a7a887e751b5f4f717aa5161ed013e62
 %: src/lintrans/gui/plots/widgets.py:58-59
 
-\subsubsection{Refactoring drawing vectors\label{development:implementing-eigenvectors:refactoring-drawing-vectors}}
+\subsubsection{Refactoring drawing vectors\label{development:implementing-eigenstuffs:refactoring-drawing-vectors}}
 
 Since I've now got several drawing methods that involve drawing vectors, I thought I should factor out this functionality into a separate utility method which I could call from all these places.
 
@@ -59,7 +59,7 @@ Since I've now got several drawing methods that involve drawing vectors, I thoug
 
 When I was testing this refactor, I realised that the \pyinline{draw_transformed_grid()} method originally drew the bodies of the basis vectors and the caller had to draw the arrowheads separately. This is silly and was never planned that way; it was an unfortunate consequence of implementing the lines and arrowheads at different times. But now after this refactor, the caller has to call \pyinline{draw_basis_vectors()} to draw the whole basis vectors. So I had to add this call to \pyinline{VisualizeTransformationWidget.paintEvent()} and \pyinline{DefineVisuallyWidget.paintEvent()} in \texttt{src/lintrans/gui/plots/widgets.py} and remove the calls to \pyinline{draw_vector_arrowheads()}.
 
-\subsubsection{Adding eigenlines\label{development:implementing-eigenvectors:adding-eigenlines}}
+\subsubsection{Adding eigenlines\label{development:implementing-eigenstuffs:adding-eigenlines}}
 
 Drawing some eigenvectors that point in a general direction is fine, but drawing the whole span of the vector would be much more useful. These spans are called eigenlines, and are just lines in the direction of the vector. To implement these, I knew I would have to get the eigenvalues and eigenvectors, zip them, and iterate over them like I did in \S\ref{development:implementing-eigenstuffs:drawing-eigenvectors}. To make this simpler, I decided to factor out this zipping into a separate \pyinline{self.eigs} property\footnote{A \pyinline{@property} in Python is a value on a class which is dynamically evaluated only when it's needed. It functions just like a method with no arguments, but has more concise syntax for the caller.}.
 
@@ -87,6 +87,41 @@ I then just had to put these new eigenlines behind a display setting.
 	\includegraphics[width=0.8\linewidth]{development/12cfabde606ebd3d48b2c3efaad0412f6100c3c5/gui.png}
 	\caption{The eigenvectors being displayed for a similar matrix as in Figure~\ref{fig:development:b8614334de5cba4b1a6d92508b08fa8bd2fe77c0:gui.png}}
 	\label{fig:development:12cfabde606ebd3d48b2c3efaad0412f6100c3c5:gui.png}
+\end{figure}
+
+\subsubsection{A tiny UI change\label{development:implementing-eigenstuffs:a-tiny-ui-change}}
+
+\begin{figure}[H]
+	\begin{minipage}{0.35\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{development/90425137edd4596219ab564ccbeccd65b5754008/display_settings.png}
+		\caption{The display settings}
+		\label{fig:development:90425137edd4596219ab564ccbeccd65b5754008:display_settings.png}
+	\end{minipage}\hfill
+	\begin{minipage}{0.6\linewidth}\setspacing
+		This bit isn't really related to eigenvectors, but it's a tiny change and it doesn't really have a good place anywhere else. I really liked the groupboxes used in the display settings (left) and I'd quite like to enclose the matrix definition buttons in their own groupbox to separate them from the rest of the UI and better associate them with the label above them. This was a trivial addition.
+	\end{minipage}
+	\vspace{-1em}
+\end{figure}
+
+%: 90425137edd4596219ab564ccbeccd65b5754008
+%: src/lintrans/gui/main_window.py:173-180,226
+
+\begin{figure}[H]
+	\hspace{0.08\linewidth}
+	\begin{minipage}{0.35\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{development/12cfabde606ebd3d48b2c3efaad0412f6100c3c5/definition_buttons.png}
+		\caption{The old matrix definition buttons}
+		\label{fig:development:12cfabde606ebd3d48b2c3efaad0412f6100c3c5:definition_buttons.png}
+	\end{minipage}\hfill
+	\begin{minipage}{0.35\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{development/90425137edd4596219ab564ccbeccd65b5754008/definition_buttons.png}
+		\caption{The new matrix definition buttons}
+		\label{fig:development:90425137edd4596219ab564ccbeccd65b5754008:definition_buttons.png}
+	\end{minipage}
+	\hspace{0.08\linewidth}
 \end{figure}
 
 \end{document}
