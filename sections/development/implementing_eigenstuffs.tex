@@ -89,6 +89,15 @@ I then just had to put these new eigenlines behind a display setting.
 	\label{fig:development:12cfabde606ebd3d48b2c3efaad0412f6100c3c5:gui.png}
 \end{figure}
 
+\subsubsection{Adding eigenvalues as text\label{development:implementing-eigenstuffs:adding-eigenvalues-as-text}}
+
+The next thing I wanted to do was tell the user what the actual eigenvalue numbers were. I decided the best way to do this would be to have the eigenvectors labelled with their associated eigenvalues.
+
+To align the text properly, I decided to do something similar to what I did for determinants in \S\ref{development:fixing-bugs-and-adding-polish:centering-text-in-the-determinant-parallelogram}. There, I enclosed the parallelogram in a rectangle and drew the text in the centre of it. Here, I decided to create a rectangle based on which quadrant the eigenvector was in. The rectangle would have corners of the tip of the eigenvector, and the appropriate corner of the viewport. I also had to choose a suitable alignment for each quadrant, so that the text would appear in the correct corner of the rectangle, next to the tip of the eigenvector.
+
+%: a7e9a17ecdb2a585e9f766b13029116d7ba29bdc
+%: src/lintrans/gui/plots/classes.py:466-505
+
 \subsubsection{A tiny UI change\label{development:implementing-eigenstuffs:a-tiny-ui-change}}
 
 \begin{figure}[H]
@@ -99,7 +108,9 @@ I then just had to put these new eigenlines behind a display setting.
 		\label{fig:development:90425137edd4596219ab564ccbeccd65b5754008:display_settings.png}
 	\end{minipage}\hfill
 	\begin{minipage}{0.6\linewidth}\setspacing
-		This bit isn't really related to eigenvectors, but it's a tiny change and it doesn't really have a good place anywhere else. I really liked the groupboxes used in the display settings (left) and I'd quite like to enclose the matrix definition buttons in their own groupbox to separate them from the rest of the UI and better associate them with the label above them. This was a trivial addition.
+		This bit isn't really related to eigenvectors, but it's a tiny change that doesn't really have a good place anywhere else, and it fits roughly here chronologically.
+
+		I really liked the groupboxes used in the display settings (left) and I'd quite like to enclose the matrix definition buttons in their own groupbox to separate them from the rest of the UI and better associate them with the label above them. This was a trivial addition.
 	\end{minipage}
 	\vspace{-1em}
 \end{figure}
