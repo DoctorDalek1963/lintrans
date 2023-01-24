@@ -1,0 +1,42 @@
+% lintrans - The linear transformation visualizer
+% Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
+
+% This program is licensed under GNU GPLv3, available here:
+% <https://www.gnu.org/licenses/gpl-3.0.html>
+
+\documentclass[../development.tex]{subfiles}
+
+\begin{document}
+
+\subsubsection{The first version numbers\label{development:fumbling-with-semver:the-first-version-numbers}}
+
+At this point, I've been developing lintrans for quite a while, but I don't have any kind of version numbers yet. I wanted to fix this, to keep track of versions through history. SemVer\cite{semver-2.0.0} is a system of numbering versions of software that ensures compatibility across versions and gives semantic meaning to the version numbers.
+
+My first foray into using SemVer was to declare \texttt{lintrans} at this point to be \texttt{0.1.0-alpha}. In retrospect, these early versions don't make much sense. I didn't release anything for anyone else to use until version \texttt{0.3.0}, so everything before then doesn't make much sense and should probably just be ignored.
+
+I then made a few adjustments to syntax and documentation before declaring version \texttt{0.1.1-alpha} just over 24 hours later. This one was completely unnecessary in hindsight and I think I was just excited about being able to tag git commits. Additionally, there is a \pyinline{__version__} variable in the root of the package, and the value of this variable is still \pyinline{"0.1.0-alpha"} at the \texttt{v0.1.1-alpha} tag because I forgot to update it before I tagged the commit, and I didn't know how to fix it at the time.
+
+\subsubsection{Licensing\label{development:fumbling-with-semver:licensing}}
+
+Using version numbers reminded me of licensing. I was already using the GNU GPLv3\cite{gnu-gplv3} for \texttt{lintrans} and most of my other projects, so I just wanted to add the copyright notice to all the source files of the project, as per the license. I already had the \texttt{COPYING} file in the project root with the full license, as required.
+
+The notice looks like this\footnote{I'm calling myself D. Dyson here because my name is Dyson, and I was in the process of getting it legally changed to Dyson Dyson when I made this change. I can't attribute this copyright to Dyson, since that's already a registered trademark of Dyson Limited. Calling myself Dyson Dyson felt strange, especially since it wasn't even my legal name at the time. So I chose to use D. Dyson instead.}:
+
+\begin{minted}{python}
+# lintrans - The linear transformation visualizer
+# Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
+
+# This program is licensed under GNU GPLv3, available here:
+# <https://www.gnu.org/licenses/gpl-3.0.html>
+\end{minted}
+
+\subsubsection{Making the package executable\label{development:fumbling-with-semver:making-the-package-executable}}
+
+So far, I'd been running the program by running a separate script called \texttt{run\_gui.py}, but Python lets you make a package executable by creating a file called \texttt{\_\_main\_\_.py} in the project root. You can then run it by using the command \mintinline{sh}{python -m package_name}. This will make the whole program more cohesive by integrating the execution into the same directory as the source library code. I just moved the script here and changed its docstring a little bit.
+
+%: 847cdf61f64b30e81edf0821b7a8d2eb060fb825
+%: src/lintrans/__main__.py:9-19
+
+Somehow this caused a conflict between my \pyinline{lintrans.typing} package, which contained custom types like \pyinline{MatrixType}, and the standard library \pyinline{typing} package, so I had to rename mine to \pyinline{lintrans.typing_}.
+
+\end{document}
