@@ -64,10 +64,11 @@ impl<'s> Comment<'s> {
         });
 
         // Check the options and create a config struct for them.
-        let config = Config {
-            remove_copyright_comment: c.name("keep_copyright_comment").is_none(),
-            use_scopes: c.name("noscopes").is_none(),
-        };
+        let config = Config::parse(
+            c.name("options")
+                .expect("There should always be options, even if they're empty")
+                .as_str(),
+        );
 
         Some(Self {
             hash,
@@ -106,7 +107,7 @@ impl<'s> Comment<'s> {
                 let last = content.lines().count() as u32;
 
                 // If we've got a copyright comment, then remove it and update the line number accordingly
-                if self.config.remove_copyright_comment
+                if !self.config.keep_copyright_comment
                     && first == 1
                     && content
                         .lines()
@@ -151,7 +152,7 @@ impl<'s> Comment<'s> {
         // Each line is a line above the snippet which has less indentation, indicating that it is
         // an enclosing scope. This works because all the snippets are Python, which uses
         // meaningful whitespace for scoping
-        let scopes: Vec<(u32, String)> = if self.config.use_scopes {
+        let scopes: Vec<(u32, String)> = if !self.config.no_scopes {
             // The first line of any snippet body
             let first = *bodies.iter().map(|(_, n, _)| n).min().unwrap();
 
@@ -221,6 +222,7 @@ impl<'s> Comment<'s> {
         Ok(Text {
             hash: self.hash,
             filename: self.filename,
+            language: self.config.language.clone(),
             scopes,
             bodies,
         })

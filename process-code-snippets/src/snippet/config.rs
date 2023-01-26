@@ -1,25 +1,87 @@
 //! This module just contains config for the snippets.
 
-/// A config struct to use for snippets. Defines some options that can be used in snippets.
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct Config {
-    /// Whether to remove the copyright comment. Defaults to true.
-    pub remove_copyright_comment: bool,
+use nom::{
+    branch::alt,
+    bytes::complete::tag,
+    character::complete::{alpha1, multispace1},
+    multi::separated_list0,
+    sequence::pair,
+    IResult, Parser,
+};
 
-    /// Whether to show containing scopes for the snippet. Defaults to true.
-    pub use_scopes: bool,
+/// A config struct to use for snippets. Defines options that can be used in snippets.
+#[derive(Clone, Debug, PartialEq)]
+pub struct Config {
+    /// The language of the snippet. Defaults to Python.
+    pub language: String,
+
+    /// Whether to keep the copyright comment. Defaults to false.
+    pub keep_copyright_comment: bool,
+
+    /// Whether to ignore containing scopes for the snippet. Defaults to false.
+    pub no_scopes: bool,
 }
 
 impl Default for Config {
     fn default() -> Self {
         Self {
-            remove_copyright_comment: true,
-            use_scopes: true,
+            language: String::from("python"),
+            keep_copyright_comment: false,
+            no_scopes: false,
         }
     }
 }
 
+/// A simple enum of the available config options.
+#[derive(Debug, Eq, PartialEq)]
+enum ConfigOption {
+    KeepCopyrightComment,
+    NoScopes,
+    Language(String),
+}
+
+/// Parse the options for the config. This function is a backend parsing function. Use
+/// [`Config::parse`] for the public API.
+fn parse_config_options(input: &str) -> IResult<&str, Config> {
+    use ConfigOption::*;
+
+    let (input, (_, items)): (&str, (_, Vec<ConfigOption>)) = pair(
+        tag(" "),
+        separated_list0(
+            multispace1,
+            alt((
+                tag("keep_copyright_comment").map(|_| KeepCopyrightComment),
+                tag("noscopes").map(|_| NoScopes),
+                pair(tag("language="), alpha1)
+                    .map(|(_, lang): (_, &str)| Language(String::from(lang.to_lowercase()))),
+            )),
+        ),
+    )(input)?;
+
+    let mut config = Config::default();
+    for item in items {
+        match item {
+            KeepCopyrightComment => config.keep_copyright_comment = true,
+            NoScopes => config.no_scopes = true,
+            Language(lang) => config.language = lang,
+        };
+    }
+
+    Ok((input, config))
+}
+
 impl Config {
+    pub fn parse(input: &str) -> Config {
+        let mut input = input.to_string();
+        if !input.starts_with(" ") {
+            input = format!(" {input}");
+        }
+
+        parse_config_options(&input)
+            .map(|(_, c)| c)
+            .unwrap_or(Config::default())
+    }
+
     /// Return a string representing the config that the user would need to add to the snippet
     /// comment to get this config.
     ///
@@ -27,13 +89,82 @@ impl Config {
     pub fn details(&self) -> String {
         let mut s = String::new();
 
-        if !self.remove_copyright_comment {
+        if self.keep_copyright_comment {
             s.push_str(" keep_copyright_comment");
         }
-        if !self.use_scopes {
+        if self.no_scopes {
             s.push_str(" noscopes");
+        }
+        if self.language != "python" {
+            s.push_str(" language=");
+            s.push_str(&self.language);
         }
 
         s
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use pretty_assertions::assert_eq;
+
+    #[test]
+    fn config_parse_test() {
+        assert_eq!(Config::parse(""), Config::default());
+        assert_eq!(Config::parse("bad options"), Config::default());
+        assert_eq!(
+            Config::parse("keep_copyright_comment"),
+            Config {
+                keep_copyright_comment: true,
+                ..Default::default()
+            }
+        );
+        assert_eq!(
+            Config::parse("noscopes"),
+            Config {
+                no_scopes: true,
+                ..Default::default()
+            }
+        );
+        assert_eq!(
+            Config::parse("language=yaml"),
+            Config {
+                language: String::from("yaml"),
+                ..Default::default()
+            }
+        );
+        assert_eq!(
+            Config::parse("language=RUst"),
+            Config {
+                language: String::from("rust"),
+                ..Default::default()
+            }
+        );
+
+        assert_eq!(
+            Config::parse("keep_copyright_comment noscopes language=rust"),
+            Config {
+                keep_copyright_comment: true,
+                no_scopes: true,
+                language: String::from("rust")
+            }
+        );
+        assert_eq!(
+            Config::parse("noscopes language=rust keep_copyright_comment"),
+            Config {
+                keep_copyright_comment: true,
+                no_scopes: true,
+                language: String::from("rust")
+            }
+        );
+        assert_eq!(
+            Config::parse("noscopes noscopes language=rust keep_copyright_comment"),
+            Config {
+                keep_copyright_comment: true,
+                no_scopes: true,
+                language: String::from("rust")
+            }
+        );
     }
 }

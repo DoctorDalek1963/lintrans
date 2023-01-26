@@ -13,6 +13,9 @@ pub struct Text<'s> {
     /// The file path.
     pub filename: &'s Path,
 
+    /// The language of the snippet.
+    pub language: String,
+
     /// A vec of `(line_number, text)` of the higher scopes, determined by less indentation.
     ///
     /// Must be ordered by ascending line numbers.
@@ -111,7 +114,9 @@ impl<'s> Text<'s> {
         let mut s = String::from("{\n");
         s.push_str(&line_number_hack);
 
-        s.push_str(r"\begin{minted}[firstnumber=-3]{python}");
+        s.push_str(r"\begin{minted}[firstnumber=-3]{");
+        s.push_str(&self.language);
+        s.push_str("}");
         s.push('\n');
 
         // Add the commit hash as a comment
@@ -542,6 +547,87 @@ class DisplaySettingsDialog(SettingsDialog):
             .get_latex(),
             LATEX_8,
             "Testing multiple snippet bodies with scopes"
+        );
+
+        const LATEX_9: &str = r#"{
+\renewcommand\theFancyVerbLine{ \ttfamily
+	\textcolor[rgb]{0.5,0.5,1}{
+		\footnotesize
+		\oldstylenums{
+			\ifnum\value{FancyVerbLine}=-3 \else
+			\ifnum\value{FancyVerbLine}=-2 \else
+			\ifnum\value{FancyVerbLine}=-1\setcounter{FancyVerbLine}{0}\else
+				\arabic{FancyVerbLine}
+			\fi\fi\fi
+		}
+	}
+}
+\begin{minted}[firstnumber=-3]{yaml}
+# 39a3727fca69ea65571a15c55741578abce1e763
+# .github/workflows/compile-docs.yaml
+
+name: Compile docs for gh-pages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  compile-docs:
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements.txt -r docs/docs_requirements.txt
+        pip install -e .
+        pip install pylint
+        sudo apt-get install -y graphviz
+
+    - name: Create pylint import graphs
+      run: |
+        shopt -s globstar
+        pylint --rcfile=/dev/null --exit-zero --reports=y --disable=all --enable=imports,RP0402 --int-import-graph=docs/source/int-imports.png src/lintrans/**/*.py
+
+    - name: Build docs
+      run: cd docs/ && make html && cd ..
+
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3.8.0
+      if: ${{ github.ref == 'refs/heads/main' }}
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/build/html/
+        keep_files: true
+        destination_dir: docs
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        commit_message: 'compile docs:'
+\end{minted}
+}"#;
+
+        assert_eq!(
+            Comment::from_latex_comment(concat!(
+                "%: 39a3727fca69ea65571a15c55741578abce1e763\n",
+                "%: .github/workflows/compile-docs.yaml language=yaml"
+            ))
+            .unwrap()
+            .get_text(&repo)
+            .unwrap()
+            .get_latex(),
+            LATEX_9,
+            "Testing a YAML file"
         );
     }
 }

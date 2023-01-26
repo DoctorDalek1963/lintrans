@@ -26,7 +26,7 @@ lazy_static! {
     /// alphabetic order.
     pub static ref COMMENT_PATTERN: Regex = Regex::new(concat!(
         r"(?m)^%: (?P<hash>[0-9a-f]{40})\n",
-        r"%: (?P<filename>[^\s:]+)(:(?P<linenums>((\d+-\d+|\d+),?)+))?(?P<keep_copyright_comment> keep_copyright_comment)?(?P<noscopes> noscopes)?$"
+        r"%: (?P<filename>[^\s:]+)(:(?P<linenums>((\d+-\d+|\d+),?)+))?(?P<options>[^\n]*)$"
     ))
     .unwrap();
 
