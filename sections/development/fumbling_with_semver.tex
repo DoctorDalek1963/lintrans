@@ -39,4 +39,18 @@ So far, I'd been running the program by running a separate script called \texttt
 
 Somehow this caused a conflict between my \pyinline{lintrans.typing} package, which contained custom types like \pyinline{MatrixType}, and the standard library \pyinline{typing} package, so I had to rename mine to \pyinline{lintrans.typing_}.
 
+\subsubsection{Improving the documentation\label{development:fumbling-with-semver:improving-the-documentation}}
+
+Throughout the whole project, I've been using GitHub Actions\cite{github-actions-docs} to automatically do things like test and lint my code, as well as compile the documentation whenever I push my changes to GitHub. I recently learned about \texttt{pylint}'s ability to generate a graph of all the internal imports in a package\cite{pylint-2.12.2-graph-docs}. I decided to generate this graph automatically and add it to my documentation.
+
+%: 39a3727fca69ea65571a15c55741578abce1e763
+%: .github/workflows/compile-docs.yaml language=yaml
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\linewidth]{development/39a3727fca69ea65571a15c55741578abce1e763/int-imports.png}
+	\caption{The internal imports graph}
+	\label{fig:development:39a3727fca69ea65571a15c55741578abce1e763:int-imports.png}
+\end{figure}
+
 \end{document}
