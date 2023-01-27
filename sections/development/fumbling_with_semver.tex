@@ -71,4 +71,21 @@ Now that I was using version numbers, I thought it was finally time to fix the c
 	\label{fig:development:be37c68dd38d64ac82a7d23c7801c5ca8a0da518:gui.png}
 \end{figure}
 
+\subsubsection{Compiling for release\label{development:fumbling-with-semver:compiling-for-release}}
+
+At this point, I felt ready to show \texttt{lintrans} to some teachers. Obviously I didn't expect them to have a modern version of Python to run the program, especially not on a school laptop, so I had to compile the program. I had a look at things like Nuitka\cite{nuitka-docs}, but I had a few issues with it and it took ages to compile. Eventually I chose PyInstaller\cite{pyinstaller-4.10-docs}, which I've used to compile Python programs before. It's fast and effective and works very well.
+
+I use Ubuntu as my daily driver, so I don't really want to spin up a Windows virtual machine and following some exact steps every time I want to compile \texttt{lintrans} for release, so I automated the process with GitHub Actions.
+
+%: 9d0cbe69c596c04a07809a288d72b5e624f485d7
+%: .github/workflows/compile-release.yaml language=yaml
+
+This workflow only runs when I push a tag containing a version number. It firstly installs Python\footnote{There's a mistake on line 14. There is no strategy matrix, so \enquote{\texttt{\$\{\{ matrix.python-version \}\}}} is treated as plain text rather than an actual version number. This was caused by copying a previous workflow. The actual version that it installs is fine, though. It's only the name of the step that doesn't look right.} and then lints and tests everything. If that all passes, then it compiles \texttt{lintrans} on Ubuntu, macOS, and Windows. Then it publishes the compiled binaries to a GitHub draft release. I then go in when it's finished to add a description to the release and publish it.
+
+Now that I had this in place, I released version \texttt{v0.2.0-alpha}.
+
+After some minor adjustments, such as including the tag name in the binary name, and installing UPX\cite{upx-github} for the Linux compilation\footnote{UPX is designed to compress executable files, but I later learned that PyInstaller doesn't even use UPX on Linux; it only uses it on Windows.}, I released \texttt{v0.2.0} just 6 hours later.
+
+I made a few minor adjustments to the workflows, but soon moved on from this version number fiasco and started doing more actual work.
+
 \end{document}
