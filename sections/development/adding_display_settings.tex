@@ -49,7 +49,7 @@ I then just had to enable the button in the main GUI and implement the method to
 %: b1ba4adc3c7723c95b490e831e651a7781af7d99
 %: src/lintrans/gui/main_window.py:436-444
 
-\fsbsl{development/b1ba4adc3c7723c95b490e831e651a7781af7d99/settings-dialog.png}{The display settings dialog}{The \pyinline{dialog.finished} signal on line 440 should really be \pyinline{dialog.accepted}. Currently, we re-assign the display settings whenever the dialog is closed in any way. Really, we should only re-assign them when the user hits the confirm button, but trying to cancel the changes will currently save them. This was a silly mistake and I fixed it along with some similar signal-related bugs a few weeks later.}
+\fsbsl{development/b1ba4adc3c7723c95b490e831e651a7781af7d99/settings-dialog.png}{The display settings dialog}{The \pyinline{dialog.finished} signal on line 440 should really be \pyinline{dialog.accepted}. Currently, we re-assign the display settings whenever the dialog is closed in any way. Really, we should only re-assign them when the user hits the confirm button, but trying to cancel the changes will currently save them. This was a silly mistake and I fixed it along with some similar signal-related bugs a few weeks later. See \S\ref{development:preparing-for-v0.2.1:fixing-slots-and-signals}.}
 
 \subsubsection{Fixing a bug with transitional animation\label{development:adding-display-settings:fixing-a-bug-with-transitional-animation}}
 
