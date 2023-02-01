@@ -5,9 +5,11 @@ use nom::{
     bytes::complete::tag,
     character::complete::{alpha1, multispace1},
     multi::separated_list0,
-    sequence::pair,
+    sequence::{delimited, pair},
     IResult, Parser,
 };
+use nom_regex::str::re_find;
+use regex::Regex;
 
 /// A config struct to use for snippets. Defines options that can be used in snippets.
 #[derive(Clone, Debug, PartialEq)]
@@ -40,10 +42,23 @@ enum ConfigOption {
     Language(String),
 }
 
+impl ConfigOption {
+    fn language(lang: &str) -> Self {
+        Self::Language(if lang.contains(".py:") {
+            lang.to_string()
+        } else {
+            lang.to_lowercase()
+        })
+    }
+}
+
 /// Parse the options for the config. This function is a backend parsing function. Use
 /// [`Config::parse`] for the public API.
 fn parse_config_options(input: &str) -> IResult<&str, Config> {
     use ConfigOption::*;
+
+    let no_double_quotes = Regex::new("[^\"]+").unwrap();
+    let no_single_quotes = Regex::new("[^']+").unwrap();
 
     let (input, (_, items)): (&str, (_, Vec<ConfigOption>)) = pair(
         tag(" "),
@@ -52,8 +67,16 @@ fn parse_config_options(input: &str) -> IResult<&str, Config> {
             alt((
                 tag("keep_copyright_comment").map(|_| KeepCopyrightComment),
                 tag("noscopes").map(|_| NoScopes),
-                pair(tag("language="), alpha1)
-                    .map(|(_, lang): (_, &str)| Language(String::from(lang.to_lowercase()))),
+                pair(
+                    tag("language="),
+                    alt((
+                        delimited(tag("'"), re_find(no_single_quotes), tag("'")),
+                        delimited(tag("\""), re_find(no_double_quotes), tag("\"")),
+                        alpha1,
+                    ))
+                    .map(|lang| ConfigOption::language(lang)),
+                )
+                .map(|(_, option)| option),
             )),
         ),
     )(input)?;
@@ -71,7 +94,7 @@ fn parse_config_options(input: &str) -> IResult<&str, Config> {
 }
 
 impl Config {
-    pub fn parse(input: &str) -> Config {
+    pub fn parse(input: &str) -> Self {
         let mut input = input.to_string();
         if !input.starts_with(" ") {
             input = format!(" {input}");
@@ -79,7 +102,7 @@ impl Config {
 
         parse_config_options(&input)
             .map(|(_, c)| c)
-            .unwrap_or(Config::default())
+            .unwrap_or_default()
     }
 
     /// Return a string representing the config that the user would need to add to the snippet
@@ -97,7 +120,13 @@ impl Config {
         }
         if self.language != "python" {
             s.push_str(" language=");
-            s.push_str(&self.language);
+            if self.language.contains(" ") {
+                s.push('"');
+                s.push_str(&self.language);
+                s.push('"');
+            } else {
+                s.push_str(&self.language);
+            }
         }
 
         s
@@ -138,6 +167,20 @@ mod tests {
             Config::parse("language=RUst"),
             Config {
                 language: String::from("rust"),
+                ..Default::default()
+            }
+        );
+        assert_eq!(
+            Config::parse("language='lexers.py:SphObjInvTextLexer -x'"),
+            Config {
+                language: String::from("lexers.py:SphObjInvTextLexer -x"),
+                ..Default::default()
+            }
+        );
+        assert_eq!(
+            Config::parse("language=\"lexers.py:SphObjInvTextLexer -x\""),
+            Config {
+                language: String::from("lexers.py:SphObjInvTextLexer -x"),
                 ..Default::default()
             }
         );

@@ -24,4 +24,18 @@ A slot in Qt5 is just a method that is expected to be connected to a signal, so 
 %: 9beff9cf25d3af655e134205572a5668279f42cc
 %: src/lintrans/gui/dialogs/define_new_matrix.py:67,138-140,143-144,155-157,164,194-195,203-204,214-215,226,276-277,288-289,305-306,317,348-349,356-357,364-365 noscopes
 
+\subsubsection{Linking in documentation\label{development:preparing-for-v0.2.1:linking-in-documentation}}
+
+I've been using Sphinx\cite{sphinx} for my documentation this whole time, and I've been using the Sphinx extension \texttt{intersphinx} to link to the Python standard library documentation. It uses a system of binary inventory files which define a reference map between names to use in the documentation, and where to link those names to. I recently learned of the \texttt{sphobjinv} Python package, which allows you to easily create your own local inventory files to reference some external source of documentation, such as the Qt5 documentation. I read through the \texttt{sphobjinv} documentation\cite{sphobjinv-2.2-docs} and designed a small script to read a custom text file, and create the binary inventory file needed by Sphinx.
+
+%: 5455265a51666e29ab976152c1a758a422e1004a
+%: docs/create_objects_inv.py:9-64
+
+Line 11 should say \enquote{must have .html suffices}.
+
+%: 5455265a51666e29ab976152c1a758a422e1004a
+%: docs/pyqt5-objects.txt language="lexers.py:SphObjInvTextLexer -x"
+
+I then just had to change all the references to Qt5 things in the documentation and then Sphinx would automatically link all the Qt5 references to their appropriate links, as defined in this file.
+
 \end{document}

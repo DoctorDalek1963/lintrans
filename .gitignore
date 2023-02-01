@@ -41,3 +41,6 @@ sections/appendices/
 # These are the versions of the files that have had processed code snippets
 sections/processed_*.tex
 sections/development/processed_*.tex
+
+# This is generated for lexers.py
+__pycache__/

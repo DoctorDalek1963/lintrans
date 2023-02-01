@@ -629,5 +629,83 @@ jobs:
             LATEX_9,
             "Testing a YAML file"
         );
+
+        const LATEX_10: &str = r#"{
+\renewcommand\theFancyVerbLine{ \ttfamily
+	\textcolor[rgb]{0.5,0.5,1}{
+		\footnotesize
+		\oldstylenums{
+			\ifnum\value{FancyVerbLine}=-3 \else
+			\ifnum\value{FancyVerbLine}=-2 \else
+			\ifnum\value{FancyVerbLine}=-1\setcounter{FancyVerbLine}{0}\else
+				\arabic{FancyVerbLine}
+			\fi\fi\fi
+		}
+	}
+}
+\begin{minted}[firstnumber=-3]{lexers.py:SphObjInvTextLexer -x}
+# 5455265a51666e29ab976152c1a758a422e1004a
+# docs/pyqt5-objects.txt
+
+# This format is:
+# <reference name> <domain>:<role> <priority> <URI> <display name>
+# Sphinx handles the prefix for the URI
+# If the display name is '-', then it's the same as the reference name
+
+# === Classes
+
+QApplication py:class 1 qapplication.html -
+QDialog      py:class 1 qdialog.html      -
+QKeyEvent    py:class 1 qkeyevent.html    -
+QPainter     py:class 1 qpainter.html     -
+QPaintEvent  py:class 1 qpaintevent.html  -
+QWheelEvent  py:class 1 qwheelevent.html  -
+QWidget      py:class 1 qwidget.html      -
+
+# === Methods
+
+# This signature doesn't include the `QPainter.` at the start just to save on line length
+drawLine:iiii py:method 1 qpainter.html#drawLine-2 drawLine()
+
+# === Signals
+
+QComboBox.activated py:method 1 qcombobox.html#activated -
+QDialog.accepted    py:method 1 qdialog.html#accepted    -
+
+# These are in full form so that autodoc can reference base classes and param types
+
+PyQt5.QtGui.QKeyEvent   py:class 1 qkeyevent.html   -
+PyQt5.QtGui.QPainter    py:class 1 qpainter.html    -
+PyQt5.QtGui.QPaintEvent py:class 1 qpaintevent.html -
+PyQt5.QtGui.QWheelEvent py:class 1 qwheelevent.html -
+PyQt5.QtWidgets.QDialog py:class 1 qdialog.html     -
+PyQt5.QtWidgets.QWidget py:class 1 qwidget.html     -
+\end{minted}
+}"#;
+
+        assert_eq!(
+            Comment::from_latex_comment(concat!(
+                "%: 5455265a51666e29ab976152c1a758a422e1004a\n",
+                "%: docs/pyqt5-objects.txt language='lexers.py:SphObjInvTextLexer -x'"
+            ))
+            .unwrap()
+            .get_text(&repo)
+            .unwrap()
+            .get_latex(),
+            LATEX_10,
+            "Testing a custom lexer (with single quotes)"
+        );
+        assert_eq!(
+            Comment::from_latex_comment(concat!(
+                "%: 5455265a51666e29ab976152c1a758a422e1004a\n",
+                "%: docs/pyqt5-objects.txt language=\"lexers.py:SphObjInvTextLexer -x\""
+            ))
+            .unwrap()
+            .get_text(&repo)
+            .unwrap()
+            .get_latex(),
+            LATEX_10,
+            "Testing a custom lexer (with double quotes)"
+        );
     }
 }
