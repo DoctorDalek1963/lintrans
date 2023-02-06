@@ -33,9 +33,21 @@ I've been using Sphinx\cite{sphinx} for my documentation this whole time, and I'
 
 Line 11 should say \enquote{must have .html suffices}.
 
-%: 5455265a51666e29ab976152c1a758a422e1004a
+%: aab8e88b0e2cdae8038c9935031c74bcdae0ad5c
 %: docs/pyqt5-objects.txt language="lexers.py:SphObjInvTextLexer -x"
 
 I then just had to change all the references to Qt5 things in the documentation and then Sphinx would automatically link all the Qt5 references to their appropriate links, as defined in this file.
+
+\subsubsection{Improving tests\label{development:preparing-for-v0.2.1:improving-tests}}
+
+I made some small improvements to the unit tests by making sure they handled greedy index parsing, which means that something like \texttt{A\textasciicircum2 3B} will get parsed as \texttt{A\textasciicircum\{23\}B} because whitespace is ignored, as well asserting that all invalid expressions raise \pyinline{MatrixParseError}. I also added the copyright comment to the test files.
+
+This was a tiny change, but worth noting.
+
+%: c07d97024e1fe00ab110f43e5c7e6737c955d680
+%: tests/matrices/test_parse_and_validate_expression.py:41,50-51,55,72-73,75,78-83
+
+%: 70e1a7271a61f3009cc4d342f46743b248498a1c
+%: tests/matrices/test_parse_and_validate_expression.py:26-31,86-90
 
 \end{document}
