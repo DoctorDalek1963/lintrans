@@ -28,6 +28,11 @@
 	python3
 }
 
+\makeatletter
+\AtBeginEnvironment{minted}{\dontdofcolorbox}
+\def\dontdofcolorbox{\renewcommand\fcolorbox[4][]{##4}}
+\makeatother
+
 % Make the line numbers in minted code snippets look better
 \renewcommand{\theFancyVerbLine}{
 	\ttfamily

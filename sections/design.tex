@@ -133,89 +133,98 @@ I also want the user to be able to define arbitrary polygons and view their tran
 
 \subsection{Algorithm design\label{design:algorithm-design}}
 
-The project will have many algorithms but a lot of them will be related to drawing transformations on the canvas itself, and almost all of the algorithms will evolve over time. In this section, I will present pseudocode for some of the most interesting parts of the project. My pseudocode is actually Python, purely to allow for syntax highlighting.
+The project will have many algorithms but a lot of them will be related to drawing transformations on the canvas itself, and almost all of the algorithms will evolve over time. In this section, I will present pseudocode for some of the most interesting parts of the project.
 
-The \texttt{lintrans.matrices.utility} module will look like this:
+The \texttt{lintrans.matrices.utility} module will look roughly like this:
 
-\begin{minted}{python}
-import numpy as np
+\begin{minted}{lexers.py:OCRPseudocodeLexer -x}
+import numpy as np // Python import
 
-def create_rotation_matrix(angle: float, *, degrees: bool = True) -> MatrixType:
-    """Create a matrix representing a rotation (anticlockwise) by the given angle."""
-    rad = np.deg2rad(angle % 360) if degrees else angle % (2 * np.pi)
-    return np.array([
-        [np.cos(rad), -1 * np.sin(rad)],
-        [np.sin(rad), np.cos(rad)]
-    ])
+// Create a matrix representing a rotation (anticlockwise) by the given angle
+function create_rotation_matrix(angle: float, degrees: bool = True) -> MatrixType
+	if (degrees) then
+		rad = np.deg2rad(angle MOD 360)
+	else
+		rad = angle MOD (2 * np.pi)
+	endif
+
+	return np.array([
+		[np.cos(rad), -1 * np.sin(rad)],
+		[np.sin(rad), np.cos(rad)]
+	])
+endfunction
 \end{minted}
 
 And the \texttt{lintrans.matrices.wrapper} module will look like this:
 
-\begin{minted}{python}
+\begin{minted}{lexers.py:OCRPseudocodeLexer -x}
 import re
 import numpy as np
 
-# The `.utility` syntax means that the utility module is next to this one in the tree
+// The `.utility` syntax means that the utility module is next to this one in the tree
 from .utility import create_rotation_matrix
 
-class MatrixWrapper:
-    def __init__(self):
-        # This dictionary maps all letters of the alphabet to an optional matrix
-        self._matrices: Dict[str, Optional[Union[MatrixType, str]]] = {
-            'A': None, 'B': None, 'C': None, 'D': None,
-            'E': None, 'F': None, 'G': None, 'H': None,
-            'I': np.eye(2),  # I is always defined as the identity matrix
-            'J': None, 'K': None, 'L': None, 'M': None,
-            'N': None, 'O': None, 'P': None, 'Q': None,
-            'R': None, 'S': None, 'T': None, 'U': None,
-            'V': None, 'W': None, 'X': None, 'Y': None,
-            'Z': None
-        }
+class MatrixWrapper
+	// This is a hashmap from string to matrices, but the matrices might be null
+	private matrices: Dict[string, Optional[MatrixType]]
 
-    def __getitem__(self, name: str) -> Optional[MatrixType]:
-        """Get the matrix with the given name.
+	public procedure new()
+		matrices = {
+			"A": null, "B": null, "C": null, "D": null,
+			"E": null, "F": null, "G": null, "H": null,
+			"I": np.eye(2),  // I is always defined as the identity matrix
+			"J": null, "K": null, "L": null, "M": null,
+			"N": null, "O": null, "P": null, "Q": null,
+			"R": null, "S": null, "T": null, "U": null,
+			"V": null, "W": null, "X": null, "Y": null,
+			"Z": null
+		}
+	endprocedure
 
-        If it is a simple name, it will just be fetched from the dictionary. If the name is ``rot(x)``, with
-        a given angle in degrees, then we return a new matrix representing a rotation by that angle.
+	// This is a Python "magic method", which enable syntax like `wrapper['A']` to get the matrix A
+	public function getitem(name: string) -> Optional[MatrixType]
+		// If it is a simple name, it will just be fetched from the dictionary. If the name is ``rot(x)``, with
+		// a given angle in degrees, then we return a new matrix representing a rotation by that angle
 
-        Using ``__getitem__`` here allows for syntax like ``wrapper['A']`` as if it was a dictionary.
-        """
-        # Return a new rotation matrix
-        if (match := re.match(r'^rot\((-?\d*\.?\d*)\)$', name)) is not None:
-            return create_rotation_matrix(float(match.group(1)))
+		// Return a new rotation matrix
+		match = re.match(r"^rot\((-?\d*\.?\d*)\)$", name)
+		if (match != null)
+			return create_rotation_matrix(float(match.group(1)))
+		endif
 
-        if name not in self._matrices:
-            raise NameError(f'Unrecognised matrix name "{name}"')
+		if (!matrices.contains(name))
+			raise NameError(f'Unrecognised matrix name "{name}"')
+		endif
 
-        # We copy the matrix before we return it so the user can't accidentally mutate the matrix
-        matrix = copy(self._matrices[name])
+		return matrices[name]
+	endfunction
 
-        return matrix
+	// Again, this is Python magic. This one allows assignments like `wrapper['A'] = my_matrix`
+	public procedure setitem(self, name: string, new_matrix: Optional[MatrixType])
+		// If new_matrix is null, then that effectively unsets the matrix name.
 
-    def __setitem__(self, name: str, new_matrix: Optional[MatrixType]) -> None:
-        """Set the value of matrix ``name`` with the new_matrix.
+		if (name == "I" OR !matrices.contains(name))
+			raise NameError("Matrix name is illegal")
+		endif
 
-        If ``new_matrix`` is None, then that effectively unsets the matrix name.
+		if (new_matrix == null)
+			matrices[name] = null
+			return
+		endif
 
-        Using ``__getitem__`` here allows for syntax like ``wrapper['A'] = matrix`` as if it was a dictionary.
-        """
-        if not (name in self._matrices and name != 'I'):
-            raise NameError('Matrix name is illegal')
+		if (!is_matrix_type(new_matrix))
+			raise TypeError("Matrix must be a 2x2 NumPy array")
+		endif
 
-        if new_matrix is None:
-            self._matrices[name] = None
-            return
+		// All matrices must have float entries
+		a = float(new_matrix[0][0])
+		b = float(new_matrix[0][1])
+		c = float(new_matrix[1][0])
+		d = float(new_matrix[1][1])
 
-        if not is_matrix_type(new_matrix):
-            raise TypeError('Matrix must be a 2x2 NumPy array')
-
-        # All matrices must have float entries
-        a = float(new_matrix[0][0])
-        b = float(new_matrix[0][1])
-        c = float(new_matrix[1][0])
-        d = float(new_matrix[1][1])
-
-        self._matrices[name] = np.array([[a, b], [c, d]])
+		matrices[name] = np.array([[a, b], [c, d]])
+	endprocedure
+endclass
 \end{minted}
 
 These modules handle the creation, storage, and use of matrices. Their implementations are deliberately simple, since they don't have to do much. I will eventually extend the \texttt{MatrixWrapper} class to allow strings as matrices, so they can be defined as expressions, but this is unnecessary for now. It will simply be more conditions in \texttt{\_\_getitem\_\_} and \texttt{\_\_setitem\_\_} and a method to evaluate expressions.
