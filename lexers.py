@@ -20,7 +20,22 @@ class SphObjInvTextLexer(RegexLexer):
     tokens = {
         "root": [
             (r"#.*\n", Comment),
-            (r".*\n", Text),
+            (
+                r"^(\S+)(\s+)([^\s:]+)(:)(\S+)(\s+)([0-9]+)(\s+)(\S+)(\s+)(\S+)",
+                bygroups(
+                    Name.Variable.Global,  # Reference name
+                    Whitespace,
+                    Name.Namespace,  # Domain
+                    Punctuation,
+                    Name.Class,  # Role
+                    Whitespace,
+                    Number,  # Priority
+                    Whitespace,
+                    Name.Attribute,  # URI
+                    Whitespace,
+                    Text,  # Display name
+                ),
+            ),
         ]
     }
 
