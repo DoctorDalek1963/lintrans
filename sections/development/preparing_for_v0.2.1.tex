@@ -50,4 +50,26 @@ This was a tiny change, but worth noting.
 %: 70e1a7271a61f3009cc4d342f46743b248498a1c
 %: tests/matrices/test_parse_and_validate_expression.py:26-31,86-90
 
+\subsubsection{The Windows version file\label{development:preparing-for-v0.2.1:the-windows-version-file}}
+
+Windows stores metadata for \texttt{.exe} files inside the \texttt{.exe} files themselve\cite{msdocs-version-information-structures}\cite{msdocs-versioninfo-resource}. PyInstaller lets you embed that metadata when compiling on Windows, using a version file\cite{pyintaller-4.10-capturing-windows-version-data}. Obviously, I wanted to include this metadata in my compiled \texttt{.exe} in the release.
+
+I created a simple \texttt{precompile.py} script that would create different pre-compilation artefacts. I could then use these in the compilation workflow for GitHub Actions. I started with just Windows, but obviously I'm going to expand into Linux and macOS as well later.
+
+%: 2126959cb6f836b1bc6c92dad859b43cbd86e1ab
+%: precompile.py:9-103
+
+%: 2126959cb6f836b1bc6c92dad859b43cbd86e1ab
+%: .github/workflows/compile-release.yaml:8,60,68,87-104 noscopes language=yaml
+
+I quickly realised that this design would make the compilation process more complicated, since the process would be in separate parts. Instead, I decided to create a unified compilation script, which runs a pre-compile step dependent on the operating system, and then compiles the program with the \pyinline{PyInstaller.__main__.run()} function.
+
+%: ca674c7f7d61e8eed3410d456787cfe5b2bc28e5
+%: compile.py:9-180
+
+This new compilation script captures the whole process. On Linux or macOS, it just compiles the program with PyInstaller. On Windows, it has to generate the version file, then compile the program with an additional argument to include the version file. I then updated the GitHub Actions workflow to use this new compilation script.
+
+%: e47fe732954bf018128bdcb5ee9c354910517f36
+%: .github/workflows/compile-release.yaml:8,60,68,87-88 noscopes language=yaml
+
 \end{document}
