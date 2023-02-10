@@ -72,4 +72,19 @@ This new compilation script captures the whole process. On Linux or macOS, it ju
 %: e47fe732954bf018128bdcb5ee9c354910517f36
 %: .github/workflows/compile-release.yaml:8,60,68,87-88 noscopes language=yaml
 
+\subsubsection{Compiling for macOS\label{development:preparing-for-v0.2.1:compiling-for-macos}}
+
+Compiling for macOS is considerably more difficult. I run Ubuntu as my primary operating system. I used to use Windows and I have a Windows 10 virtual machine, so compiling for Windows was never an issue. But I've never used a Mac, and Apple don't like people installing macOS on non-Apple hardware. Getting a virtual machine set up running macOS Monterey was quite difficult, but I eventually managed to get it working somewhat properly.
+
+Once I had \texttt{lintrans} compiling on macOS, I wanted to do something similar to what I did with Windows, where I added extra metadata to the executable. In macOS, executables are bundled as \texttt{.app} files, which are just directory structures, containing the necessary files and metadata\cite{apple-bundle-structures}. All the metadata for an application bundle is contained in the \texttt{Info.plist} file in the bundle\cite{apple-about-info.plist-files}\cite{apple-about-info.plist-keys-and-values}. After reading the documentation for these files, I created one for \texttt{lintrans}.
+
+%: e716000521c92259ed4a1b33ab37e3860a7b7875
+%: compile.py:92-134,149-155
+
+This could would automatically generate the \texttt{Info.plist} file and write it to the correct place. However, I couldn't distribute this bundled app, since Apple requires an app to be signed by a trusted author before other people can download and run that code on their own Apple devices\cite{apple-about-code-signing}. And unfortunately, Apple charges \$99 per year for membership to their \enquote{Apple Developer Program}, which is required to become a trusted developer\cite{apple-developer-program-enrollment}\footnote{The price is listed in the small print at the bottom of the page.}.
+
+Microsoft also wants its developers to sign their code for security and trust, and also charges for this privilege. But on Windows, you can run a foreign, unsigned app so long as you dismiss the potential virus warning. On macOS, it's completely forbidden.
+
+I don't exactly want to pay \$99 per year to compile \texttt{lintrans} for macOS, when my audience on that platform is realistically almost zero, so I just removed macOS from the GitHub Actions compilation workflow. For anyone that wants to run \texttt{lintrans} on macOS, I will provide instructions to compile it from source.
+
 \end{document}
