@@ -87,4 +87,33 @@ Microsoft also wants its developers to sign their code for security and trust, a
 
 I don't exactly want to pay \$99 per year to compile \texttt{lintrans} for macOS, when my audience on that platform is realistically almost zero, so I just removed macOS from the GitHub Actions compilation workflow. For anyone that wants to run \texttt{lintrans} on macOS, I will provide instructions to compile it from source.
 
+\subsubsection{Supporting flags\label{development:preparing-for-v0.2.1:supporting-flags}}
+
+Most Linux apps support command line arguments and/or flags\footnote{For explanation and examples, see \url{https://betterdev.blog/command-line-arguments-anatomy-explained/}}, and so I wanted to support these with \texttt{lintrans}. I wanted one flag to display help for the program, and one flag to display the version number of the program. Implementing this was very simple and I didn't bother using a library like \texttt{argparse}; I just used \pyinline{sys.argv}.
+
+%: ffc603f1bf049811cb927f879ce7989456f6a537
+%: src/lintrans/__main__.py:9-55
+
+Here is the expected output when using these flags at a shell prompt:
+
+\begin{minted}[linenos=false]{console}
+$ python -m lintrans --help
+Usage: /home/dyson/repos/lintrans/src/lintrans/__main__.py [option]
+
+Options:
+    -h, --help       Display this help text and exit
+    -V, --version    Display the version information and exit
+
+Any other options will get passed to the QApplication constructor.
+If you don't know what that means, then don't provide any arguments and just the run the program.
+$ python -m lintrans --version
+lintrans (version 0.2.0)
+The linear transformation visualizer
+
+Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
+
+This program is licensed under GNU GPLv3, available here:
+<https://www.gnu.org/licenses/gpl-3.0.html>
+\end{minted}
+
 \end{document}
