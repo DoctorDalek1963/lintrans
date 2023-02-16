@@ -707,5 +707,117 @@ PyQt5.QtWidgets.QWidget py:class 1 qwidget.html     -
             LATEX_10,
             "Testing a custom lexer (with double quotes)"
         );
+
+        const LATEX_11: &str = r#"{
+\renewcommand\theFancyVerbLine{ \ttfamily
+	\textcolor[rgb]{0.5,0.5,1}{
+		\footnotesize
+		\oldstylenums{
+			\ifnum\value{FancyVerbLine}=-3 \else
+			\ifnum\value{FancyVerbLine}=-2 \else
+			\ifnum\value{FancyVerbLine}=-1\setcounter{FancyVerbLine}{6}\else
+				\arabic{FancyVerbLine}
+			\fi\fi\fi
+		}
+	}
+}
+\begin{minted}[firstnumber=-3]{python}
+# 7423fff72f09b5f5a3253c734d42c4e7c3182efe
+# src/lintrans/gui/dialogs/misc.py
+
+"""This module provides miscellaneous dialog classes like :class:`AboutDialog`."""
+
+from __future__ import annotations
+
+import platform
+
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QDialog, QVBoxLayout
+
+import lintrans
+
+
+class AboutDialog(QDialog):
+    """A simple dialog class to display information about the app to the user.
+
+    It only has an :meth:`__init__` method because it only has label widgets, so no other methods are necessary here.
+    """
+
+    def __init__(self, *args, **kwargs):
+        """Create an :class:`AboutDialog` object with all the label widgets."""
+        super().__init__(*args, **kwargs)
+
+        self.setWindowTitle('About lintrans')
+
+        # === Create the widgets
+
+        label_title = QtWidgets.QLabel(self)
+        label_title.setText(f'lintrans (version {lintrans.__version__})')
+        label_title.setAlignment(Qt.AlignCenter)
+
+        font_title = label_title.font()
+        font_title.setPointSize(font_title.pointSize() * 2)
+        label_title.setFont(font_title)
+
+        label_version_info = QtWidgets.QLabel(self)
+        label_version_info.setText(
+            f'With Python version {platform.python_version()}\n'
+            f'Running on {platform.platform()}'
+        )
+        label_version_info.setAlignment(Qt.AlignCenter)
+
+        label_info = QtWidgets.QLabel(self)
+        label_info.setText(
+            'lintrans is a program designed to help visualise<br>'
+            '2D linear transformations represented with matrices.<br><br>'
+            "It's designed for teachers and students and any feedback<br>"
+            'is greatly appreciated at <a href="https://github.com/DoctorDalek1963/lintrans" '
+            'style="color: black;">my GitHub page</a><br>or via email '
+            '(<a href="mailto:dyson.dyson@icloud.com" style="color: black;">dyson.dyson@icloud.com</a>).'
+        )
+        label_info.setAlignment(Qt.AlignCenter)
+        label_info.setTextFormat(Qt.RichText)
+        label_info.setOpenExternalLinks(True)
+
+        label_copyright = QtWidgets.QLabel(self)
+        label_copyright.setText(
+            'This program is free software.<br>Copyright 2021-2022 D. Dyson (DoctorDalek1963).<br>'
+            'This program is licensed under GPLv3, which can be found '
+            '<a href="https://www.gnu.org/licenses/gpl-3.0.html" style="color: black;">here</a>.'
+        )
+        label_copyright.setAlignment(Qt.AlignCenter)
+        label_copyright.setTextFormat(Qt.RichText)
+        label_copyright.setOpenExternalLinks(True)
+
+        # === Arrange the widgets
+
+        self.setContentsMargins(10, 10, 10, 10)
+
+        vlay = QVBoxLayout()
+        vlay.setSpacing(20)
+        vlay.addWidget(label_title)
+        vlay.addWidget(label_version_info)
+        vlay.addWidget(label_info)
+        vlay.addWidget(label_copyright)
+
+        self.setLayout(vlay)
+
+        self.setFixedSize(self.baseSize())
+\end{minted}
+}"#;
+
+        assert_eq!(
+            Comment::from_latex_comment(concat!(
+                "%: 7423fff72f09b5f5a3253c734d42c4e7c3182efe\n",
+                "%: src/lintrans/gui/dialogs/misc.py"
+            ))
+            .unwrap()
+            .get_text(&repo)
+            .unwrap()
+            .get_latex(),
+            LATEX_11,
+            "Testing automatic removal of the copyright comment when it's only 2022"
+        );
     }
 }

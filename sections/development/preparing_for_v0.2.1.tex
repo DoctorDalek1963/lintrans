@@ -116,4 +116,25 @@ This program is licensed under GNU GPLv3, available here:
 <https://www.gnu.org/licenses/gpl-3.0.html>
 \end{minted}
 
+\subsubsection{Adding the about dialog\label{development:preparing-for-v0.2.1:adding-the-about-dialog}}
+
+In addition to the help and version information available from the command line, most apps with a GUI provide a graphical way to access information about the app, typically in the form of an about box. I wanted to do this for \texttt{lintrans}. I had intended to have this from the start, but it now felt like the right time to implement it, since I was preparing to release version \texttt{0.2.1}.
+
+To do this, I create a new file to house the new dialog class, and then added the functionality to the original button, so that it would now open the new dialog.
+
+%: 7423fff72f09b5f5a3253c734d42c4e7c3182efe
+%: src/lintrans/gui/dialogs/misc.py
+
+%: 7423fff72f09b5f5a3253c734d42c4e7c3182efe
+%: src/lintrans/gui/main_window.py:64-65,97-99,117
+
+This feature works just as expected.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{development/7423fff72f09b5f5a3253c734d42c4e7c3182efe/about-dialog.png}
+	\caption{The about dialog}
+	\label{fig:development:7423fff72f09b5f5a3253c734d42c4e7c3182efe:about-dialog.png}
+\end{figure}
+
 \end{document}

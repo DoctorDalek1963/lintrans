@@ -32,6 +32,16 @@ lazy_static! {
 
     /// The regex for the linenumbers in the snippet comments.
     pub static ref LINENUMS_PATTERN: Regex = Regex::new(r"^(?P<first>\d+)(-(?P<last>\d+))?$").unwrap();
+
+    /// The copyright comment that appears at the top of newer files.
+    pub static ref COPYRIGHT_COMMENT_PATTERN: Regex = Regex::new(
+r"#\s+lintrans - The linear transformation visualizer
+#\s+Copyright \(C\) (2021-)?2022 D. Dyson \(DoctorDalek1963\)
+#?
+#\s+This program is licensed under GNU GPLv3, available here:
+#\s+<https://www.gnu.org/licenses/gpl-3.0.html>
+").unwrap();
+
 }
 
 /// Process every snippet in the given file and write out a processed version under a new name with

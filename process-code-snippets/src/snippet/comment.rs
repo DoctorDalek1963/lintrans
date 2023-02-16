@@ -1,7 +1,7 @@
 //! This module contains code to deal with reading and interpreting LaTeX comments that refer to snippets.
 
 use super::{Config, Text};
-use crate::COMMENT_PATTERN;
+use crate::{COMMENT_PATTERN, COPYRIGHT_COMMENT_PATTERN};
 use color_eyre::eyre::Result;
 use git2::{Oid, Repository};
 use itertools::Itertools;
@@ -10,14 +10,6 @@ use nom::{
     sequence::separated_pair, IResult, Parser,
 };
 use std::path::Path;
-
-/// The copyright comment that appears at the top of newer files.
-const COPYRIGHT_COMMENT: &str = r"# lintrans - The linear transformation visualizer
-# Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
-
-# This program is licensed under GNU GPLv3, available here:
-# <https://www.gnu.org/licenses/gpl-3.0.html>
-";
 
 /// A reference to a code snippet, as used in comments.
 #[derive(Clone, Debug, PartialEq)]
@@ -109,12 +101,13 @@ impl<'s> Comment<'s> {
                 // If we've got a copyright comment, then remove it and update the line number accordingly
                 if !self.config.keep_copyright_comment
                     && first == 1
-                    && content
-                        .lines()
-                        .take(6)
-                        .intersperse("\n")
-                        .collect::<String>()
-                        == COPYRIGHT_COMMENT
+                    && COPYRIGHT_COMMENT_PATTERN.is_match(
+                        &content
+                            .lines()
+                            .take(6)
+                            .intersperse("\n")
+                            .collect::<String>(),
+                    )
                 {
                     first = 7;
                 }
