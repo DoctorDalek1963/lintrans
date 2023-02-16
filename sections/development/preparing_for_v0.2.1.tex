@@ -137,4 +137,21 @@ This feature works just as expected.
 	\label{fig:development:7423fff72f09b5f5a3253c734d42c4e7c3182efe:about-dialog.png}
 \end{figure}
 
+\subsubsection{Creating the \texttt{FixedSizeDialog} class\label{development:preparing-for-v0.2.1:creating-the-FixedSizeDialog-class}}
+
+Currently, several dialogs are a fixed size, meaning they can't be resized. Qt5 doesn't have the option to make a dialog non-resizeable - that's only available for whole windows - so to achieve this effect, I had to add the line \pyinline{self.setFixedSize(self.baseSize())} to the end of the constructor for every fixed size dialog\footnote{This works because Qt5 needs to arrange all the widgets and allocate space for all of them first, and then we can use that calculated size as the fixed size.}. This was easy to forget and it didn't make it immediately clear which dialogs were fixed size and which weren't.
+
+To fix this, I decided to use a different technique, by overriding the \pyinline{open()} method of the dialog. This method gets called when the dialog is first opened. If I called the superclass' implementation first to do all the actual opening logic, then I could use that same previous technique to set the fixed size to whatever Qt5 had calculated it to be. By overriding a method, I could put that override into a simple superclass called \pyinline{FixedSizeDialog} and then make all fixed size dialogs inherit from this class instead of just \pyinline{QDialog}.
+
+%: a59ea87fb37fc593cf0bae3066bdbd24be656798
+%: src/lintrans/gui/dialogs/misc.py:20-29,32
+
+%: a59ea87fb37fc593cf0bae3066bdbd24be656798
+%: src/lintrans/gui/dialogs/define_new_matrix.py:68
+
+%: a59ea87fb37fc593cf0bae3066bdbd24be656798
+%: src/lintrans/gui/dialogs/settings.py:21
+
+I used \pyinline{self.size()} here instead of \pyinline{self.baseSize()} like before. There doesn't seem to be much difference, but the docs seem to suggest that \pyinline{self.size()} is more appropriate for this use case\cite{qt5-docs-qwidget-basesize}\cite{qt5-docs-qwidget-size}.
+
 \end{document}
