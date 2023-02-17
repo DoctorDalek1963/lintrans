@@ -819,5 +819,96 @@ class AboutDialog(QDialog):
             LATEX_11,
             "Testing automatic removal of the copyright comment when it's only 2022"
         );
+
+        const LATEX_12: &str = r#"{
+\renewcommand\theFancyVerbLine{ \ttfamily
+	\textcolor[rgb]{0.5,0.5,1}{
+		\footnotesize
+		\oldstylenums{
+			\ifnum\value{FancyVerbLine}=-3 \else
+			\ifnum\value{FancyVerbLine}=-2 \else
+			\ifnum\value{FancyVerbLine}=-1\setcounter{FancyVerbLine}{8}\else
+				\arabic{FancyVerbLine}
+			\fi\fi\fi
+		}
+	}
+}
+\begin{minted}[firstnumber=-3]{python}
+# 99a88575f9beb8fed2dcc41dacbb020b31bc8176
+# generate_release_notes.py
+
+"""A very simple script to generate release notes."""
+
+import re
+import sys
+
+TEXT = '''DESCRIPTION
+
+---
+
+The Linux binary should work fine, but if you use the Windows `.exe` file, you will get a warning that the program may be unsafe. This is expected and you can just ignore it. There's no binary for macOS due to Apple code signing issues.
+
+If you're running macOS, then you will need to compile the program from source. This is also an option on Linux and Windows. Instructions can be found [here](https://doctordalek1963.github.io/lintrans/tutorial/compile/).
+
+---
+
+CHANGELOG
+'''
+
+# This RegEx is complicated because of the newlines
+# It requires the current tag to have a header like
+# ## [0.2.1] - 2022-03-22
+# And all other tags to have similar headers
+# It also won't work on the first tag, but that's fine
+RE_PATTERN = r'''(?<=## \[TAG_NAME\] - \d{4}-\d{2}-\d{2}
+
+).*?(?=
+
+## \[\d+\.\d+\.\d+(-[\S]+)?\] - \d{4}-\d{2}-\d{2})'''
+
+
+def main(args: list[str]) -> None:
+    """Generate the release notes for this release and write them to `release_notes.md`."""
+    if len(args) < 1:
+        raise ValueError('Tag name is required to generate release notes')
+
+    tag_name = args[0]
+
+    print(f'Generating release notes for tag {tag_name}')
+
+    with open('CHANGELOG.md', 'r', encoding='utf-8') as f:
+        changelog_text = f.read()
+
+    if (m := re.search(
+        RE_PATTERN.replace('TAG_NAME', re.escape(tag_name[1:])),
+        changelog_text,
+        flags=re.S
+    )) is not None:
+        text = TEXT.replace('CHANGELOG', m.group(0))
+
+    else:
+        raise ValueError('Error in searching for changelog notes. Bad format')
+
+    with open('release_notes.md', 'w', encoding='utf-8') as f:
+        f.write(text)
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])
+\end{minted}
+}"#;
+
+        assert_eq!(
+            Comment::from_latex_comment(concat!(
+                "%: 99a88575f9beb8fed2dcc41dacbb020b31bc8176\n",
+                "%: generate_release_notes.py"
+            ))
+            .unwrap()
+            .get_text(&repo)
+            .unwrap()
+            .get_latex(),
+            LATEX_12,
+            "Testing automatic removal of the copyright comment when there's a shebang first"
+        );
     }
 }

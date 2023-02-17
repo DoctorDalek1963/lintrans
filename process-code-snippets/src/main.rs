@@ -35,7 +35,9 @@ lazy_static! {
 
     /// The copyright comment that appears at the top of newer files.
     pub static ref COPYRIGHT_COMMENT_PATTERN: Regex = Regex::new(
-r"#\s+lintrans - The linear transformation visualizer
+r"(#!/usr/bin/env python
+
+)?#\s+lintrans - The linear transformation visualizer
 #\s+Copyright \(C\) (2021-)?2022 D. Dyson \(DoctorDalek1963\)
 #?
 #\s+This program is licensed under GNU GPLv3, available here:

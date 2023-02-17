@@ -99,17 +99,20 @@ impl<'s> Comment<'s> {
                 let last = content.lines().count() as u32;
 
                 // If we've got a copyright comment, then remove it and update the line number accordingly
-                if !self.config.keep_copyright_comment
-                    && first == 1
-                    && COPYRIGHT_COMMENT_PATTERN.is_match(
-                        &content
+                if !self.config.keep_copyright_comment && first == 1 {
+                    let first_n = |n| {
+                        content
                             .lines()
-                            .take(6)
+                            .take(n)
                             .intersperse("\n")
-                            .collect::<String>(),
-                    )
-                {
-                    first = 7;
+                            .collect::<String>()
+                    };
+
+                    if COPYRIGHT_COMMENT_PATTERN.is_match(&first_n(6)) {
+                        first = 7;
+                    } else if COPYRIGHT_COMMENT_PATTERN.is_match(&first_n(8)) {
+                        first = 9;
+                    }
                 }
 
                 // The body is just the section of the content from the first line to the last line,

@@ -335,4 +335,16 @@ If I'd been using semantic versioning from the start, there would much more chan
 	\label{fig:development:d47f63eb0bcdc89cff5ed19afe2fc63899edf1d9:release.png}
 \end{figure}
 
+\subsubsection{Automating release note generation\label{development:preparing-for-v0.2.1:automating-release-note-generation}}
+
+I had to copy the changelog over and polish up the release notes myself for this release. It would be quite convenient to have a script that does this automatically, so I made one.
+
+%: 99a88575f9beb8fed2dcc41dacbb020b31bc8176
+%: generate_release_notes.py
+
+This script just parses the changelog and generates a file called \texttt{release\_notes.md}, which I can then automatically use as the body for the GitHub release by changing the workflow.
+
+%: 99a88575f9beb8fed2dcc41dacbb020b31bc8176
+%: .github/workflows/compile-release.yaml:8,97,101,124-146 language=yaml
+
 \end{document}
