@@ -154,4 +154,27 @@ To fix this, I decided to use a different technique, by overriding the \pyinline
 
 I used \pyinline{self.size()} here instead of \pyinline{self.baseSize()} like before. There doesn't seem to be much difference, but the docs seem to suggest that \pyinline{self.size()} is more appropriate for this use case\cite{qt5-docs-qwidget-basesize}\cite{qt5-docs-qwidget-size}.
 
+\subsubsection{Increasing minimum grid spacing\label{development:preparing-for-v0.2.1:increasing-minimum-grid-spacing}}
+
+When you zoom out, the grid lines get closer and closer together. I previously limited this to 1 pixel, since the program would hang or crash if it was any lower. However, having the grid lines that close together made it very hard to see what was happening. I could easily fix this by limiting the minimum grid spacing to say, 5 pixels.
+
+\begin{figure}[H]
+	\centering
+	\begin{minipage}{0.48\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{development/a59ea87fb37fc593cf0bae3066bdbd24be656798/zoomed-out.png}
+		\caption{Fully zoomed out before}
+		\label{fig:development:a59ea87fb37fc593cf0bae3066bdbd24be656798:zoomed-out.png}
+	\end{minipage}\hfill
+	\begin{minipage}{0.48\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{development/51d35018c81deaaf7e32646b1f99d6e46643bf24/zoomed-out.png}
+		\caption{Fully zoomed out after}
+		\label{fig:development:51d35018c81deaaf7e32646b1f99d6e46643bf24:zoomed-out.png}
+	\end{minipage}
+\end{figure}
+
+%: 51d35018c81deaaf7e32646b1f99d6e46643bf24
+%: src/lintrans/gui/plots/classes.py:39,154-166
+
 \end{document}
