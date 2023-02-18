@@ -219,6 +219,7 @@ impl<'s> Comment<'s> {
             hash: self.hash,
             filename: self.filename,
             language: self.config.language.clone(),
+            info_comment_syntax: self.config.info_comment.clone(),
             scopes,
             bodies,
         })

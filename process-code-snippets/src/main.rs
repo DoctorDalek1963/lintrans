@@ -12,6 +12,8 @@
 //! 29ec1fedbf307e3b7ca731c4a381535fec899b0b on the main branch of lintrans. Line numbers are
 //! optional. If omitted, the whole file is included.
 
+#[cfg(test)]
+mod latex_tests;
 mod snippet;
 
 use self::snippet::Comment;

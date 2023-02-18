@@ -2,6 +2,7 @@
 
 mod comment;
 mod config;
+mod info_comment;
 mod text;
 
-pub use self::{comment::Comment, config::Config, text::Text};
+pub use self::{comment::Comment, config::Config, info_comment::InfoCommentSyntax, text::Text};

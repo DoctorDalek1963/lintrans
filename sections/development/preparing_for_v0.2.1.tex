@@ -181,73 +181,8 @@ When you zoom out, the grid lines get closer and closer together. I previously l
 
 I've know about changelogs for a long time. They're used to keep track of changes to a project over time. I recently learned about the project \enquote{keep a changelog}, which tries to create a standard for changelog formats\cite{keep-a-changelog-1.0.0}. I want to have a proper changelog for lintrans, so I decided to implement one.
 
-% I want to use the following syntax to have a custom comment syntax in the snippet, but I haven't got
-% time to implement that in the snippet processor right now, so I've manually edited the snippet
-%; 47c68c7f4780d0e2c374cf12b9b54c031277af6d
-%; CHANGELOG.md language="lexers.py:MarkdownWithCommentsLexer -x" comment="<!-- {} -->"
-{
-\renewcommand\theFancyVerbLine{ \ttfamily
-	\textcolor[rgb]{0.5,0.5,1}{
-		\footnotesize
-		\oldstylenums{
-			\ifnum\value{FancyVerbLine}=-3 \else
-			\ifnum\value{FancyVerbLine}=-2 \else
-			\ifnum\value{FancyVerbLine}=-1\setcounter{FancyVerbLine}{0}\else
-				\arabic{FancyVerbLine}
-			\fi\fi\fi
-		}
-	}
-}
-\begin{minted}[firstnumber=-3]{lexers.py:MarkdownWithCommentsLexer -x}
-<!-- 47c68c7f4780d0e2c374cf12b9b54c031277af6d -->
-<!-- CHANGELOG.md -->
-
-# Changelog
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-
-### Added
-
-- Explicit `@pyqtSlot` decorators
-- Link to Qt5 docs in project docs with intersphinx
-- Copyright comment in tests and `setup.py`
-- Create version file for Windows compilation
-- Create full compile.py script
-- Add `Info.plist` file for macOS compilation
-- Support --help and --version flags in `__main__.py`
-- Create about dialog in help menu
-- Implement minimum grid spacing
-
-### Fixed
-
-- Fix problems with compile script
-- Fix small bugs and docstrings
-
-## [0.2.0] - 2022-03-11
-
-There were alpha tags before this, but I wasn't properly adhering to semantic versioning, so I'll start the changelog here.
-
-If I'd been using semantic versioning from the start, there would much more changelog here, but instead, I'll just summarise the features.
-
-### Added
-
-- Matrix context with the `MatrixWrapper` class
-- Parsing and evaluating matrix expressions
-- A simple GUI with a viewport to render linear transformations
-- Simple dialogs to create matrices and assign them to names
-- Ability to render and animate linear transformations parsed from defined matrices
-- Ability to zoom in and out of the viewport
-- Add dialog to change display settings
-
-[Unreleased]: https://github.com/DoctorDalek1963/lintrans/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/DoctorDalek1963/lintrans/compare/13600cc6ff6299dc4a8101a367bc52fe08607554...v0.2.0
-\end{minted}
-}
+%: 47c68c7f4780d0e2c374cf12b9b54c031277af6d
+%: CHANGELOG.md language="lexers.py:MarkdownWithCommentsLexer -x" comment="<!-- {} -->"
 
 \subsubsection{Releasing \texttt{v0.2.1}\label{development:preparing-for-v0.2.1:releasing-v0.2.1}}
 
@@ -256,77 +191,8 @@ Now all I had to do for the release was update the version number in \texttt{\_\
 %: d47f63eb0bcdc89cff5ed19afe2fc63899edf1d9
 %: src/lintrans/__init__.py:13
 
-% Again, this should use the custom comment syntax, but I had to do it manually
-%; d47f63eb0bcdc89cff5ed19afe2fc63899edf1d9
-%; CHANGELOG.md language="lexers.py:MarkdownWithCommentsLexer -x" comment="<!-- {} -->"
-{
-\renewcommand\theFancyVerbLine{ \ttfamily
-	\textcolor[rgb]{0.5,0.5,1}{
-		\footnotesize
-		\oldstylenums{
-			\ifnum\value{FancyVerbLine}=-3 \else
-			\ifnum\value{FancyVerbLine}=-2 \else
-			\ifnum\value{FancyVerbLine}=-1\setcounter{FancyVerbLine}{0}\else
-				\arabic{FancyVerbLine}
-			\fi\fi\fi
-		}
-	}
-}
-\begin{minted}[firstnumber=-3]{lexers.py:MarkdownWithCommentsLexer -x}
-<!-- d47f63eb0bcdc89cff5ed19afe2fc63899edf1d9 -->
-<!-- CHANGELOG.md -->
-
-# Changelog
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-
-Nothing here yet...
-
-## [0.2.1] - 2022-03-22
-
-### Added
-
-- Explicit `@pyqtSlot` decorators
-- Link to Qt5 docs in project docs with intersphinx
-- Copyright comment in tests and `setup.py`
-- Create version file for Windows compilation
-- Create full compile.py script
-- Add `Info.plist` file for macOS compilation
-- Support --help and --version flags in `__main__.py`
-- Create about dialog in help menu
-- Implement minimum grid spacing
-
-### Fixed
-
-- Fix problems with compile script
-- Fix small bugs and docstrings
-
-## [0.2.0] - 2022-03-11
-
-There were alpha tags before this, but I wasn't properly adhering to semantic versioning, so I'll start the changelog here.
-
-If I'd been using semantic versioning from the start, there would much more changelog here, but instead, I'll just summarise the features.
-
-### Added
-
-- Matrix context with the `MatrixWrapper` class
-- Parsing and evaluating matrix expressions
-- A simple GUI with a viewport to render linear transformations
-- Simple dialogs to create matrices and assign them to names
-- Ability to render and animate linear transformations parsed from defined matrices
-- Ability to zoom in and out of the viewport
-- Add dialog to change display settings
-
-[Unreleased]: https://github.com/DoctorDalek1963/lintrans/compare/v0.2.1...HEAD
-[0.2.1]: https://github.com/DoctorDalek1963/lintrans/compare/v0.2.0...v0.2.1
-[0.2.0]: https://github.com/DoctorDalek1963/lintrans/compare/13600cc6ff6299dc4a8101a367bc52fe08607554...v0.2.0
-\end{minted}
-}
+%: d47f63eb0bcdc89cff5ed19afe2fc63899edf1d9
+%: CHANGELOG.md language="lexers.py:MarkdownWithCommentsLexer -x" comment="<!-- {} -->"
 
 \begin{figure}[H]
 	\centering
