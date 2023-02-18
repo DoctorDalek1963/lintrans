@@ -1,0 +1,34 @@
+% lintrans - The linear transformation visualizer
+% Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
+
+% This program is licensed under GNU GPLv3, available here:
+% <https://www.gnu.org/licenses/gpl-3.0.html>
+
+\documentclass[../development.tex]{subfiles}
+
+\begin{document}
+
+\subsubsection{Hiding the background and transformed grids\label{development:making-v0.2.2:hiding-the-background-and-transformed-grids}}
+
+I spoke to my main stakeholder, who is the teacher that will be using \texttt{lintrans} when it's finished, and she said that the background grid and transformed grid can get a little bit in the way of the core action and make it harder to understand what's happening. Taking this feedback on board, I decided to add a display setting to toggle the background grid, and one to toggle the transformed grid.
+
+I did the background grid first and then repeated everything for the transformed version of the grid as well. I am combining them here for brevity. The first step was of course to add a display setting for each of them. Then I had to add checkboxes for them in the display settings dialog, and then incorporate the settings into the actual drawing of the canvas.
+
+%: d045057d568ac133b621ee9ca9daed361d570d7a
+%: src/lintrans/gui/settings.py:14-27
+
+%: d045057d568ac133b621ee9ca9daed361d570d7a
+%: src/lintrans/gui/dialogs/settings.py:70,73,89-101,204,207-208,221,224-225 noscopes
+
+%: d045057d568ac133b621ee9ca9daed361d570d7a
+%: src/lintrans/gui/plots/widgets.py:60-63
+
+%: d045057d568ac133b621ee9ca9daed361d570d7a
+%: src/lintrans/gui/plots/classes.py:129-154
+
+Then I added this change to the changelog.
+
+%: d045057d568ac133b621ee9ca9daed361d570d7a
+%: CHANGELOG.md:12-14 language="lexers.py:MarkdownWithCommentsLexer -x" comment="<!-- {} -->"
+
+\end{document}
