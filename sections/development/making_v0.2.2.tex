@@ -31,4 +31,22 @@ Then I added this change to the changelog.
 %: d045057d568ac133b621ee9ca9daed361d570d7a
 %: CHANGELOG.md:12-14 language="lexers.py:MarkdownWithCommentsLexer -x" comment="<!-- {} -->"
 
+\subsubsection{Hiding the basis vectors\label{development:making-v0.2.2:hiding-the-basis-vectors}}
+
+While I was implementing new display settings, I decided to implement hiding basis vectors. This will give users the option of just seeing the grid get transformed. The process was exactly the same as before. Add the setting, add it to the dialog, use it when drawing.
+
+%: 11ffbaf71f9fe29e1832a62f2b127aa3939e520d
+%: src/lintrans/gui/settings.py:29-30
+
+%: 11ffbaf71f9fe29e1832a62f2b127aa3939e520d
+%: src/lintrans/gui/dialogs/settings.py:70,73,103-108,212,217,230,235 noscopes
+
+%: 11ffbaf71f9fe29e1832a62f2b127aa3939e520d
+%: src/lintrans/gui/plots/widgets.py:65-66
+
+And then of course add it to the changelog.
+
+%: 11ffbaf71f9fe29e1832a62f2b127aa3939e520d
+%: CHANGELOG.md:12-14 language="lexers.py:MarkdownWithCommentsLexer -x" comment="<!-- {} -->"
+
 \end{document}
