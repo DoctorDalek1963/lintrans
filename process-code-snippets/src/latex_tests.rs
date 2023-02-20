@@ -836,4 +836,17 @@ If I'd been using semantic versioning from the start, there would much more chan
         LATEX_13,
         "Testing custom info comment syntax (single quotes)"
     );
+
+    assert_eq!(
+        Comment::from_latex_comment(concat!(
+            "%: 47c68c7f4780d0e2c374cf12b9b54c031277af6d\n",
+            "%: CHANGELOG.md markdown!",
+        ))
+        .unwrap()
+        .get_text(&repo)
+        .unwrap()
+        .get_latex(),
+        LATEX_13,
+        "Testing markdown! macro"
+    );
 }

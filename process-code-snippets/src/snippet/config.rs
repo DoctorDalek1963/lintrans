@@ -1,6 +1,7 @@
 //! This module just contains config for the snippets.
 
 use super::InfoCommentSyntax;
+use color_eyre::Report;
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -9,7 +10,7 @@ use nom::{
     sequence::{delimited, pair},
     IResult, Parser,
 };
-use nom_regex::str::re_find;
+use nom_regex::str::{re_capture, re_find};
 use regex::Regex;
 
 /// A config struct to use for snippets. Defines options that can be used in snippets.
@@ -39,13 +40,47 @@ impl Default for Config {
     }
 }
 
+/// An enum for recognised macros that are allowed in config.
+///
+/// In the config, the macro name must be appended with an exclamation mark, like `markdown!`. When
+/// parsing, we expect the macro name _without_ the exclamation mark.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum ConfigMacro {
+    Markdown,
+}
+
+impl ConfigMacro {
+    fn parse(s: &str) -> Result<ConfigMacro, Report> {
+        let macro_name = if s.ends_with("!") {
+            &s[..s.len() - 1]
+        } else {
+            s
+        };
+
+        match macro_name {
+            "markdown" => Ok(Self::Markdown),
+            _ => Err(Report::msg(format!("Unrecognised macro name '{s}!'"))),
+        }
+    }
+
+    fn mutate_config(&self, config: &mut Config) {
+        match self {
+            Self::Markdown => {
+                config.language = String::from("lexers.py:MarkdownWithCommentsLexer -x");
+                config.info_comment = InfoCommentSyntax::parse("<!-- {} -->");
+            }
+        };
+    }
+}
+
 /// A simple enum of the available config options.
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 enum ConfigOption {
     KeepCopyrightComment,
     NoScopes,
     Language(String),
     InfoComment(InfoCommentSyntax),
+    Macro(ConfigMacro),
 }
 
 impl ConfigOption {
@@ -97,6 +132,9 @@ fn parse_config_options(input: &str) -> IResult<&str, Config> {
                     option_with_argument!().map(|syntax| ConfigOption::info_comment(syntax)),
                 )
                 .map(|(_, option)| option),
+                re_capture(Regex::new(r"([^\s!]+)!").unwrap()).map(|captures| {
+                    ConfigOption::Macro(ConfigMacro::parse(captures.get(1).unwrap()).unwrap())
+                }),
             )),
         ),
     )(input)?;
@@ -108,6 +146,7 @@ fn parse_config_options(input: &str) -> IResult<&str, Config> {
             NoScopes => config.no_scopes = true,
             Language(lang) => config.language = lang,
             InfoComment(syntax) => config.info_comment = syntax,
+            Macro(macro_name) => macro_name.mutate_config(&mut config),
         };
     }
 
@@ -165,6 +204,19 @@ impl Config {
 mod tests {
     use super::*;
     use pretty_assertions::assert_eq;
+
+    #[test]
+    fn config_macro_parse_test() {
+        assert_eq!(
+            ConfigMacro::parse("markdown").unwrap(),
+            ConfigMacro::Markdown
+        );
+        assert_eq!(
+            ConfigMacro::parse("markdown!").unwrap(),
+            ConfigMacro::Markdown
+        );
+        assert!(ConfigMacro::parse("not markdown!").is_err());
+    }
 
     #[test]
     fn config_parse_test() {
@@ -255,6 +307,18 @@ mod tests {
             Config::parse(
                 "language=\"lexers.py:MarkdownWithCommentsLexer -x\" comment='<!-- {} -->'"
             ),
+            Config {
+                language: String::from("lexers.py:MarkdownWithCommentsLexer -x"),
+                info_comment: InfoCommentSyntax {
+                    before: String::from("<!-- "),
+                    after: String::from(" -->")
+                },
+                ..Default::default()
+            }
+        );
+
+        assert_eq!(
+            Config::parse("markdown!"),
             Config {
                 language: String::from("lexers.py:MarkdownWithCommentsLexer -x"),
                 info_comment: InfoCommentSyntax {
