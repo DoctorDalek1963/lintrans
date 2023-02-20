@@ -49,4 +49,20 @@ And then of course add it to the changelog.
 %: 11ffbaf71f9fe29e1832a62f2b127aa3939e520d
 %: CHANGELOG.md:12-14 language="lexers.py:MarkdownWithCommentsLexer -x" comment="<!-- {} -->"
 
+\subsubsection{Improving argument parsing\label{development:making-v0.2.2:improving-argument-parsing}}
+
+Qt5 accepts arguments to its main method. I don't really know what these arguments can do, but it would be nice to be able to use them. I also want to be able to save sessions as files in the future, and it would be quite useful to open a session file by passing it as a command line argument. To make both of these easier, I decided to refactor my argument parsing.
+
+Python has a built-in library called \pyinline{argparse}, which allows for more sophisticated argument parsing. One of the things \pyinline{argparse} can do is parse only some of the command line arguments with a method called \pyinline{parse_known_args()}\cite{argparse-parse-known-args}. I can then pass the unconsumed arguments on to Qt5. \texttt{\_\_main.py\_\_} now looks like this:
+
+%: a688a14839caba2ee14f8551764b771ae803d935
+%: src/lintrans/__main__.py
+
+The \enquote{\pyinline{args[:1] + unparsed_args}} on line 71 means that we pass the name of the program first, and the rest of the unconsumed arguments after it.
+
+And of course, I added it to the changelog, this time as a fix rather than an addition:
+
+%: a688a14839caba2ee14f8551764b771ae803d935
+%: CHANGELOG.md:16-18 language="lexers.py:MarkdownWithCommentsLexer -x" comment="<!-- {} -->"
+
 \end{document}
