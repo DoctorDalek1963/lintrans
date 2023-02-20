@@ -204,6 +204,13 @@ I also added some unit tests to automatically test this new feature.
 %: ea00703f19c13af86c39ae30170569819937fa31
 %: tests/matrices/matrix_wrapper/test_misc.py
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.98\linewidth]{development/ea00703f19c13af86c39ae30170569819937fa31/pytest.png}
+	\caption{Running \texttt{pytest} with the new tests}
+	\label{fig:development:ea00703f19c13af86c39ae30170569819937fa31:pytest.png}
+\end{figure}
+
 I then had to fix a small bug where the \pyinline{DefineAsAnExpressionDialog} would evaluate the expression before assigning it, so I had to change that to just assign the test instead.
 
 %: 54e10dbfd3a1f3a962955c7fa3908848f5bd95b0

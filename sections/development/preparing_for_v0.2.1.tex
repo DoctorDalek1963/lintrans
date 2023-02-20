@@ -50,9 +50,16 @@ This was a tiny change, but worth noting.
 %: 70e1a7271a61f3009cc4d342f46743b248498a1c
 %: tests/matrices/test_parse_and_validate_expression.py:26-31,86-90
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.98\linewidth]{development/70e1a7271a61f3009cc4d342f46743b248498a1c/pytest.png}
+	\caption{Running \texttt{pytest} with the new tests}
+	\label{fig:development:70e1a7271a61f3009cc4d342f46743b248498a1c:pytest.png}
+\end{figure}
+
 \subsubsection{The Windows version file\label{development:preparing-for-v0.2.1:the-windows-version-file}}
 
-Windows stores metadata for \texttt{.exe} files inside the \texttt{.exe} files themselve\cite{msdocs-version-information-structures}\cite{msdocs-versioninfo-resource}. PyInstaller lets you embed that metadata when compiling on Windows, using a version file\cite{pyintaller-4.10-capturing-windows-version-data}. Obviously, I wanted to include this metadata in my compiled \texttt{.exe} in the release.
+Windows stores metadata for \texttt{.exe} files inside the \texttt{.exe} files themselves\cite{msdocs-version-information-structures}\cite{msdocs-versioninfo-resource}. PyInstaller lets you embed that metadata when compiling on Windows, using a version file\cite{pyintaller-4.10-capturing-windows-version-data}. Obviously, I wanted to include this metadata in my compiled \texttt{.exe} in the release.
 
 I created a simple \texttt{precompile.py} script that would create different pre-compilation artefacts. I could then use these in the compilation workflow for GitHub Actions. I started with just Windows, but obviously I'm going to expand into Linux and macOS as well later.
 

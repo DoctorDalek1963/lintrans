@@ -24,6 +24,13 @@ I then had to write unit tests for this class, and I chose to do all my unit tes
 %: 29ec1fedbf307e3b7ca731c4a381535fec899b0b
 %: tests/test_matrix_wrapper.py
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.98\linewidth]{development/29ec1fedbf307e3b7ca731c4a381535fec899b0b/pytest.png}
+	\caption{Running \texttt{pytest} with the new tests}
+	\label{fig:development:29ec1fedbf307e3b7ca731c4a381535fec899b0b:pytest.png}
+\end{figure}
+
 These tests are quite simple and just ensure that the expected behaviour works the way it should, and that the correct errors are raised when they should be. It verifies that matrices can be assigned, that every valid name works, and that the identity matrix \textbf{I} cannot be assigned to.
 
 The function decorated with \pyinline{@pytest.fixture} allows functions to use a parameter called \texttt{wrapper} and \texttt{pytest} will automatically call this function and pass it as that parameter. It just saves on code repetition.
@@ -61,6 +68,13 @@ I then implemented several tests for this parsing.
 %: 60e0c713b244e097bab8ee0f71142b709fde1a8b
 %: tests/test_matrix_wrapper_parse_expression.py
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.98\linewidth]{development/60e0c713b244e097bab8ee0f71142b709fde1a8b/pytest.png}
+	\caption{Running \texttt{pytest} with the new tests}
+	\label{fig:development:60e0c713b244e097bab8ee0f71142b709fde1a8b:pytest.png}
+\end{figure}
+
 These test lots of simple expressions, but don't test any more complicated expressions, nor do they test any validation, mostly because validation doesn't really exist at this point. \pyinline{'A++B'} is still a valid expression and is equivalent to \pyinline{'A+B'}.
 
 \subsubsection{Simple matrix expression validation\label{development:matrices-backend:simple-matrix-expression-validation}}
@@ -82,6 +96,13 @@ I then implemented some simple tests to make sure the function works with valid 
 %: a0fb029f7da995803c24ee36e7e8078e5621f676
 %: tests/_parse/test_parse_and_validate_expression.py
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.98\linewidth]{development/a0fb029f7da995803c24ee36e7e8078e5621f676/pytest.png}
+	\caption{Running \texttt{pytest} with the new tests}
+	\label{fig:development:a0fb029f7da995803c24ee36e7e8078e5621f676:pytest.png}
+\end{figure}
+
 Here, we test some valid data, some definitely invalid data, and some edge cases. At this stage, \pyinline{'A--1B'} was considered a valid expression. This was a quirk of the validator at the time, but I fixed it later. This should obviously be an invalid expression, especially since \pyinline{'A--B'} is considered invalid, but \pyinline{'A--1B'} is valid.
 
 The \pyinline{@pytest.mark.parametrize} decorator on line 32 means that \texttt{pytest} will run one test for valid inputs, and then another test for invalid inputs, and these will count as different tests. This makes it easier to see which tests failed and then debug the app.
@@ -92,6 +113,13 @@ Parsing is quite an interesting problem and something I didn't feel able to tack
 
 %: e9f7a81892278fe70684562052f330fb3a02bf9b
 %: tests/_parse/test_parse_and_validate_expression.py:40-75
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.98\linewidth]{development/e9f7a81892278fe70684562052f330fb3a02bf9b/pytest.png}
+	\caption{Running \texttt{pytest} with the new tests}
+	\label{fig:development:e9f7a81892278fe70684562052f330fb3a02bf9b:pytest.png}
+\end{figure}
 
 I just had example inputs and what I expected as output. I also wanted the parser to ignore whitespace. The decorator on line 69 just skips the test because the parser wasn't implemented yet.
 
