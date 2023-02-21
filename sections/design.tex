@@ -282,7 +282,9 @@ I will also apply this matrix expression validation to the textbox in the dialog
 
 \subsection{Iterative test data\label{design:iterative-test-data}}
 
-In unit testing, I will test the validation, parsing, and generation of rotation matrices from an angle. I will also unit test the utility functions for the GUI, like \texttt{is\_valid\_float}, which is needed to verify input when defining a matrix visually.
+There is a Python library called \texttt{pytest}, which can be used to run unit tests\cite{pytest-docs}. Unit tests are automatic tests that I can run whenever I like\cite{wikipedia-unit-testing}. I can also set these up to be run automatically by using GitHub Actions\cite{github-actions-docs}. Doing this will make it easy to test my code, because I can write separate testing code which makes sure that all my backend functions work as intended. This testing code is easy to run, and can be run automatically after every change, so I know that my changes won't break previous behaviour. All the unit testing code is in appendix \ref{appendix:testing-code}.
+
+In unit tests, I will test the validation, parsing, and generation of rotation matrices from an angle. I will also unit test the utility functions for the GUI, such as \pyinline{is_valid_float()}, which is needed to verify input when defining a matrix visually. I will not be testing the GUI in unit tests, since this is almost impossible to do automatically. Instead, I will have to regularly test the GUI manually; mostly defining matrices, thinking about what I expect them to look like, and then making sure they look like that. I don't see a way around this limitation. I will make my backend unit tests very thorough, but testing the GUI can only be done manually.
 
 For the validation of matrix expressions, I will have data like the following:
 \begin{center}
@@ -308,7 +310,7 @@ Valid & Invalid\\
 \hline
 \texttt{"2B\textasciicircum2+A\textasciicircum TC\textasciicircum\{-1\}"} & \texttt{"--A"}\\
 \hline
-\texttt{"3.5A\textasciicircum\{4\}5.6rot(19.2\textasciicircum T-B\textasciicircum\{-1\}4.1C\textasciicircum5"} & \texttt{"A--B"}\\
+\texttt{"3.5A\textasciicircum\{4\}5.6rot(19.2)\textasciicircum T-B\textasciicircum\{-1\}4.1C\textasciicircum5"} & \texttt{"A--B"}\\
 \hline
 \end{tabular}
 \end{center}
@@ -350,11 +352,6 @@ Again, this section is brief to save space and time. All unit tests are included
 \subsection{Post-development test data\label{design:post-development-test-data}}
 
 % TODO: Finish this
-
 This section will be completed later.
-
-\subsection{Issues with testing\label{design:issues-with-testing}}
-
-Since \texttt{lintrans} is a graphical application about visualizing things, it will be mainly GUI focussed. Unfortunately, unit testing GUIs is a lot harder than unit testing library or API code. I don't think there's any way to easily and reliably unit test a graphical interface, so my unit tests will only cover the backend code for handling matrices. Testing the GUI will be entirely manual; mostly defining matrices, thinking about what I expect them to look like, and then making sure they look like that. I don't see a way around this limitation. I will make my backend unit tests very thorough, but testing the GUI can only be done manually.
 
 \end{document}
