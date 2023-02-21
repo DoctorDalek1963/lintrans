@@ -133,7 +133,7 @@ I also want the user to be able to define arbitrary polygons and view their tran
 
 \subsection{Algorithm design\label{design:algorithm-design}}
 
-The project will have many algorithms but a lot of them will be related to drawing transformations on the canvas itself, and almost all of the algorithms will evolve over time. In this section, I will present pseudocode for some of the most interesting parts of the project.
+The project will have many algorithms and a lot of them will be related to drawing transformations on the canvas itself, but almost all of the algorithms will evolve over time. In this section, I will present pseudocode for some of the most interesting parts of the project. The real implementations may be different from these initial plans.
 
 The \texttt{lintrans.matrices.utility} module will look roughly like this:
 
@@ -200,7 +200,7 @@ class MatrixWrapper
 	endfunction
 
 	// Again, this is Python magic. This one allows assignments like `wrapper['A'] = my_matrix`
-	public procedure setitem(self, name: string, new_matrix: Optional[MatrixType])
+	public procedure setitem(name: string, new_matrix: Optional[MatrixType])
 		// If new_matrix is null, then that effectively unsets the matrix name.
 
 		if (name == "I" OR !matrices.contains(name))
@@ -224,6 +224,87 @@ class MatrixWrapper
 
 		matrices[name] = np.array([[a, b], [c, d]])
 	endprocedure
+endclass
+\end{minted}
+
+The \texttt{lintrans.gui.plots.classes} module will contain the following utility functions:
+
+\begin{minted}{lexers.py:OCRPseudocodeLexer -x}
+from PyQt5.QtGui import QPainter
+from PyQt5.QtWidgets import QWidget
+
+const DEFAULT_GRID_SPACING: int = 85
+
+// This class will act as a baseclass for the viewport and visual defintion dialog.
+// They will both use different subclasses of this class to visualize things on a grid.
+// Canvas coordinates are the coordinates that Qt5 uses internally. These are standard
+// computer graphics coordinates, with (0, 0) in the top left, positive x to the right,
+// and positive y going down.
+class BackgroundPlot extends QWidget
+	private grid_spacing: int
+
+	public procedure new()
+		super.new()
+
+		grid_spacing = DEFAULT_GRID_SPACING
+	endprocedure
+
+	// Return the canvas coordinates of the grid origin (centre)
+	private function canvas_origin() -> (int, int):
+		// width() and height() come from QWidget. They get the total width or height of the widget
+		return (width() DIV 2, height() DIV 2)
+	endfunction
+
+	// Convert an x coordinate from grid coords to canvas coords so it can be drawn
+	private function canvas_x(self, x: float) -> int
+		return int(canvas_origin()[0] + x * grid_spacing)
+	endfunction
+
+	// Convert an x coordinate from grid coords to canvas coords so it can be drawn
+	private function canvas_y(self, y: float) -> int
+		return int(canvas_origin()[1] - y * grid_spacing)
+	endfunction
+
+	// Convert a coordinate from grid coords to canvas coords
+	private function canvas_coords(x: float, y: float) -> (int, int)
+		return (canvas_x(x), canvas_y(y))
+	endfunction
+
+	// Find the grid coordinates of the top right corner. We use the top right because
+	// both coordinates will be positive
+	private function grid_corner() -> (float, float)
+		// Again, width() and height() come from QWidget
+		return (width() / (2 * grid_spacing), height() / (2 * grid_spacing))
+	endfunction
+
+	// Convert a coordinate from canvas coords to grid coords
+	private function grid_coords(x: int, y: int) -> (float, float)
+		return (
+			(x - canvas_origin[0]) / grid_spacing,
+			(-y + canvas_origin[1]) / grid_spacing
+		)
+	endfunction
+
+	// Draw the background grid. This method is meant to be used by subclasses when
+	// they paint their whole scene
+	private function draw_background(painter: QPainter)
+		// Draw equally spaced vertical lines, starting in the middle and going out
+		// We loop uo to half the width because we draw one line on each side of the axis per iteration
+		for (int x = width() DIV 2 + grid_spacing; x < width(); x += grid_spacing)
+			painter.drawLine((x, 0), (x, height()))
+			painter.drawLine((width() - x, 0), (width() - x, height()))
+		next x
+
+		// Now do the same for horizontal lines
+		for (int y = height() DIV 2 + grid_spacing; y < height(); x += grid_spacing)
+			painter.drawLine((0, y), (width(), y))
+			painter.drawLine((0, height() - y), (width(), height() - y))
+		next y
+
+		// Now draw the axes
+		painter.drawLine((width() DIV 2, 0), (width() DIV 2, height()))
+		painter.drawLine((0, height() DIV 2), (width(), height() DIV 2))
+	endfunction
 endclass
 \end{minted}
 

@@ -66,16 +66,43 @@ class OCRPseudocodeLexer(RegexLexer):
         ],
         "core": [
             (
-                r"(function)( )([^(]+)(\()",
+                r"(function|procedure)( )([^(]+)(\()",
                 bygroups(Keyword, Whitespace, Name.Function, Punctuation),
             ),
             (
-                r"(procedure)( )([^(]+)(\()",
-                bygroups(Keyword, Whitespace, Name.Function, Punctuation),
+                r"(public|private)( )(function|procedure)( )([^(]+)(\()",
+                bygroups(
+                    Keyword, Whitespace, Keyword, Whitespace, Name.Function, Punctuation
+                ),
             ),
-            (r"(class)( )(\S+)\n", bygroups(Keyword, Whitespace, Name.Class)),
             (
-                r"(private)( )(.+)(:)( )(\S+)$",
+                r"(const)( )(\S+)(:)( )(\S+)( )(=)",
+                bygroups(
+                    Keyword,
+                    Whitespace,
+                    Name.Variable.Global,
+                    Punctuation,
+                    Whitespace,
+                    Keyword.Type,
+                    Whitespace,
+                    Punctuation,
+                ),
+            ),
+            (
+                "(class)( )(\\S+)( )(extends)( )(\\S+)",
+                bygroups(
+                    Keyword,
+                    Whitespace,
+                    Name.Class,
+                    Whitespace,
+                    Keyword,
+                    Whitespace,
+                    Name.Class,
+                ),
+            ),
+            ("(class)( )(\\S+)", bygroups(Keyword, Whitespace, Name.Class)),
+            (
+                r"(private)( )(\S+)(:)( )(.+)$",
                 bygroups(
                     Keyword,
                     Whitespace,
@@ -86,7 +113,7 @@ class OCRPseudocodeLexer(RegexLexer):
                 ),
             ),
             (
-                r"(private)( )(.+)(:)( )(\S+)$",
+                r"(public)( )(\S+)(:)( )(.+)$",
                 bygroups(
                     Keyword,
                     Whitespace,
@@ -107,7 +134,7 @@ class OCRPseudocodeLexer(RegexLexer):
                 bygroups(Name.Variable, Whitespace, Operator, Whitespace),
             ),
             (
-                r"\b(import|as|from|endfunction|endprocedure|if|then|else|endif|return|endclass|public|private|new)\s*\b",
+                r"\b(import|as|from|endfunction|endprocedure|if|then|else|endif|return|endclass|public|private|new|super|for|next)\s*\b",
                 Keyword,
             ),
             (r"\b(int|float|bool|string|MatrixType)\s*\b", Keyword.Type),
