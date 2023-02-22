@@ -120,4 +120,28 @@ After:
 	\hspace{0.03\linewidth}
 \end{figure}
 
+\subsubsection{Improving online documentation with \textit{Read the Docs}\label{development:making-v0.2.2:improving-online-documentation-with-read-the-docs}}
+
+So far, I've been building my documentation automatically using a tool called \texttt{Sphinx}\cite{sphinx}. I've been using it to scan through my source code, extract all the docstrings\cite{pep257-docstring-conventions}, and compile a HTML version of the source code documentation. I then publish this documentation to GitHub Pages\cite{github-pages-docs}, and all that happens automatically along with the unit tests whenever I push my changes to GitHub.
+
+However, this system can't track changes in documentation over time. There's a popular website for hosting open source documentation, especially for Python packages, called \textit{Read the Docs}\cite{readthedocs-homepage}. It would be nice to host my documentation on there, since it would provide a standard build for the docs, and would allow me to keep track of documentation for different versions over time. I read through their tutorial and followed along with it, and then I could use Read the Docs for \texttt{lintrans}.
+
+%: a7a8aa09148f4acf8591547d6d8b9cd8b8d52905
+%: .readthedocs.yaml language=yaml
+
+This file governs the build pipeline for the documentation. It defines how the docs will be built on the remote machine. It basically just installs all the dependencies and \texttt{lintrans} itself in a virtual environment, generates the object inventory for \texttt{intersphinx} (see \S\ref{development:preparing-for-v0.2.1:linking-in-documentation}), builds the internal import graph (see \S\ref{development:fumbling-with-semver:adding-a-graph-of-internal-imports}), and makes sure that lintrans can be installed successfully in the virtual environment. The string \enquote{\mintinline{sh}{$(pwd | sed "s/checkouts\(\/[^/]\+\)\/docs\$/envs\1/")/bin/python}} appears frequently. This string finds the version of Python that will be used for building the actual documentation at the end of the pipeline. \texttt{lintrans} has some issues with circular imports, which means that it can only be installed in editable mode\footnote{Editable mode is an option that you can choose when installing a package with \texttt{pip}\cite{pip-install-editable}. Instead of copying the source code to the installation directory like normal, it creates a link to the source code from the installation directory - basically a symlink in Linux. This means that if you change the source code, the installed version gets updated instantly, which is obviously very useful for fast, iterative development. It also has some strange effects with import order and resolution. Importing packages and modules is very complicated in Python\cite{david-beazley-python-modules}, and I repeatedly failed to get \texttt{lintrans} to be installable without editable mode, so I had to resort to just using this bodge on Read the Docs instead.}. This means that I have to bodge the build system to install \texttt{lintrans} properly.
+
+Additionally, having a build system like this means that builds should be repeatable, which means I should pin the exact versions of all my dependencies, to avoid any breaking changes in the future.
+
+%: 152f9e59b5b4e22607cf2b687c85c70708054579
+%: requirements.txt language="lexers.py:CommentedTextLexer -x"
+
+%: 152f9e59b5b4e22607cf2b687c85c70708054579
+%: dev_requirements.txt language="lexers.py:CommentedTextLexer -x"
+
+%: 152f9e59b5b4e22607cf2b687c85c70708054579
+%: docs/docs_requirements.txt language="lexers.py:CommentedTextLexer -x"
+
+Now that I was using Read the Docs, I could remove the old GitHub Actions workflow to compile the documentation.
+
 \end{document}

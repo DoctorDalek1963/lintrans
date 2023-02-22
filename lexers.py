@@ -19,6 +19,19 @@ from pygments.token import (
 from pygments.util import ClassNotFound, get_bool_opt
 
 
+class CommentedTextLexer(RegexLexer):
+    """A lexer that adds // or # comments to text files."""
+
+    name = "CommentedText"
+
+    tokens = {
+        "root": [
+            (r"#.*\n", Comment),
+            (r"//.*\n", Comment),
+        ]
+    }
+
+
 class SphObjInvTextLexer(RegexLexer):
     """A lexer for my custom language used for the text files that generate Sphinx object inventory files."""
 
