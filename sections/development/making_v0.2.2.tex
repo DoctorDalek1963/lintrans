@@ -85,4 +85,39 @@ And, of course, I updated the changelog:
 %: 5850aa916b685992f31e58680267916927ed590d
 %: CHANGELOG.md:12,15 markdown!
 
+\subsubsection{Changing the order in which things are drawn\label{development:making-v0.2.2:changing-the-order-in-which-things-are-drawn}}
+
+Currently, \texttt{VisualizeTransformationWidget} draws the background, then the transformed grid, then the basis vectors, then the eigenlines and eigenvectors, then the determinant parallelogram and text. This means that the determinant parallelogram gets drawn on top of the basis vectors, which doesn't look very good. To fix this, we can simply re-order the drawing of different things. If we instead draw the transformed grid and basis vectors last, then they will appear on top of everything else, which should look significantly better.
+
+I also renamed the \texttt{draw\_determinant\_text} display setting attribute to \texttt{show\_determinant\_value}.
+
+Before:
+%: e9da6737cbdb68e800c245bcc34e1c5c3824458a
+%: src/lintrans/gui/plots/widgets.py:60-78
+
+After:
+%: acdf206a69d346dce67f74f2c54ff4c512c96229
+%: src/lintrans/gui/plots/widgets.py:60-78
+
+\begin{figure}[H]
+	\hspace{0.03\linewidth}
+	\begin{minipage}{0.45\linewidth}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=\linewidth]{development/5850aa916b685992f31e58680267916927ed590d/gui.png}
+			\caption{Before re-ordering drawing commands}
+			\label{fig:development:5850aa916b685992f31e58680267916927ed590d:gui.png}
+		\end{figure}
+	\end{minipage} \hfill
+	\begin{minipage}{0.45\linewidth}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=\linewidth]{development/acdf206a69d346dce67f74f2c54ff4c512c96229/gui.png}
+			\caption{After re-ordering drawing commands}
+			\label{fig:development:acdf206a69d346dce67f74f2c54ff4c512c96229:gui.png}
+		\end{figure}
+	\end{minipage}
+	\hspace{0.03\linewidth}
+\end{figure}
+
 \end{document}
