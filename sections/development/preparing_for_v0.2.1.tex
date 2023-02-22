@@ -92,7 +92,7 @@ This could would automatically generate the \texttt{Info.plist} file and write i
 
 Microsoft also wants its developers to sign their code for security and trust, and also charges for this privilege. But on Windows, you can run a foreign, unsigned app so long as you dismiss the potential virus warning. On macOS, it's completely forbidden.
 
-I don't exactly want to pay \$99 per year to compile \texttt{lintrans} for macOS, when my audience on that platform is realistically almost zero, so I just removed macOS from the GitHub Actions compilation workflow. For anyone that wants to run \texttt{lintrans} on macOS, I will provide instructions to compile it from source.
+I don't particularly want to pay \$99 per year to compile \texttt{lintrans} for macOS, when my audience on that platform is realistically almost zero, so I just removed macOS from the GitHub Actions publish workflow. For anyone that wants to run \texttt{lintrans} on macOS, I will provide instructions to compile it from source, since I can't distribute a binary file that I built myself. I will however continue to run the unit tests and compile the program on macOS in GitHub Actions, to ensure that everything works fine on that platform.
 
 \subsubsection{Supporting flags\label{development:preparing-for-v0.2.1:supporting-flags}}
 
