@@ -65,4 +65,24 @@ And of course, I added it to the changelog, this time as a fix rather than an ad
 %: a688a14839caba2ee14f8551764b771ae803d935
 %: CHANGELOG.md:16-18 markdown!
 
+\subsubsection{Respecting display settings in the visual definition dialog\label{development:making-v0.2.2:respecting-display-settings-in-the-visual-definition-dialog}}
+
+\texttt{DefineVisuallyWidget} is a subclass of \texttt{VisualizeTransformationWidget}. If it had its own instance attribute of type \pyinline{DisplaySettings}, then it could use its superclass's \pyinline{paintEvent()} method, and that would respect the display settings in the visual definition dialog.
+
+%: 5850aa916b685992f31e58680267916927ed590d
+%: src/lintrans/gui/plots/widgets.py:91-93
+
+%: 5850aa916b685992f31e58680267916927ed590d
+%: src/lintrans/gui/dialogs/define_new_matrix.py:169-180
+
+Since the \texttt{DefineVisuallyDialog} now accepts display settings but the other definition dialogs don't, we need change the \pyinline{LintransMainWindow.dialog_define_matrix()} method to treat the visual definition dialog differently.
+
+%: 5850aa916b685992f31e58680267916927ed590d
+%: src/lintrans/gui/main_window.py:447-476
+
+And, of course, I updated the changelog:
+
+%: 5850aa916b685992f31e58680267916927ed590d
+%: CHANGELOG.md:12,15 markdown!
+
 \end{document}
