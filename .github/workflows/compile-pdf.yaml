@@ -15,6 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Set up main.tex
+        run: sed -i "s/% BUILT FROM/\\\\hfill Built from \\\\texttt{$(git rev-parse --short HEAD)}/" main.tex
+
       - name: Build PDF with Docker
         run: >
           mkdir -p pdf_dir

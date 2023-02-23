@@ -14,6 +14,5 @@ COPY process-code-snippets/src/ process-code-snippets/src/
 COPY justfile justfile
 
 RUN python generate_appendices.py
-RUN just add-built-from-commit
 
 CMD [ "just", "build" ]
