@@ -35,6 +35,9 @@ clear-appendices:
 	sd -f ms '(\\begin\{document\}).+(\\end\{document\})' '$1\nProject code\n$2' sections/appendices/project_code.tex
 	sd -f ms '(\\begin\{document\}).+(\\end\{document\})' '$1\nTesting code\n$2' sections/appendices/testing_code.tex
 
+add-built-from-commit:
+	sed -i "s/% BUILT FROM/\\\\hfill Built from \\\\texttt{$(git rev-parse --short HEAD)}/" main.tex
+
 # build the PDF in the Docker container (very slow)
 build-docker:
 	docker build -t write-up-lintrans .
