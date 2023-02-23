@@ -32,6 +32,28 @@ class CommentedTextLexer(RegexLexer):
     }
 
 
+class BnfHashtagCommentLexer(RegexLexer):
+    """This lexer extends pygments' built-in BnfLexer with # comments."""
+
+    name = 'BNF'
+
+    tokens = {
+        'root': [
+            (r"#.*\n", Comment),
+
+            (r'(<)([ -;=?-~]+)(>)',
+             bygroups(Punctuation, Name.Class, Punctuation)),
+
+            # an only operator
+            (r'::=', Operator),
+
+            # fallback
+            (r'[^<>:]+', Text),  # for performance
+            (r'.', Text),
+        ],
+    }
+
+
 class SphObjInvTextLexer(RegexLexer):
     """A lexer for my custom language used for the text files that generate Sphinx object inventory files."""
 

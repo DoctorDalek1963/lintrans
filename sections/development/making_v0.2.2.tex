@@ -144,4 +144,35 @@ Additionally, having a build system like this means that builds should be repeat
 
 Now that I was using Read the Docs, I could remove the old GitHub Actions workflow to compile the documentation.
 
+\subsubsection{Parsing parentheses\label{development:making-v0.2.2:parsing-parentheses}}
+
+\texttt{git} has a feature called branches\cite{git-docs-branch}, which allow you to work on different things simultaneously. A branch is basically a sandbox where you can make changes and focus on a particular feature while not having to worry about the rest of the project. It's particularly good for teams where different people can work on different features at the same time, but it's also useful for individual developers. The first feature branch I merged for \texttt{lintrans} was called \texttt{dev/parse-parens}. I created it a week or two ago, and I used it to focus on improving the parser to understand parenthesised expressions like \pyinline{"A(B+C)^2"}.
+
+\paragraph{Extending validation\label{development:making-v0.2.2:parsing-parentheses:extending-validation}}
+
+The first thing I needed to do was allow parenthesised expressions as valid. If the validator rejects them, then they can never be parsed. Any expression can be evaluated to a matrix, and a pair of balanced parentheses can contain any valid expression. As such, a parenthesised expression can be considered as a type of matrix.
+
+%: 1e49c1479939b8de04751ab1a798afb2145b1550
+%: docs/source/bnf.txt language="lexers.py:BnfHashtagCommentLexer -x"
+
+%: 1e49c1479939b8de04751ab1a798afb2145b1550
+%: src/lintrans/matrices/parse.py:16,23-118
+
+We create a naïve character class that just contains all characters that could possibly be in a valid expression. Then when we compile the naïve expression pattern, we say that a matrix identifier can be one of three things: it can be a capital letter, the \texttt{rot()} command with a real number angle, or a balanced pair of parentheses around some characters. The characters in the parentheses are not validated at this stage (hence why this pattern is naïve), but we know that those characters are only allowed to be from the naïve character class.
+
+Then we have a function that finds sub-expressions in a given expression. It simply scans through the given string with a pointer and keeps track of the current sub-expression. It uses the \pyinline{paren_depth} variable to keep track of how deep into a sub-expression it currently is. This function deliberately avoids counting the parentheses from \texttt{rot()} commands towards the \pyinline{paren_depth}. This is to avoid scanning an expression like \pyinline{"3rot(45)^2"} and finding \pyinline{"45"} as a sub-expression.
+
+Then we have to actually use this function when validating. All we do is recursively check that each sub-expression is a valid expression on its own. The \pyinline{find_sub_expressions()} function only goes one level deep, so in an expression like \pyinline{"A(B+C(D^2-E))"}, it will only find \pyinline{"B+C(D^2-E)"} as a sub-expression, so recursion is needed to make the validation work properly.
+
+There's actually a small mistake in the BNF that I didn't notice until much much later. The validation code is correct - it treats a parenthesised expression as a matrix identifier, so it can accept a multiplier on the left and an index on the right - but the BNF treats a parenthesised expression as a full matrix, which means it can't accept a multiplier or index. This doesn't affect the code, but does make the documentation slightly confusing.
+
+And of course, I then added to the automatic unit tests to make sure this new validation worked.
+
+%: 1e49c1479939b8de04751ab1a798afb2145b1550
+%: tests/matrices/test_parse_and_validate_expression.py:16-30,33,50-52,54,57,60,70,105-111
+
+I also added \pyinline{@pytest.mark.xfail} to \pyinline{test_parse_matrix_expression()}, since parsing should fail with the parenthesised expressions because I haven't implemented it yet.
+
+\pytestScreenshot{1e49c1479939b8de04751ab1a798afb2145b1550}
+
 \end{document}
