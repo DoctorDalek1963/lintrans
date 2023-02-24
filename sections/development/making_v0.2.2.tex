@@ -175,4 +175,38 @@ I also added \pyinline{@pytest.mark.xfail} to \pyinline{test_parse_matrix_expres
 
 \pytestScreenshot{1e49c1479939b8de04751ab1a798afb2145b1550}
 
+\paragraph{Creating the parser class\label{development:making-v0.2.2:parsing-parentheses:creating-the-parser-class}}
+
+I previously used regular expressions to parse matrix expressions. The algorithm would replace various parts of the expression to coerce it into the correct format, and then use a big RegEx at the end to find all the parts necessary for parsing. This was hard to understand and hard to maintain. It's now time to overhaul this parsing system and use a parser class to scan through the input and parse character-by-character, keeping track of the state as it goes.
+
+%: 736809714e0ad7579c419db03c4b5d8b8fd0c1a1
+%: src/lintrans/matrices/parse.py:122-351
+
+The \pyinline{MatrixToken} class just holds data about a matrix multiplier, identifier, and exponent. It's just a simple way to package up this data into a single dataclass to keep track of which matrices we've parsed.
+
+The \pyinline{ExpressionParser} class works like so: when you create a new instance, you give it an expression to parse and it cleans up the expression by removing whitespace, making sure it's valid, wrapping exponents with \texttt{\{\}}, etc. Most of these replacement steps are taken from the previous RegEx-based parser. It then sets up some internal state to keep track of the expression, the pointer, the token that it's currently parsing, the group that it's currently parsing, and its progress so far.
+
+When you've created a new instance, you should call the public \pyinline{parse()} method, which will return the parsed expression at the end, in the same format that the old parser used. The \pyinline{parse_matrix_expression()} function is a wrapper that just creates an \pyinline{ExpressionParser} and calls \pyinline{parse()}.
+
+The \pyinline{parse()} method itself just delegates to \pyinline{_parse_multiplication_group()}. A multiplication group is a group of matrices that will be multiplied together in a particular order. An expression should start with a multiplication group, and may have extra ones separated with plus signs. When all the multiplication groups have been parsed, it returns the final parse list.
+
+\pyinline{_parse_multiplication_group()} tries to parse matrices until it reaches the end of the expression or it finds a plus sign, at which point it appends the current group to the final list and returns.
+
+\pyinline{_parse_matrix()} returns a boolean to indicate success. It just attempts to parse a \enquote{matrix part} (multiplier, identifier, or exponent) until that fails, and then ensures that the resultant matrix token has a valid identifier. It then appends the matrix token to the current group.
+
+\pyinline{_parse_matrix_part()} is where most of the selection happens. This method has to determine if it's looking at a multiplier, which would start with a digit or a minus sign; a normal identifier, which would start with a capital letter; a rotation identifier, which would start with a lowercase letter r; a sub-expression, which would start with an open bracket; or an exponent, with will start with a caret. If it encounters a plus sign, then that's a soft error, so it can return \pyinline{False}, but if it encounters something it doesn't recognise, then that's a hard error.
+
+\pyinline{_parse_multiplier()} just parses a real number into \pyinline{self.current_token.multiplier}.
+
+\pyinline{_parse_rot_identifier()} parses a \texttt{rot()} command with a real number angle\footnote{It doesn't need to parse the real number itself to make sure it's valid, since the expression validator already ensured that it was a valid real number.}.
+
+\pyinline{_parse_sub_expression()} hasn't been implemented yet, but it will eventually parse sub-expressions, hence the name.
+
+\pyinline{_parse_exponent()} parses a caret, and then a balanced pair of braces, containing an integer or a capital letter T.
+
+And of course, this new parser should still pass all the unit tests for the previous parser, which it does.
+
+% The tests haven't changed at all, so we can just use the previous image
+\pytestScreenshot{1e49c1479939b8de04751ab1a798afb2145b1550}
+
 \end{document}
