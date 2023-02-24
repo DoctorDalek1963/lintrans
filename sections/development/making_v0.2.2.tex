@@ -209,4 +209,13 @@ And of course, this new parser should still pass all the unit tests for the prev
 % The tests haven't changed at all, so we can just use the previous image
 \pytestScreenshot{1e49c1479939b8de04751ab1a798afb2145b1550}
 
+\paragraph{Implementing sub-expression parsing\label{development:making-v0.2.2:parsing-parentheses:implementing-sub-expression-parsing}}
+
+Of course, the next step was to actually implement sub-expression parsing. To do this, I used a very similar method to finding the sub-expressions, where I kept track of the depth of the parentheses. Except with this method, we only wanted the first sub-expression starting at the pointer. We can then assign this whole sub-expression to \pyinline{self.current_token.identifier} at the end.
+
+Much like when finding sub-expressions, this parser method only goes one level deep, but the \pyinline{MatrixWrapper} will use recursion when evaluating the parsed expressions, so it will handle nested sub-expressions with.
+
+%: 493f8cf3fb658408466f099f978d276fc2262243
+%: src/lintrans/matrices/parse.py:305-332
+
 \end{document}
