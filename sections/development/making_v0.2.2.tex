@@ -218,4 +218,38 @@ Much like when finding sub-expressions, this parser method only goes one level d
 %: 493f8cf3fb658408466f099f978d276fc2262243
 %: src/lintrans/matrices/parse.py:305-332
 
+\paragraph{Fixing little bugs\label{development:making-v0.2.2:parsing-parentheses:fixing-little-bugs}}
+
+Since I've now implemented sub-expression parsing, I should be able to just remove the \pyinline{@pytest.mark.xfail} line from before and all the tests should pass with no problem.
+
+\pytestScreenshot[One of the tests failing]{493f8cf3fb658408466f099f978d276fc2262243-noxfail}
+
+Ah. That's not good. So what went wrong? Well, we can see from the output that \pyinline{test_parse_matrix_expression()} is the one that failed. This test iterates over a whole list, so which element broke it? Well, we can see from the line \enquote{\pyinline{self = lintrans.matrices.parse.ExpressionParser(".1A")}} that it was trying to parse the expression \pyinline{".1A"}. This doesn't work, not because \pyinline{ExpressionParser._parse_multiplier()} doesn't understand this type of multiplier, but because \pyinline{ExpressionParser._parse_matrix_part()} doesn't recognise a dot as the start of a multiplier, so never calls \pyinline{_parse_multiplier()}. This would be a very easy fix, but this error got me thinking about these multipliers and I decided to just forbid them. They can create confusion; \pyinline{"0.1A"} is easier to understand than \pyinline{".1A"}. Implementing this change just meant removing this type of multiplier from the tests.
+
+Once I'd done that, the parser should work fine, right?
+
+\pytestScreenshot[Another test failing]{9b1c69926c225574161d32dcbecd86055edb4065-noxfail}
+
+Well, that's strange. It was trying to parse the expression \pyinline{"A 0.1B"} but it thought the \texttt{0.1} was part of the \texttt{A}. Why did that happen? Well, it's because of line 232 in this snippet:
+
+%: 9b1c69926c225574161d32dcbecd86055edb4065
+%: src/lintrans/matrices/parse.py:231-235
+
+The parser parsed \pyinline{"A"} as the matrix identifier and then encountered \pyinline{"0"}. Since the current token didn't have a multiplier, it started parsing a multiplier for the matrix $\mathbf{A}$. To fix this, we can just fail to parse a matrix part if we encounter the start of a multiplier when the current token already has an identifier. Failing to parse a matrix part here means that the parser will start parsing a new matrix.
+
+%: 8d7143fc33ea7bd4199e0f01b6a5308dfcf03ff9
+%: src/lintrans/matrices/parse.py:231-236
+
+That should fix the tests, right?
+
+\pytestScreenshot[\textit{Another} test failing]{9b1c69926c225574161d32dcbecd86055edb4065-noxfail-fixed-mul-order}
+
+I'm getting tired of this now. What's broken this time? Well, the parser processes its input to remove whitespace and add braces around exponents before any parsing takes place. This includes processing the contents of sub-expressions. That was never a problem before, since parsing wasn't affected by whitespace or braces, but now those changes propagate into the sub-expressions. I wrote the sub-expression parsing tests in \S\ref{development:making-v0.2.2:parsing-parentheses:extending-validation} by using my literal expression input in the parsed sub-expressions. So to fix this error, I just had to account for the syntax transformations in the test input.
+
+\textit{Now} the tests should all pass, right?
+
+\pytestScreenshot[All the tests finally passing]{8d7143fc33ea7bd4199e0f01b6a5308dfcf03ff9}
+
+Thank god.
+
 \end{document}

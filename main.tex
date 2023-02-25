@@ -13,7 +13,7 @@
 	linenos,
 	breaklines,
 	breakafter=(\{[\,,
-	breakbefore=)\}]\#,
+	breakbefore=)\}]\#_,
 	fontsize=\footnotesize,
 	tabsize=4,
 }
@@ -126,12 +126,12 @@
 \end{figure}
 }
 
-\newcommand{\pytestScreenshot}[1]{%
+\newcommand{\pytestScreenshot}[2][Running \texttt{pytest} with the new tests]{%
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.98\linewidth]{development/#1/pytest.png}
-	\caption{Running \texttt{pytest} with the new tests}
-	\label{fig:development:#1:pytest.png}
+	\includegraphics[width=0.98\linewidth]{development/#2/pytest.png}
+	\caption{#1}
+	\label{fig:development:#2:pytest.png}
 \end{figure}
 }
 
