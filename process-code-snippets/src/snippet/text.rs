@@ -20,6 +20,9 @@ pub struct Text<'s> {
     /// The comment syntax to use for the info comments.
     pub info_comment_syntax: InfoCommentSyntax,
 
+    /// The config to pass to the `highlightlines` option of `minted`.
+    pub highlight_lines: Option<String>,
+
     /// A vec of `(line_number, text)` of the higher scopes, determined by less indentation.
     ///
     /// Must be ordered by ascending line numbers.
@@ -118,7 +121,13 @@ impl<'s> Text<'s> {
         let mut s = String::from("{\n");
         s.push_str(&line_number_hack);
 
-        s.push_str(r"\begin{minted}[firstnumber=-3]{");
+        s.push_str(r"\begin{minted}[firstnumber=-3");
+        if let Some(lines) = &self.highlight_lines {
+            s.push_str(", highlightlines={");
+            s.push_str(lines);
+            s.push('}');
+        }
+        s.push_str("]{");
         s.push_str(&self.language);
         s.push_str("}");
         s.push('\n');

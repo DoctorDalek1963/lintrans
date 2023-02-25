@@ -849,4 +849,49 @@ If I'd been using semantic versioning from the start, there would much more chan
         LATEX_13,
         "Testing markdown! macro"
     );
+
+    const LATEX_14: &str = r#"{
+\renewcommand\theFancyVerbLine{ \ttfamily
+	\textcolor[rgb]{0.5,0.5,1}{
+		\footnotesize
+		\oldstylenums{
+			\ifnum\value{FancyVerbLine}=-3 \else
+			\ifnum\value{FancyVerbLine}=-2 \else
+			\ifnum\value{FancyVerbLine}=-1\setcounter{FancyVerbLine}{135}\else
+			\ifnum\value{FancyVerbLine}=137\setcounter{FancyVerbLine}{219}... \else
+			\ifnum\value{FancyVerbLine}=221\setcounter{FancyVerbLine}{230}... \else
+				\arabic{FancyVerbLine}
+			\fi\fi\fi\fi\fi
+		}
+	}
+}
+\begin{minted}[firstnumber=-3, highlightlines={232-233}]{python}
+# 8d7143fc33ea7bd4199e0f01b6a5308dfcf03ff9
+# src/lintrans/matrices/parse.py
+
+class ExpressionParser:
+
+    def _parse_matrix_part(self) -> bool:
+
+        if self.char.isdigit() or self.char == '-':
+            if self.current_token.multiplier != '' \
+                    or (self.current_token.multiplier == '' and self.current_token.identifier != ''):
+                return False
+
+            self._parse_multiplier()
+\end{minted}
+}"#;
+
+    assert_eq!(
+        Comment::from_latex_comment(concat!(
+            "%: 8d7143fc33ea7bd4199e0f01b6a5308dfcf03ff9\n",
+            "%: src/lintrans/matrices/parse.py:231-236 highlight=232-233",
+        ))
+        .unwrap()
+        .get_text(&repo)
+        .unwrap()
+        .get_latex(),
+        LATEX_14,
+        "Testing highlight lines"
+    );
 }

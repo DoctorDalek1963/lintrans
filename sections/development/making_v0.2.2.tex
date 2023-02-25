@@ -233,12 +233,12 @@ Once I'd done that, the parser should work fine, right?
 Well, that's strange. It was trying to parse the expression \pyinline{"A 0.1B"} but it thought the \texttt{0.1} was part of the \texttt{A}. Why did that happen? Well, it's because of line 232 in this snippet:
 
 %: 9b1c69926c225574161d32dcbecd86055edb4065
-%: src/lintrans/matrices/parse.py:231-235
+%: src/lintrans/matrices/parse.py:231-235 highlight=232
 
 The parser parsed \pyinline{"A"} as the matrix identifier and then encountered \pyinline{"0"}. Since the current token didn't have a multiplier, it started parsing a multiplier for the matrix $\mathbf{A}$. To fix this, we can just fail to parse a matrix part if we encounter the start of a multiplier when the current token already has an identifier. Failing to parse a matrix part here means that the parser will start parsing a new matrix.
 
 %: 8d7143fc33ea7bd4199e0f01b6a5308dfcf03ff9
-%: src/lintrans/matrices/parse.py:231-236
+%: src/lintrans/matrices/parse.py:231-236 highlight=232-233
 
 That should fix the tests, right?
 

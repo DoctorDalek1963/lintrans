@@ -74,7 +74,7 @@ impl<'s> Comment<'s> {
     ///
     /// The string returned does not include a trailing newline.
     #[allow(unstable_name_collisions)]
-    pub fn get_text(&self, repo: &Repository) -> Result<Text<'s>> {
+    pub fn get_text(self, repo: &Repository) -> Result<Text<'s>> {
         // Get the commit, find the file in the tree, and find the file as a blob
         let x = repo
             .find_commit(self.hash)?
@@ -218,8 +218,9 @@ impl<'s> Comment<'s> {
         Ok(Text {
             hash: self.hash,
             filename: self.filename,
-            language: self.config.language.clone(),
-            info_comment_syntax: self.config.info_comment.clone(),
+            language: self.config.language,
+            info_comment_syntax: self.config.info_comment,
+            highlight_lines: self.config.highlight_lines,
             scopes,
             bodies,
         })

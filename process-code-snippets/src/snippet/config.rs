@@ -27,6 +27,9 @@ pub struct Config {
 
     /// Whether to ignore containing scopes for the snippet. Defaults to false.
     pub no_scopes: bool,
+
+    /// The lines to highlight. This is passed verbatim to `minted` through `highlightlines`.
+    pub highlight_lines: Option<String>,
 }
 
 impl Default for Config {
@@ -36,6 +39,7 @@ impl Default for Config {
             info_comment: InfoCommentSyntax::default(),
             keep_copyright_comment: false,
             no_scopes: false,
+            highlight_lines: None,
         }
     }
 }
@@ -50,6 +54,7 @@ enum ConfigMacro {
 }
 
 impl ConfigMacro {
+    /// Parse a config macro.
     fn parse(s: &str) -> Result<ConfigMacro, Report> {
         let macro_name = if s.ends_with("!") {
             &s[..s.len() - 1]
@@ -63,6 +68,7 @@ impl ConfigMacro {
         }
     }
 
+    /// Mutate the given config to apply the macro effects to it.
     fn mutate_config(&self, config: &mut Config) {
         match self {
             Self::Markdown => {
@@ -80,6 +86,7 @@ enum ConfigOption {
     NoScopes,
     Language(String),
     InfoComment(InfoCommentSyntax),
+    HighlightLines(String),
     Macro(ConfigMacro),
 }
 
@@ -106,11 +113,17 @@ fn parse_config_options(input: &str) -> IResult<&str, Config> {
     let no_single_quotes = Regex::new("[^']+").unwrap();
 
     macro_rules! option_with_argument {
+        ($parser:expr) => {
+            alt((
+                delimited(tag("'"), re_find(no_single_quotes.clone()), tag("'")),
+                delimited(tag("\""), re_find(no_double_quotes.clone()), tag("\"")),
+                $parser,
+            ))
+        };
         () => {
             alt((
                 delimited(tag("'"), re_find(no_single_quotes.clone()), tag("'")),
                 delimited(tag("\""), re_find(no_double_quotes.clone()), tag("\"")),
-                alpha1,
             ))
         };
     }
@@ -124,12 +137,18 @@ fn parse_config_options(input: &str) -> IResult<&str, Config> {
                 tag("noscopes").map(|_| NoScopes),
                 pair(
                     tag("language="),
-                    option_with_argument!().map(|lang| ConfigOption::language(lang)),
+                    option_with_argument!(alpha1).map(|lang| ConfigOption::language(lang)),
                 )
                 .map(|(_, option)| option),
                 pair(
                     tag("comment="),
                     option_with_argument!().map(|syntax| ConfigOption::info_comment(syntax)),
+                )
+                .map(|(_, option)| option),
+                pair(
+                    tag("highlight="),
+                    option_with_argument!(re_find(Regex::new(r"[0-9,-]+").unwrap()))
+                        .map(|lines| ConfigOption::HighlightLines(lines.to_string())),
                 )
                 .map(|(_, option)| option),
                 re_capture(Regex::new(r"([^\s!]+)!").unwrap()).map(|captures| {
@@ -146,6 +165,7 @@ fn parse_config_options(input: &str) -> IResult<&str, Config> {
             NoScopes => config.no_scopes = true,
             Language(lang) => config.language = lang,
             InfoComment(syntax) => config.info_comment = syntax,
+            HighlightLines(lines) => config.highlight_lines = Some(lines),
             Macro(macro_name) => macro_name.mutate_config(&mut config),
         };
     }
@@ -154,6 +174,7 @@ fn parse_config_options(input: &str) -> IResult<&str, Config> {
 }
 
 impl Config {
+    /// Parse the config from the config options.
     pub fn parse(input: &str) -> Self {
         let mut input = input.to_string();
         if !input.starts_with(" ") {
@@ -194,6 +215,10 @@ impl Config {
             s.push_str("{}");
             s.push_str(&self.info_comment.after);
             s.push('"');
+        }
+        if let Some(highlight_lines) = &self.highlight_lines {
+            s.push_str(" highlight=");
+            s.push_str(highlight_lines);
         }
 
         s
@@ -277,12 +302,21 @@ mod tests {
         );
 
         assert_eq!(
+            Config::parse("highlight=1,4-10,34-42"),
+            Config {
+                highlight_lines: Some(String::from("1,4-10,34-42")),
+                ..Default::default()
+            }
+        );
+
+        assert_eq!(
             Config::parse("keep_copyright_comment noscopes language=rust"),
             Config {
                 keep_copyright_comment: true,
                 no_scopes: true,
                 language: String::from("rust"),
-                info_comment: InfoCommentSyntax::default()
+                info_comment: InfoCommentSyntax::default(),
+                highlight_lines: None,
             }
         );
         assert_eq!(
@@ -291,16 +325,20 @@ mod tests {
                 keep_copyright_comment: true,
                 no_scopes: true,
                 language: String::from("rust"),
-                info_comment: InfoCommentSyntax::default()
+                info_comment: InfoCommentSyntax::default(),
+                highlight_lines: None,
             }
         );
         assert_eq!(
-            Config::parse("noscopes noscopes language=rust keep_copyright_comment"),
+            Config::parse(
+                "noscopes noscopes language=rust keep_copyright_comment highlight=213,240-245"
+            ),
             Config {
                 keep_copyright_comment: true,
                 no_scopes: true,
                 language: String::from("rust"),
-                info_comment: InfoCommentSyntax::default()
+                info_comment: InfoCommentSyntax::default(),
+                highlight_lines: Some(String::from("213,240-245")),
             }
         );
         assert_eq!(
