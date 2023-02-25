@@ -69,10 +69,10 @@
 \usepackage{gensymb} % General symbols
 \usepackage{amsmath, amssymb, mathtools, cancel}  % Mathematical stuff
 
-% Number figures and equations based on sections
+% Number figures and equations based on subsections
 \usepackage{etoolbox}
-\numberwithin{figure}{section}
-\numberwithin{equation}{section}
+\numberwithin{figure}{subsection}
+\numberwithin{equation}{subsection}
 \AtBeginEnvironment{figure}{\stepcounter{equation}}
 \AtBeginEnvironment{equation}{\stepcounter{figure}}
 
