@@ -288,4 +288,23 @@ The validation checks the format of the numbers in multipliers, exponents and \t
 %: 761c6ed255ed65c3396c6a551acfa60bb7485a17
 %: src/lintrans/matrices/parse.py:282-372 highlight=295-298,310-314,348-349,363-367
 
+\subsubsection{Fixing premature \texttt{rot()} evaluation\label{development:making-v0.2.2:fixing-premature-rot-evaluation}}
+
+Now that parenthesised expressions are done, I can focus on other improvements.
+
+When playing around with this new feature, I discovered a bug where an expression like \pyinline{"rot(45)^2"} would be evaluated in the same way as \pyinline{"rot(45)"}. After lots of confusion and debugging, I discovered that this bug was in \pyinline{MatrixWrapper.__getitem__()} when it tries to evaluate \texttt{rot()} commands. It does this by eagerly searching for the \texttt{rot()} RegEx in the string. This was never an issue before, but now that this method might get called with a whole expression, this RegEx can trigger too early. If it's given an expression which contains a \texttt{rot()} command anywhere in it, then it will return a rotation matrix immediately. To fix this, we just have to ensure that the \texttt{rot()} command takes up the whole string before returning a rotation matrix. We can do this by anchoring the RegEx with \texttt{\textasciicircum} and \texttt{\$}.
+
+%: c23d540aa3b8df91b9478fb113cb42df4c7d5e42
+%: src/lintrans/matrices/wrapper.py:115-131 highlight=116
+
+I also added cases to the parenthesised expressions test to cover this change.
+
+%: c23d540aa3b8df91b9478fb113cb42df4c7d5e42
+%: tests/matrices/matrix_wrapper/test_evaluate_expression.py:243-247
+
+And then added it to the changelog.
+
+%: c23d540aa3b8df91b9478fb113cb42df4c7d5e42
+%: CHANGELOG.md:18,21 markdown!
+
 \end{document}
