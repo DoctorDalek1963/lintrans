@@ -252,4 +252,23 @@ I'm getting tired of this now. What's broken this time? Well, the parser process
 
 Thank god.
 
+\paragraph{Making recursive evaluation work\label{development:making-v0.2.2:parsing-parentheses:making-recursive-evaluation-work}}
+
+When \pyinline{MatrixWrapper.__getitem__()} tries to retrieve a matrix which is defined in terms of an expression, it has to call \pyinline{MatrixWrapper.evaluate_expression()}. This method in turn calls \pyinline{__getitem__()} again to evaluate the matrices used in the expression. Now that sub-expressions exist, \pyinline{__getitem__()} might get called with a sub-expression identifier, so it needs to be able to evaluate these expressions. To do this, we can simply add another call to \pyinline{evaluate_expression()}, as seen on lines 120-121.
+
+%: ba1ee72fcafd5129aed76992f743e5966f5c199d
+%: src/lintrans/matrices/wrapper.py:100-131,214-248 highlight=120-121
+
+I then added a new unit test function to make sure parenthesised expressions get evaluated properly.
+
+%: ba1ee72fcafd5129aed76992f743e5966f5c199d
+%: tests/matrices/matrix_wrapper/test_evaluate_expression.py:229-257
+
+\pytestScreenshot{ba1ee72fcafd5129aed76992f743e5966f5c199d}
+
+And of course, I updated the changelog:
+
+%: 9e26079475e33f3ab2e02e76ea59a66217d18f76
+%: CHANGELOG.md:12,16 markdown!
+
 \end{document}
