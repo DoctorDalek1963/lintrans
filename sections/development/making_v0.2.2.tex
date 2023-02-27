@@ -281,4 +281,11 @@ And of course, I updated the changelog:
 %: 9e26079475e33f3ab2e02e76ea59a66217d18f76
 %: CHANGELOG.md:12,16 markdown!
 
+\paragraph{Ensuring numerical formats\label{development:making-v0.2.2:parsing-parentheses:ensuring-numerical-formats}}
+
+The validation checks the format of the numbers in multipliers, exponents and \texttt{rot()} commands, but it would be quite good to also validate the format of these numbers when parsing, just to make absolutely sure that they will be able to be correctly evaluated. To do this, we can simply perform the conversion in a try/except block. It would also be good to validate the sub-expressions.
+
+%: 761c6ed255ed65c3396c6a551acfa60bb7485a17
+%: src/lintrans/matrices/parse.py:282-372 highlight=295-298,310-314,348-349,363-367
+
 \end{document}
