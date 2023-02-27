@@ -92,6 +92,16 @@ Here, we test some valid data, some definitely invalid data, and some edge cases
 
 The \pyinline{@pytest.mark.parametrize} decorator on line 32 means that \texttt{pytest} will run one test for valid inputs, and then another test for invalid inputs, and these will count as different tests. This makes it easier to see which tests failed and then debug the app.
 
+While I was adding tests, I added new doctests for the \pyinline{MatrixWrapper} class and \pyinline{create_rotation_matrix()} function.
+
+%: 6db1a1a1b3deaa30b1a8d23bb66ff738a3f212d2
+%: src/lintrans/matrices/wrapper.py:21-44
+
+%: e79664861434059eb2b27a38310a140e00c6432b
+%: src/lintrans/matrices/wrapper.py:227-245
+
+\pytestScreenshot[Running \texttt{pytest} with the new doctests]{e79664861434059eb2b27a38310a140e00c6432b}
+
 \subsubsection{Parsing matrix expressions\label{development:matrices-backend:parsing-matrix-expressions}}
 
 Parsing is quite an interesting problem and something I didn't feel able to tackle head-on, so I wrote the unit tests first. I had a basic idea of what I wanted the parser to return, but no real idea of how to implement that. My unit tests looked like this:
@@ -129,10 +139,10 @@ It works similarly to the old \texttt{MatrixWrapper.parse\_expression()} method 
 
 This method passes all the unit tests, as expected.
 
-My next step was then to rewrite the evaluation to use this new parser, like so (method name and docstring removed):
+My next step was then to rewrite the evaluation to use this new parser, like so:
 
 %: a453774bcdf824676461f9b9b441d7b94969ea55
-%: src/lintrans/matrices/wrapper.py:168-191
+%: src/lintrans/matrices/wrapper.py:147-191
 
 Here, we go through the list of tuples and evaluate the matrix represented by each tuple, putting this together in a list as we go. Then at the end, we simply reduce the sublists and then reduce these new matrices using a list comprehension in the \texttt{reduce()} call using \texttt{add} and \texttt{matmul} from the \texttt{operator} library. It's written in a functional programming style, and it passes all the previous tests.
 

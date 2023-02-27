@@ -266,6 +266,16 @@ I then added a new unit test function to make sure parenthesised expressions get
 
 \pytestScreenshot{ba1ee72fcafd5129aed76992f743e5966f5c199d}
 
+I also improved the doctests for \pyinline{parse_matrix_expression()} by adding a case for these new parenthesised expressions, and I added a doctest for the expression parser.
+
+%: e3d633133f293fc1308d6fc0c60a1febaf67dda0
+%: src/lintrans/matrices/parse.py:349-373 highlight=366-367
+
+%: bf1f5a1eaac60d23964a44c9a6b8235c5e0fcab2
+%: src/lintrans/matrices/parse.py:136-147
+
+\pytestScreenshot[Running \texttt{pytest} with the new and improved doctests]{bf1f5a1eaac60d23964a44c9a6b8235c5e0fcab2}
+
 And of course, I updated the changelog:
 
 %: 9e26079475e33f3ab2e02e76ea59a66217d18f76
