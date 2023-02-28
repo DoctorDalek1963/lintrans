@@ -42,25 +42,25 @@ To illustrate what this code is doing, I'll use a diagram.
 					cross/.default={5pt}
 				]
 					% Draw the grid
-					\draw [step=1cm,gray,very thin] (-4.9,-4.9) grid (4.9,4.9);
-					\draw (-5,0) -- (5,0);
-					\draw (0,-5) -- (0,5);
+					\draw [step=1cm, lightgray, very thin] (-4.9, -4.9) grid (4.9, 4.9);
+					\draw (-5, 0) -- (5, 0);
+					\draw (0, -5) -- (0, 5);
 
 					% Draw the box with dashed extensions
-					\draw [dashed] (-4.9,2.8) -- (4.9,2.8);
-					\draw [dashed] (-4.9,-2.8) -- (4.9,-2.8);
-					\draw [dashed] (-3.2,-4.9) -- (-3.2,4.9);
-					\draw [dashed] (3.2,-4.9) -- (3.2,4.9);
+					\draw [dashed, thin] (-4.9, 2.8) -- (-3.2, 2.8) (3.2, 2.8) -- (4.9, 2.8);
+					\draw [dashed, thin] (-4.9, -2.8) -- (-3.2, -2.8) (3.2, -2.8) -- (4.9, -2.8);
+					\draw [dashed, thin] (-3.2, -4.9) -- (-3.2, -2.8) (-3.2, 2.8) -- (-3.2, 4.9);
+					\draw [dashed, thin] (3.2, -4.9) -- (3.2, -2.8) (3.2, 2.8) -- (3.2, 4.9);
 
-					\draw [red,thick] (-3.2,2.8) rectangle (3.2,-2.8);
+					\draw [red, thick] (-3.2, 2.8) rectangle (3.2, -2.8);
 
 					% Draw the oblique lines
-					\draw [blue,thick] (-1.6,4.9) -- (4.9,3.2);
-					\draw [green,thick] (2.1,4.9) -- (-3.3,-4.9);
+					\draw [blue, thick] (-1.6, 4.9) -- (4.9, 3.2);
+					\draw [green, thick] (2.1, 4.9) -- (-3.3, -4.9);
 
 					% Mark the intersection points
-					\draw (0.94286,2.8) node [cross] {};
-					\draw (-2.14286,-2.8) node [cross] {};
+					\draw (0.94286, 2.8) node [cross] {};
+					\draw (-2.14286, -2.8) node [cross] {};
 				\end{tikzpicture}
 			}
 			\caption{Two example lines and the viewport box}
