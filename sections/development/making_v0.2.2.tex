@@ -307,4 +307,25 @@ And then added it to the changelog.
 %: c23d540aa3b8df91b9478fb113cb42df4c7d5e42
 %: CHANGELOG.md:18,21 markdown!
 
+\subsubsection{Animating rotations\label{development:making-v0.2.2:animating-rotations}}
+
+% TODO: Video?
+When animating a rotation like \pyinline{"rot(170)"}, it animates a rotation of $170\degree$, but it doesn't look very good. I fixed an old rotation issue in \S\ref{development:visualizing-matrices:preserving-determinants}, but the speed is still a problem.
+
+The speed of rotation is significantly higher during the middle of the rotation, which makes it look unnatural. I want to fix this to make rotations look more natural. Ideally, the program would detect a rotation and animate it in a different way, by moving the tips of the basis vectors along the edge of a circle with the radius equal to the length of the basis vectors. That shouldn't be too hard. However, I'd also like to animate scaled rotations like \pyinline{"2rot(170)"}. Animating in a circle won't work for this type of transformation, so I'll need to use a spiral.
+
+\paragraph{Factoring out animation frames\label{development:making-v0.2.2:animating-rotations:factoring-out-animation-frames}}
+
+The \pyinline{LintransMainWindow.animate_expression()} method obviously handles animating expressions. It does this by calling a separate method called \pyinline{LintransMainWindow.animate_between_matrices()} after parsing and evaluating the expression. The first step of improving my rotational animation code is to factor out the generation of individual frames when animating between matrices. This separate method will make it easier to work on the new feature.
+
+Here's the old code, including the \pyinline{animate_expression()} method, which wasn't changed:
+
+%: 751f185a2b64d31fe7ddd53aafab110008cff50b
+%: src/lintrans/gui/main_window.py:376-445
+
+And here's the new code, not including the \pyinline{animate_expression()} method:
+
+%: d47bb0165304d496caf7bbe3e09e4bbd12e45453
+%: src/lintrans/gui/main_window.py:376-462
+
 \end{document}
