@@ -44,3 +44,6 @@ sections/development/processed_*.tex
 
 # This is generated for lexers.py
 __pycache__/
+
+# This is for manual LaTeX build caching
+.build-sum
