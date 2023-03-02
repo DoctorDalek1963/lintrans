@@ -323,9 +323,46 @@ Here's the old code, including the \pyinline{animate_expression()} method, which
 %: 751f185a2b64d31fe7ddd53aafab110008cff50b
 %: src/lintrans/gui/main_window.py:376-445
 
-And here's the new code, not including the \pyinline{animate_expression()} method:
+And here's the new code, not including the unchanged \pyinline{animate_expression()} method:
 
 %: d47bb0165304d496caf7bbe3e09e4bbd12e45453
-%: src/lintrans/gui/main_window.py:376-462
+%: src/lintrans/gui/main_window.py:376-462 highlight=394
+
+Notice the \texttt{if} statement on line 394. This checks if the determinant is positive and the dot product of the basis vectors is close to 0. If these are both true, then the application matrix is a rotation matrix\footnote{This isn't actually true. An enlargement matrix would also satisfy these conditions, but I didn't realise that at the time.}.
+
+\paragraph{Utility functions and logarithmic spirals\label{development:making-v0.2.2:animating-rotations:utility-functions-and-logarithmic-spirals}}
+
+I moved the \pyinline{create_rotation_matrix()} function from \texttt{lintrans.matrices.wrapper} to a new \texttt{lintrans.matrices.utility} module, which will contain utility functions to help with animating rotations. And for the sake of consistency, I decided to only care about positive angles, so I adapted the function to make all angles positive by taking them modulo $360\degree$ or $2\pi$ radians.
+
+I also added some other utility functions - \pyinline{polar_coords()} and \pyinline{rect_coords()} - which will convert rectilinear (Cartesian) coordinates to polar coordinates and back again, respectively.
+
+%: 183dd02b4194c93aad51a21b7ad4147418c387c5
+%: src/lintrans/matrices/utility.py
+
+I then added unit tests for these functions and to assert that \pyinline{create_rotation_matrix()} always makes its angle positive.
+
+%: 7b0c374d586e487e547dad886cc24239f768b554
+%: tests/matrices/utility/test_coord_conversion.py
+
+%: 7b0c374d586e487e547dad886cc24239f768b554
+%: tests/matrices/utility/test_rotation_matrices.py:74-86 highlight=83-86
+
+\pytestScreenshot{7b0c374d586e487e547dad886cc24239f768b554}
+
+Then I had to actually implement the logarithmic spiral. I spent several hours playing around with Desmos and various formulae on paper, and eventually devised a way to connect two points with a logarithmic spiral. Sometimes.
+
+The formula I came up with was designed to give a polar coordinate $(r, \theta)$ which was some proportion $p$ between 0 and 1 along the logarithmic spiral connecting the polar coordinates $(r_1, \theta_1)$ and $(r_2, \theta_2)$. A generic logarithmic spiral has the form $r = b^\theta$, where $b$ is called the base. I came up with the following equations to define my connecting curve:
+$$r = r_1 \times b^{(\theta - \theta_1)}\ \ \ \ \ \text{where } b = \left(\frac{r_2}{r_1}\right)^{\frac{-1}{\theta_1 - \theta_2}}$$
+
+To get an arbitrary point with a proportion $p$ along the curve, you can find $\theta$ by $\theta = \theta_1 + p(\theta_2 - \theta_1)$ and then plug that back in to find $r$.
+
+Then I just had to implement this formula in code to move each basis vector accordingly.
+
+%: 2c86b3a7f40deb760e852fe6d0213cba15afcf9e
+%: src/lintrans/gui/main_window.py:388-425
+
+It worked really well for simple rotations like \pyinline{"rot(170)"} and even worked for \pyinline{"2rot(180)"}, which I was very happy with. However, if you start from $\mathbf{I}$, which is the default starting position, and try to rotate any more than $270\degree$, the $i$ vector goes anticlockwise, and the $j$ vector goes clockwise. If you start at $\mathbf{I}$ and try to animate \pyinline{"rot(180)"} more than once, then any time after the first, the basis vectors will rotate in opposite directions and go through each other. Even though after applying \pyinline{"rot(180)"} twice, you should be back to $\mathbf{I}$, the floating point error adds up and that tiny deviation breaks it.
+
+This approach was a good start, but I'm going to need something better.
 
 \end{document}
