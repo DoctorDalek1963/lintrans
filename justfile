@@ -8,7 +8,7 @@ export PATH := env_var("HOME") + "/.texlive/2021/bin/x86_64-linux:" + env_var("P
 
 # build the PDF
 build: process-code-snippets
-	#!/usr/bin/env bash
+	#!/usr/bin/env sh
 	mkdir -p tikz-imgs
 	if [ "$(cat .build-sum)" = "$(just _generate-build-sum)" ]; then
 		echo "Build up-to-date!"

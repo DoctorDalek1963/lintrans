@@ -15,7 +15,7 @@ repos:
         name: just build
         entry: just build
         language: system
-        files: '.*\.(tex|bib|png|rs|toml)$'
+        files: '(justfile|.*\.(tex|bib|png|rs|toml))$'
         pass_filenames: false
 
       - id: cargo-build-release
