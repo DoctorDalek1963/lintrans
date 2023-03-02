@@ -1,7 +1,7 @@
 expression        ::=  [ "-" ] matrices { ( "+" | "-" ) matrices };
 matrices          ::=  matrix { matrix };
-matrix            ::=  [ real_number ] matrix_identifier [ index ] | "(" expression ")" | anonymous_matrix;
-matrix_identifier ::=  "A" .. "Z" | "rot(" [ "-" ] real_number ")";
+matrix            ::=  [ real_number ] matrix_identifier [ index ];
+matrix_identifier ::=  "A" .. "Z" | "rot(" [ "-" ] real_number ")" | "(" expression ")" | anonymous_matrix;
 index             ::=  "^{" index_content "}" | "^" index_content;
 index_content     ::=  [ "-" ] integer_not_zero | "T";
 
