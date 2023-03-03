@@ -328,7 +328,7 @@ And here's the new code, not including the unchanged \pyinline{animate_expressio
 %: d47bb0165304d496caf7bbe3e09e4bbd12e45453
 %: src/lintrans/gui/main_window.py:376-462 highlight=394
 
-Notice the \texttt{if} statement on line 394. This checks if the determinant is positive and the dot product of the basis vectors is close to 0. If these are both true, then the application matrix is a rotation matrix\footnote{This isn't actually true. An enlargement matrix would also satisfy these conditions, but I didn't realise that at the time.}.
+Notice the \texttt{if} statement on line 394. This checks if the determinant is positive and the dot product of the basis vectors is close to 0. If these are both true, then the application matrix is a rotation matrix\footnote{This isn't actually true. An enlargement matrix would also satisfy these conditions, but I didn't realise that at the time.\label{footnote:not-only-a-rotation-matrix}}.
 
 \paragraph{Utility functions and logarithmic spirals\label{development:making-v0.2.2:animating-rotations:utility-functions-and-logarithmic-spirals}}
 
@@ -364,5 +364,14 @@ Then I just had to implement this formula in code to move each basis vector acco
 It worked really well for simple rotations like \pyinline{"rot(170)"} and even worked for \pyinline{"2rot(180)"}, which I was very happy with. However, if you start from $\mathbf{I}$, which is the default starting position, and try to rotate any more than $270\degree$, the $i$ vector goes anticlockwise, and the $j$ vector goes clockwise. If you start at $\mathbf{I}$ and try to animate \pyinline{"rot(180)"} more than once, then any time after the first, the basis vectors will rotate in opposite directions and go through each other. Even though after applying \pyinline{"rot(180)"} twice, you should be back to $\mathbf{I}$, the floating point error adds up and that tiny deviation breaks it.
 
 This approach was a good start, but I'm going to need something better.
+
+\paragraph{Checking for enlargement matrices\label{development:making-v0.2.2:animating-rotations:checking-for-enlargement-matrices}}
+
+I found a bug where any enlargement matrix would immediately crash the program when you tried to animate. Suffice it to say, that's not very good. Recall back to footnote~\ref{footnote:not-only-a-rotation-matrix}, where I said that the check would count enlargement matrices as rotation matrices. The logarithmic spiral formula can't connect two points with the same angle, since it would end up dividing by zero to find the base. This, of course, results in a crash.
+
+To fix this bug, I simply changed the check to ignore any matrix that looks like an enlargement. If you divide an enlargement matrix by its determinant, then it will look like $\mathbf{I}$, so we can just check that. Additionally, I only want to animate rotations smoothly like this if the smoothen determinant setting is on.
+
+%: 31100f35e8d46fcddaad18ee801e28904dc3011d
+%: src/lintrans/gui/main_window.py:395-398 highlight=395,398
 
 \end{document}
