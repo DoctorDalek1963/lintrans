@@ -374,4 +374,15 @@ To fix this bug, I simply changed the check to ignore any matrix that looks like
 %: 31100f35e8d46fcddaad18ee801e28904dc3011d
 %: src/lintrans/gui/main_window.py:395-398 highlight=395,398
 
+\paragraph{Using incremental circles instead\label{development:making-v0.2.2:animating-rotations:using-incremental-circles-instead}}
+
+The logarithmic spiral was a nice idea, but the instability made it unsuitable as a long term solution. Instead, I decided to use incremental circles instead. I would scale a radius according the start and end radii, as well as the proportion of the way through the animation. Then I would find an angle in the same way and combine them into one polar coordinate.
+
+Also, if the starting matrix is singular, then NumPy can't invert it so it crashes. This is obviously also bad, so I just had to check for it.
+
+%: f97f6542a051c05896711a01eb48a04dba693f64
+%: src/lintrans/gui/main_window.py:388-432
+
+Does this solve the instability problem with the basis vectors rotating in opposite directions? No. Does it make this algorithm simpler and easier to improve? Yes.
+
 \end{document}
