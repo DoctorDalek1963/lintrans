@@ -385,4 +385,53 @@ Also, if the starting matrix is singular, then NumPy can't invert it so it crash
 
 Does this solve the instability problem with the basis vectors rotating in opposite directions? No. Does it make this algorithm simpler and easier to improve? Yes.
 
+\paragraph{Treating the rotation as one thing\label{development:making-v0.2.2:animating-rotations:treating-the-rotation-as-one-thing}}
+
+\begin{figure}[H]
+	\begin{minipage}{0.45\linewidth}
+		\begin{tikzpicture}
+			\coordinate (O) at (0, 0);
+			\coordinate (A) at (1, 0);
+			\coordinate (I) at (30:3);
+			\coordinate (J) at (120:3);
+
+			\draw (0, -1) -> (0, 3.5);
+			\draw (-3.5, 0) -> (3.5, 0);
+			\draw (O) -> (I);
+			\draw (O) -> (J);
+
+			\tkzMarkAngle(A,O,I);
+			\tkzLabelAngle[pos=0.75](A,O,I){$\theta$};
+		\end{tikzpicture}
+	\end{minipage}\hfill
+	\begin{minipage}{0.5\linewidth}\setspacing
+		After much thought and deliberation, I realised that my fatal error was rotating the basis vectors independently. This allowed small floating point errors to cause the basis vectors to be rotated in opposite directions. What I need to do instead was to find the angle from one basis vector, and use that to rotate both.
+
+		I can find the angle $\theta$ by using the first column of the application matrix, and then rotate both basis vectors by this same angle. By finding the angle just once and using a dedicated \pyinline{rotate_coord()} utility function to avoid converting back and forth, it ensures that both the basis vectors get rotated by the same angle in the same direction.
+	\end{minipage}
+	\vspace{-1em}
+\end{figure}
+
+I first added a type alias for a vector, mainly for convenience.
+
+%: c228904ab61cb33a6581fe28bbd6330b5c2ece97
+%: src/lintrans/typing_/__init__.py:27-28
+
+I then created a utility function to rotate a rectilinear coordinate by a given angle.
+
+%: 425f3d653770724a01fd5f94314c7d076dadfef2
+%: src/lintrans/matrices/utility.py:43-51
+
+Then when generating a frame, I normalise the angle $\theta$ to be $-\pi \leq \theta < \pi$ (radians) and then rotate the coordinates of each basis vector by a proportion of the angle for each frame in the animation.
+
+%: 425f3d653770724a01fd5f94314c7d076dadfef2
+%: src/lintrans/gui/main_window.py:377-424
+
+And of course, I added this to the changelog.
+
+%: 425f3d653770724a01fd5f94314c7d076dadfef2
+%: CHANGELOG.md:12,16 markdown!
+
+Now rotations finally work properly!
+
 \end{document}
