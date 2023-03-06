@@ -17,7 +17,7 @@ RUN rm -rf ftp.tu-chemnitz.de tl
 RUN python -m pip install --upgrade pip && \
 	python -m pip install pygments
 RUN tlmgr update --all && \
-	tlmgr install biber biblatex cancel catchfile csquotes footmisc framed fvextra minted subfiles upquote was xstring
+	tlmgr install biber biblatex cancel catchfile csquotes footmisc framed fvextra minted subfiles tkz-euclide upquote was xstring
 
 # Install Rust, just, and fd
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile minimal
