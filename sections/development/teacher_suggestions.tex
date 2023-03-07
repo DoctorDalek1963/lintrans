@@ -26,4 +26,13 @@ After looking at the code later, I realised this was a problem with my new anima
 %: eb118f02db9fb9c76ce15a976f81a037415d2a4e
 %: src/lintrans/gui/main_window.py:410-417 highlight=417
 
+\subsubsection{Fixing a hang after closing during an animation\label{development:teacher-suggestions:fixing-a-hang-after-closing-during-an-animation}}
+
+This bug was tiny and only really affected me, but when I run \texttt{lintrans} from the terminal with \mintinline{sh}{python -m lintrans} and close it during an animation, I have to wait a moment to get my shell prompt back. Clearly, the program is still running even after the main window is closed.
+
+I'm not entirely sure what was happening here, but it was something to do with Qt5's event loop and threading model, and I could fix the bug by just overriding \pyinline{LintransMainWindow.closeEvent()} to set \pyinline{self.animating = False} and that would ensure that animations are stopped before the main window closes.
+
+%: d60c1878058799be544f5cf0847b478dccd3a021
+%: src/lintrans/gui/main_window.py:262-265
+
 \end{document}
