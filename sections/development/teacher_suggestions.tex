@@ -1,0 +1,29 @@
+% lintrans - The linear transformation visualizer
+% Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
+
+% This program is licensed under GNU GPLv3, available here:
+% <https://www.gnu.org/licenses/gpl-3.0.html>
+
+\documentclass[../development.tex]{subfiles}
+
+\begin{document}
+
+Now that I've got \texttt{v0.2.2} working and released, it's time to talk to some teachers. Ms Arnold is going to be the one that's actually using it, so obviously I needed to talk to her about it, but she wasn't available for a few days. I was talking to another maths teacher, Mr Dunkley, about my personal statement and took the opportunity to show him \texttt{lintrans} as well.
+
+He was able to download and run it on a native Windows 10 installation, which was quite a relief. I'd been unable to test it on a real bare-metal Windows installation so far; I only had virtual machines.
+
+He suggested two main improvements: \begin{enumerate}
+	\item In the visual definition dialog, the basis vectors should snap to integer coordinates when they get close enough
+	\item There should be a dialog box which displays matrices that you've already defined
+\end{enumerate}
+
+\subsubsection{Fixing a bug with animating stretches\label{development:teacher-suggestions:fixing-a-bug-with-animating-stretches}}
+
+While Mr Dunkley was playing around with \texttt{lintrans}, I noticed a bug where animating uniform stretches, where every direction gets stretched equally work, just fine, but a matrix like $\begin{pmatrix}3 & 0\\ 0 & 1\end{pmatrix}$ would be animated as if it was $\begin{pmatrix}3 & 0\\ 0 & 3\end{pmatrix}$ and the plane would stretch equally in all directions.
+
+After looking at the code later, I realised this was a problem with my new animation code detecting this type of matrix as a rotation. To fix this, I could just add a check to the \texttt{if} statement before the rotation animation code. This new check would make sure that the basis vectors of the application matrix were approximately the same length. By checking this as well, I fixed the bug.
+
+%: eb118f02db9fb9c76ce15a976f81a037415d2a4e
+%: src/lintrans/gui/main_window.py:410-417 highlight=417
+
+\end{document}
