@@ -314,6 +314,8 @@ When animating a rotation like \pyinline{"rot(170)"}, it animates a rotation of 
 
 The speed of rotation is significantly higher during the middle of the rotation, which makes it look unnatural. I want to fix this to make rotations look more natural. Ideally, the program would detect a rotation and animate it in a different way, by moving the tips of the basis vectors along the edge of a circle with the radius equal to the length of the basis vectors. That shouldn't be too hard. However, I'd also like to animate scaled rotations like \pyinline{"2rot(170)"}. Animating in a circle won't work for this type of transformation, so I'll need to use a spiral.
 
+This is a big feature, so I split it into a \texttt{dev/anim-rot} branch.
+
 \paragraph{Factoring out animation frames\label{development:making-v0.2.2:animating-rotations:factoring-out-animation-frames}}
 
 The \pyinline{LintransMainWindow.animate_expression()} method obviously handles animating expressions. It does this by calling a separate method called \pyinline{LintransMainWindow.animate_between_matrices()} after parsing and evaluating the expression. The first step of improving my rotational animation code is to factor out the generation of individual frames when animating between matrices. This separate method will make it easier to work on the new feature.
@@ -433,5 +435,25 @@ And of course, I added this to the changelog.
 %: CHANGELOG.md:12,16 markdown!
 
 Now rotations finally work properly!
+
+\subsubsection{Adding a setting for animation time\label{development:making-v0.2.2:adding-a-setting-for-animation-time}}
+
+Once I'd merged the \texttt{dev/anim-rot} branch, I was basically done with \texttt{v0.2.2}, but I still wanted to add one last thing. I already had a display setting to control the delay between animating consecutive matrices in a sequence, but I also wanted a display setting to control how long the actual animation lasts. This would allow a teacher to animate something slowly to more precisely show an animation. Implementing it was very simple.
+
+I just had to add the setting to the \pyinline{DisplaySettings} dataclass, add code to the display settings dialog to allow changing it, and then use it in animations.
+
+%: 86343c4b0dd4ed9052184fd4ed924062a1cd9264
+%: src/lintrans/gui/settings.py:51-52
+
+%: 86343c4b0dd4ed9052184fd4ed924062a1cd9264
+%: src/lintrans/gui/dialogs/settings.py:21,24,127-134,226,236,245,255 noscopes
+
+%: 86343c4b0dd4ed9052184fd4ed924062a1cd9264
+%: src/lintrans/gui/main_window.py:465-493 highlight=471,491
+
+And then finally, I added it to the changelog.
+
+%: 86343c4b0dd4ed9052184fd4ed924062a1cd9264
+%: CHANGELOG.md:10,16 markdown!
 
 \end{document}
