@@ -35,4 +35,20 @@ I'm not entirely sure what was happening here, but it was something to do with Q
 %: d60c1878058799be544f5cf0847b478dccd3a021
 %: src/lintrans/gui/main_window.py:262-265
 
+\subsubsection{Adding snapping in the visual definition dialog\label{development:teacher-suggestions:adding-snapping-in-the-visual-definition-dialog}}
+
+I was now ready to implement snapping in the visual definition dialog.
+
+The \pyinline{DefineVisuallyWidget} class has a \pyinline{self.dragged_point} attribute, which is the coordinates of the point being dragged. In \pyinline{mouseMoveEvent()}, we get the coordinates of the current cursor position and set the dragged point accordingly. That's all that happens in the old code.
+
+%: d60c1878058799be544f5cf0847b478dccd3a021
+%: src/lintrans/gui/plots/widgets.py:127-147
+
+To add snapping to this, we can just get the 4 integer coordinates around the dragged point, check each of their distances to the dragged point, and if it's sufficiently close to one of them, snap it to that point.
+
+%: f2de39fec299bb8ed155ee649d34c9063787e71a
+%: src/lintrans/gui/plots/widgets.py:128-165
+
+This all worked very well.
+
 \end{document}
