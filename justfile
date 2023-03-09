@@ -28,6 +28,7 @@ clean:
 	fd -I -e log -e aux -e dvi -e lof -e lot -e bit -e idx -e glo -e bbl -e bcf -e ilg -e toc -e ind -e out -e blg -e fdb_latexmk -e fls -e run.xml -e synctex.gz -X rm -f
 	fd -I -e dpth -e md5 -e auxlock -X rm -f sections/processed_*.tex sections/development/processed_*.tex
 	rm -rf _minted-main/ tikz-imgs/
+	rm .build-sum
 
 # watch all the tex files and build the PDF when any of them change
 watch:
