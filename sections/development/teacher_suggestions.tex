@@ -95,4 +95,18 @@ The next step was obviously to add the widgets that actually represent these mat
 
 \fsbsr[0.3]{development/addc22a8984a9d8e1d100b5800836a2af3f42760/info-panel.png}{The info panel with some defined matrices, and the parentheses not working correctly}{This container widget uses a grid layout to have the numbers arranged correctly, as well as stretching the parentheses either side to properly cover the numbers.\par However, the parentheses don't stretch properly. I also get the message \enquote{QGridLayout: Multi-cell fromCol greater than toCol} in the terminal whenever I open the info panel. One for each matrix defined numerically. Suffice to say, this is not what I was trying to do.}
 
+\paragraph{Fixing alignments and stretches\label{development:teacher-suggestions:adding-the-info-panel:fixing-alignments-and-stretches}}
+
+After checking the documentation for the \texttt{QGridLayout::addWidget()} function\cite{qt5-docs-qgridlayout-addwidget} and experimenting with some different numbers, I fixed the row and column numbers for the parentheses. I also created a temporary font for the parentheses to make them bigger. I had to make them thinner as well to avoid them looking weird. I also made the matrix names bold.
+
+%: 63279a27ac6fa86061c4ba10152244b2bb4ced87
+%: src/lintrans/gui/dialogs/misc.py:102-191
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.4\linewidth]{development/63279a27ac6fa86061c4ba10152244b2bb4ced87/info-panel.png}
+	\caption{The new and improved info panel with correct alignment and stretching}
+	\label{fig:development:63279a27ac6fa86061c4ba10152244b2bb4ced87:info-panel.png}
+\end{figure}
+
 \end{document}
