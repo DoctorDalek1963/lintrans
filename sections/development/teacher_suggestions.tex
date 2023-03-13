@@ -86,4 +86,13 @@ Trying to open the new info panel results in a tiny, useless dialog box appearin
 	\label{fig:development:6469f9f3678a89b3b7f388a6c5132335d9a6a947:gui.png}
 \end{figure}
 
+\paragraph{Adding the matrices to the panel\label{development:teacher-suggestions:adding-the-info-panel:adding-the-matrices-to-the-panel}}
+
+The next step was obviously to add the widgets that actually represent these matrices in the dialog box. To do this, I created a layout and iterated over the matrices in the wrapper to add some widgets for each. These widgets consist of a name label, a label for \enquote{=}, and a container widget to display the content of the matrix. I created a separate method to generate a container widget for the matrix content.
+
+%: addc22a8984a9d8e1d100b5800836a2af3f42760
+%: src/lintrans/gui/dialogs/misc.py:102-183
+
+\fsbsr[0.3]{development/addc22a8984a9d8e1d100b5800836a2af3f42760/info-panel.png}{The info panel with some defined matrices, and the parentheses not working correctly}{This container widget uses a grid layout to have the numbers arranged correctly, as well as stretching the parentheses either side to properly cover the numbers.\par However, the parentheses don't stretch properly. I also get the message \enquote{QGridLayout: Multi-cell fromCol greater than toCol} in the terminal whenever I open the info panel. One for each matrix defined numerically. Suffice to say, this is not what I was trying to do.}
+
 \end{document}
