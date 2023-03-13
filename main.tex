@@ -96,31 +96,31 @@
 }}
 
 % Figure side-by-side left and right commands
-\newcommand{\fsbsl}[3]{
+\newcommand{\fsbsl}[4][0.45]{
 \begin{figure}[H]
-	\begin{minipage}{0.45\linewidth}
+	\begin{minipage}{#1\linewidth}
 		\centering
-		\includegraphics[width=\linewidth]{#1}
-		\caption{#2}
-		\label{fig:\replace{#1}{/}{:}}
+		\includegraphics[width=\linewidth]{#2}
+		\caption{#3}
+		\label{fig:\replace{#2}{/}{:}}
 	\end{minipage}\hfill
-	\begin{minipage}{0.5\linewidth}\setspacing
-#3
+	\begin{minipage}{0.95\linewidth - #1\linewidth}\setspacing
+#4
 	\end{minipage}
 	\vspace{-1em}
 \end{figure}
 }
 
-\newcommand{\fsbsr}[3]{
+\newcommand{\fsbsr}[4][0.45]{
 \begin{figure}[H]
-	\begin{minipage}{0.5\linewidth}\setspacing
-#3
+	\begin{minipage}{0.95\linewidth - #1\linewidth}\setspacing
+#4
 	\end{minipage}\hfill
-	\begin{minipage}{0.45\linewidth}
+	\begin{minipage}{#1\linewidth}
 		\centering
-		\includegraphics[width=\linewidth]{#1}
-		\caption{#2}
-		\label{fig:\replace{#1}{/}{:}}
+		\includegraphics[width=\linewidth]{#2}
+		\caption{#3}
+		\label{fig:\replace{#2}{/}{:}}
 	\end{minipage}
 	\vspace{-1em}
 \end{figure}
