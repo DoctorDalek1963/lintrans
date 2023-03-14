@@ -109,4 +109,20 @@ After checking the documentation for the \texttt{QGridLayout::addWidget()} funct
 	\label{fig:development:63279a27ac6fa86061c4ba10152244b2bb4ced87:info-panel.png}
 \end{figure}
 
+\paragraph{Arranging matrices in multiple columns\label{development:teacher-suggestions:adding-the-info-panel:arranging-matrices-in-multiple-columns}}
+
+The only remaining problem with the info panel is that it just extends into one long vertical column as more matrices are added. Obviously there are 26 letters in the alphabet, so 26 possible matrices that can be defined. However, 26 is a semiprime, which means if I want to arrange the matrices in a rectangle, I have to do $2 \times 13$ or $13 \times 2$. This is not particularly useful. Instead, I think it would be better to have an arrangement closer to a square, which a few matrices extra at the end. I'll go with 4 rows of columns with 6 matrices each and an extra column at the end for the last 2 matrices if necessary.
+
+To do this, I just use the index of the current matrix to set the column for that matrix. Qt5's grid layout handles spacing and creating extra columns for me, so I just have to work out which column to put each matrix in.
+
+%: 8e0f2dfe27fb9629b0f8cd33a25a61f85b5443e8
+%: src/lintrans/gui/dialogs/misc.py:120-151
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.98\linewidth]{development/8e0f2dfe27fb9629b0f8cd33a25a61f85b5443e8/info-panel.png}
+	\caption{The info panel with all matrices defined, arranged in multiple columns}
+	\label{fig:development:8e0f2dfe27fb9629b0f8cd33a25a61f85b5443e8:info-panel.png}
+\end{figure}
+
 \end{document}
