@@ -1,0 +1,71 @@
+% lintrans - The linear transformation visualizer
+% Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
+
+% This program is licensed under GNU GPLv3, available here:
+% <https://www.gnu.org/licenses/gpl-3.0.html>
+
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Evaluating success criteria\label{evaluation:evaluating-success-criteria}}
+
+In \S\ref{analysis:success-criteria}, I laid out the success criteria for the project. It is now time to evaluate how well I met these criteria.
+
+\subsubsection{Defining multiple matrices\label{evaluation:evaluating-success-criteria:define-multiple-matrices}}
+
+Criterion~\ref{success-criterion:define-multiple-matrices} says that the user must be able to define matrices in at least two different ways. I have been using these dialogs during development and they're quite useful. I would say I have completely fulfilled this criterion.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\linewidth]{evaluation/success-criteria/define-multiple-matrices/numerical-dialog.png}
+	\caption{The numerical definition dialog}
+	\label{fig:evaluation:success-criteria:define-multiple-matrices:numerical-dialog.png}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\linewidth]{evaluation/success-criteria/define-multiple-matrices/visual-dialog.png}
+	\caption{The visual definition dialog}
+	\label{fig:evaluation:success-criteria:define-multiple-matrices:visual-dialog.png}
+\end{figure}
+
+\subsubsection{Validating and parsing matrix expressions\label{evaluation:evaluating-success-criteria:validating-and-parsing-matrix-expressions}}
+
+Criterion~\ref{success-criterion:validate-arbitrary-matrix-expressions} says that the program must be able to validate arbitrary matrix expressions and criterion~\ref{success-criterion:parse-matrix-expressions} says that it must be able to parse any valid expression. As shown in \S\ref{development:matrices-backend:rudimentary-parsing-and-evaluating}, \S\ref{development:matrices-backend:parsing-matrix-expressions}, and \S\ref{development:making-v0.2.2:parsing-parentheses}, the parser and validator are both complete and robust. I have fulfilled these success criteria.
+
+\subsubsection{Rendering any valid expression\label{evaluation:evaluating-success-criteria:render-any-valid-expression}}
+
+Criterion~\ref{success-criterion:render-any-valid-expression} says that the program must be able to render any valid matrix expression. Rendering is quite simple and I got it sorted early on in \S\ref{development:visualizing-matrices:implementing-basis-vectors} and \S\ref{development:visualizing-matrices:drawing-the-transformed-grid}. I have successfully fulfilled this criterion.
+
+\subsubsection{Animating any valid expression\label{evaluation:evaluating-success-criteria:animate-any-valid-expression}}
+
+Criterion~\ref{success-criterion:animate-any-valid-expression} says that the program must be able to animate from $\mathbf{I}$ to any valid expression. I expected animation to be difficult but it was surprisingly easy. I just had to draw multiple frames using a \texttt{for} loop. I have covered animation in \S\ref{development:visualizing-matrices:implementing-animation}, \S\ref{development:visualizing-matrices:preserving-determinants}, and \S\ref{development:making-v0.2.2:animating-rotations}. I have fulfilled this criterion.
+
+\subsubsection{Applicative animation\label{evaluation:evaluating-success-criteria:applicative-animation}}
+
+Criterion~\ref{success-criterion:applicative-animation} says that the program must be able to apply a matrix transformation to the current scene. This is essentially the crux of the app. I was initially inspired to create \texttt{lintrans} because I wanted a way to demonstrate the non-commutativity of matrix multiplication ($\mathbf{AB} \ne \mathbf{BA}$). For me, the best demonstration of this fact would be to show that applying two different matrices in different orders produces different results. Once I had the basis of an animation system, making it applicative wasn't as difficult as I expected.
+
+I laid the groundwork for applicative animation in \S\ref{development:improving-the-gui:implementing-transitional-animation} and \S\ref{development:improving-the-gui:allowing-for-sequential-animation-with-commas} and then I implemented applicative animation by just allowing the user to change the display settings in \S\ref{development:adding-display-settings:creating-the-dataclass-and-implementing-applicative-animation}. I have fulfilled this criterion.
+
+\subsubsection{Display matrix info\label{evaluation:evaluating-success-criteria:display-matrix-info}}
+
+\fsbsr[0.4]{evaluation/success-criteria/display-matrix-info/dialog.png}{The display settings dialog}{ Criterion~\ref{success-criterion:display-matrix-info} says that the program should be able to display information about the currently displayed matrix. I added display settings in \S\ref{development:adding-display-settings} and these included things like determinants. I then polished determinant text in \S\ref{development:fixing-bugs-and-adding-polish:centering-text-in-the-determinant-parallelogram} and added eigenvectors and eigenlines in \S\ref{development:implementing-eigenstuffs}. I also added settings for animation timings in \S\ref{development:adding-display-settings:creating-the-dataclass-and-implementing-applicative-animation} and \S\ref{development:making-v0.2.2:adding-a-setting-for-animation-time}. \par I'm quite happy with these display settings. I think being able to change colours and label the basis vectors $i$ and $j$ would have been nice, but I got the important parts done. I have fulfilled this criterion.}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\linewidth]{evaluation/success-criteria/display-matrix-info/gui.png}
+	\caption{A matrix being rendered with all the display settings on}
+	\label{fig:evaluation:success-criteria:display-matrix-info:gui.png}
+\end{figure}
+
+\subsubsection{Saving and loading sessions\label{evaluation:evaluating-success-criteria:save-and-load-sessions}}
+
+Criterion~\ref{success-criterion:save-and-load-sessions} says that the program should be able to save and load sessions. This was mostly a time restriction, but it shouldn't be particularly difficult to actually implement. I would create a dataclass to contain the data that we want to save, and use Python's \texttt{pickle} module to save it to a binary format for saving in a file. I failed to fulfil this criterion, mostly due to time.
+
+\subsubsection{Transforming polygons\label{evaluation:evaluating-success-criteria:transform-polygons}}
+
+Criterion~\ref{success-criterion:transform-polygons} says that the program should allow the user to define and transform an arbitrary polygon. I was unable to complete this criterion. I'm not entirely sure how I would've done it. Obviously I'd have a dialog to define a polygon, and that would probably use a list of coordinates, which it would return to the main window when the user confirmed the dialog. Then I would just transform each coordinate one-by-one and draw the before and after versions. I failed to complete this criterion, again mostly due to running out of time.
+
+Overall, I completed 7 out of my 9 criteria. I wish I'd had time to get the polygons done, and maybe I should've focussed on that instead of fixing bugs. But I'm happy with \texttt{lintrans} as it is now. I will probably add these missing features in a future release.
+
+\end{document}

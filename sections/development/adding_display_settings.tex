@@ -8,7 +8,7 @@
 
 \begin{document}
 
-\subsubsection{Creating the dataclass (and implementing applicative animation)\label{development:adding-display-settings:creating-the-dataclass-(and-implementing-applicative-animation)}}
+\subsubsection{Creating the dataclass (and implementing applicative animation)\label{development:adding-display-settings:creating-the-dataclass-and-implementing-applicative-animation}}
 
 The first step of adding display settings is creating a dataclass to hold all of the settings. This dataclass will hold attributes to manage how a matrix transformation is displayed. Things like whether to show eigenlines or the determinant parallelogram. It will also hold information for animation. We can factor out the code used to smoothen the determinant, as written in \S\ref{development:visualizing-matrices:preserving-determinants}, and make it dependant on a \pyinline{bool} attribute of the \texttt{DisplaySettings} dataclass.
 
