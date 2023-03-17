@@ -125,4 +125,26 @@ To do this, I just use the index of the current matrix to set the column for tha
 	\label{fig:development:8e0f2dfe27fb9629b0f8cd33a25a61f85b5443e8:info-panel.png}
 \end{figure}
 
+\subsubsection{Fixing a bug with matrices with a 0 column\label{development:teacher-suggestions:fixing-a-bug-with-matrices-with-a-0-column}}
+
+Currently, if you set one basis vector to $\mathbf{0}$, then it will continue to draw the line for the zeroed basis vector. This doesn't make much sense, since the non-zero basis vector is the only one that has an impact on the matrix. To fix this, I can just check for a zero column and not draw the vector lines in that case.
+
+%: 37abc3dbb5d99c9ec812e6c887fc6c021f9c91c6
+%: src/lintrans/gui/plots/classes.py:244-272
+
+\begin{figure}[H]
+	\begin{minipage}{0.48\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{development/37abc3dbb5d99c9ec812e6c887fc6c021f9c91c6/before.png}
+		\caption{Before the bug fix}
+		\label{fig:development:37abc3dbb5d99c9ec812e6c887fc6c021f9c91c6:before.png}
+	\end{minipage}\hfill
+	\begin{minipage}{0.48\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{development/37abc3dbb5d99c9ec812e6c887fc6c021f9c91c6/after.png}
+		\caption{After the bug fix}
+		\label{fig:development:37abc3dbb5d99c9ec812e6c887fc6c021f9c91c6:after.png}
+	\end{minipage}
+\end{figure}
+
 \end{document}
