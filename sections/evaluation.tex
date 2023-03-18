@@ -68,4 +68,48 @@ Criterion~\ref{success-criterion:transform-polygons} says that the program shoul
 
 Overall, I completed 7 out of my 9 criteria. I wish I'd had time to get the polygons done, and maybe I should've focussed on that instead of fixing bugs. But I'm happy with \texttt{lintrans} as it is now. I will probably add these missing features in a future release.
 
+\subsection{Assessing usability\label{evaluation:assessing-usability}}
+
+The main usability features that I discussed in \S\ref{design:usability-features} were about colours, as well as layout and hotkeys.
+
+The colours of the basis vectors are red and blue, as I said they should be. This allows users with common types of colour-blindness like deuteranopia to still distinguish parts of the UI. Refer to the images below to see that the colour scheme was a success\footnote{These images were generated using my fork of Color Oracle\cite{color-oracle-my-fork}.}:
+
+\begin{figure}[H]
+	\begin{minipage}{0.48\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{evaluation/usability/normal-vision.png}
+		\caption{Normal vision}
+		\label{fig:evaluation:usability:normal-vision.png}
+	\end{minipage}\hfill
+	\begin{minipage}{0.48\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{evaluation/usability/deuteranopia.png}
+		\caption{Deuteranopia (common)}
+		\label{fig:evaluation:usability:deuteranopia.png}
+	\end{minipage}
+\end{figure}
+\begin{figure}[H]
+	\begin{minipage}{0.48\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{evaluation/usability/protanopia.png}
+		\caption{Protanopia (rare)}
+		\label{fig:evaluation:usability:protanopia.png}
+	\end{minipage}\hfill
+	\begin{minipage}{0.48\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{evaluation/usability/tritanopia.png}
+		\caption{Tritanopia (very rare)}
+		\label{fig:evaluation:usability:tritanopia.png}
+	\end{minipage}
+\end{figure}
+
+My other usability features were consistent UI layouts and hotkeys. All dialogs follow the same pattern of having the confirm button in the bottom right corner with the cancel button to the left of it, which is consistent with common menu design. I consider this a success.
+
+Most of the functionality in the app has associated hotkeys. Rendering, animating, resetting, opening dialogs, and toggling display settings all have dedicated hotkeys. I forgot to add a shortcut to open the info panel, but that change is tiny, so I can just do it right now:
+
+%: 63f569328a1906976d725fa72da02e98e5d73afb
+%: src/lintrans/gui/main_window.py:208-217 highlight=217
+
+I would consider my use of hotkeys to be a success.
+
 \end{document}
