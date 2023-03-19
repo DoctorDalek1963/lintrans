@@ -112,4 +112,51 @@ Most of the functionality in the app has associated hotkeys. Rendering, animatin
 
 I would consider my use of hotkeys to be a success.
 
+\subsection{Limitations\label{evaluation:limitations}}
+
+\subsubsection{Feature completeness\label{evaluation:limitations:feature-completeness}}
+
+As discussed in \S\ref{evaluation:evaluating-success-criteria:save-and-load-sessions} and \S\ref{evaluation:evaluating-success-criteria:transform-polygons}, \texttt{lintrans} is not feature complete according to my original success criteria. I attribute my failure to implement these features to me running out of time. If I focussed on implementing them instead of fixing bugs, then I definitely could've done them in time, but I wanted a more robust and bug-free app.
+
+I think a more secure base allows for easier and more efficient expansion in the future. I can easily add these features in new versions, but I want to squash bugs early on so that I don't have to fix them later when the code base is larger. Overall, I wish I had more time to implement these missing features, but the core of the app is there, so I'll just add transforming arbitrary polygons and saving and loading sessions in the future.
+
+\subsubsection{Distribution\label{evaluation:limitations:distribution}}
+
+\texttt{lintrans} was surprisingly hard to distribute. I spend most of my time in the terminal, which makes it very easy to set up complete development environments and a virtual environment to manage the Python packages and interpreter needed to run \texttt{lintrans}. My stakeholders are teachers who don't even know what a shell is, let alone how to set up a virtual environment for Python. So I had to compile \texttt{lintrans} into a single Windows executable. That wasn't massively difficult, but it was certainly a headache. If I did this project again, I'd use a compiled language like Rust, Java, or C++, since those languages are much easier to distribute executables for.
+
+Additionally, Rust can compile to WebAssembly\cite{compile-rust-to-wasm}, so I could make a web version of \texttt{lintrans}, which would avoid anyone having to download anything and would allow students to try it out very easily, perhaps even on their phones.
+
+\subsection{Maintenance\label{evaluation:maintenance}}
+
+\subsubsection{Class structure\label{evaluation:maintenance:class-structure}}
+
+As you can see from the following internal import graph and class diagram, the class structure isn't fantastic.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\linewidth]{evaluation/maintenance/int-imports.png}
+	\caption{The final internal import graph}
+	\label{fig:evaluation:maintenance:int-imports.png}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.95\linewidth]{evaluation/maintenance/classes.png}
+	\caption{The final class diagram}
+	\label{fig:evaluation:maintenance:classes.png}
+\end{figure}
+
+However, I believe that the classes are well named and in files which are equally well named. This makes maintaining them easier than you might suspect by looking at these diagrams. Additionally, all my variables and functions have sensible names which identify their purpose. Each class, method, and function is small and individual. The only \enquote{large} class is the main window, which makes sense because it has the most logic and is hard to split up.
+
+Everything else is split into small enough logical chunks to make it pretty easy to maintain. I also have docstrings for every single class, method, and function, as well as comments to explain the complicated parts of algorithms. This annotation makes it much easier to remember what each thing does and how it does it.
+
+Overall, there are a lot of classes and modules, but it's a complex program, so I think this is well justified. The logic is separate and modular.
+
+\subsubsection{Type safety\label{evaluation:maintenance:type-safety}}
+
+By far, my biggest maintainability problem is Python's lack of type safety. I use \texttt{mypy} to statically check the types of variables \textit{before} runtime, but the Python interpreter makes no real guarantees about what the types of variables will be \textit{at} runtime. This makes it much harder to debug things and introduces whole categories of bugs that would be impossible in a compiled, statically and strongly typed language like Rust, Java, or C++.
+
+When I started \texttt{lintrans}, I didn't really care about types in a programming language and I was only really familiar with Python, so that's what I used. Since then, I've learned Rust and it's taught me the benefits of a static, strong type system. Rust doesn't even have \texttt{null} or exceptions. Python's \pyinline{None} and hidden exception throwing have caused several bugs already and will undoubtedly cause many more in the future. With Rust, these would be impossible, but in Python, they are seemingly hiding in every dark corner, just waiting to crash the program in some weird edge case.
+
+I will need to stay on top of these types of bugs when maintaining \texttt{lintrans}, unless I decide to rewrite the whole thing in a compiled language.
+
 \end{document}
