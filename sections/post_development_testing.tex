@@ -1,0 +1,87 @@
+% lintrans - The linear transformation visualizer
+% Copyright (C) 2021-2022 D. Dyson (DoctorDalek1963)
+
+% This program is licensed under GNU GPLv3, available here:
+% <https://www.gnu.org/licenses/gpl-3.0.html>
+
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+
+% Figures are x.y
+\numberwithin{figure}{section}
+
+\begin{landscape}
+\section{Post-development Testing\label{evaluation}}
+
+\begin{longtable}[c]{|m{1.5cm}||p{3cm}|p{2.5cm}|p{3.5cm}|p{3cm}|p{2.3cm}|p{5cm}|}
+	\hline
+	\textbf{Test ID}
+		& \textbf{Description}
+		& \textbf{Test data}
+		& \textbf{Expected outcome}
+		& \textbf{Actual outcome}
+		& \textbf{Evidence}
+		& \textbf{Commentary}
+	\\ \hline
+	\testnum{compile}
+		& The program should run in the Python interpreter and compile with PyInstaller.
+		& N/A
+		& The program runs and compiles with no problem.
+		& As expected.
+		& See Figure~\ref{fig:pdtest:compile.png}.
+		& N/A
+	\\ \hline
+	\testnum{define-visually}
+		& The user should be able to define matrices visually.
+		& Approximately $\begin{pmatrix}2 & 0.5\\ 1 & 2\end{pmatrix}$
+		& The matrix should be successfully defined by the visual definition dialog.
+		& The definition works fine with no errors and the defined matrix appears in the info panel.
+		& See Figures~\ref{fig:pdtest:define-visually.png} and \ref{fig:pdtest:info-panel-no-expression.png}
+		& It's hard to correctly line up the $j$ vector since it's $\begin{pmatrix}0.5\\ 2\end{pmatrix}$
+			and the dialog only snaps to integer coordinates, but defining $i$ was easy because of this.
+	\\ \hline
+	\testnum{define-numerically}
+		& The user should be able to define matrices numerically.
+		& $\begin{pmatrix}2.2 & 18\\ -0.4529 & 0\end{pmatrix}$
+		& The matrix should be successfully defined by the numerical definition dialog.
+		& The definition works fine with no errors and the defined matrix appears in the info panel.
+		& See Figures~\ref{fig:pdtest:define-numerically.png} and \ref{fig:pdtest:info-panel-no-expression.png}
+		& Inputting the numbers directly makes it easy to get exactly what you want (such as precise decimals and
+			large numbers that can be inconvenient to zoom out to find in the visual definition dialog) but there's
+			no support for mathematical expressions or fractions, so the user is limited to decimal numbers.
+	\\ \hline
+	\testnum{render-defined}
+		& The program should be able to render matrices that the user has defined.
+		& Rendering the previously defined $\mathbf{A}$ and then $\mathbf{B}$.
+		& The program renders the matrices correctly.
+		& As expected.
+		& See Figures~\ref{fig:pdtest:render-defined-A.png} and \ref{fig:pdtest:render-defined-B.png}.
+		& Both the button and hotkey work as expected, as does the reset button.
+	\\ \hline
+\end{longtable}
+\end{landscape}
+
+\simplefig{pdtest/compile.png}{The successful output of compilation}
+\simplefig{pdtest/define-visually.png}{The matrix $\mathbf{A}$ being defined visually}
+\simplefig[0.8]{pdtest/define-numerically.png}{The matrix $\mathbf{B}$ being defined numerically}
+\simplefig[0.6]{pdtest/info-panel-no-expression.png}{The info panel after defining matrices $\mathbf{A}$ and $\mathbf{B}$}
+\simplefig{pdtest/render-defined-A.png}{The matrix $\mathbf{A}$ being rendered}
+\simplefig{pdtest/render-defined-B.png}{The matrix $\mathbf{B}$ being rendered}
+
+%animate defined
+%render and animate rotations
+%render composed
+%animate composed (transitional)
+%animate composed (applicative)
+%animate sequence (transitional)
+%animate sequence (applicative)
+%define as expression
+%change dependencies of expression
+%determinant parallelogram
+%eigenlines
+
+% Figures are x.y.z
+\numberwithin{figure}{subsection}
+
+\end{document}

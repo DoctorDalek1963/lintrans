@@ -69,6 +69,14 @@
 \usepackage{gensymb} % General symbols
 \usepackage{amsmath, amssymb, mathtools, cancel}  % Mathematical stuff
 
+\usepackage{pdflscape, longtable, array, tabularray} % Multi-page landscape tables
+
+% Count test numbers in the post-development testing table
+\newcounter{pdtestcounter}
+\newcommand{\testnum}[1]{%
+	\refstepcounter{pdtestcounter}T\thepdtestcounter\label{pdtest:#1}
+}
+
 % Number figures and equations based on subsections
 \usepackage{etoolbox}
 \numberwithin{figure}{subsection}
@@ -92,7 +100,8 @@
 \usepackage{luacode}
 
 \newcommand\replace[3]{\directlua{
-	tex.sprint(string.gsub(\luastring{#1}, \luastring{#2}, \luastring{#3}))
+	local s, _ = string.gsub(\luastring{#1}, \luastring{#2}, \luastring{#3})
+	tex.sprint(s)
 }}
 
 % Figure side-by-side left and right commands
@@ -123,6 +132,16 @@
 		\label{fig:\replace{#2}{/}{:}}
 	\end{minipage}
 	\vspace{-1em}
+\end{figure}
+}
+
+% Simple figure with image and caption, with optional width
+\newcommand{\simplefig}[3][0.95]{%
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=#1\linewidth]{#2}
+	\caption{#3}
+	\label{fig:\replace{#2}{/}{:}}
 \end{figure}
 }
 
@@ -238,6 +257,11 @@
 
 \section{Development\label{development}}
 \subfile{sections/processed_development.tex}
+
+\newpage
+
+% Section title included in subfile because it needs to be landscape
+\subfile{sections/post_development_testing.tex}
 
 \newpage
 
