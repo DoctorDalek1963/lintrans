@@ -22,7 +22,7 @@
 		& \textbf{Expected outcome}
 		& \textbf{Actual outcome}
 		& \textbf{Evidence}
-		& \textbf{Commentary}
+		& \textbf{Comments}
 	\\ \hline
 	\testnum{compile}
 		& The program should run in the Python interpreter and compile with PyInstaller.
@@ -30,7 +30,7 @@
 		& The program runs and compiles with no problem.
 		& As expected.
 		& See Figure~\ref{fig:pdtest:compile.png}.
-		& N/A
+		& None.
 	\\ \hline
 	\testnum{define-visually}
 		& The user should be able to define matrices visually.
@@ -59,6 +59,22 @@
 		& See Figures~\ref{fig:pdtest:render-defined-A.png} and \ref{fig:pdtest:render-defined-B.png}.
 		& Both the button and hotkey work as expected, as does the reset button.
 	\\ \hline
+	\testnum{animate-defined}
+		& The program should be able to animate matrices that the user has defined.
+		& Resetting, then animating $\mathbf{A}$, then resetting and animating $\mathbf{B}$>
+		& The program animates smoothly from I to the matrices without any issues.
+		& As expected.
+		& See \texttt{pdtest_animate_defined.mp4} in the videos folder.
+		& This test was performed with the default display settings.
+	\\ \hline
+	\testnum{render-and-animate-rotations}
+		& The program should be able to render and animate arbitrary rotations created with the \texttt{rot()} command.
+		& Trying to render and animate \texttt{rot(135)}.
+		& The program renders and animates the rotations correctly.
+		& As expected.
+		& See \texttt{pdtest_render_and_animate_rotations.mp4} in the videos folder.
+		& None.
+	\\ \hline
 \end{longtable}
 \end{landscape}
 
@@ -69,8 +85,6 @@
 \simplefig{pdtest/render-defined-A.png}{The matrix $\mathbf{A}$ being rendered}
 \simplefig{pdtest/render-defined-B.png}{The matrix $\mathbf{B}$ being rendered}
 
-%animate defined
-%render and animate rotations
 %render composed
 %animate composed (transitional)
 %animate composed (applicative)

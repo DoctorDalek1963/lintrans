@@ -18,6 +18,13 @@ repos:
         files: '(justfile|.*\.(tex|bib|png|rs|toml))$'
         pass_filenames: false
 
+      - id: just-build-zip
+        name: just build-zip
+        entry: just build-zip
+        language: system
+        files: '(justfile|.*\.(tex|bib|png|rs|toml)|videos/.*)$'
+        pass_filenames: false
+
       - id: cargo-build-release
         name: cargo build release
         entry: bash -c 'cd process-code-snippets && LINTRANS_DIR=../lintrans cargo build --release'

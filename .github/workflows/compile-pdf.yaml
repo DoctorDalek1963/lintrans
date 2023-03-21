@@ -20,17 +20,17 @@ jobs:
 
       - name: Build PDF with Docker
         run: >
-          mkdir -p pdf_dir
+          mkdir -p zip_dir
           && docker build -t write-up-lintrans .
           && docker run --name wul write-up-lintrans
-          && docker cp wul:/write-up-lintrans/main.pdf ./pdf_dir/lintrans.pdf
+          && docker cp wul:/write-up-lintrans/lintrans.zip ./zip_dir/lintrans.zip
           && docker rm wul
 
-      - name: Deploy PDF
+      - name: Deploy zip file
         uses: peaceiris/actions-gh-pages@v3.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: pdf_dir/
+          publish_dir: zip_dir/
           keep_files: true
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'

@@ -15,4 +15,4 @@ COPY justfile justfile
 
 RUN python generate_appendices.py
 
-CMD [ "just", "build" ]
+CMD [ "just", "build-zip" ]

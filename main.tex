@@ -54,16 +54,20 @@
 	}
 }
 
-% Code for line breaks taken from https://tex.stackexchange.com/questions/219445/line-break-in-texttt#219497
+% Code for line breaks taken from https://tex.stackexchange.com/a/219497/269413
+\catcode`_=12 %
 \renewcommand{\texttt}[1]{%
 	\begingroup
 	\ttfamily
 	\begingroup\lccode`~=`/\lowercase{\endgroup\def~}{/\discretionary{}{}{}}%
+	\begingroup\lccode`~=`[\lowercase{\endgroup\def~}{[\discretionary{}{}{}}%
 	\begingroup\lccode`~=`.\lowercase{\endgroup\def~}{.\discretionary{}{}{}}%
-	\catcode`/=\active\catcode`.=\active
+	\begingroup\lccode`~=`_\lowercase{\endgroup\def~}{_\discretionary{}{}{}}%
+	\catcode`/=\active\catcode`[=\active\catcode`.=\active\catcode`_=\active
 	\scantokens{#1\noexpand}%
 	\endgroup
 }
+\catcode`_=8 %
 
 \usepackage{csquotes}  % Context-sensitive quotes
 \usepackage{gensymb} % General symbols

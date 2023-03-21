@@ -13,9 +13,9 @@ build: process-code-snippets
 	if [ "$(cat .build-sum)" = "$(just _generate-build-sum)" ]; then
 		echo "Build up-to-date!"
 	else
-		lualatex  -file-line-error -halt-on-error -interaction=nonstopmode -shell-escape -recorder --jobname="main"  "main.tex"
+		lualatex -file-line-error -halt-on-error -interaction=nonstopmode -shell-escape -recorder --jobname="main" "main.tex"
 		biber main
-		lualatex  -file-line-error -halt-on-error -interaction=nonstopmode -shell-escape -recorder --jobname="main"  "main.tex"
+		lualatex -file-line-error -halt-on-error -interaction=nonstopmode -shell-escape -recorder --jobname="main" "main.tex"
 		just _generate-build-sum > .build-sum
 	fi
 
@@ -57,3 +57,7 @@ build-docker:
 	docker run --name wul write-up-lintrans
 	docker cp wul:/write-up-lintrans/main.pdf ./lintrans.pdf
 	docker rm wul
+
+build-zip: build
+	cp main.pdf lintrans.pdf
+	zip lintrans.zip lintrans.pdf videos/*.mp4
