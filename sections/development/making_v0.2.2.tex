@@ -53,7 +53,7 @@ And then of course add it to the changelog.
 
 Qt5 accepts arguments to its main method. I don't really know what these arguments can do, but it would be nice to be able to use them. I also want to be able to save sessions as files in the future, and it would be quite useful to open a session file by passing it as a command line argument. To make both of these easier, I decided to refactor my argument parsing.
 
-Python has a built-in library called \pyinline{argparse}, which allows for more sophisticated argument parsing. One of the things \pyinline{argparse} can do is parse only some of the command line arguments with a method called \pyinline{parse_known_args()}\cite{argparse-parse-known-args}. I can then pass the unconsumed arguments on to Qt5. \texttt{\_\_main.py\_\_} now looks like this:
+Python has a built-in library called \pyinline{argparse}, which allows for more sophisticated argument parsing. One of the things \pyinline{argparse} can do is parse only some of the command line arguments with a method called \pyinline{parse_known_args()}\cite{argparse-parse-known-args}. I can then pass the unconsumed arguments on to Qt5. \texttt{__main__.py} now looks like this:
 
 %: a688a14839caba2ee14f8551764b771ae803d935
 %: src/lintrans/__main__.py
@@ -89,7 +89,7 @@ And, of course, I updated the changelog:
 
 Currently, \texttt{VisualizeTransformationWidget} draws the background, then the transformed grid, then the basis vectors, then the eigenlines and eigenvectors, then the determinant parallelogram and text. This means that the determinant parallelogram gets drawn on top of the basis vectors, which doesn't look very good. To fix this, we can simply re-order the drawing of different things. If we instead draw the transformed grid and basis vectors last, then they will appear on top of everything else, which should look significantly better.
 
-I also renamed the \texttt{draw\_determinant\_text} display setting attribute to \texttt{show\_determinant\_value}.
+I also renamed the \texttt{draw_determinant_text} display setting attribute to \texttt{show_determinant_value}.
 
 Before:
 %: e9da6737cbdb68e800c245bcc34e1c5c3824458a

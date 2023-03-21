@@ -29,7 +29,7 @@ Initially, the \texttt{lintrans.gui.plots} package just has some classes for wid
 %: 4af63072b383dc9cef9adbb8900323aa007e7f26
 %: src/lintrans/gui/plots/plot_widget.py
 
-\fsbsl{development/4af63072b383dc9cef9adbb8900323aa007e7f26/gui.png}{The GUI with background axes}{The meat of this class is the \texttt{draw\_widget()} method. Right now, this method only draws the background axes. My next step is to implement basis vector attributes and draw them in \texttt{draw\_widget()}. After changing the the \texttt{plot} attribute in \texttt{LintransMainWindow} to an instance of \texttt{ViewTransformationWidget}, the plot was visible in the GUI.\par I then refactored the code slightly to rename \texttt{draw\_widget()} to \texttt{draw\_background()} and then call it from the \texttt{paintEvent()} method in \texttt{ViewTransformationWidget}.}
+\fsbsl{development/4af63072b383dc9cef9adbb8900323aa007e7f26/gui.png}{The GUI with background axes}{The meat of this class is the \texttt{draw_widget()} method. Right now, this method only draws the background axes. My next step is to implement basis vector attributes and draw them in \texttt{draw_widget()}. After changing the the \texttt{plot} attribute in \texttt{LintransMainWindow} to an instance of \texttt{ViewTransformationWidget}, the plot was visible in the GUI.\par I then refactored the code slightly to rename \texttt{draw_widget()} to \texttt{draw_background()} and then call it from the \texttt{paintEvent()} method in \texttt{ViewTransformationWidget}.}
 
 \subsubsection{Implementing basis vectors\label{development:visualizing-matrices:implementing-basis-vectors}}
 
@@ -38,17 +38,17 @@ My first step in implementing basis vectors was to add some utility methods to c
 %: 1fa7e1c61d61cb6aeff773b9698541f82fee39ea
 %: src/lintrans/gui/plots/plot_widget.py:45-60
 
-Once I had a way to convert coordinates, I could add the basis vectors themselves. I did this by creating attributes for the points in the constructor and creating a \texttt{transform\_by\_matrix()} method to change these point attributes accordingly.
+Once I had a way to convert coordinates, I could add the basis vectors themselves. I did this by creating attributes for the points in the constructor and creating a \texttt{transform_by_matrix()} method to change these point attributes accordingly.
 
 %: 37e7c208a33d7cbbc8e0bb6c94cd889e2918c605
 %: src/lintrans/gui/plots/plot_widget.py:92-112
 
-I also created a \texttt{draw\_transformed\_grid()} method which gets called in \texttt{paintEvent()}.
+I also created a \texttt{draw_transformed_grid()} method which gets called in \texttt{paintEvent()}.
 
 %: 37e7c208a33d7cbbc8e0bb6c94cd889e2918c605
 %: src/lintrans/gui/plots/plot_widget.py:122-128
 
-I then changed the \texttt{render\_expression()} method in \texttt{LintransMainWindow} to call this new \texttt{transform\_by\_matrix()} method.
+I then changed the \texttt{render_expression()} method in \texttt{LintransMainWindow} to call this new \texttt{transform_by_matrix()} method.
 
 %: 37e7c208a33d7cbbc8e0bb6c94cd889e2918c605
 %: src/lintrans/gui/main_window.py:229-235
@@ -64,17 +64,17 @@ Testing this new code shows that it works well.
 
 \subsubsection{Drawing the transformed grid\label{development:visualizing-matrices:drawing-the-transformed-grid}}
 
-After drawing the basis vectors, I wanted to draw the transformed version of the grid. I first created a \texttt{grid\_corner()} utility method to return the grid coordinates of the top right corner of the canvas. This allows me to find the bounding box in which to draw the grid lines.
+After drawing the basis vectors, I wanted to draw the transformed version of the grid. I first created a \texttt{grid_corner()} utility method to return the grid coordinates of the top right corner of the canvas. This allows me to find the bounding box in which to draw the grid lines.
 
 %: 2ade98ac28d1c3f6691e4afa819142a3ab8e9fd9
 %: src/lintrans/gui/plots/plot_widget.py:64-66
 
-I then created a \texttt{draw\_parallel\_lines()} method that would fill the bounding box with a set of lines parallel to a given vector with spacing defined by the intersection with a given point.
+I then created a \texttt{draw_parallel_lines()} method that would fill the bounding box with a set of lines parallel to a given vector with spacing defined by the intersection with a given point.
 
 %: 2ade98ac28d1c3f6691e4afa819142a3ab8e9fd9
 %: src/lintrans/gui/plots/plot_widget.py:126-164
 
-I then called this method from \texttt{draw\_transformed\_grid()}.
+I then called this method from \texttt{draw_transformed_grid()}.
 
 %: 2ade98ac28d1c3f6691e4afa819142a3ab8e9fd9
 %: src/lintrans/gui/plots/plot_widget.py:166-178
@@ -95,7 +95,7 @@ Now that I had a very crude renderer, I could create a method to animate a matri
 %: 829a130af5aee9819bf0269c03ecfb20bec1a108
 %: src/lintrans/gui/main_window.py:238-258
 
-This code creates the \texttt{matrix\_move} variable and adds scaled versions of it to the identity matrix and renders that each frame. It's simple, but it works well for this simple use case. Unfortunately, it's very hard to show off an animation in a PDF, since all these images are static. The git commit hashes are included in the code snippets if you want to clone the repo\cite{lintrans-github}, checkout this commit, and run it yourself if you want.
+This code creates the \texttt{matrix_move} variable and adds scaled versions of it to the identity matrix and renders that each frame. It's simple, but it works well for this simple use case. Unfortunately, it's very hard to show off an animation in a PDF, since all these images are static. The git commit hashes are included in the code snippets if you want to clone the repo\cite{lintrans-github}, checkout this commit, and run it yourself if you want.
 
 \subsubsection{Preserving determinants\label{development:visualizing-matrices:preserving-determinants}}
 
@@ -120,7 +120,7 @@ Ignoring the obvious flaw with not being able to render transformations with a m
 	\vspace{-1em}
 \end{figure}
 
-In order to smoothly animate the determinant, I had to do some maths. I first defined the matrix $\mathbf{A}$ to be equivalent to the \texttt{matrix\_move} variable from before - the target matrix minus the identity, scaled by the proportion. I then wanted to normalize $\mathbf{A}$ so that it had a determinant of 1 so that I could scale it up with the \texttt{proportion} variable through the animation.
+In order to smoothly animate the determinant, I had to do some maths. I first defined the matrix $\mathbf{A}$ to be equivalent to the \texttt{matrix_move} variable from before - the target matrix minus the identity, scaled by the proportion. I then wanted to normalize $\mathbf{A}$ so that it had a determinant of 1 so that I could scale it up with the \texttt{proportion} variable through the animation.
 
 I think I first tried just multiplying $\mathbf{A}$ by $\dfrac{1}{\det(\mathbf{A})}$ but that didn't work, so I googled it. I found a post\cite{researchgate-normalize-determinant} on ResearchGate about the topic, and thanks to a very helpful comment from Jeffrey~L~Stuart, I learned that for a $2 \times 2$ matrix $\mathbf{A}$ and a scalar $c$, $\det(c \mathbf{A}) = c^2 \det(\mathbf{A})$.
 

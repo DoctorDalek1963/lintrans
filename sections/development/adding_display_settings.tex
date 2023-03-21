@@ -19,7 +19,7 @@ However, this class initially just contained attributes relevant to animation, s
 %: 2041c7a24d963d8d142d6f0f20ec3828ba8257c6
 %: src/lintrans/gui/settings.py
 
-Once I had the dataclass, I just had to add \enquote{\pyinline{from .settings import DisplaySettings}} to the top of the file, and \enquote{\pyinline{self.display_settings = DisplaySettings()}} to the constructor of \texttt{LintransMainWindow}. I could then use the attributes of this dataclass in \texttt{animate\_expression()}.
+Once I had the dataclass, I just had to add \enquote{\pyinline{from .settings import DisplaySettings}} to the top of the file, and \enquote{\pyinline{self.display_settings = DisplaySettings()}} to the constructor of \texttt{LintransMainWindow}. I could then use the attributes of this dataclass in \texttt{animate_expression()}.
 
 %: 2041c7a24d963d8d142d6f0f20ec3828ba8257c6
 %: src/lintrans/gui/main_window.py:286-331
@@ -28,7 +28,7 @@ Lines 327 are very important here. I included applicative animation as an option
 
 The user will input whatever matrix they wanted to apply to the current scene. Let's call that target matrix $\mathbf{T}$. The matrix representing the starting state of the viewport is $\mathbf{S}$. Animating from $\mathbf{S}$ to $\mathbf{T}$ is a transitional animation, but an applicative animation is simply animating from $\mathbf{S}$ to $\mathbf{T}\mathbf{S}$, so we can just say \pyinline{matrix_target = matrix_target @ matrix_start} on line 327 (where \texttt{@} is the matrix multiplication operator), and continue as normal.
 
-I also wrapped the main logic of \texttt{animate\_between\_matrices()} in an \pyinline{if} block to check if the user wants the determinant to be smoothed.
+I also wrapped the main logic of \texttt{animate_between_matrices()} in an \pyinline{if} block to check if the user wants the determinant to be smoothed.
 
 %: 03e154e1326dc256ffc1a539e97d8ef5ec89f6fd
 %: src/lintrans/gui/main_window.py:333-388

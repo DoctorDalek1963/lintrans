@@ -12,12 +12,12 @@
 
 Now that I had the basics of matrix visualization sorted, I wanted to make the GUI and UX better. My first step was overhauling the rendering code to make it actually work with rotations of more than $90\degree$.
 
-I narrowed down the issue with PyCharm's debugger and found that the loop in \texttt{VectorGridPlot.draw\_parallel\_lines()} was looping forever if it tried to doing anything outside of the top right quadrant. To fix this, I decided to instead delegate this task of drawing a set of oblique lines to a separate method, and work on that instead.
+I narrowed down the issue with PyCharm's debugger and found that the loop in \texttt{VectorGridPlot.draw_parallel_lines()} was looping forever if it tried to doing anything outside of the top right quadrant. To fix this, I decided to instead delegate this task of drawing a set of oblique lines to a separate method, and work on that instead.
 
 %: cf05e09e5ebb6ea7a96db8660d0d8de6b946490a
 %: src/lintrans/gui/plots/classes.py:203-222
 
-This separation of functionality made designing and debugging this part of the solution much easier. The \texttt{draw\_pair\_of\_oblique\_lines()} method looked like this:
+This separation of functionality made designing and debugging this part of the solution much easier. The \texttt{draw_pair_of_oblique_lines()} method looked like this:
 
 %: cf05e09e5ebb6ea7a96db8660d0d8de6b946490a
 %: src/lintrans/gui/plots/classes.py:224-283
@@ -85,7 +85,7 @@ The red box represents the viewport of the GUI. The dashed lines represent the e
 
 In the case of the blue line, all 4 intersection points are outside the bounds of the box, whereas the green line intersects with the box, as shown with the crosses. We use a list comprehension over a list of ternaries to get the \texttt{points} list. This list contains 0 or 2 coordinates, and we may or may not draw a line accordingly.
 
-That's how the \texttt{draw\_oblique\_line()} method works, and the \texttt{draw\_pair\_of\_oblique\_lines()} method just calls it with positive and negative values of $c$.
+That's how the \texttt{draw_oblique_line()} method works, and the \texttt{draw_pair_of_oblique_lines()} method just calls it with positive and negative values of $c$.
 
 \subsubsection{Adding vector arrowheads\label{development:improving-the-gui:adding-vector-arrowheads}}
 
@@ -130,7 +130,7 @@ That's how the \texttt{draw\_oblique\_line()} method works, and the \texttt{draw
 %: 5373b1ad8040f6726147cccea523c0570251cf67
 %: src/lintrans/gui/plots/widgets.py:52-86
 
-As the comments suggest, we get the $x$ and $y$ components of the normalised vector, and then do some magic with a chosen length and get some distance values, and then draw those lines. I don't really understand how this code works, but I'm happy that it does. All we have to do is call \texttt{draw\_vector\_arrowheads()} from \texttt{paintEvent()}.
+As the comments suggest, we get the $x$ and $y$ components of the normalised vector, and then do some magic with a chosen length and get some distance values, and then draw those lines. I don't really understand how this code works, but I'm happy that it does. All we have to do is call \texttt{draw_vector_arrowheads()} from \texttt{paintEvent()}.
 
 \begin{figure}[H]
 	\centering
@@ -141,12 +141,12 @@ As the comments suggest, we get the $x$ and $y$ components of the normalised vec
 
 \subsubsection{Implementing zoom\label{development:improving-the-gui:implementing-zoom}}
 
-The next thing I wanted to do was add the ability to zoom in and out of the viewport, and I wanted a button to reset the zoom level as well. I added a \texttt{default\_grid\_spacing} class attribute in \texttt{BackgroundPlot} and used that as the \texttt{grid\_spacing} instance attribute in \texttt{\_\_init\_\_()}.
+The next thing I wanted to do was add the ability to zoom in and out of the viewport, and I wanted a button to reset the zoom level as well. I added a \texttt{default_grid_spacing} class attribute in \texttt{BackgroundPlot} and used that as the \texttt{grid_spacing} instance attribute in \texttt{__init__()}.
 
 %: d944e86e1d0fdc2c4be4d63479bc6bc3a31568ef
 %: src/lintrans/gui/plots/classes.py:27-47
 
-The reset button in \texttt{LintransMainWindow} simply sets \texttt{plot.grid\_spacing} to the default.
+The reset button in \texttt{LintransMainWindow} simply sets \texttt{plot.grid_spacing} to the default.
 
 To actually allow for zooming, I had to implement the \texttt{wheelEvent()} method in \texttt{BackgroundPlot} to listen for mouse wheel events. After reading through the docs for the \texttt{QWheelEvent} class\cite{qt5-docs-qwheelevent}, I learned how to handle this event.
 
@@ -182,7 +182,7 @@ We want the arrowhead length to not just be 0.15, but to scale with the zoom lev
 
 This creates a slight issue when zoomed out all the way, because the arrowheads are then far larger than the vectors themselves, so we take the minimum of the scaled length and the vector length.
 
-I factored out the default arrowhead length into the \texttt{arrowhead\_length} instance attribute and initialize it in \texttt{\_\_init\_\_()}.
+I factored out the default arrowhead length into the \texttt{arrowhead_length} instance attribute and initialize it in \texttt{__init__()}.
 
 %: 3d19a003368ae992ebb60049685bb04fde0836b5
 %: src/lintrans/gui/plots/widgets.py:68-76
@@ -198,7 +198,7 @@ This code results in arrowheads that stay the same length unless the user is zoo
 
 \subsubsection{Animation blocks zooming\label{development:improving-the-gui:animation-blocks-zooming}}
 
-The biggest problem with this new zoom feature is that when animating between matrices, the user is unable to zoom. This is because when \texttt{LintransMainWindow.animate\_expression()} is called, it uses Python's standard library \texttt{time.sleep()} function to delay each frame, which prevents Qt from handling user interaction while we're animating. This was a problem.
+The biggest problem with this new zoom feature is that when animating between matrices, the user is unable to zoom. This is because when \texttt{LintransMainWindow.animate_expression()} is called, it uses Python's standard library \texttt{time.sleep()} function to delay each frame, which prevents Qt from handling user interaction while we're animating. This was a problem.
 
 I did some googling and found a helpful post on StackOverflow\cite{so-update-window-in-pyqt5} that gave me a nice solution. The user \texttt{ekhumoro} used the functions \texttt{QApplication.processEvents()} and \texttt{QThread.msleep()} to solve the problem, and I used these functions in my own app, with much success.
 
@@ -210,12 +210,12 @@ The rank of a matrix is the dimension of its column space. This is the dimension
 
 Rank 2 matrices encompass most 2D matrices, and I've already covered this case in \S\ref{development:visualizing-matrices:drawing-the-transformed-grid} and \S\ref{development:improving-the-gui:fixing-rendering}. A rank 1 matrix collapses all of 2D space onto a single line, so for this type of matrix, we should just draw this line.
 
-This code is in \texttt{VectorGridPlot.draw\_parallel\_lines()}. We assemble the matrix $\begin{pmatrix}\text{\texttt{vector\_x}} & \text{\texttt{point\_x}}\\ \text{\texttt{vector\_y}} & \text{\texttt{point\_y}}\end{pmatrix}$ (which is actually the matrix used to create the transformation we're trying to render lines for) and use this matrix to check determinant and rank.
+This code is in \texttt{VectorGridPlot.draw_parallel_lines()}. We assemble the matrix $\begin{pmatrix}\text{\texttt{vector_x}} & \text{\texttt{point_x}}\\ \text{\texttt{vector_y}} & \text{\texttt{point_y}}\end{pmatrix}$ (which is actually the matrix used to create the transformation we're trying to render lines for) and use this matrix to check determinant and rank.
 
 %: 677b38c87bb6722b16aaf35058cf3cef66e43c21
 %: src/lintrans/gui/plots/classes.py:177-192
 
-Additionally, there was a bug with animating these determinant 0 matrices, since we try to scale the determinant through the animation, as documented in \S\ref{development:visualizing-matrices:preserving-determinants}, but when the determinant is 0, this causes issues. To fix this, we just check the \texttt{det\_target} variable in \texttt{LintransMainWindow.animate\_expression} and if it's 0, we use the non-scaled version of the matrix.
+Additionally, there was a bug with animating these determinant 0 matrices, since we try to scale the determinant through the animation, as documented in \S\ref{development:visualizing-matrices:preserving-determinants}, but when the determinant is 0, this causes issues. To fix this, we just check the \texttt{det_target} variable in \texttt{LintransMainWindow.animate_expression} and if it's 0, we use the non-scaled version of the matrix.
 
 %: b889b686d997c2b64124bee786bccba3fc4f6b08
 %: src/lintrans/gui/main_window.py:307-315
@@ -226,12 +226,12 @@ One of my friends was playing around with the prototype and she discovered a bug
 
 This isn't a problem with the gridlines, because we only draw them inside the viewport, as discussed in \S\ref{development:improving-the-gui:fixing-rendering}, and these calculations all happen in Python, so integer precision is not a concern. However, when drawing the basis vectors, we just draw them directly, so we'll have to check that they're within the limit.
 
-I'd previously created a \texttt{LintransMainWindow.show\_error\_message()} method for telling the user when they try to take the inverse of a singular matrix\footnote{This commit didn't get a standalone section in this write-up because it was so small}.
+I'd previously created a \texttt{LintransMainWindow.show_error_message()} method for telling the user when they try to take the inverse of a singular matrix\footnote{This commit didn't get a standalone section in this write-up because it was so small}.
 
 %: 0f699dd95b6431e95b2311dcb03e7af49c19613f
 %: src/lintrans/gui/main_window.py:378-396
 
-I then created the \texttt{is\_matrix\_too\_big()} method to just check that the elements of the matrix are within the desired bounds. If it returns \pyinline{True} when we try to render or animate, then we call \texttt{show\_error\_message()}.
+I then created the \texttt{is_matrix_too_big()} method to just check that the elements of the matrix are within the desired bounds. If it returns \pyinline{True} when we try to render or animate, then we call \texttt{show_error_message()}.
 
 %: 4682a7b225747cfd77aca0fe3abcdd1397b7c5dd
 %: src/lintrans/gui/main_window.py:407-421
@@ -243,7 +243,7 @@ Next, I wanted to allow the user to define a matrix visually by dragging the bas
 %: 16ca0229aab73b3f4a8fe752dee3608f3ed6ead5
 %: src/lintrans/gui/dialogs/define_new_matrix.py:135-189
 
-This \texttt{DefineVisuallyDialog} class just implements the normal methods needed for a \texttt{DefineDialog} and has a \texttt{plot} attribute to handle drawing graphics and handling mouse movement. After creating the \texttt{DefineVisuallyWidget} as a skeleton and doing some more research in the Qt5 docs\cite{qt5-docs-qwidget-mousemoveevent}, I renamed the \texttt{trans\_coords()} methods to \texttt{canvas\_coords()} to make the intent more clear, and created a \texttt{grid\_coords()} method.
+This \texttt{DefineVisuallyDialog} class just implements the normal methods needed for a \texttt{DefineDialog} and has a \texttt{plot} attribute to handle drawing graphics and handling mouse movement. After creating the \texttt{DefineVisuallyWidget} as a skeleton and doing some more research in the Qt5 docs\cite{qt5-docs-qwidget-mousemoveevent}, I renamed the \texttt{trans_coords()} methods to \texttt{canvas_coords()} to make the intent more clear, and created a \texttt{grid_coords()} method.
 
 %: 417aea6555029b049c470faff18df29f064f6101
 %: src/lintrans/gui/plots/classes.py:85-94
@@ -268,7 +268,7 @@ When drawing the rank line for a determinant 0, rank 1 matrix, we can encounter 
 
 Currently, all animation animates from $\mathbf{I}$ to the target matrix $\mathbf{T}$. This means it resets the plot at the start. I eventually want an applicative animation system, where the matrix in the box is applied to the current scene. But I also want an option for a transitional animation, where the program animates from the start matrix $\mathbf{S}$ to the target matrix $\mathbf{T}$, and this seems easier to implement, so I'll do it first.
 
-In \texttt{LintransMainWindow}, I created a new method called \texttt{animate\_between\_matrices()} and I call it from \texttt{animate\_expression()}. The maths for smoothening determinants in \S\ref{development:visualizing-matrices:preserving-determinants} assumed the starting matrix had a determinant of 1, but when using transitional animation, this may not always be true.
+In \texttt{LintransMainWindow}, I created a new method called \texttt{animate_between_matrices()} and I call it from \texttt{animate_expression()}. The maths for smoothening determinants in \S\ref{development:visualizing-matrices:preserving-determinants} assumed the starting matrix had a determinant of 1, but when using transitional animation, this may not always be true.
 
 If we let $\mathbf{S}$ be the starting matrix, and $\mathbf{A}$ be the matrix from the first stage of calculation as specified in \S\ref{development:visualizing-matrices:preserving-determinants}, then we want a $c$ such that $\det(c\mathbf{A}) = \det(\mathbf{S})$, so we get $c = \sqrt{\left|\dfrac{\det(\mathbf{S})}{\det(\mathbf{A})}\right|}$ by the identity $\det(c\mathbf{A}) = c^2 \det(\mathbf{A})$.
 
@@ -298,7 +298,7 @@ Doing this in code is very simple. We just split the expression on commas, and t
 %: 60584d2559cacbf23479a1bebbb986a800a32331
 %: src/lintrans/gui/main_window.py:284-325
 
-We're deliberately not checking if the sub-expressions are valid here. We would normally validate the expression in \texttt{LintransMainWindow.update\_render\_buttons()} and only allow the user to render or animate an expression if it's valid. Now we have to check all the sub-expressions if the expression contains commas. Additionally, we can only animate these expressions with commas in them, so rendering should be disabled when the expression contains commas.
+We're deliberately not checking if the sub-expressions are valid here. We would normally validate the expression in \texttt{LintransMainWindow.update_render_buttons()} and only allow the user to render or animate an expression if it's valid. Now we have to check all the sub-expressions if the expression contains commas. Additionally, we can only animate these expressions with commas in them, so rendering should be disabled when the expression contains commas.
 
 Compare the old code to the new code:
 

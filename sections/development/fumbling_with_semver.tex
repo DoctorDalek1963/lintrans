@@ -32,7 +32,7 @@ The notice looks like this\footnote{I'm calling myself D. Dyson here because my 
 
 \subsubsection{Making the package executable\label{development:fumbling-with-semver:making-the-package-executable}}
 
-So far, I'd been running the program by running a separate script called \texttt{run\_gui.py}, but Python lets you make a package executable by creating a file called \texttt{\_\_main\_\_.py} in the project root. You can then run it by using the command \mintinline{sh}{python -m package_name}. This will make the whole program more cohesive by integrating the execution into the same directory as the source library code. I just moved the script here and changed its docstring a little bit.
+So far, I'd been running the program by running a separate script called \texttt{run_gui.py}, but Python lets you make a package executable by creating a file called \texttt{__main__.py} in the project root. You can then run it by using the command \mintinline{sh}{python -m package_name}. This will make the whole program more cohesive by integrating the execution into the same directory as the source library code. I just moved the script here and changed its docstring a little bit.
 
 %: 847cdf61f64b30e81edf0821b7a8d2eb060fb825
 %: src/lintrans/__main__.py:9-19

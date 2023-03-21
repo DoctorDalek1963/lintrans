@@ -188,7 +188,7 @@ I've know about changelogs for a long time. They're used to keep track of change
 
 \subsubsection{Releasing \texttt{v0.2.1}\label{development:preparing-for-v0.2.1:releasing-v0.2.1}}
 
-Now all I had to do for the release was update the version number in \texttt{\_\_init\_\_.py} and update the changelog to include the changes under the correct heading, and add a new, empty \enquote{Unreleased} heading.
+Now all I had to do for the release was update the version number in \texttt{__init__.py} and update the changelog to include the changes under the correct heading, and add a new, empty \enquote{Unreleased} heading.
 
 %: d47f63eb0bcdc89cff5ed19afe2fc63899edf1d9
 %: src/lintrans/__init__.py:13
@@ -210,7 +210,7 @@ I had to copy the changelog over and polish up the release notes myself for this
 %: 99a88575f9beb8fed2dcc41dacbb020b31bc8176
 %: generate_release_notes.py
 
-This script just parses the changelog and generates a file called \texttt{release\_notes.md}, which I can then automatically use as the body for the GitHub release by changing the workflow.
+This script just parses the changelog and generates a file called \texttt{release_notes.md}, which I can then automatically use as the body for the GitHub release by changing the workflow.
 
 %: 99a88575f9beb8fed2dcc41dacbb020b31bc8176
 %: .github/workflows/compile-release.yaml:8,97,101,124-146 language=yaml
