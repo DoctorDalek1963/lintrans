@@ -40,7 +40,7 @@ def generate_files(directory: str, type_: str) -> None:
 
         for name in filenames:
             stripped_name = name[len(f'lintrans/{directory}/'):]
-            f.write(r'\subsection{\texttt{' + stripped_name + '}'
+            f.write(r'\subsection{\texttt{' + stripped_name.replace('_', r'\_') + '}'
                     r'\label{appendix:' + type_ + '-code:' + stripped_name + '}}\n')
             f.write(r'\inputminted{python}{' + name + '}\n\n')
 

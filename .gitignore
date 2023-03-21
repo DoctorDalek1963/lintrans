@@ -48,5 +48,4 @@ __pycache__/
 # This is for manual LaTeX build caching
 .build-sum
 
-videos/*.mkv
 lintrans.zip

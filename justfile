@@ -55,9 +55,10 @@ add-built-from-commit:
 build-docker:
 	docker build -t write-up-lintrans .
 	docker run --name wul write-up-lintrans
-	docker cp wul:/write-up-lintrans/main.pdf ./lintrans.pdf
+	docker cp wul:/write-up-lintrans/lintrans.zip ./lintrans.zip
 	docker rm wul
 
 build-zip: build
 	cp main.pdf lintrans.pdf
-	zip lintrans.zip lintrans.pdf videos/*.mp4
+	rm -f lintrans.zip
+	fd -e mp4 . videos/ -X zip lintrans.zip lintrans.pdf

@@ -14,7 +14,7 @@
 \begin{landscape}
 \section{Post-development Testing\label{evaluation}}
 
-\begin{longtable}[c]{|m{1.5cm}||p{3cm}|p{2.5cm}|p{3.5cm}|p{3cm}|p{2.3cm}|p{5cm}|}
+\begin{longtable}[c]{|m{1.4cm}||p{3cm}|p{2.5cm}|p{3.5cm}|p{2.9cm}|p{2.5cm}|p{5cm}|}
 	\hline
 	\textbf{Test ID}
 		& \textbf{Description}
@@ -64,7 +64,7 @@
 		& Resetting, then animating $\mathbf{A}$, then resetting and animating $\mathbf{B}$>
 		& The program animates smoothly from I to the matrices without any issues.
 		& As expected.
-		& See \texttt{pdtest_animate_defined.mp4} in the videos folder.
+		& See \texttt{pdtest/animate_defined.mp4} in the videos folder.
 		& This test was performed with the default display settings.
 	\\ \hline
 	\testnum{render-and-animate-rotations}
@@ -72,7 +72,32 @@
 		& Trying to render and animate \texttt{rot(135)}.
 		& The program renders and animates the rotations correctly.
 		& As expected.
-		& See \texttt{pdtest_render_and_animate_rotations.mp4} in the videos folder.
+		& See \texttt{pdtest/render_and_animate_rotations.mp4} in the videos folder.
+		& None.
+	\\ \hline
+	\testnum{render-and-animate-expressions}
+		& The program should be able to render and animate expressions containing previously defined matrices.
+		& Trying to render and animate $\mathbf{AB}$ and $\mathbf{A}^{-1}\mathbf{B}^2$.
+		& The program renders and animates the expressions correctly.
+		& As expected.
+		& See \texttt{pdtest/render_and_animate_expressions.mp4} in the videos folder.
+		& None.
+	\\ \hline
+	\testnum{animate-multiple-transitional}
+		& The program should be able to animate one matrix and then animate a transition to another.
+		& Trying to render and animate $\mathbf{A}$ and then $\mathbf{B}$.
+		& The program animates them correctly, transitioning between them.
+		& As expected.
+		& See \texttt{pdtest/animate_multiple_transitional.mp4} in the videos folder.
+		& None.
+	\\ \hline
+	\testnum{animate-multiple-applicative}
+		& The program should be able to animate one matrix and then apply another matrix to it.
+		& I will start at $\mathbf{I}$, then animate $\mathbf{B}$, then apply $\mathbf{A}$. This should be
+		equivalent to $\mathbf{AB}$, so I will apply $(\mathbf{AB})^{-1}$ to undo it.
+		& The program animates everything correctly.
+		& As expected.
+		& See \texttt{pdtest/animate_multiple_applicative.mp4} in the videos folder.
 		& None.
 	\\ \hline
 \end{longtable}
@@ -85,9 +110,6 @@
 \simplefig{pdtest/render-defined-A.png}{The matrix $\mathbf{A}$ being rendered}
 \simplefig{pdtest/render-defined-B.png}{The matrix $\mathbf{B}$ being rendered}
 
-%render composed
-%animate composed (transitional)
-%animate composed (applicative)
 %animate sequence (transitional)
 %animate sequence (applicative)
 %define as expression
