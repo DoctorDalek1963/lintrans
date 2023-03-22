@@ -7,6 +7,7 @@ COPY main.tex main.tex
 COPY sections/ sections/
 COPY bibs/*.bib bibs/
 COPY images/ images/
+COPY videos/ videos/
 COPY generate_appendices.py generate_appendices.py
 COPY lexers.py lexers.py
 COPY process-code-snippets/Cargo.* process-code-snippets/
