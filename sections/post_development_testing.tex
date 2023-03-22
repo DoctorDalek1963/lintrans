@@ -12,7 +12,7 @@
 \numberwithin{figure}{section}
 
 \begin{landscape}
-\section{Post-development Testing\label{evaluation}}
+\section{Post-development Testing\label{pdtest}}
 
 \begin{longtable}[c]{|m{1.4cm}||p{3cm}|p{2.5cm}|p{3.5cm}|p{2.9cm}|p{2.5cm}|p{5cm}|}
 	\hline
@@ -94,28 +94,84 @@
 	\testnum{animate-multiple-applicative}
 		& The program should be able to animate one matrix and then apply another matrix to it.
 		& I will start at $\mathbf{I}$, then animate $\mathbf{B}$, then apply $\mathbf{A}$. This should be
-		equivalent to $\mathbf{AB}$, so I will apply $(\mathbf{AB})^{-1}$ to undo it.
+			equivalent to $\mathbf{AB}$, so I will apply $(\mathbf{AB})^{-1}$ to undo it.
 		& The program animates everything correctly.
 		& As expected.
 		& See \texttt{pdtest/animate_multiple_applicative.mp4} in the videos folder.
 		& None.
 	\\ \hline
+	\testnum{animate-sequence-transitional}
+		& The program should be able to animate a sequence of expressions using transitional animation.
+		& I will animate the expression \pyinline{"(AB)^-1,A,B"} and it will transition between each
+			expression, right-to-left.
+		& The program animates each expression in turn, transitioning between them.
+		& As expected.
+		& See \texttt{pdtest/animate_sequence_transitional.mp4} in the videos folder.
+		& None.
+	\\ \hline
+	\testnum{animate-sequence-applicative}
+		& The program should be able to animate a sequence of expressions using applicative animation.
+		& I will animate the expression \pyinline{"(AB)^-1,A,B"} and it will apply each matrix in turn.
+			The \pyinline{"(AB)^-1"} at the end will undo the others and return it to the start.
+		& The program animates each expression in turn, applying them from right to left.
+		& As expected.
+		& See \texttt{pdtest/animate_sequence_applicative.mp4} in the videos folder.
+		& None.
+	\\ \hline
+	\testnum{define-as-expression}
+		& The program should allow the user to define a matrix as an expression in terms of other matrices.
+		& $\mathbf{C} = 0.2 \mathbf{A}^2\mathbf{B}^{-1}$
+		& The matrix $\mathbf{C}$ will be defined as this expression and render properly, as well as showing
+			up in the info panel.
+		& As expected.
+		& See Figures~\ref{fig:pdtest:define-expression.png}, \ref{fig:pdtest:info-panel-with-expression.png},
+			\ref{fig:pdtest:render-defined-C.png} and \texttt{pdtest/expression.mp4} in the videos folder.
+		& None.
+	\\ \hline
+	\testnum{change-expression-dependencies}
+		& When a matrix is defined as an expression, it should be re-calculated every time it's used. That means
+			that if the user redefines one of the dependencies of an expression matrix, the expression matrix
+			should update to reflect that the next time it's used.
+		& $\mathbf{C} = 0.2 \mathbf{A}^2\mathbf{B}^{-1}$ and then I will change $\mathbf{A}$ and re-render $\mathbf{C}$.
+		& $\mathbf{C}$ will be rendered correctly both times, and both will be different.
+		& As expected.
+		& See \texttt{pdtest/change_expression_dependencies.mp4} in the videos folder.
+		& None.
+	\\ \hline
+	\testnum{determinant-parallelogram}
+		& A key part of the display settings is the determinant parallelogram. It should work correctly.
+		& I will enable the determinant parallelogram and try a variety of inputs, including compositions
+			of matrices, expression-based matrices, and a rotation.
+		& The matrix inputs should all be animated correctly, the determinant parallelogram will be visible
+			for all of them, smoothed out during animations, blue for positive determinants, and red for
+			negative determinants.
+		& As expected.
+		& See \texttt{pdtest/determinant_parallelogram.mp4} in the videos folder.
+		& None.
+	\\ \hline
+	\testnum{eigenlines}
+		& A key part of the display settings is displaying eigenvectors and eigenlines. This feature should work correctly.
+		& I will enable eigenvectors and eigenlines and then animate each matrix in turn, resetting between each of them.
+		& Each matrix should be animated correctly and the eigenvectors and eigenlines should be rendered properly
+			at every stage.
+		& As expected.
+		& See \texttt{pdtest/eigenlines.mp4} in the videos folder.
+		& Eigenvectors are discontinuous over animation. This means that the eigenvectors start aligned to the axes, and
+			then snap to where they should be on the first frame of animation. This doesn't look great, but there's not
+			much I can do to get around it.
+	\\ \hline
 \end{longtable}
 \end{landscape}
 
-\simplefig{pdtest/compile.png}{The successful output of compilation}
-\simplefig{pdtest/define-visually.png}{The matrix $\mathbf{A}$ being defined visually}
+\simplefig[0.9]{pdtest/compile.png}{The successful output of compilation}
+\simplefig[0.8]{pdtest/define-visually.png}{The matrix $\mathbf{A}$ being defined visually}
 \simplefig[0.8]{pdtest/define-numerically.png}{The matrix $\mathbf{B}$ being defined numerically}
 \simplefig[0.6]{pdtest/info-panel-no-expression.png}{The info panel after defining matrices $\mathbf{A}$ and $\mathbf{B}$}
-\simplefig{pdtest/render-defined-A.png}{The matrix $\mathbf{A}$ being rendered}
-\simplefig{pdtest/render-defined-B.png}{The matrix $\mathbf{B}$ being rendered}
-
-%animate sequence (transitional)
-%animate sequence (applicative)
-%define as expression
-%change dependencies of expression
-%determinant parallelogram
-%eigenlines
+\simplefig[0.85]{pdtest/render-defined-A.png}{The matrix $\mathbf{A}$ being rendered}
+\simplefig[0.85]{pdtest/render-defined-B.png}{The matrix $\mathbf{B}$ being rendered}
+\simplefig[0.8]{pdtest/define-expression.png}{The expression matrix $\mathbf{C}$ being defined}
+\simplefig[0.6]{pdtest/info-panel-with-expression.png}{The info panel after defining the new matrix $\mathbf{C}$}
+\simplefig{pdtest/render-defined-C.png}{The matrix $\mathbf{C}$ being rendered}
 
 % Figures are x.y.z
 \numberwithin{figure}{subsection}

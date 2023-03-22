@@ -53,7 +53,6 @@ If you try to render a matrix like \texttt{0.01Irot(45)}, then the app ends up d
 
 The idea behind this code is just to limit the maximum number of parallel lines that get drawn. It works perfectly for oblique lines, but there's a small bug for orthogonal lines that I never noticed. I just forgot to test it.
 
-% TODO: Reference the section where I fix this
 On lines 234 and 252, I call the built-in \pyinline{max()} function with the maximum number of parallel lines and the total number of lines that could fit in the viewport. This should be a call to \pyinline{min()} instead. I fixed this before releasing it for my end users, but it took an embarrassingly long time to notice something this simple.
 
 \begin{figure}[H]
