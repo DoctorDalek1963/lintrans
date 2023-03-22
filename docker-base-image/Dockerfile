@@ -1,5 +1,5 @@
 FROM python:3.10-alpine
-RUN apk update && apk add curl fontconfig gcc git libc-dev libgcc make ncurses perl wget
+RUN apk update && apk add curl fontconfig gcc git libc-dev libgcc make ncurses perl wget zip
 
 ENV PATH="/usr/local/texlive/2021/bin/x86_64-linuxmusl:/root/.cargo/bin:$PATH"
 
