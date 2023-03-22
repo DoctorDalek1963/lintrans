@@ -13,6 +13,7 @@ COPY process-code-snippets/Cargo.* process-code-snippets/
 COPY process-code-snippets/src/ process-code-snippets/src/
 COPY justfile justfile
 
+RUN python -m pip install gitpython
 RUN python generate_appendices.py
 
 CMD [ "just", "build-zip" ]
