@@ -188,11 +188,11 @@ class MatrixWrapper
 
 		// Return a new rotation matrix
 		match = re.match(r"^rot\((-?\d*\.?\d*)\)$", name)
-		if (match != null)
+		if (match != null) then
 			return create_rotation_matrix(float(match.group(1)))
 		endif
 
-		if (!matrices.contains(name))
+		if (!matrices.contains(name)) then
 			raise NameError(f'Unrecognised matrix name "{name}"')
 		endif
 
@@ -203,16 +203,16 @@ class MatrixWrapper
 	public procedure setitem(name: string, new_matrix: Optional[MatrixType])
 		// If new_matrix is null, then that effectively unsets the matrix name.
 
-		if (name == "I" OR !matrices.contains(name))
+		if (name == "I" OR !matrices.contains(name)) then
 			raise NameError("Matrix name is illegal")
 		endif
 
-		if (new_matrix == null)
+		if (new_matrix == null) then
 			matrices[name] = null
 			return
 		endif
 
-		if (!is_matrix_type(new_matrix))
+		if (!is_matrix_type(new_matrix)) then
 			raise TypeError("Matrix must be a 2x2 NumPy array")
 		endif
 
