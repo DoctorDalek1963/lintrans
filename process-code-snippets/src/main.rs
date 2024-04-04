@@ -87,7 +87,10 @@ fn process_all_snippets_in_file(filename: &str, repo: &Repository) -> Result<()>
 fn main() -> Result<()> {
     color_eyre::install()?;
 
-    let repo = Repository::open(Path::new(env!("LINTRANS_DIR")))?;
+    let repo = Repository::open(Path::new(
+        &env::var("LINTRANS_DIR")
+            .expect("LINTRANS_DIR should point to the cloned lintrans repo at runtime"),
+    ))?;
 
     if env::args().count() == 1 {
         return Err(color_eyre::eyre::Error::msg(
