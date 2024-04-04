@@ -1,5 +1,5 @@
 {
-  description = "A simple program to process the code snippets in the lintrans write-up";
+  description = "Small tools to help with building the lintrans write-up";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
@@ -26,6 +26,8 @@
 
         rust-toolchain = pkgs.rust-bin.stable.latest.default;
 
+        python = pkgs.python3.withPackages (p: [p.gitpython]);
+
         naersk = pkgs.callPackage inputs.naersk {
           cargo = rust-toolchain;
           rustc = rust-toolchain;
@@ -51,14 +53,25 @@
         };
       in rec {
         devShells.default = pkgs.mkShell {
-          nativeBuildInputs = [rust-toolchain];
+          nativeBuildInputs = [rust-toolchain python];
         };
 
         packages = rec {
-          default = process-code-snippets;
+          generate-appendices = pkgs.stdenv.mkDerivation {
+            name = "lintrans-generate-appendices";
+            propagatedBuildInputs = [python];
+            nativeBuildInputs = [pkgs.makeWrapper];
+            dontUnpack = true;
+            installPhase = ''
+              install -D ${./generate-appendices/generate_appendices.py} $out/bin/generate-appendices
+              wrapProgram $out/bin/generate-appendices \
+                --set LINTRANS_DIR "${lintrans}" \
+                --set XDG_CONFIG_HOME "${git-config-bodge}/.config"
+            '';
+          };
 
           process-code-snippets = naersk.buildPackage {
-            src = ./.;
+            src = ./process-code-snippets;
             postInstall = ''
               wrapProgram $out/bin/process-code-snippets \
                 --set LINTRANS_DIR "${lintrans}" \
@@ -71,8 +84,6 @@
         };
 
         apps = rec {
-          default = process-code-snippets;
-
           process-code-snippets = {
             type = "app";
             program = "${packages.process-code-snippets}/bin/process-code-snippets";
