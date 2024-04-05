@@ -51,13 +51,6 @@ clear-appendices:
 add-built-from-commit:
 	sed -i "s/% BUILT FROM/\\\\hfill Built from \\\\texttt{$(git rev-parse --short HEAD)}/" main.tex
 
-# build the PDF in the Docker container (very slow)
-build-docker:
-	docker build -t write-up-lintrans .
-	docker run --name wul write-up-lintrans
-	docker cp wul:/write-up-lintrans/lintrans.zip ./lintrans.zip
-	docker rm wul
-
 build-zip: build
 	cp main.pdf lintrans.pdf
 	rm -f lintrans.zip
