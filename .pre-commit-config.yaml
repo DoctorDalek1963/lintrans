@@ -11,30 +11,9 @@ repos:
 
   - repo: local
     hooks:
-      - id: just-build
-        name: just build
-        entry: just build
+      - id: nix-build
+        name: nix build
+        entry: nix build
         language: system
-        files: '(justfile|.*\.(tex|bib|png|rs|toml))$'
-        pass_filenames: false
-
-      - id: just-build-zip
-        name: just build-zip
-        entry: just build-zip
-        language: system
-        files: '(justfile|.*\.(tex|bib|png|rs|toml)|videos/.*)$'
-        pass_filenames: false
-
-      - id: cargo-build-release
-        name: cargo build release
-        entry: bash -c 'cd process-code-snippets && LINTRANS_DIR=../lintrans cargo build --release'
-        language: system
-        types: [rust]
-        pass_filenames: false
-
-      - id: cargo-test-release
-        name: cargo test release
-        entry: bash -c 'cd process-code-snippets && LINTRANS_DIR=../lintrans cargo test --release'
-        language: system
-        types: [rust]
+        files: '(justfile|.*\.(tex|bib|png|rs|toml|py))$'
         pass_filenames: false

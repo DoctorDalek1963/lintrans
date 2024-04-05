@@ -49,3 +49,6 @@ __pycache__/
 .build-sum
 
 lintrans.zip
+
+# Nix build
+result

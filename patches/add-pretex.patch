@@ -1,0 +1,13 @@
+diff --git a/main.tex b/main.tex
+index 7e5e4ef..090b4f2 100644
+--- a/main.tex
++++ b/main.tex
+@@ -4,6 +4,8 @@
+ % This program is licensed under GNU GPLv3, available here:
+ % <https://www.gnu.org/licenses/gpl-3.0.html>
+ 
++\pdfvariable suppressoptionalinfo 512\relax
++
+ \documentclass[a4paper]{article}
+ \usepackage[UKenglish]{babel}  % UK writing style
+ \usepackage[a4paper, total={155mm, 245mm}]{geometry}  % Good margins

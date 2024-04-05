@@ -477,7 +477,7 @@ jobs:
 		}
 	}
 }
-\begin{minted}[firstnumber=-3]{lexers.py:SphObjInvTextLexer -x}
+\begin{minted}[firstnumber=-3]{'lexers.py:SphObjInvTextLexer -x'}
 # 5455265a51666e29ab976152c1a758a422e1004a
 # docs/pyqt5-objects.txt
 
@@ -759,7 +759,7 @@ if __name__ == '__main__':
 		}
 	}
 }
-\begin{minted}[firstnumber=-3]{lexers.py:MarkdownWithCommentsLexer -x}
+\begin{minted}[firstnumber=-3]{'lexers.py:MarkdownWithCommentsLexer -x'}
 <!-- 47c68c7f4780d0e2c374cf12b9b54c031277af6d -->
 <!-- CHANGELOG.md -->
 
