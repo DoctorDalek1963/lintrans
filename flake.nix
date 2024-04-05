@@ -74,7 +74,7 @@
           '';
       in {
         devShells.default = pkgs.mkShell {
-          buildInputs = buildInputs ++ [pkgs.zip];
+          buildInputs = buildInputs ++ (with pkgs; [just sd zip]);
         };
 
         packages = rec {
