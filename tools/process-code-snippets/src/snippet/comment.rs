@@ -218,7 +218,13 @@ impl<'s> Comment<'s> {
         Ok(Text {
             hash: self.hash,
             filename: self.filename,
-            language: self.config.language,
+            // We need to wrap custom lexers with '' for very weird reasons for minted versions >= 2.7
+            // See https://tex.stackexchange.com/a/703698
+            language: if self.config.language.contains(" -x") {
+                format!("'{}'", self.config.language)
+            } else {
+                self.config.language
+            },
             info_comment_syntax: self.config.info_comment,
             highlight_lines: self.config.highlight_lines,
             scopes,
