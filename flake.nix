@@ -98,7 +98,7 @@
 
                   generate-appendices
 
-                  sed -i "s/% BUILT FROM/\\\\hfill Built from \\\\texttt{${self.dirtyShortRev}}/" main.tex
+                  sed -i "s/% BUILT FROM/\\\\hfill Built from \\\\texttt{${self.shortRev or self.dirtyShortRev}}/" main.tex
                 '';
 
                 buildPhase = ''
