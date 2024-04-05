@@ -11,6 +11,13 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
 
     tools = {
+      # This is absolutely bizarre. With Nix 2.18.2 and probably many other
+      # versions, this won't work if the packages provided by this flake aren't
+      # already in the Nix store. What you have to do in that case, is switch
+      # this url to "path:tools", run `nix build`, and then change the url back
+      # to "path:./tools". I have no idea why this happens or how it might
+      # break in other interesting ways in the future, but this fix seems to
+      # work for now.
       url = "path:./tools";
       inputs.nixpkgs.follows = "nixpkgs";
     };

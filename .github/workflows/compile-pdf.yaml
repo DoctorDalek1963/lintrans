@@ -13,11 +13,17 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
       - uses: nixbuild/nix-quick-install-action@v27
+        with:
+          nix_version: "2.18.1"
 
       - name: Build zip file
-        run: nix build
+        run: |
+          nix build --verbose --print-build-logs --timeout 3600 || \
+            sed -i 's/url = "path:.\/tools";/url = "path:tools";/' flake.nix
+          nix build --verbose --print-build-logs --timeout 3600
 
       - name: Deploy zip file
         uses: peaceiris/actions-gh-pages@v3.8.0
