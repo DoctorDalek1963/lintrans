@@ -7,30 +7,23 @@ on:
 
 jobs:
   compile-latex:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
 
     steps:
       - uses: actions/checkout@v3
+      - uses: nixbuild/nix-quick-install-action@v27
 
-      - name: Set up main.tex
-        run: sed -i "s/% BUILT FROM/\\\\hfill Built from \\\\texttt{$(git rev-parse --short HEAD)}/" main.tex
-
-      - name: Build PDF with Docker
-        run: >
-          mkdir -p zip_dir
-          && docker build -t write-up-lintrans .
-          && docker run --name wul write-up-lintrans
-          && docker cp wul:/write-up-lintrans/lintrans.zip ./zip_dir/lintrans.zip
-          && docker rm wul
+      - name: Build zip file
+        run: nix build
 
       - name: Deploy zip file
         uses: peaceiris/actions-gh-pages@v3.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: zip_dir/
+          publish_dir: result/
           keep_files: true
           user_name: 'github-actions[bot]'
           user_email: 'github-actions[bot]@users.noreply.github.com'
