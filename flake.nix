@@ -74,11 +74,44 @@
           '';
       in {
         devShells.default = pkgs.mkShell {
-          inherit buildInputs;
+          buildInputs = buildInputs ++ [pkgs.zip];
         };
 
         packages = rec {
-          default = lintrans-write-up-pdf;
+          default = lintrans-write-up-zip;
+
+          lintrans-write-up-zip = pkgs.callPackage (
+            {stdenvNoCC}:
+              stdenvNoCC.mkDerivation rec {
+                name = "lintrans-write-up-zip";
+                src = self;
+
+                buildInputs = [
+                  lintrans-write-up-pdf
+                  pkgs.fd
+                  pkgs.zip
+                ];
+
+                buildPhase = ''
+                  runHook preBuild
+
+                  cp ${lintrans-write-up-pdf}/lintrans.pdf ./lintrans.pdf
+                  fd -e mp4 . videos/ -X zip lintrans.zip lintrans.pdf
+
+                  runHook postBuild
+                '';
+
+                installPhase = ''
+                  runHook preInstall
+
+                  mkdir $out
+                  mv lintrans.zip $out/lintrans.zip
+                  mv lintrans.pdf $out/lintrans.pdf # It's nice to have easy access to the PDF as well
+
+                  runHook postInstall
+                '';
+              }
+          ) {};
 
           lintrans-write-up-pdf = pkgs.callPackage (
             {stdenvNoCC}:
@@ -120,8 +153,12 @@
                 '';
 
                 installPhase = ''
+                  runHook preInstall
+
                   mkdir $out
                   cp main.pdf $out/lintrans.pdf
+
+                  runHook postInstall
                 '';
               }
           ) {};
