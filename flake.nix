@@ -92,7 +92,7 @@
           native-python-package = pkgs.python311.pkgs.buildPythonPackage {
             name = "lintrans-native-python-package";
             src = self;
-            format = "pyproject";
+            format = "setuptools";
 
             nativeBuildInputs = with pkgs.python311Packages; [setuptools wheel];
             propagatedBuildInputs = python-runtime-libs pkgs.python311Packages;
