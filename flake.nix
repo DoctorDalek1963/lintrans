@@ -4,6 +4,11 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
     flake-parts.url = "github:hercules-ci/flake-parts";
+
+    pre-commit-hooks = {
+      url = "github:cachix/pre-commit-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
@@ -12,8 +17,16 @@
     ...
   }:
     flake-parts.lib.mkFlake {inherit inputs;} {
+      imports = [
+        inputs.pre-commit-hooks.flakeModule
+      ];
+
       systems = ["x86_64-linux" "aarch64-linux"];
-      perSystem = {pkgs, ...}: let
+      perSystem = {
+        pkgs,
+        config,
+        ...
+      }: let
         buildPy311Package = {
           pname,
           version,
@@ -32,6 +45,12 @@
             version = "1.0.0";
             hash = "sha256-GpCtiopzi+WRycFn/dZ3xdSkPRvGscEoInvhxeA77gc=";
           };
+
+          # pytest-custom-exit-code = buildPy311Package {
+          #   pname = "pytest-custom_exit_code";
+          #   version = "0.3.0";
+          #   hash = "sha256-Uf//DuLB3cwSQuLdsqX9AkgnF+M6IybvMw46pDAkRjU=";
+          # };
         };
 
         python-runtime-libs = p: [
@@ -55,10 +74,10 @@
           p.pycodestyle
           p.pydocstyle
           p.pytest
-          # p.pytest-custom-exit-code
           p.pytest-xvfb
           p.pyqt5-stubs
           p.toml
+          # python311-packages.pytest-custom-exit-code
         ];
 
         python-docs-libs = p: [
@@ -84,6 +103,10 @@
               python-docs-libs
             ])
           ];
+
+          shellHook = ''
+            ${config.pre-commit.installationScript}
+          '';
         };
 
         packages = rec {
@@ -144,6 +167,76 @@
           native-python-application = {
             type = "app";
             program = "${packages.native-python-application}/bin/lintrans";
+          };
+        };
+
+        # See https://flake.parts/options/pre-commit-hooks-nix and
+        # https://github.com/cachix/git-hooks.nix/blob/master/modules/hooks.nix
+        # for all the available hooks and options
+        pre-commit = {
+          settings.hooks = let
+            python = buildPython [
+              python-runtime-libs
+              python-dev-libs
+              (_: [packages.native-python-package])
+            ];
+          in {
+            check-added-large-files.enable = true;
+            check-merge-conflicts.enable = true;
+            check-toml.enable = true;
+            check-vcs-permalinks.enable = true;
+            check-yaml.enable = true;
+            end-of-file-fixer.enable = true;
+            trim-trailing-whitespace.enable = true;
+
+            check-python.enable = true;
+            python-debug-statements.enable = true;
+
+            flake8 = {
+              enable = true;
+              files = ''^(src|tests)/.*\.py$'';
+            };
+            isort = {
+              enable = true;
+              files = ''^(src|tests)/.*\.py$'';
+            };
+            mypy = {
+              enable = true;
+              files = ''^(src|tests)/.*\.py$'';
+            };
+
+            alejandra.enable = true;
+            deadnix.enable = true;
+            statix.enable = true;
+
+            pytest = {
+              enable = true;
+              entry = "${python}/bin/python -m pytest";
+              files = ''^(src|tests)/.*\.py$'';
+              pass_filenames = false;
+            };
+
+            # pytest-doctests = {
+            #   enable = true;
+            #   entry = "${python}/bin/python -m pytest";
+            #   args = ["--doctest-modules" "--suppress-no-test-exit-code"];
+            #   files = ''^src/.*\.py$'';
+            # };
+
+            # - repo: https://github.com/PyCQA/pydocstyle
+            #   rev: 6.1.1
+            #   hooks:
+            #     - id: pydocstyle
+            #       files: ^(src|tests)/.*\.py$
+            #       additional_dependencies: [toml==0.10.2]
+            #
+            # - repo: local
+            #   hooks:
+            #     - id: pycodestyle
+            #       name: pycodestyle
+            #       entry: pycodestyle
+            #       language: system
+            #       files: ^(src|tests)/.*\.py$
           };
         };
       };
