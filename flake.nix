@@ -87,7 +87,7 @@
         };
 
         packages = rec {
-          default = native-python-package;
+          default = native-python-application;
 
           native-python-package = pkgs.python311.pkgs.buildPythonPackage {
             name = "lintrans-native-python-package";
@@ -108,6 +108,8 @@
               stdenvNoCC.mkDerivation {
                 name = "lintrans-native-python-application";
 
+                nativeBuildInputs = [pkgs.qt5.wrapQtAppsHook];
+
                 propagatedBuildInputs = [
                   lintransPython
                   native-python-package
@@ -115,20 +117,23 @@
 
                 dontUnpack = true;
 
-                installPhase = let
+                buildPhase = let
                   bin = pkgs.writeShellScriptBin "lintrans" ''
                     ${lintransPython}/bin/python -m lintrans
                   '';
                 in
                   # bash
                   ''
-                    runHook preInstall
-
+                    runHook preBuild
                     mkdir -p $out/bin
-                    cp ${bin}/bin/lintrans $out/bin/lintrans
-
-                    runHook postInstall
+                    cp ${bin}/bin/lintrans $out/bin/
+                    runHook postBuild
                   '';
+
+                dontWrapQtApps = true;
+                preFixup = ''
+                  wrapQtApp "$out/bin/lintrans" --prefix PATH : /path/to/bin
+                '';
               }
           ) {};
         };
