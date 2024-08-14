@@ -23,3 +23,8 @@ release_notes.md
 
 # Ignore the crash reports
 lintrans_crash_report_*.log
+
+# Nix stuff
+.direnv/
+result
+.pre-commit-config.yaml
