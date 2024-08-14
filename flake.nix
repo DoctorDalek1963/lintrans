@@ -144,6 +144,7 @@
               python-docs-libs
               (_: packages.native-python-package)
             ])
+            pkgs.graphviz
           ];
 
           shellHook = ''
@@ -151,26 +152,26 @@
           '';
         };
 
-        packages = rec {
-          default = native-python-application;
+        packages =
+          rec {
+            default = native-python-application;
 
-          native-python-package = pkgs.python311.pkgs.buildPythonPackage {
-            name = "lintrans-native-python-package";
-            src = self;
-            format = "setuptools";
+            native-python-package = pkgs.python311.pkgs.buildPythonPackage {
+              name = "lintrans-native-python-package";
+              src = self;
+              format = "setuptools";
 
-            nativeBuildInputs = with pkgs.python311Packages; [setuptools wheel];
-            propagatedBuildInputs = python-runtime-libs pkgs.python311Packages;
-          };
+              nativeBuildInputs = with pkgs.python311Packages; [setuptools wheel];
+              propagatedBuildInputs = python-runtime-libs pkgs.python311Packages;
+            };
 
-          native-python-application = pkgs.callPackage (
-            {stdenvNoCC}: let
+            native-python-application = let
               lintransPython = buildPython [
                 python-runtime-libs
                 (_: [native-python-package])
               ];
             in
-              stdenvNoCC.mkDerivation {
+              pkgs.stdenvNoCC.mkDerivation {
                 name = "lintrans-native-python-application";
 
                 nativeBuildInputs = [pkgs.qt5.wrapQtAppsHook];
@@ -199,9 +200,39 @@
                 preFixup = ''
                   wrapQtApp "$out/bin/lintrans" --prefix PATH : /path/to/bin
                 '';
-              }
-          ) {};
-        };
+              };
+          }
+          // (let
+            build-docs-type = type:
+              pkgs.stdenvNoCC.mkDerivation {
+                name = "lintrans-docs-${type}";
+                src = self;
+
+                nativeBuildInputs = [
+                  (buildPython [
+                    python-docs-libs
+                    (_: [packages.native-python-package])
+                  ])
+                  pkgs.graphviz
+                  pkgs.rsync
+                ];
+
+                buildPhase = ''
+                  cd docs
+                  make precompile
+                  make ${type}
+                  cd ..
+                '';
+
+                installPhase = ''
+                  rsync -a --mkpath docs/build/${type}/ $out/share/doc
+                '';
+              };
+          in {
+            docs-html = build-docs-type "html";
+            docs-dirhtml = build-docs-type "dirhtml";
+            docs-singlehtml = build-docs-type "singlehtml";
+          });
 
         apps = rec {
           default = native-python-application;

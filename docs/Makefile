@@ -23,6 +23,6 @@ precompile:
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
-	@sed -i 's/@singleton/# SPHINX REPLACEMENT @singleton/' ../src/lintrans/global_settings.py
+	@sed -i 's/^@singleton/# SPHINX REPLACEMENT @singleton/' ../src/lintrans/global_settings.py
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	@sed -i 's/# SPHINX REPLACEMENT @singleton/@singleton/' ../src/lintrans/global_settings.py
+	@sed -i 's/^# SPHINX REPLACEMENT @singleton/@singleton/' ../src/lintrans/global_settings.py
