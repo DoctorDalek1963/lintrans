@@ -172,7 +172,7 @@
               ];
             in
               pkgs.stdenvNoCC.mkDerivation rec {
-                name = "lintrans-native-python-application";
+                name = "lintrans";
                 src = self;
 
                 nativeBuildInputs = [pkgs.qt5.wrapQtAppsHook pkgs.copyDesktopItems];
