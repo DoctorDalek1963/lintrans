@@ -171,10 +171,11 @@
                 (_: [native-python-package])
               ];
             in
-              pkgs.stdenvNoCC.mkDerivation {
+              pkgs.stdenvNoCC.mkDerivation rec {
                 name = "lintrans-native-python-application";
+                src = self;
 
-                nativeBuildInputs = [pkgs.qt5.wrapQtAppsHook];
+                nativeBuildInputs = [pkgs.qt5.wrapQtAppsHook pkgs.copyDesktopItems];
 
                 propagatedBuildInputs = [
                   lintransPython
@@ -198,8 +199,33 @@
 
                 dontWrapQtApps = true;
                 preFixup = ''
-                  wrapQtApp "$out/bin/lintrans" --prefix PATH : /path/to/bin
+                  wrapQtApp "$out/bin/lintrans"
                 '';
+
+                postInstall = ''
+                  install -Dm0444 $src/src/lintrans/gui/assets/16.xpm $out/share/icons/hicolor/16x16/apps/lintrans.xpm
+                  install -Dm0444 $src/src/lintrans/gui/assets/32.xpm $out/share/icons/hicolor/32x32/apps/lintrans.xpm
+                  install -Dm0444 $src/src/lintrans/gui/assets/64.xpm $out/share/icons/hicolor/64x64/apps/lintrans.xpm
+                  install -Dm0444 $src/src/lintrans/gui/assets/128.xpm $out/share/icons/hicolor/128x128/apps/lintrans.xpm
+                '';
+
+                desktopItems = [
+                  (pkgs.makeDesktopItem {
+                    name = "lintrans";
+                    exec = meta.mainProgram;
+                    icon = "lintrans";
+                    desktopName = "lintrans";
+                    comment = meta.description;
+                    categories = ["Education"];
+                    mimeTypes = ["application/lintrans-session"];
+                  })
+                ];
+
+                meta = with pkgs.lib; {
+                  description = "Linear transformation visualizer";
+                  license = licenses.gpl3Only;
+                  mainProgram = "lintrans";
+                };
               };
           }
           // (let
