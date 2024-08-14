@@ -31,26 +31,67 @@
           pname,
           version,
           hash,
+          # Python module dependencies
+          dependencies ? [],
+          format ? null,
         }:
           pkgs.python311Packages.buildPythonPackage {
-            inherit pname version;
+            inherit pname version format dependencies;
+
             src = pkgs.fetchPypi {
               inherit pname version hash;
             };
           };
 
-        python311-packages = {
+        python311-packages = rec {
           singleton-decorator = buildPy311Package {
             pname = "singleton-decorator";
             version = "1.0.0";
             hash = "sha256-GpCtiopzi+WRycFn/dZ3xdSkPRvGscEoInvhxeA77gc=";
           };
 
-          # pytest-custom-exit-code = buildPy311Package {
-          #   pname = "pytest-custom_exit_code";
-          #   version = "0.3.0";
-          #   hash = "sha256-Uf//DuLB3cwSQuLdsqX9AkgnF+M6IybvMw46pDAkRjU=";
-          # };
+          pytest-custom-exit-code = buildPy311Package {
+            pname = "pytest-custom_exit_code";
+            version = "0.3.0";
+            hash = "sha256-Uf//DuLB3cwSQuLdsqX9AkgnF+M6IybvMw46pDAkRjU=";
+
+            dependencies = with pkgs.python311Packages; [pytest];
+          };
+
+          sphinxcontrib-email = buildPy311Package {
+            pname = "sphinxcontrib_email";
+            version = "0.3.6";
+            hash = "sha256-q8ys4UFQmFu8eh6QRNQn6P89nKr9JVufBmX4t4tmRbg=";
+
+            dependencies = with pkgs.python311Packages; [
+              lxml
+              setuptools-scm
+              sphinx
+            ];
+          };
+
+          sphobjinv = buildPy311Package {
+            pname = "sphobjinv";
+            version = "2.3.1.1";
+            hash = "sha256-R8YD/v0xUP1ZSzxo/qv6odKPSme3A0lBVMrIp0R6pIM=";
+
+            dependencies =
+              (with pkgs.python311Packages; [
+                certifi
+                jsonschema
+                pytest
+                sphinx
+              ])
+              ++ [stdio-mgr];
+          };
+
+          stdio-mgr = buildPy311Package {
+            pname = "stdio-mgr";
+            version = "1.0.1";
+            hash = "sha256-eBw7UWMqXgmOytMW4fpklZrlQOHWbY6oqducm3ufQYY=";
+
+            dependencies = with pkgs.python311Packages; [attrs dictdiffer];
+          };
         };
 
         python-runtime-libs = p: [
@@ -77,15 +118,15 @@
           p.pytest-xvfb
           p.pyqt5-stubs
           p.toml
-          # python311-packages.pytest-custom-exit-code
+          python311-packages.pytest-custom-exit-code
         ];
 
         python-docs-libs = p: [
           p.pylint
           p.sphinx
           p.sphinx-rtd-theme
-          # p.sphinxcontrib-email
-          # p.sphobjinv
+          python311-packages.sphinxcontrib-email
+          python311-packages.sphobjinv
         ];
 
         buildPython = libFuncs:
@@ -101,6 +142,7 @@
               python-compile-libs
               python-dev-libs
               python-docs-libs
+              (_: packages.native-python-package)
             ])
           ];
 
@@ -216,12 +258,12 @@
               pass_filenames = false;
             };
 
-            # pytest-doctests = {
-            #   enable = true;
-            #   entry = "${python}/bin/python -m pytest";
-            #   args = ["--doctest-modules" "--suppress-no-test-exit-code"];
-            #   files = ''^src/.*\.py$'';
-            # };
+            pytest-doctests = {
+              enable = true;
+              entry = "${python}/bin/python -m pytest";
+              args = ["--doctest-modules" "--suppress-no-test-exit-code"];
+              files = ''^src/.*\.py$'';
+            };
 
             # - repo: https://github.com/PyCQA/pydocstyle
             #   rev: 6.1.1

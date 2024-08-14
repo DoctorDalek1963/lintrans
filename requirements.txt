@@ -1,5 +1,5 @@
-nptyping==2.5.0
-numpy==1.26.1
-packaging==23.1
-pyqt5==5.15.9
+nptyping>=2.5.0
+numpy>=1.26.1
+packaging>=23.1
+pyqt5>=5.15.9
 singleton-decorator==1.0.0
