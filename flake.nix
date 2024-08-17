@@ -31,17 +31,16 @@
           pname,
           version,
           hash,
-          # Python module dependencies
-          dependencies ? [],
-          format ? null,
-        }:
-          pkgs.python311Packages.buildPythonPackage {
-            inherit pname version format dependencies;
+          ...
+        } @ args:
+          pkgs.python311Packages.buildPythonPackage ({
+              inherit pname version;
 
-            src = pkgs.fetchPypi {
-              inherit pname version hash;
-            };
-          };
+              src = pkgs.fetchPypi {
+                inherit pname version hash;
+              };
+            }
+            // args);
 
         python311-packages = rec {
           singleton-decorator = buildPy311Package {
@@ -56,6 +55,45 @@
             hash = "sha256-Uf//DuLB3cwSQuLdsqX9AkgnF+M6IybvMw46pDAkRjU=";
 
             dependencies = with pkgs.python311Packages; [pytest];
+          };
+
+          pyinstaller = buildPy311Package {
+            pname = "pyinstaller";
+            version = "5.13.2";
+            hash = "sha256-yOXTSJw6fMX4QBwtH0inDliPmWfjkcOwbdrB9oX41dI=";
+
+            # PyInstaller won't install because django needs gdal, and
+            # somehow can't find it even though it's provided. Even if I
+            # disable checks, the pyinstaller derivation will build just fine,
+            # but compile.py complains that it can't find qt5 plugins, even
+            # though QT_PLUGINS_PATH is set in the shellHook.
+            meta.broken = true;
+            # doCheck = false;
+
+            GDAL_LIBRARY_PATH = "${pkgs.gdal}/lib/";
+
+            buildInputs = with pkgs; [zlib gdal];
+            dependencies =
+              [pyinstaller-hooks-contrib]
+              ++ (with pkgs.python311Packages; [
+                pyside2
+                pyside6
+                pyqt5
+                pyqt6
+                django
+                gdal
+                psycopg2
+                asgiref
+                sqlparse
+              ]);
+          };
+
+          pyinstaller-hooks-contrib = buildPy311Package {
+            pname = "pyinstaller-hooks-contrib";
+            version = "2021.4";
+            hash = "sha256-d1tSIAs54SyVzCT4CesFCpcRD+6BnReOv94hTw9R5fQ=";
+
+            dependencies = with pkgs.python311Packages; [altgraph];
           };
 
           sphinxcontrib-email = buildPy311Package {
@@ -105,7 +143,7 @@
 
         python-compile-libs = p: [
           p.pillow
-          # p.pyinstaller
+          # python311-packages.pyinstaller
         ];
 
         python-dev-libs = p: [
@@ -145,10 +183,13 @@
               (_: packages.native-python-package)
             ])
             pkgs.graphviz
+            pkgs.qt5.full
           ];
 
           shellHook = ''
             ${config.pre-commit.installationScript}
+            export QT_PLUGINS_PATH="${pkgs.qt5.full}/lib/qt-${pkgs.qt5.qtbase.version}/plugins/"
+            export QT_QPA_PLUGINS_PATH="$QT_PLUGINS_PATH"
           '';
         };
 
