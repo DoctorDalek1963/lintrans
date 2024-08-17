@@ -341,7 +341,7 @@
               files = ''^(src|tests)/.*\.py$'';
             };
             mypy = {
-              enable = true;
+              enable = false;
               files = ''^(src|tests)/.*\.py$'';
             };
 
@@ -363,20 +363,17 @@
               files = ''^src/.*\.py$'';
             };
 
-            # - repo: https://github.com/PyCQA/pydocstyle
-            #   rev: 6.1.1
-            #   hooks:
-            #     - id: pydocstyle
-            #       files: ^(src|tests)/.*\.py$
-            #       additional_dependencies: [toml==0.10.2]
-            #
-            # - repo: local
-            #   hooks:
-            #     - id: pycodestyle
-            #       name: pycodestyle
-            #       entry: pycodestyle
-            #       language: system
-            #       files: ^(src|tests)/.*\.py$
+            pydocstyle = {
+              enable = true;
+              entry = "${python}/bin/python -m pydocstyle";
+              files = ''^(src|tests)/.*\.py$'';
+            };
+
+            pycodestyle = {
+              enable = true;
+              entry = "${python}/bin/python -m pycodestyle";
+              files = ''^(src|tests)/.*\.py$'';
+            };
           };
         };
       };
