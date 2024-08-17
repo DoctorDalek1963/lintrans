@@ -11,20 +11,36 @@ on:
       - 'tests/**/*.py'
 
 jobs:
-  pytest:
+  pytest-linux:
+    runs-on: ubuntu-latest
+
+    env:
+      DISPLAY: ':99.0'
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: nixbuild/nix-quick-install-action@v27
+
+      - name: Run pytest
+        run: nix develop --command pytest
+
+      - name: Run doctests
+        run: nix develop --command pytest --doctest-modules src/
+
+  pytest-non-linux:
     runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [macos-latest, windows-latest]
         python-version: ['3.11', '3.10']
 
     env:
       DISPLAY: ':99.0'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4

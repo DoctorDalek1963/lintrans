@@ -14,21 +14,9 @@ jobs:
   docstrings:
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-
-    - name: Install dependencies
-      run: |
-        pip install --upgrade pip wheel
-        pip install -e '.[dev]'
+    - uses: actions/checkout@v4
+    - uses: nixbuild/nix-quick-install-action@v27
 
     - name: Run pydocstyle
-      run: pydocstyle src/ tests/
+      run: nix develop --command pydocstyle src/ tests/

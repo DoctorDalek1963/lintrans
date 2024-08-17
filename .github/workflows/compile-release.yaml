@@ -14,24 +14,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip wheel
-          pip install -e '.[dev]'
+      - uses: actions/checkout@v4
+      - uses: nixbuild/nix-quick-install-action@v27
 
       - name: Check
         run: |
-          mypy src/ tests/
-          flake8 src/ tests/
-          pycodestyle src/ tests/
-          pydocstyle src/ tests/
+          nix develop --command mypy src/ tests/
+          nix develop --command flake8 src/ tests/
+          nix develop --command pycodestyle src/ tests/
+          nix develop --command pydocstyle src/ tests/
 
   test:
     needs: check
@@ -46,7 +37,7 @@ jobs:
       DISPLAY: ':99.0'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
@@ -73,7 +64,7 @@ jobs:
         os: [macos-11, ubuntu-20.04, windows-2019]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
@@ -105,7 +96,7 @@ jobs:
     runs-on: windows-2019
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
@@ -145,11 +136,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
+      - uses: actions/checkout@v4
+      - uses: nixbuild/nix-quick-install-action@v27
 
       - name: Download Windows binary
         uses: actions/download-artifact@v3
@@ -178,7 +166,7 @@ jobs:
           echo "::set-output name=isprerelease::$isprerelease"
 
       - name: Generate release notes
-        run: python generate_release_notes.py $GITHUB_REF_NAME
+        run: nix develop --command python generate_release_notes.py $GITHUB_REF_NAME
 
       # This is practically the same step twice just to allow for pre-releases
       - name: Upload binaries (normal release)
