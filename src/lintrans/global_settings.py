@@ -121,7 +121,7 @@ class GlobalSettings:
         else:
             # This should be unreachable because the only other option for os.name is 'java'
             # for Jython, but Jython only supports Python 2.7, which has been EOL for a while
-            # lintrans is only compatible with Python >= 3.10 anyway
+            # lintrans is only compatible with Python >= 3.11 anyway
             raise OSError(f'Unrecognised OS "{os.name}"')
 
         sub_directories = ['saves', 'crash_reports']

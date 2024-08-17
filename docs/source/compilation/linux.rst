@@ -5,9 +5,9 @@ Install Python
 --------------
 
 I highly recommend using the latest version of Python, which at the time of writing is 3.11.
-Anything 3.10 or higher should suffice, but the latest version is recommended.
+Anything 3.11 or higher should suffice, but the latest version is recommended.
 
-If you've already got Python 3.10 or higher, then you just need to find out whether you use
+If you've already got Python 3.11 or higher, then you just need to find out whether you use
 ``python``, ``python3``, or ``python3.X`` (where ``X`` is a number) in the shell (use ``python -V``
 to check). We'll need that for later.
 
@@ -16,7 +16,7 @@ to check). We'll need that for later.
    johndoe@pc-name:~$ python -V
    3.11.0
 
-If you don't already have Python 3.10 or newer, download the latest release from `python.org
+If you don't already have Python 3.11 or newer, download the latest release from `python.org
 <https://www.python.org/downloads/>`_. For Linux, you'll need to download the source tarball.
 
 I highly recommend installing Python to your home directory to avoid messing with any other
