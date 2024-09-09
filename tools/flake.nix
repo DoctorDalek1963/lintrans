@@ -56,7 +56,7 @@
           nativeBuildInputs = [rust-toolchain python];
         };
 
-        packages = rec {
+        packages = {
           generate-appendices = pkgs.stdenv.mkDerivation {
             name = "lintrans-generate-appendices";
             propagatedBuildInputs = [python];
@@ -83,7 +83,7 @@
           };
         };
 
-        apps = rec {
+        apps = {
           process-code-snippets = {
             type = "app";
             program = "${packages.process-code-snippets}/bin/process-code-snippets";

@@ -89,7 +89,7 @@
 
           lintrans-write-up-zip = pkgs.callPackage (
             {stdenvNoCC}:
-              stdenvNoCC.mkDerivation rec {
+              stdenvNoCC.mkDerivation {
                 name = "lintrans-write-up-zip";
                 src = self;
 
@@ -122,7 +122,7 @@
 
           lintrans-write-up-pdf = pkgs.callPackage (
             {stdenvNoCC}:
-              stdenvNoCC.mkDerivation rec {
+              stdenvNoCC.mkDerivation {
                 name = "lintrans-write-up-pdf";
                 src = self;
 
